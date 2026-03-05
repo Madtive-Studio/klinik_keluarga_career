@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/candidate');
 });
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -83,23 +83,27 @@ Route::prefix('candidate')->name('candidate.')->group(function () {
 
     // Jobs
     Route::prefix('jobs')->name('jobs.')->group(function () {
+        // Public routes
         Route::prefix('vacancies')->name('vacancies.')->group(function () {
             Route::get('/', [JobVacancyController::class, 'index'])->name('index');
-            Route::get('{uuid}', [JobVacancyController::class, 'detail'])->name('detail');
+            Route::get('{uuid}/detail', [JobVacancyController::class, 'detail'])->name('detail');
         });
 
-        Route::group(['middleware' => ['auth:candidate', 'verified']], function () {
-            Route::get('{uuid}/apply', [JobApplicationController::class, 'apply'])->name('apply');
-            Route::post('{uuid}/apply/process', [JobApplicationController::class, 'applyProcess'])->name('apply-process');
-            Route::get('{uuid}/apply/success', [JobApplicationController::class, 'applySuccess'])->name('apply-success');
+        // Protected routes (candidate only)
+        Route::middleware(['auth:candidate', 'verified'])->group(function () {
+            Route::prefix('applications')->name('applications.')->group(function () {
+                Route::get('{uuid}/apply', [JobApplicationController::class, 'apply'])->name('apply');
+                Route::post('{uuid}/process', [JobApplicationController::class, 'applyProcess'])->name('process');
+                Route::get('{uuid}/success', [JobApplicationController::class, 'applySuccess'])->name('success');
+            });
         });
     });
 
-    // Candidate authenticated routes
+    // My
     Route::group(['middleware' => ['auth:candidate', 'verified']], function () {
         Route::prefix('my')->name('my.')->group(function () {
             Route::get('interview', [ApplyController::class, 'myInterviews'])->name('interview');
-            Route::get('apply', [ApplyController::class, 'myApplies'])->name('apply');
+            Route::get('apply', [ApplyController::class, 'myApplies'])->name('applies');
             Route::get('cv', [ApplyController::class, 'myCV'])->name('cv');
             Route::get('cv/create', [ApplyController::class, 'createMyCV'])->name('cv.create');
             Route::post('cv/process', [ApplyController::class, 'storeMyCV'])->name('cv.process');

@@ -115,13 +115,13 @@
 												<div class="row align-items-center">
 													<div class="col-md-2">
 														<div class="mo-mb-2">
-															<img src="{{ asset('candidate/images/job-placeholder.png') }}" width="100" alt=""
+															<img src="{{ asset('assets/candidate/images/job-placeholder.png') }}" width="100" alt=""
 																class="img-fluid mx-auto d-block rounded">
 														</div>
 													</div>
 													<div class="col-md-3">
 														<div>
-															<h5 class="f-18"><a href="{{ url('loker/' . $job->uuid) }}" class="text-dark">{{ $job->title ?? '-' }}</a>
+															<h5 class="f-18"><a href="{{ route('candidate.jobs.vacancies.detail', $job->uuid) }}" class="text-dark">{{ $job->title ?? '-' }}</a>
 															</h5>
 															<p class="text-muted mb-0">{{ $job->category->name ?? '-' }}</p>
 														</div>
@@ -154,7 +154,7 @@
 													</div>
 													<div class="col-md-2">
 														<div>
-															<a href="{{ url('loker/' . $job->uuid) }}" class="text-primary"><strong>Lamar Sekarang</strong> <i class="mdi mdi-chevron-double-right"></i></a>
+															<a href="{{ route('candidate.jobs.vacancies.detail',  $job->uuid) }}" class="text-primary"><strong>Lamar Sekarang</strong> <i class="mdi mdi-chevron-double-right"></i></a>
 														</div>
 													</div>
 												</div>

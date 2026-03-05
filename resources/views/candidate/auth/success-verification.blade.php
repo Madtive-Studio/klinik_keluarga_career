@@ -1,6 +1,6 @@
 @extends('candidate.layouts.main', ['navbarType' => 'default'])
 @section('content')
-	<section class="bg-half page-next-level" style="background: url('https://img.freepik.com/premium-photo/workspace-wide-light-office_280538-7380.jpg?semt=ais_hybrid') no-repeat center center; background-size: cover;">
+	<section class="bg-half page-next-level">
 		<div class="bg-overlay"></div>
 		<div class="container">
 			<div class="row justify-content-center text-center">

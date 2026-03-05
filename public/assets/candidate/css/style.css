@@ -943,8 +943,20 @@ p {
 }
 
 .section {
+	min-height: 100vh;
 	padding: 100px 0;
 	position: relative;
+	background-size: cover;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.section-content {
+	flex: 1; /* Memenuhi ruang tersisa */
+	display: flex;
+	flex-direction: column;
+	justify-content: center; /* Konten di tengah vertikal */
 }
 
 .section-two {
@@ -1342,6 +1354,10 @@ p {
 	padding-right: 15px;
 }
 
+#topnav .navigation-menu > li > a:hover {
+	color: var(--hover-color) !important;
+}
+
 #topnav .navigation-menu .has-submenu .menu-arrow {
 	border: solid rgba(255, 255, 255, 0.8);
 	border-radius: 0.5px;
@@ -1434,7 +1450,7 @@ p {
 }
 
 .tagline .email a:hover {
-	color: var(--background-color);
+	color: var(--hover-color);
 }
 
 .tagline .topbar-list a {
@@ -1832,10 +1848,14 @@ p {
 
 .bg-half {
 	padding: 280px 0px 180px 0px;
-	background-image: url('https://via.placeholder.com/2000X1100//88929f/5a6270C/O https://placeholder.com/');
-	background-size: cover;
 	position: relative;
 	background-position: center center;
+
+	background-size: cover;
+	background: url('../../images/hero.png') no-repeat center center;
+	background-size: 100% auto;
+	object-fit: cover;
+	overflow: hidden;
 }
 
 .home-registration-form {

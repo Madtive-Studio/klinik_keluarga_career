@@ -1,6 +1,6 @@
-@extends('candidate.layouts.header')
+@extends('candidate.layouts.main', ['navbarType' => 'default'])
 @section('content')
-	<section class="bg-half page-next-level" style="background: url('https://img.freepik.com/premium-photo/workspace-wide-light-office_280538-7380.jpg?semt=ais_hybrid') no-repeat center center; background-size: cover;">
+	<section class="bg-half page-next-level">
 		<div class="bg-overlay"></div>
 		<div class="container">
 			<div class="row justify-content-center">
@@ -45,7 +45,7 @@
 							</div>
 						</div>
 					</div>
-					<form action="{{ route('candidate.job-vacancies.apply-process', $job->uuid) }}" method="POST" enctype="multipart/form-data">
+					<form action="{{ route('candidate.jobs.applications.process', $job->uuid) }}" method="POST" enctype="multipart/form-data">
 						@csrf
 						<div class="row mt-4">
 							<div class="col-lg-12">

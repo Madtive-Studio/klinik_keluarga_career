@@ -1,11 +1,11 @@
-@extends('candidate.layouts.main', ['navbarType' => 'default'])
+@extends('candidate.layouts.main', ['navbarType' => 'candidate'])
 @section('title', 'CV Saya')
 @section('content')
 	<section class="section pt-5">
 		<div class="container">
 			<div class="row">
 				@include('candidate.cv-saya.tab-menu')
-				<div class="col-lg-8 col-md-5 mt-4 mt-sm-0">
+				<div class="col-lg-8 col-md-5 mt-sm-0">
 					<div class="jobs-list">
 						@forelse ($cvs as $key => $cv)
 							<div class="job-list-box mb-3 border rounded">
@@ -13,8 +13,7 @@
 									<div class="row align-items-center">
 										<div class="col-lg-2">
 											<div class="company-logo-img">
-												<img src="{{ asset('client/images/file-placeholder.jpg') }}" width="50" alt=""
-													class="img-fluid mx-auto d-block rounded">
+												<img src="{{ asset('assets/candidate/images/file-placeholder.jpg') }}" width="50" alt="" class="img-fluid mx-auto d-block rounded">
 											</div>
 										</div>
 										<div class="col-lg-7 col-md-9">
@@ -29,7 +28,7 @@
 										</div>
 										<div class="col-lg-3 col-md-3">
 											<div class="job-list-button-sm text-right">
-												<a href="{{ url('/storage/' . $cv->file) }}" target="_blank" download="" class="btn btn-primary btn-sm" type="button">
+												<a href="{{ Illuminate\Support\Facades\Storage::url($cv->file) }}" target="_blank" download="" class="btn btn-primary btn-sm" type="button">
 													<i class="mdi mdi-download"></i> Unduh
 												</a>
 											</div>

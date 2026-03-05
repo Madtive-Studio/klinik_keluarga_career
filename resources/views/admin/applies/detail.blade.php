@@ -77,7 +77,7 @@
 						</div>
 						<div class="card-body">
 							<div class="mb-3">
-								<a href="{{ Storage::url($apply->cv->file) }}" target="_blank" class="btn btn-info btn-sm">
+								<a href="{{ Illuminate\Support\Facades\Storage::url($apply->cv->file) }}" target="_blank" class="btn btn-info btn-sm">
 									<i class="ti ti-download"></i> Lihat & Unduh CV / Resume
 								</a>
 							</div>

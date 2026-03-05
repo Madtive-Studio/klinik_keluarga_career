@@ -1,4 +1,4 @@
-@extends('candidate.layouts.main', ['navbarType' => 'default'])
+@extends('candidate.layouts.main', ['navbarType' => 'candidate'])
 @section('title', 'Upload Dokumen')
 @section('content')
 	<section class="section pt-5">
@@ -24,7 +24,7 @@
 							</div>
 						</div>
 					@endif
-					<form class="form_add_new_cv" method="POST" action="{{ route('candidate.cv.my-create-process') }}" enctype="multipart/form-data">
+					<form class="form_add_new_cv" method="POST" action="{{ route('candidate.my.cv.process') }}" enctype="multipart/form-data">
 						@csrf
 						<div class="job-list-box border rounded">
 							<div class="p-3">

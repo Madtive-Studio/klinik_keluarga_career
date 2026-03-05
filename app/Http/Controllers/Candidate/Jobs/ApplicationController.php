@@ -30,11 +30,11 @@ class ApplicationController extends Controller
                                         ->first();
 
         $candidateCVs = CV::where('candidate_id', Auth::guard('candidate')->id())->get();
-        if ($hasCandidateApplied) {
-            return redirect()->route('candidate.jobs.apply.detail', [$Uuid])->with('has_applied', 'Kamu sudah melamar lowongan pekerjaan ini');
-        }
+        // if ($hasCandidateApplied) {
+        //     return redirect()->route('candidate.jobs.vacancies.detail', [$Uuid])->with('has_applied', 'Kamu sudah melamar lowongan pekerjaan ini');
+        // }
 
-        return view('candidate.job-vacancies.apply', [
+        return view('candidate.jobs.vacancies.apply', [
             'job' => $job,
             'candidateCVs' => $candidateCVs,
             'activeBatch' => $activeBatch,
@@ -73,7 +73,7 @@ class ApplicationController extends Controller
                                         ->where('candidate_id', Auth::guard('candidate')->id())
                                         ->first();
         if ($hasCandidateApplied) {
-            return redirect()->route('candidate.jobs.apply.detail', [$Uuid])->with('has_applied', 'Kamu sudah melamar lowongan pekerjaan ini');
+            return redirect()->route('candidate.jobs.vacancies.detail', [$Uuid])->with('has_applied', 'Kamu sudah melamar lowongan pekerjaan ini');
         }
 
         $applyData = [
@@ -115,11 +115,11 @@ class ApplicationController extends Controller
         $candidate = Candidate::where('id', Auth::guard('candidate')->id())->first();
         $candidate->notify(new ApplicationSubmittedNotification($candidate, $job));
 
-        return redirect()->route('candidate.jobs.apply-success', [$Uuid])->with($data);
+        return redirect()->route('candidate.jobs.applications.success', [$Uuid])->with($data);
     }
 
     public function applySuccess(Request $request, $Uuid)
     {
-        return view('candidate.job.vacancies.apply-success', [$Uuid]);
+        return view('candidate.job.applications.success', [$Uuid]);
     }
 }

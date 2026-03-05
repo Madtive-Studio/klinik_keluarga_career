@@ -26,7 +26,7 @@ class ApplyController extends Controller
 
         $company = Company::first();
 
-        return view('candidate.job-application.interview', [
+        return view('candidate.jobs.applications.interview', [
             'candidate' => $candidate,
             'company' => $company,
             'interviews' => $candidate->interviews,
@@ -47,7 +47,7 @@ class ApplyController extends Controller
             $query->whereYear('created_at', $yearNow);
         }])->where('id', $userId)->first();
 
-        return view('candidate.job-application.index', [
+        return view('candidate.jobs.applications.index', [
             'candidate' => $candidate,
             'applies' => $candidate->applies,
             'appliesCount' => $candidate->applies->count() < 10 ? '0' . $candidate->applies->count() : $candidate->applies->count(),

@@ -2,7 +2,7 @@
 	<header id="topnav" class="position-relative shadow-sm">
 		<div class="container">
 			<div class="">
-				<a href="{{ url('/') }}" class="logo">
+				<a href="{{ route('candidate.home') }}" class="logo">
 					<img src="{{ asset('assets/logo/letter-logo.png') }}" alt="" class="logo-light" height="30" />
 				</a>
 			</div>
@@ -24,18 +24,18 @@
 			</div>
 			<div id="navigation">
 				<ul class="navigation-menu justify-content-end">
-					<li><a href="{{ route('candidate.home') }}">Beranda</a></li>
-					<li><a href="{{ route('candidate.jobs.vacancies.index') }}">Lowongan Pekerjaan</a></li>
+					<li><a class="text-dark" href="{{ route('candidate.home') }}">Beranda</a></li>
+					<li><a class="text-dark" href="{{ route('candidate.jobs.vacancies.index') }}">Lowongan Pekerjaan</a></li>
 					<li>
-						<a href="#footer">Kontak Kami</a>
+						<a class="text-dark" href="#footer">Kontak Kami</a>
 					</li>
 					@if (Auth::guard('candidate')->check())
-						<li class="has-submenu"><a href="javascript:void(0)"> <i class="mdi mdi-account"></i> Selamat Datang, {{ auth()->guard('candidate')->user()->name }}</a><span class="submenu-arrow"></span>
+						<li class="has-submenu"><a class="text-dark" href="javascript:void(0)"> <i class="mdi mdi-account"></i> Selamat Datang, {{ auth()->guard('candidate')->user()->name }}</a><span class="submenu-arrow"></span>
 							<ul class="submenu">
-								<li><a href="{{ route('candidate.my.apply') }}">Profil Saya</a></li>
-								<li><a href="{{ route('candidate.my.apply') }}">Lamaran Saya</a></li>
-								<li><a href="{{ route('candidate.my.cv') }}">CV / Resume Saya</a></li>
-								<li><a href="{{ route('candidate.logout') }}">Logout</a></li>
+								<li><a class="text-dark" href="{{ route('candidate.my.applies') }}">Profil Saya</a></li>
+								<li><a class="text-dark" href="{{ route('candidate.my.applies') }}">Lamaran Saya</a></li>
+								<li><a class="text-dark" href="{{ route('candidate.my.cv') }}">CV / Resume Saya</a></li>
+								<li><a class="text-dark" href="{{ route('candidate.logout') }}">Logout</a></li>
 							</ul>
 						</li>
 					@endif
@@ -65,19 +65,12 @@
 						</a>
 					</div>
 				</div>
-				@if (Auth::guard('candidate')->check())
-					<div class="float-right">
-						<ul class="topbar-list list-unstyled d-flex" style="margin: 11px 0px;">
-							<li class="list-inline-item"><a href="javascript:void(0);"><i class="mdi mdi-account mr-2"></i>{{ auth()->guard('candidate')->user()->name }}</a></li>
-						</ul>
-					</div>
-				@endif
 				<div class="clearfix"></div>
 			</div>
 		</div>
 		<div class="container">
 			<div>
-				<a href="{{ url('/') }}" class="logo">
+				<a href="{{ route('candidate.home') }}" class="logo">
 					<img src="{{ asset('assets/logo/letter-logo-white.png') }}" alt="" class="logo-light" height="30" />
 					<img src="{{ asset('assets/logo/letter-logo.png') }}" alt="" class="logo-dark" height="30" />
 				</a>
@@ -108,8 +101,8 @@
 					@if (Auth::guard('candidate')->check())
 						<li class="has-submenu"><a href="javascript:void(0)"> <i class="mdi mdi-account"></i> Selamat Datang, {{ auth()->guard('candidate')->user()->name }}</a><span class="submenu-arrow"></span>
 							<ul class="submenu">
-								<li><a href="{{ route('candidate.my.apply') }}">Profil Saya</a></li>
-								<li><a href="{{ route('candidate.my.apply') }}">Lamaran Saya</a></li>
+								<li><a href="{{ route('candidate.my.applies') }}">Profil Saya</a></li>
+								<li><a href="{{ route('candidate.my.applies') }}">Lamaran Saya</a></li>
 								<li><a href="{{ route('candidate.my.cv') }}">CV / Resume Saya</a></li>
 								<li><a href="{{ route('candidate.logout') }}">Logout</a></li>
 							</ul>

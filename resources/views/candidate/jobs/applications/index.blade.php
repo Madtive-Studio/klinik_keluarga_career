@@ -1,10 +1,10 @@
-@extends('candidate.layouts.main', ['navbarType' => 'default'])
+@extends('candidate.layouts.main', ['navbarType' => 'candidate'])
 @section('title', 'Lamaran Saya')
 @section('content')
 	<section class="section pt-5">
 		<div class="container">
 			<div class="row">
-				@include('candidate.lamaran-saya.tab-menu')
+				@include('candidate.jobs.applications.tab-menu')
 				<div class="col-lg-8 col-md-5 mt-4 mt-sm-0">
 					<h5>{{ $appliesCount }} lamaran dalam setahun terakhir</h5>
 					<div class="show-results">

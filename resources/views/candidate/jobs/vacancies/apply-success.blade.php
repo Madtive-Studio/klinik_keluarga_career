@@ -1,16 +1,90 @@
-@extends('candidate.layouts.header')
-@section('content')
-	<section class="bg-half page-next-level" style="background: url('https://img.freepik.com/premium-photo/workspace-wide-light-office_280538-7380.jpg?semt=ais_hybrid') no-repeat center center; background-size: cover;">
-		<div class="bg-overlay"></div>
-		<div class="container">
-			<div class="row justify-content-center text-center">
-				<div class="col-md-6 col-sm-12">
-					<img src="{{ asset('check.png') }}" class="d-block mx-auto text-center" width="125" alt="">
-					<h5 class="text-white mb-0 pt-4">Terima kasih sudah melamar pada posisi pekerjaan ini.</h5>
-					<p class="text-white mb-0 pb-3 pt-2">Selanjutnya kamu dapat lihat email dan status lamaran kamu pada tombol di bawah ini atau di menu Lamaran Saya.</p>
-					<a href="{{ route('candidate.apply.my') }}" class="mx-auto text-center btn btn-primary">Lihat Lamaran Saya</a>
-				</div>
-			</div>
-		</div>
-	</section>
-@endsection
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lamaran Kamu Berhasil Dikirim</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #2F55D4;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header img {
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .content {
+            padding: 20px;
+            padding-block: 1em;
+            color: #333333;
+        }
+
+        .content h2 {
+            font-size: 20px;
+            text-align: center;
+            color: #2F55D4;
+        }
+
+        .content p {
+            margin-bottom: 10px;
+        }
+
+        .content strong {
+            color: #2F55D4;
+        }
+
+        .footer {
+            background-color: #2F55D4;
+            padding: 20px;
+            text-align: center;
+            color: #ffffff;
+            margin-top: 20px;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{ asset('logo-white.png') }}" alt="" width="200">
+        </div>
+        <div class="content">
+            <h2>Lamaran Kamu Berhasil Dikirim</h2>
+            <p>Halo <strong>{{ $candidate->name }}</strong>,</p>
+            <p>Terima kasih telah melamar posisi <strong>{{ $job->type }}</strong> - <strong>{{ $job->title }}</strong> di departemen <strong>{{ $job->category->name }}</strong> batch <strong>{{ $job->batch->code }} - {{ $job->batch->name }}</strong>.</p>
+            <p>Saat ini, lamaran kamu berstatus <strong style="color: #2F55D4;">SEDANG DILAMAR</strong>.</p>
+            <p>Jangan lupa untuk selalu mengecek status lamaran kamu di <a href="{{ route('candidate.my.applies') }}">madtive.com</a>.</p>
+            <p>Salam, <br>
+                Tim Madtive Studio</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2022 Madtive Studio. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>

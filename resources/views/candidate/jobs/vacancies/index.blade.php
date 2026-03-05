@@ -1,7 +1,7 @@
 @extends('candidate.layouts.main', ['navbarType' => 'candidate'])
 @section('title', 'Loker')
 @section('content')
-	<section class="bg-half page-next-level" style="background: url('https://img.freepik.com/premium-photo/workspace-wide-light-office_280538-7380.jpg?semt=ais_hybrid') no-repeat center center; background-size: cover;">
+	<section class="bg-half page-next-level">
 		<div class="bg-overlay"></div>
 		<div class="container">
 			<div class="row justify-content-center">
@@ -107,7 +107,7 @@
 						<div class="col-lg-12">
 							<div class="show-results">
 								<div class="float-left">
-									<h5 class="text-dark mb-0 pt-2 f-18">Menampilkan data dari 0-20</h5>
+									<h5 class="text-dark mb-0 pt-2 f-18">Menampilkan data dari 1-20</h5>
 								</div>
 							</div>
 						</div>
@@ -121,13 +121,12 @@
 										<div class="row align-items-center">
 											<div class="col-lg-2">
 												<div class="company-logo-img">
-													<img src="{{ asset('client/images/job-placeholder.png') }}" width="100" alt=""
-														class="img-fluid mx-auto d-block rounded">
+													<img src="{{ asset('assets/candidate/images/job-placeholder.png') }}" width="100" alt="" class="img-fluid mx-auto d-block rounded">
 												</div>
 											</div>
 											<div class="col-lg-7 col-md-9">
 												<div class="job-list-desc">
-													<h6 class="mb-2"><a href="{{ url('loker/' . $job->uuid) }}" class="text-dark">{{ $job->code }} - {{ $job->title }}</a></h6>
+													<h6 class="mb-2"><a href="{{ route('candidate.jobs.vacancies.detail' , $job->uuid) }}" class="text-dark">{{ $job->code }} - {{ $job->title }}</a></h6>
 													<p class="text-muted mb-0">{{ $job->category->name }}</p>
 													<ul class="list-inline mb-0">
 														<li class="list-inline-item mr-3">
@@ -140,7 +139,7 @@
 												<div class="job-list-button-sm text-right">
 													<span class="badge badge-success">{{ $job->type }}</span>
 													<div class="mt-3">
-														<a href="{{ route('candidate.jobs.apply', $job->uuid) }}" class="btn btn-sm btn-primary">
+														<a href="{{ route('candidate.jobs.vacancies.detail', $job->uuid) }}" class="btn btn-sm btn-primary">
 															Lamar Sekarang
 														</a>
 													</div>

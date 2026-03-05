@@ -1,7 +1,7 @@
 @extends('candidate.layouts.main', ['navbarType' => 'default'])
 @section('title', 'Detail Loker')
 @section('content')
-	<section class="bg-half page-next-level" style="background: url('https://img.freepik.com/premium-photo/workspace-wide-light-office_280538-7380.jpg?semt=ais_hybrid') no-repeat center center; background-size: cover;">
+	<section class="bg-half page-next-level">
 		<div class="bg-overlay"></div>
 		<div class="container">
 			<div class="row justify-content-center">
@@ -114,7 +114,7 @@
 						</div>
 					</div>
 					<div class="job-detail border rounded mt-4">
-						<a href="{{ url('loker/' . $job->uuid . '/lamar') }}" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#exampleModal">
+						<a href="{{ route('candidate.jobs.applications.apply', $job->uuid) }}" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#exampleModal">
 							Lamar Sekarang
 						</a>
 					</div>
