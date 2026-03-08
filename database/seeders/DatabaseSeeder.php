@@ -27,21 +27,22 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'HR Madtive Studio',
             'email' => 'madtive@gmail.com',
-            'password' => bcrypt('12345678'),
+            'password' => Hash::make('12345678'),
             'level' => 'admin',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
-        // Candidate::create([
-        //     'name' => 'John Doe',
-        //     'email' => 'johndoe@gmail.com',
-        //     'password' => Hash::make('12345678'),
-        //     'phone' => '081222534937',
-        //     'birth_date' => '2002-04-27',
-        //     'created_at' => date('Y-m-d H:i:s'),
-        //     'updated_at' => date('Y-m-d H:i:s'),
-        // ]);
+        Candidate::create([
+            'name' => 'John Doe',
+            'email' => 'johndoe@gmail.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('12345678'),
+            'phone' => '081222534937',
+            'birth_date' => '2002-04-27',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
 
         Company::create([
             'name' => 'Madtive Studio',

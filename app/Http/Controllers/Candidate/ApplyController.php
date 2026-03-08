@@ -89,7 +89,7 @@ class ApplyController extends Controller
         if ($request->hasFile('add_new_cv') && $request->file('add_new_cv')->isValid()) {
             $file = $request->file('add_new_cv');
             $fileName = 'CV_'.time().'.'.$file->getClientOriginalExtension();
-            $filePath = $file->storeAs('candidates', $fileName, 'public');
+            $filePath = $file->storeAs('candidates/documents', $fileName, 'public');
 
             CV::create([
                 'name' => $file->getClientOriginalName(),

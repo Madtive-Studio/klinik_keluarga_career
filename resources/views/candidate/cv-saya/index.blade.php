@@ -28,7 +28,7 @@
 										</div>
 										<div class="col-lg-3 col-md-3">
 											<div class="job-list-button-sm text-right">
-												<a href="{{ Illuminate\Support\Facades\Storage::url($cv->file) }}" target="_blank" download="" class="btn btn-primary btn-sm" type="button">
+												<a href="{{ Illuminate\Support\Facades\Storage::url( $cv->file) }}" target="_blank" download="" class="btn btn-primary btn-sm" type="button">
 													<i class="mdi mdi-download"></i> Unduh
 												</a>
 											</div>
