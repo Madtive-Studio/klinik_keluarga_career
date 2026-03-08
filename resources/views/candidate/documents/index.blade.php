@@ -5,7 +5,7 @@
 		<div class="container">
 			<div class="row">
 				@include('candidate.documents.tab_menu')
-				<div class="col-lg-8 col-md-5 mt-sm-0">
+				<div class="col-lg-8 col-md-5 my-3 mt-sm-0">
 					<h5 class="mb-3">Total : {{ $candidate->documents_count ?? 0 }} Dokumen</h5>
 					<div class="jobs-list">
 						@forelse ($candidate->documents as $key => $document)
@@ -14,7 +14,7 @@
 									<div class="row align-items-center">
 										<div class="col-lg-2">
 											<div class="company-logo-img">
-												<img src="{{ asset('assets/candidate/images/file-placeholder.jpg') }}" width="50" alt="" class="img-fluid mx-auto d-block rounded">
+												<img src="{{ asset(getPlaceholderFilePath($document->file)) }}" width="100" alt="" class="img-fluid mx-auto d-block rounded">
 											</div>
 										</div>
 										<div class="col-lg-7 col-md-9">
@@ -36,7 +36,7 @@
 										</div>
 										<div class="col-lg-3 col-md-3">
 											<div class="job-list-button-sm text-right">
-												<a href="{{ $document->file_url }}" target="_blank" download="{{ $document->name }}" class="btn btn-primary btn-sm" type="button">
+												<a href="{{ $document->file_url }}" target="_blank" download="{{ config('app.name') . ' - ' . $document->name }}" class="btn btn-primary btn-sm" type="button">
 													<i class="mdi mdi-download"></i> Unduh
 												</a>
 											</div>
