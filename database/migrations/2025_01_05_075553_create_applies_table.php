@@ -14,19 +14,14 @@ return new class extends Migration
         Schema::create('applies', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
-            $table->unsignedBigInteger('candidate_id');
-            $table->unsignedBigInteger('job_id');
-            $table->unsignedBigInteger('batch_id');
+            $table->foreignId('candidate_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('job_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('batch_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('documents_id')->constrained()->cascadeOnDelete();
             $table->string('cover_letter');
-            $table->unsignedBigInteger('cv_id');
             $table->enum('status', ['IN REVIEW', 'NOT SUITABLE', 'SHORTLISTED', 'HIRED']);
             $table->longText('description');
             $table->timestamps();
-
-            $table->foreign('candidate_id')->references('id')->on('candidates');
-            $table->foreign('job_id')->references('id')->on('jobs');
-            $table->foreign('batch_id')->references('id')->on('batches');
-            $table->foreign('cv_id')->references('id')->on('cv');
         });
     }
 

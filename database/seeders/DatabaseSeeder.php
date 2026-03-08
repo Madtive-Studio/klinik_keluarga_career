@@ -24,24 +24,32 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
+        $password = '123123123';
+        $hash = Hash::make($password);
+        
+        if (!Hash::check($password, $hash)) {
+            throw new \Exception('Hash system is BROKEN!');
+        }
+
         User::create([
             'name' => 'HR Madtive Studio',
             'email' => 'madtive@gmail.com',
-            'password' => bcrypt('12345678'),
+            'password' => $password,
             'level' => 'admin',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
-        // Candidate::create([
-        //     'name' => 'John Doe',
-        //     'email' => 'johndoe@gmail.com',
-        //     'password' => Hash::make('12345678'),
-        //     'phone' => '081222534937',
-        //     'birth_date' => '2002-04-27',
-        //     'created_at' => date('Y-m-d H:i:s'),
-        //     'updated_at' => date('Y-m-d H:i:s'),
-        // ]);
+        Candidate::create([
+            'name' => 'User Test',
+            'email' => 'usertest@gmail.com',
+            'email_verified_at' => now(),
+            'password' => $password,
+            'phone' => '081222534937',
+            'birth_date' => '2001-04-27',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
 
         Company::create([
             'name' => 'Madtive Studio',

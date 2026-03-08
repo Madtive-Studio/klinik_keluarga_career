@@ -23,13 +23,9 @@ return new class extends Migration
             $table->string('salary');
             $table->string('experience');
             $table->boolean('is_show_salary');
-            $table->unsignedBigInteger('batch_id');
-            $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('user_id');
-
-            $table->foreign('batch_id')->references('id')->on('batches');
-            $table->foreign('category_id')->references('id')->on('categories');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreignId('batch_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

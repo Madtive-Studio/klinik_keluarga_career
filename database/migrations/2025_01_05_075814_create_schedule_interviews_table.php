@@ -20,18 +20,15 @@ return new class extends Migration
             $table->dateTime('start_datetime');
             $table->dateTime('end_datetime');
             $table->string('description')->nullable();
-            $table->unsignedBigInteger('candidate_id');
-            $table->unsignedBigInteger('job_id');
-            $table->unsignedBigInteger('batch_id');
-            $table->unsignedBigInteger('apply_id');
+            
+            $table->foreignId('candidate_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('job_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('batch_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('apply_id')->constrained()->cascadeOnDelete();
+
             $table->boolean('is_online');
             $table->enum('status', ['PENDING', 'AVAILABLE', 'NOT AVAILABLE'])->default('PENDING');
             $table->timestamps();
-
-            $table->foreign('candidate_id')->references('id')->on('candidates');
-            $table->foreign('job_id')->references('id')->on('jobs');
-            $table->foreign('batch_id')->references('id')->on('batches');
-            $table->foreign('apply_id')->references('id')->on('applies');
         });
     }
 

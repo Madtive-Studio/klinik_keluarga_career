@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\CandidateController;
 use App\Http\Controllers\Admin\ScheduleInterviewController;
 use App\Http\Controllers\Candidate\AuthController;
 use App\Http\Controllers\Candidate\ApplyController;
+use App\Http\Controllers\Candidate\DocumentController;
 use App\Http\Controllers\Candidate\HomeController;
 use App\Http\Controllers\Candidate\Jobs\ApplicationController as JobApplicationController;
 use App\Http\Controllers\Candidate\Jobs\VacancyController as JobVacancyController;
@@ -107,6 +108,8 @@ Route::prefix('candidate')->name('candidate.')->group(function () {
             Route::get('cv', [ApplyController::class, 'myCV'])->name('cv');
             Route::get('cv/create', [ApplyController::class, 'createMyCV'])->name('cv.create');
             Route::post('cv/process', [ApplyController::class, 'storeMyCV'])->name('cv.process');
+
+            Route::resource('documents', DocumentController::class);
         });
 
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
@@ -125,4 +128,19 @@ Route::get('/test-email', function () {
     } catch (\Exception $e) {
         return 'Error sending email: ' . $e->getMessage();
     }
+});
+
+Route::get('/test-hash', function() {
+    $plain = '123123123';
+    $hashFromDB = App\Models\Candidate::where('email', 'usertest@gmail.com')->first()->password;
+    
+    // Generate ulang hash untuk test
+    $newHash = Hash::make($plain);
+    
+    return [
+        'hash_lama_db' => $hashFromDB,
+        'hash_baru' => $hashFromDB,
+        'cocok_dengan_hash_lama' => Hash::check($plain, $hashFromDB) ? 'YA' : 'TIDAK',
+        'cocok_dengan_hash_baru' => Hash::check($plain, $newHash) ? 'YA' : 'TIDAK',
+    ];
 });
