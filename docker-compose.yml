@@ -4,10 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: app_career
-    command: "php artisan serve --host 0.0.0.0 --port 8000"
-    image: rizan1998/madtive_career
+    image: rizan1998/keluarga_career
     ports:
-      - "9778:8000"
+      - "9778:80"
     environment:
       DB_HOST: db
       DB_PORT: 3306
@@ -16,13 +15,12 @@ services:
       DB_PASSWORD: secret
     volumes:
       - ./:/var/www/html
-      - /var/www/html/vendor
-      - ./docker/images:/var/www/public/images/upload
-
+      - ./docker/images:/var/www/html/public/images/upload
     depends_on:
       - db
     networks:
       - himed_network
+
 
   db:
     image: mysql:5.7.35
