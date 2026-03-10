@@ -1,4 +1,3 @@
-# Gunakan PHP 8.3 dengan Apache
 FROM php:8.3-apache
 
 # Install dependencies
@@ -11,28 +10,26 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_mysql mysqli mbstring gd zip \
     && pecl install redis \
     && docker-php-ext-enable redis \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache mod_rewrite
+# Enable mod_rewrite
 RUN a2enmod rewrite
 
-# Copy composer dari image resmi
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Copy source Laravel ke container
+# Copy Laravel
 COPY . /var/www/html
+
+# Set Apache root ke public
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 
-# Install Laravel dependencies
+# Composer install
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permission (jika perlu)
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Permissions
+RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Expose port Apache
 EXPOSE 80
 
-# Jalankan Apache di foreground
 CMD ["apache2-foreground"]
