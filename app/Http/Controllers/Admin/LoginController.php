@@ -25,12 +25,8 @@ class LoginController extends Controller
       'email' => $email,
       'password' => $password
     ])) {
-      var_dump(Auth::guard('admin')->user());
-      die;
-      // return redirect()->route('admin.dashboard');
+      return redirect()->route('admin.dashboard');
     } else {
-      var_dump(Auth::guard('admin')->user());
-      die;
       return redirect()->back()->with('error', 'Email atau password salah!');
     }
   }
