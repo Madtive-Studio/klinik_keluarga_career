@@ -8,6 +8,7 @@ use App\Models\Candidate;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -25,10 +26,10 @@ class DatabaseSeeder extends Seeder
     // ]);
 
     User::updateOrCreate(
-      ['email' => 'madtive@gmail.com'], // kondisi cari data
+      ['email' => 'madtive@gmail.com'],
       [
         'name' => 'HR Madtive Studio',
-        'password' => Hash::make('12345678'),
+        'password' => '12345678',
         'level' => 'admin',
         'updated_at' => date('Y-m-d H:i:s'),
       ]
@@ -38,7 +39,7 @@ class DatabaseSeeder extends Seeder
       'name' => 'John Doe',
       'email' => 'johndoe@gmail.com',
       'email_verified_at' => now(),
-      'password' => Hash::make('12345678'),
+      'password' => '12345678',
       'phone' => '081222534937',
       'birth_date' => '2002-04-27',
       'created_at' => date('Y-m-d H:i:s'),

@@ -43,7 +43,7 @@
             <!-- Logo -->
             <div class="app-brand justify-content-center mb-6">
               <a href="#" class="app-brand-link">
-                <img src="{{ asset("logo.png") }}" width="225" alt="">
+                <img src="{{ asset("assets/logo/letter-logo.png") }}" width="225" alt="">
               </a>
             </div>
 

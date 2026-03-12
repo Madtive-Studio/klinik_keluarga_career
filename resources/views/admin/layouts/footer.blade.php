@@ -27,7 +27,7 @@
 <script src="{{ asset('assets/admin/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/vendor/libs/swiper/swiper.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
-<script src="{{ asset('admin/assets/js/main.js') }}"></script>
-<script src="{{ asset('admin/assets/js/dashboards-analytics.js') }}"></script>
+<script src="{{ asset('assets/admin/assets/js/main.js') }}"></script>
+<script src="{{ asset('assets/admin/assets/js/dashboards-analytics.js') }}"></script>
 @yield('js')
 @endsection

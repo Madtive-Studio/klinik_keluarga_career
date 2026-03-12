@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,18 +17,15 @@ class LoginController extends Controller
 
   public function process(Request $request)
   {
-    $email = $request->email;
-    $password = $request->password;
+    $credentials = [
+        'email' => $request->email,
+        'password' => $request->password
+    ];
 
-    // dd($request->all());
-
-    if (Auth::guard('admin')->attempt([
-      'email' => $email,
-      'password' => $password
-    ])) {
-      return redirect()->route('admin.dashboard');
+    if (Auth::guard('admin')->attempt($credentials)) {
+        return redirect()->route('admin.dashboard');
     } else {
-      return redirect()->back()->with('error', 'Email atau password salah!');
+        return redirect()->back()->with('error', 'Email atau password salah!');
     }
   }
 

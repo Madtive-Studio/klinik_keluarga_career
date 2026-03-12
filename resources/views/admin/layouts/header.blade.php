@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="{{ asset('assets/admin/assets/vendor/fonts/flag-icons.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/admin/assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
 <link rel="stylesheet" href="{{ asset('assets/admin/assets/vendor/css/rtl/theme-default.css') }}" class="template-customizer-theme-css" />
-<link rel="stylesheet" href="{{ asset('admin/assets/css/demo.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/admin/assets/css/demo.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/admin/assets/vendor/libs/node-waves/node-waves.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/admin/assets/vendor/libs/typeahead-js/typeahead.css') }}" />
@@ -24,5 +24,5 @@
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 <script src="{{ asset('assets/admin/assets/vendor/js/helpers.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/vendor/js/template-customizer.js') }}"></script>
-<script src="{{ asset('admin/assets/js/config.js') }}"></script>
+<script src="{{ asset('assets/admin/assets/js/config.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
