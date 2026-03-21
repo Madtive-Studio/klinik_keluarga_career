@@ -27,7 +27,8 @@ class DocumentController extends Controller
         $userId = Auth::guard('candidate')->id();
         $yearNow = date('Y');
 
-        $candidate = $this->service->getCandidateDocuments($userId, $yearNow);
+        $perPage = request('per_page', 5);
+        $candidate = $this->service->getCandidateDocumentsPaginated($userId, $perPage);
 
         return view('candidate.documents.index', [
             'candidate' => $candidate,

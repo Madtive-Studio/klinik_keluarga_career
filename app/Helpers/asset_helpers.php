@@ -21,6 +21,7 @@ if(!function_exists('getPlaceholderFile')) {
             case 'png':
             case 'jpg':
             case 'jpeg':
+            case 'webp':
                 $placeholder = 'image-placeholder.png'; break;
             default:
                 $placeholder = 'others-placeholder.png'; break;

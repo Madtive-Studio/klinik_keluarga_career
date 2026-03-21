@@ -22,7 +22,7 @@ class DocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|file|mimes:pdf,doc,docx,png,jpg,jpeg,xls,xlsx|max:20480',
+            'file' => 'required|file|mimes:pdf,doc,docx,png,jpg,jpeg,webp,xls,xlsx|max:20480',
             'type' => 'required|string',
         ];
     }
@@ -33,7 +33,7 @@ class DocumentRequest extends FormRequest
             'file.required' => 'File wajib diisi.',
             'file.file' => 'File harus berupa file.',
             'file.mimes' => 'File harus berupa Gambar, PDF, Word, atau Excel.',
-            'file.max' => 'Ukuran file harus kurang dari 20MB.',
+            'file.max' => 'Ukuran file harus kurang dari 5MB.',
             'type.required' => 'Tipe wajib diisi.',
             'type.string' => 'Tipe harus berupa string.',
         ];

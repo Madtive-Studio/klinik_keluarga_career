@@ -11,13 +11,20 @@ class DocumentService
     public function __construct(
         protected DocumentRepository $documentRepository,
         protected CandidateRepository $candidateRepository
-
     ) {}
 
     public function getCandidateDocuments($userId, $year)
     {
         $candidate = $this->candidateRepository->findWithDocuments($userId);
         $candidate->documents_count = $candidate->documents->count();
+
+        return $candidate;
+    }
+
+    public function getCandidateDocumentsPaginated($userId, $perPage = 5, $typeBy = '*')
+    {
+        $candidate = $this->candidateRepository->findWithDocumentsPaginated($userId, $perPage, $typeBy);
+        $candidate->documents_count = $candidate->documents->total();
 
         return $candidate;
     }

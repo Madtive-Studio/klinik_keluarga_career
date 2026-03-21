@@ -64,12 +64,48 @@
 @section('js')
 	<script>
 		$(function() {
-			$('.form-documents').show()
+			$('.custom-file-input').on('change', function() {
+				var fileName = $(this).val().split('\\').pop();
+				$(this).next('.custom-file-label').html(fileName);
+			});
 
 			$('.custom-file-input').on('change', function() {
-				var fileName = $(this).val().split('\\').pop(); // Ambil nama file dari path
-				$(this).next('.custom-file-label').html(fileName); // Tampilkan di label
+				var fileInput = this;
+				var maxSize = 8 * 1024 * 1024; // 8MB
+				
+				if (fileInput.files && fileInput.files[0]) {
+					if (fileInput.files[0].size > maxSize) {
+						$('.btn-submit').prop('disabled', true);
+						$('.alert-danger').remove();
+						
+						var alertHtml = `
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="alert alert-danger" role="alert">
+										<p class="mb-0">File terlalu besar! Maksimal 8MB</p>
+									</div>
+								</div>
+							</div>
+						`;
+						
+						$('.form-documents').before(alertHtml);
+						
+						$('html, body').animate({
+							scrollTop: $('.alert-danger').offset().top - 100
+						}, 500);
+						
+						$(fileInput).val('');
+						$(fileInput).next('.custom-file-label').html('Choose file');
+
+						setTimeout(function() {
+							$('.alert-danger').fadeOut(300, function() {
+								$(this).remove();
+							});
+							$('.btn-submit').prop('disabled', false);
+						}, 5000);
+					}
+				}
 			});
-		})
+		});
 	</script>
 @endsection

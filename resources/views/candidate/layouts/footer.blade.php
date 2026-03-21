@@ -57,4 +57,11 @@
 <script src="{{ asset('assets/candidate/js/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/candidate/js/counter.int.js') }}"></script>
 <script src="{{ asset('assets/candidate/js/home.js') }}"></script>
+@if(session('error'))
+    <div style="display:none" id="debug-session" data-error="{{ session('error') }}"></div>
+    <script>
+        console.log('Session error:', document.getElementById('debug-session').dataset.error);
+    </script>
+@endif
+
 @yield('js')
