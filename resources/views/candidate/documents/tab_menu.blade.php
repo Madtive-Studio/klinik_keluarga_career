@@ -1,4 +1,4 @@
-<div class="col-lg-4 col-md-7">
+<div class="col-lg-3 col-md-7">
 	<div class="job-detail border rounded p-2">
 		<div class="job-detail-content">
 			<nav class="nav nav-pills flex-column">

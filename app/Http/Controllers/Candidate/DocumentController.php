@@ -104,8 +104,10 @@ class DocumentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
-        //
+        $document = $this->service->delete($id);
+        $message = $document ? 'Dokumen berhasil dihapus' : 'Gagal menghapus dokumen';
+        return redirect()->back()->with('success', $message);
     }
 }

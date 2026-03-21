@@ -11,4 +11,15 @@ class DocumentRepository
 
         return $result ? true : false;
     }
+
+    public function delete($id): bool
+    {
+        $document = Document::find($id);
+        
+        if (!$document) {
+            return false;
+        }
+        
+        return $document->delete();
+    }
 }

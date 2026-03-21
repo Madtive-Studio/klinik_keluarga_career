@@ -5,7 +5,7 @@
 		<div class="container">
 			<div class="row">
 				@include('candidate.documents.tab_menu')
-				<div class="col-lg-8 col-md-5 mt-4 mt-sm-0">
+				<div class="col-lg-9 col-md-5 mt-4 mt-sm-0">
 					@if ($message = Session::get('error'))
 						<div class="row">
 							<div class="col-lg-12">

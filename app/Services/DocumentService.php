@@ -59,4 +59,15 @@ class DocumentService
         
         return $this->documentRepository->create($map);
     }
+
+    public function delete($id): bool
+    {
+        $document = $this->documentRepository->delete($id);
+        
+        if (!$document) {
+            throw new \DomainException('Dokumen tidak ditemukan');
+        }
+        
+        return $document;
+    }
 }

@@ -5,7 +5,25 @@
 		<div class="container">
 			<div class="row">
 				@include('candidate.documents.tab_menu')
-				<div class="col-lg-8 col-md-5 my-3 mt-sm-0">
+				<div class="col-lg-9 col-md-5 my-3 mt-sm-0">
+					@if ($message = Session::get('error'))
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="alert alert-danger" role="alert">
+									<p class="mb-0">{{ $message }}</p>
+								</div>
+							</div>
+						</div>
+					@endif
+					@if ($message = Session::get('success'))
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="alert alert-success" role="alert">
+									<p class="mb-0">{{ $message }}</p>
+								</div>
+							</div>
+						</div>
+					@endif
 					<div class="d-flex justify-content-between align-items-center mb-3">
 						<h5 class="mb-0">Total : {{ $candidate->documents_count }} Dokumen</h5>
 						
@@ -51,8 +69,15 @@
 											</div>
 										</div>
 										<div class="col-lg-3 col-md-3">
-											<div class="job-list-button-sm text-right">
-												<a href="{{ $document->file_url }}" target="_blank" download="{{ config('app.name') . ' - ' . $document->name }}" class="btn btn-primary btn-sm" type="button">
+											<div class="job-list-button-sm text-right d-flex justify-content-end gap-1">
+												<form action="{{ route('candidate.my.documents.destroy', $document->id) }}" method="POST">
+													@csrf
+													@method('DELETE')
+													<button type="submit" class="btn btn-danger btn-sm delete-btn">
+														<i class="mdi mdi-delete"></i> Hapus
+													</button>
+												</form>
+												<a href="{{ $document->file_url }}" target="_blank" download class="btn btn-primary btn-sm">
 													<i class="mdi mdi-download"></i> Unduh
 												</a>
 											</div>
@@ -98,6 +123,24 @@
 				var url = new URL(window.location.href);
 				url.searchParams.set('per_page', perPage);
 				window.location.href = url.toString();
+			});
+
+			$('.delete-btn').click(function(e) {
+				e.preventDefault();
+				Swal.fire({
+					title: 'Yakin ingin menghapus?',
+					text: "Data yang dihapus tidak dapat dikembalikan!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					cancelButtonColor: '#3085d6',
+					confirmButtonText: 'Ya, hapus!',
+					cancelButtonText: 'Batal'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$(this).closest('form').submit();
+					}
+				});
 			});
 		});
 	</script>
