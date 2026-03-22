@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
 
     Candidate::create([
       'name' => 'John Doe',
-      'email' => 'johndoe@gmail.com',
+      'email' => 'usertest@gmail.com',
       'email_verified_at' => now(),
       'password' => '12345678',
       'phone' => '081222534937',
