@@ -74,19 +74,19 @@ class ApplicantController extends Controller
         switch ($request->status) {
             case 'IN REVIEW':
                 $status = "Sedang Dalam Review";
-                $view = 'client.job-vacancies.in-review-email';
+                $view = 'candidate.jobs.vacancies.in-review-email';
                 break;
             case 'NOT SUITABLE':
                 $status = "Tidak Sesuai";
-                $view = 'client.job-vacancies.not-suitable-email';
+                $view = 'candidate.jobs.vacancies.not-suitable-email';
                 break;
             case 'SHORTLISTED':
                 $status = "Lolos Tahap Selanjutnya";
-                $view = 'client.job-vacancies.shortlisted-email';
+                $view = 'candidate.jobs.vacancies.shortlisted-email';
                 break;
             case 'HIRED':
                 $status = "Diterima";
-                $view = 'client.job-vacancies.hired-email';
+                $view = 'candidate.jobs.vacancies.hired-email';
                 break;
             default:
                 $view = null;

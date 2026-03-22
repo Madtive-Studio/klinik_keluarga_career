@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('uuid')->unique();
             $table->string('title');
-            $table->string('qualification');
+            $table->longText('qualification');
             $table->longText('description');
             $table->enum('type', ['WFH/Remote', 'Partime/Freelancer', 'Fulltime/Onsite', 'Internship']);
             $table->double('quota');

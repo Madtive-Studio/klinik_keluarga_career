@@ -34,51 +34,51 @@
 		<script src="{{ asset('admin/assets') }}/js/config.js"></script>
 	</head>
 
-	<body>
-		<div class="container-xxl">
-			<div class="authentication-wrapper authentication-basic container-p-y">
-				<div class="authentication-inner py-6">
-					<div class="card">
-						<div class="card-body">
-							<!-- Logo -->
-							<div class="app-brand justify-content-center mb-6">
-							<a href="#" class="app-brand-link">
-								<img src="{{ asset("logo.png") }}" width="225" alt="">
-							</a>
-							</div>
+<body>
+  <div class="container-xxl">
+    <div class="authentication-wrapper authentication-basic container-p-y">
+      <div class="authentication-inner py-6">
+        <div class="card">
+          <div class="card-body">
+            <!-- Logo -->
+            <div class="app-brand justify-content-center mb-6">
+              <a href="#" class="app-brand-link">
+                <img src="{{ asset("assets/logo/letter-logo.png") }}" width="225" alt="">
+              </a>
+            </div>
 
-							@if ($message = Session::get("error"))
-								<div class="alert alert-danger" role="alert">
-									<strong>{{ $message }}</strong>
-								</div> 
-							@endif
+            @if ($message = Session::get("error"))
+            <div class="alert alert-danger" role="alert">
+              <strong>{{ $message }}</strong>
+            </div>
+            @endif
 
-							<form class="mb-4" action="{{ route("admin.process") }}" method="POST">
-								@csrf
-								<div class="mb-6">
-									<label for="email" class="form-label">Email</label>
-									<input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" autofocus />
-								</div>
+            <form class="mb-4" action="{{ route("admin.process") }}" method="POST">
+              @csrf
+              <div class="mb-6">
+                <label for="email" class="form-label">Email</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" autofocus />
+              </div>
 
-								<div class="mb-6 form-password-toggle">
-									<label class="form-label" for="password">Password</label>
-									<div class="input-group input-group-merge">
-										<input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-										<span class="input-group-text cursor-pointer">
-											<i class="ti ti-eye-off"></i>
-										</span>
-									</div>
-								</div>
+              <div class="mb-6 form-password-toggle">
+                <label class="form-label" for="password">Password</label>
+                <div class="input-group input-group-merge">
+                  <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                  <span class="input-group-text cursor-pointer">
+                    <i class="ti ti-eye-off"></i>
+                  </span>
+                </div>
+              </div>
 
-								<div class="mb-6">
-									<button class="btn btn-primary d-grid w-100" type="submit">Login</button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+              <div class="mb-6">
+                <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 		<script src="{{ asset('admin/assets') }}/vendor/libs/jquery/jquery.js"></script>
 		<script src="{{ asset('admin/assets') }}/vendor/libs/popper/popper.js"></script>

@@ -40,7 +40,7 @@ class ApplicationSubmittedNotification extends Notification
     {
         return (new MailMessage)
             ->subject('Lamaran Kamu Berhasil Dikirim')
-            ->view('client.loker.apply_email', [
+            ->view('candidate.jobs.vacancies.apply-email', [
                 'candidate' => $this->candidate,
                 'job' => $this->job,
             ]);

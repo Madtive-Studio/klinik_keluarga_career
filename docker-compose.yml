@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app_career
+    image: rizan1998/keluarga_career
+    ports:
+      - "9778:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/images:/var/www/html/public/images/upload
+      - ./docker/images:/var/www/public/images/upload
+    depends_on:
+      - db
+    networks:
+      - himed_network
+
+
+  db:
+    image: mysql:5.7.35
+    container_name: db_career
+    ports:
+      - "33015:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb_buffer_pool_size=256M
+      --bind-address=0.0.0.0
+      --skip-name-resolve
+    volumes:
+      - mysql_data_5_7:/var/lib/mysql
+    networks:
+      - himed_network
+
+networks:
+  himed_network:
+    external: true
+
+volumes:
+  mysql_data_5_7:
+    driver: local

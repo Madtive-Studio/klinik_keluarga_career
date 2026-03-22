@@ -92,7 +92,7 @@ class ApplicationController extends Controller
             if ($request->hasFile('new_cv') && $request->file('new_cv')->isValid()) {
                 $file = $request->file('new_cv');
                 $fileName = 'CV_'.time().'.'.$file->getClientOriginalExtension();
-                $filePath = $file->storeAs('candidates', $fileName, 'public');
+                $filePath = $file->storeAs('candidates/documents', $fileName, 'public');
 
                 $createCV = CV::create([
                     'name' => $file->getClientOriginalName(),
@@ -120,6 +120,8 @@ class ApplicationController extends Controller
 
     public function applySuccess(Request $request, $Uuid)
     {
-        return view('candidate.job.applications.success', [$Uuid]);
+        $candidate = auth()->user();
+        $job = Job::where('user_id', $candidate->id)->first();
+        return view('candidate.jobs.vacancies.apply-success', ['candidate' => $candidate, 'job' => $job]);
     }
 }
