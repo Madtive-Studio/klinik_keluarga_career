@@ -14,13 +14,22 @@ class VacancyService
         private CategoryRepository $categoryRepo,
     ) {}
 
-    public function getVacancyList(?string $searchQuery, ?string $categoryId, ?string $jobType): array
+    public function getVacancyListPaginated(?string $searchQuery, ?string $categoryId, ?string $jobType, ?int $perPage): array
     {
         $activeBatch = $this->batchRepo->getActiveBatch();
         $activeBatchId = $activeBatch->id ?? 0;
 
+        $filters = [
+            'searchQuery' => $searchQuery,
+            'categoryId' => $categoryId,
+            'jobType' => $jobType,
+            'batchId' => $activeBatchId,
+        ];
+
+        $jobs = $this->jobRepo->getByFiltersAndPaginated($filters, $perPage);
+
         return [
-            'jobs'       => $this->jobRepo->getFilteredJobsPaginated($searchQuery, $categoryId, $jobType, $activeBatchId),
+            'jobs'       => $jobs,
             'categories' => $this->categoryRepo->getAll(),
         ];
     }

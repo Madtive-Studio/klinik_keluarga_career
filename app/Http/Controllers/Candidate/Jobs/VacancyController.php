@@ -18,10 +18,11 @@ class VacancyController extends Controller
      */
     public function index(Request $request)
     {
-        $data = $this->service->getVacancyList(
+        $data = $this->service->getVacancyListPaginated(
             $request->get('q'),
             $request->get('kategori'),
             $request->get('jenis'),
+            $request->get('per_page', 10)
         );
 
         return view('candidate.jobs.vacancies.index', $data);

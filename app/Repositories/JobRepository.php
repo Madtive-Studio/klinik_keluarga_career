@@ -1,7 +1,6 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\Candidate;
 use App\Models\Job;
 
 class JobRepository
@@ -10,9 +9,14 @@ class JobRepository
         return Job::with(['category', 'batch', 'applies'])->where('uuid', $uuid)->first();
     }
 
-    public function getFilteredJobsPaginated(string $searchQuery = null, int $categoryId = null, string $jobType = null, int $batchId)
+    public function getByFiltersAndPaginated(array $filters, int $perPage) 
     {
-        $query = Job::query()->with(['category', 'batch'])->where('batch_id', $batchId);
+        $searchQuery = $filters['searchQuery'] ?? null;
+        $categoryId = $filters['categoryId'] ?? null;
+        $jobType = $filters['jobType'] ?? null;
+        $batchId = $filters['batchId'] ?? null;
+
+        $query = Job::with(['category', 'batch'])->where('batch_id', $batchId)->orderBy('created_at', 'desc');
 
         if (!empty($searchQuery)) {
             $query->where(function ($q) use ($searchQuery) {
@@ -29,6 +33,6 @@ class JobRepository
             $query->where('type', $jobType);
         }
 
-        return $query->paginate(10);
+        return $query->paginate($perPage);
     }
 }

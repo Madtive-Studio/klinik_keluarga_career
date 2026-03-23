@@ -26,24 +26,10 @@
 					<div class="home-registration-form job-list-reg-form bg-light shadow p-4 mb-0">
 						<form class="registration-form" method="GET" action="{{ route('candidate.jobs.vacancies.index') }}">
 							<div class="row">
-								<div class="col-md-4">
+								<div class="col-md-7">
 									<div class="registration-form-box">
 										<i class="fa fa-briefcase"></i>
 										<input type="text" name="q" class="form-control rounded registration-input-box" placeholder="Cari loker...">
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="registration-form-box">
-										<i class="fa fa-list-alt"></i>
-										<select id="select-category" name="kategori" class="demo-default">
-											<option value="">Kategori...</option>
-											@foreach ($categories as $category)
-												<option value="{{ $category->id }}"
-													{{ isset($selectedCategory) && $selectedCategory == $category->id ? 'selected' : '' }}>
-													{{ $category->name }}
-												</option>
-											@endforeach
-										</select>
 									</div>
 								</div>
 								<div class="col-md-3">
@@ -107,7 +93,18 @@
 						<div class="col-lg-12">
 							<div class="show-results">
 								<div class="float-left">
-									<h5 class="text-dark mb-0 pt-2 f-18">Menampilkan data dari 1-20</h5>
+									<h5 class="text-dark mb-0 pt-2 f-18">Menampilkan data dari 1 - 20</h5>
+								</div>
+
+								<div class="float-right">
+									<div class="form-inline">
+										<label class="mr-2">Tampilkan:</label>
+										<select id="perPage" class="form-control form-control-sm" style="width: auto;">
+											<option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
+											<option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+											<option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+										</select>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -152,6 +149,17 @@
 						@empty
 							<p class="text-center mx-auto mt-3">Tidak ada data</p>
 						@endforelse
+					</div>
+
+					{{-- Pagination Links --}}
+					<div class="mt-4 d-flex justify-content-center">
+						{{ $jobs->appends(request()->query())->links('pagination::bootstrap-4') }}
+					</div>
+					
+					{{-- Info Pagination --}}
+					<div class="mt-2 text-center text-muted small">
+						Menampilkan {{ $jobs->firstItem() }} - {{ $jobs	->lastItem() }} 
+						dari {{ $jobs->total() }} lowongan pekerjaan
 					</div>
 				</div>
 			</div>

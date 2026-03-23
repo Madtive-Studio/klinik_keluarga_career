@@ -15,7 +15,7 @@ class CandidateRepository
         return Candidate::with(['documents'])->where('id', $candidateId)->first();
     }
 
-    public function findWithDocumentsPaginated($candidateId, $perPage, $typeBy)
+    public function getWithDocumentsPaginated($candidateId, $perPage, $typeBy)
     {
         $candidate = Candidate::findOrFail($candidateId);
         
