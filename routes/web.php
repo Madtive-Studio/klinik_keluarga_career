@@ -12,8 +12,6 @@ use App\Http\Controllers\Candidate\AuthController;
 use App\Http\Controllers\Candidate\ApplyController;
 use App\Http\Controllers\Candidate\DocumentController;
 use App\Http\Controllers\Candidate\HomeController;
-use App\Http\Controllers\Candidate\Jobs\ApplicationController as JobApplicationController;
-use App\Http\Controllers\Candidate\Jobs\VacancyController as JobVacancyController;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
@@ -83,22 +81,7 @@ Route::prefix('candidate')->name('candidate.')->group(function () {
     Route::get('/', [HomeController::class, 'home'])->name('home');
 
     // Jobs
-    Route::prefix('jobs')->name('jobs.')->group(function () {
-        // Public routes
-        Route::prefix('vacancies')->name('vacancies.')->group(function () {
-            Route::get('/', [JobVacancyController::class, 'index'])->name('index');
-            Route::get('{uuid}/detail', [JobVacancyController::class, 'detail'])->name('detail');
-        });
-
-        // Protected routes (candidate only)
-        Route::middleware(['auth:candidate', 'verified'])->group(function () {
-            Route::prefix('applications')->name('applications.')->group(function () {
-                Route::get('{uuid}/apply', [JobApplicationController::class, 'apply'])->name('apply');
-                Route::post('{uuid}/process', [JobApplicationController::class, 'applyProcess'])->name('process');
-                Route::get('{uuid}/success', [JobApplicationController::class, 'applySuccess'])->name('success');
-            });
-        });
-    });
+    include_once('candidate/jobs.php');
 
     // My
     Route::group(['middleware' => ['auth:candidate', 'verified']], function () {

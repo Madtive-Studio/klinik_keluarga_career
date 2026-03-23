@@ -126,7 +126,7 @@
 											</div>
 											<div class="col-lg-7 col-md-9">
 												<div class="job-list-desc">
-													<h6 class="mb-2"><a href="{{ route('candidate.jobs.vacancies.detail' , $job->uuid) }}" class="text-dark">{{ $job->code }} - {{ $job->title }}</a></h6>
+													<h6 class="mb-2"><a href="{{ route('candidate.jobs.vacancies.show' , $job->uuid) }}" class="text-dark">{{ $job->code }} - {{ $job->title }}</a></h6>
 													<p class="text-muted mb-0">{{ $job->category->name }}</p>
 													<ul class="list-inline mb-0">
 														<li class="list-inline-item mr-3">
@@ -139,7 +139,7 @@
 												<div class="job-list-button-sm text-right">
 													<span class="badge badge-success">{{ $job->type }}</span>
 													<div class="mt-3">
-														<a href="{{ route('candidate.jobs.vacancies.detail', $job->uuid) }}" class="btn btn-sm btn-primary">
+														<a href="{{ route('candidate.jobs.vacancies.show', $job->uuid) }}" class="btn btn-sm btn-primary">
 															Lamar Sekarang
 														</a>
 													</div>
