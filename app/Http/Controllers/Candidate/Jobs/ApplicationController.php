@@ -61,7 +61,7 @@ class ApplicationController extends Controller
         );
 
         if (isset($resultData['error'])) {
-            return redirect()->back()->with('error', $resultData['error']);
+            return redirect()->back()->with('error', $resultData['error'])->withInput();
         }
 
         if (isset($resultData['already_applied'])) {

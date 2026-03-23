@@ -49,7 +49,7 @@
 											<div class="row">
 												<div class="col-md-2">
 													<label for="upload_cv">
-														<input type="radio" name="type_of_document" class="type_of_document" id="upload_cv" value="upload"
+														<input type="radio" name="type_of_document" class="type_of_document" id="upload_cv" value="upload" 
 															{{ old('type_of_document') === 'upload' ? 'checked' : 'checked' }}> Upload
 													</label>
 												</div>
@@ -73,7 +73,9 @@
 										<div class="form-group" id="form_document_id">
 											<select name="document_id" id="document_id" class="form-control">
 												@foreach ($candidate->documents as $key => $value)
-													<option value="{{ $value->id }}">{{ $value->name }}</option>
+													<option value="{{ $value->id }}" {{ old('document_id') == $value->id ? 'selected' : '' }}>
+														{{ $value->name }}
+													</option>
 												@endforeach
 											</select>
 											@error('document_id')
@@ -154,128 +156,48 @@
 @endsection
 @section('js')
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			if (document.getElementById('quill-editor-description-area')) {
-				const toolbarOptions = [
-					['bold', 'italic', 'underline', 'strike'],
-					['blockquote', 'code-block'],
-					[{
-						'header': 1
-					}, {
-						'header': 2
-					}],
-					[{
-						'list': 'ordered'
-					}, {
-						'list': 'bullet'
-					}, {
-						'list': 'check'
-					}],
-					[{
-						'indent': '-1'
-					}, {
-						'indent': '+1'
-					}],
-					[{
-						'direction': 'rtl'
-					}],
-					[{
-						'size': ['small', false, 'large', 'huge']
-					}],
-					[{
-						'header': [1, 2, 3, 4, 5, 6, false]
-					}],
-					[{
-						'color': []
-					}, {
-						'background': []
-					}],
-					[{
-						'font': []
-					}],
-					[{
-						'align': []
-					}],
-					['clean']
-				];
-				var editor = new Quill('#quill-editor-description', {
-					theme: 'snow',
-					modules: {
-						toolbar: toolbarOptions
-					}
-				});
-				var quillEditor = document.getElementById('quill-editor-description-area');
-				editor.root.innerHTML = ``;
+		$(document).ready(function() {
+			const toolbarOptions = [
+				['bold', 'italic', 'underline', 'strike'],
+				['blockquote', 'code-block'],
+				[{ 'header': 1 }, { 'header': 2 }],
+				[{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+				[{ 'indent': '-1' }, { 'indent': '+1' }],
+				[{ 'direction': 'rtl' }],
+				[{ 'size': ['small', false, 'large', 'huge'] }],
+				[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+				[{ 'color': [] }, { 'background': [] }],
+				[{ 'font': [] }],
+				[{ 'align': [] }],
+				['clean']
+			];
 
-				editor.on('text-change', function() {
-					quillEditor.value = editor.root.innerHTML;
+			function initQuill(editorId, areaId, oldValue = '') {
+				if (!$('#' + areaId).length) return;
+
+				var editor = new Quill('#' + editorId, {
+					theme: 'snow',
+					modules: { toolbar: toolbarOptions }
 				});
-				quillEditor.addEventListener('input', function() {
-					editor.root.innerHTML = quillEditor.value;
+
+				// Restore old value saat ada error validasi
+				if (oldValue) {
+					editor.root.innerHTML = oldValue;
+				}
+
+				// Sync Quill → textarea
+				editor.on('text-change', function() {
+					$('#' + areaId).val(editor.root.innerHTML);
+				});
+
+				// Sync textarea → Quill
+				$('#' + areaId).on('input', function() {
+					editor.root.innerHTML = $(this).val();
 				});
 			}
-		});
 
-		document.addEventListener('DOMContentLoaded', function() {
-			if (document.getElementById('quill-editor-cover_letter-area')) {
-				const toolbarOptions = [
-					['bold', 'italic', 'underline', 'strike'],
-					['blockquote', 'code-block'],
-					[{
-						'header': 1
-					}, {
-						'header': 2
-					}],
-					[{
-						'list': 'ordered'
-					}, {
-						'list': 'bullet'
-					}, {
-						'list': 'check'
-					}],
-					[{
-						'indent': '-1'
-					}, {
-						'indent': '+1'
-					}],
-					[{
-						'direction': 'rtl'
-					}],
-					[{
-						'size': ['small', false, 'large', 'huge']
-					}],
-					[{
-						'header': [1, 2, 3, 4, 5, 6, false]
-					}],
-					[{
-						'color': []
-					}, {
-						'background': []
-					}],
-					[{
-						'font': []
-					}],
-					[{
-						'align': []
-					}],
-					['clean']
-				];
-				var editor = new Quill('#quill-editor-cover_letter', {
-					theme: 'snow',
-					modules: {
-						toolbar: toolbarOptions
-					}
-				});
-				var quillEditor = document.getElementById('quill-editor-cover_letter-area');
-				editor.root.innerHTML = ``;
-
-				editor.on('text-change', function() {
-					quillEditor.value = editor.root.innerHTML;
-				});
-				quillEditor.addEventListener('input', function() {
-					editor.root.innerHTML = quillEditor.value;
-				});
-			}
+			initQuill('quill-editor-description', 'quill-editor-description-area', `{!! old('description') !!}`);
+			initQuill('quill-editor-cover_letter', 'quill-editor-cover_letter-area', `{!! old('cover_letter') !!}`);
 		});
 
 		$(function() {
