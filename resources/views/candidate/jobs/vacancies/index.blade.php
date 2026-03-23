@@ -24,23 +24,22 @@
 			<div class="row justify-content-center">
 				<div class="col-lg-10">
 					<div class="home-registration-form job-list-reg-form bg-light shadow p-4 mb-0">
-						<form class="registration-form" method="GET" action="{{ route('candidate.jobs.vacancies.index') }}">
+						<form id="filter-form" class="registration-form">
 							<div class="row">
 								<div class="col-md-7">
 									<div class="registration-form-box">
 										<i class="fa fa-briefcase"></i>
-										<input type="text" name="q" class="form-control rounded registration-input-box" placeholder="Cari loker...">
+										<input type="text" name="q" value="{{ request()->get('q') }}" class="form-control rounded registration-input-box" placeholder="Cari loker...">
 									</div>
 								</div>
 								<div class="col-md-3">
 									<div class="registration-form-box">
 										<i class="fa fa-list-alt"></i>
-										<select id="select-category" name="jenis" class="demo-default">
-											<option value="">Jenis...</option>
-											<option value="WFH/Remote">WFH/Remote</option>
-											<option value="Fulltime/Onsite">Fulltime/Onsite</option>
-											<option value="Partime/Freelancer">Partime/Freelancer</option>
-											<option value="Internship">Internship</option>
+										<select id="select-category" name="job_type" class="demo-default">
+											<option value="SEMUA">Semua</option>
+											@foreach ($jobTypes as $value => $label)
+												<option value="{{ $value }}" {{ request()->get('job_type') != $value ?? 'selected' }} >{{ $label }}</option>
+											@endforeach
 										</select>
 									</div>
 								</div>
@@ -73,10 +72,18 @@
 								</a>
 								<div id="collapsetwo" class="collapse show" aria-labelledby="headingtwo">
 									<div class="card-body p-0">
+										<div class="custom-control custom-radio">
+											<input type="radio" id="category_0" name="category_id" value="SEMUA" class="custom-control-input category-filter" {{ !request('category') ? 'checked' : '' }}>
+											<label class="custom-control-label ml-1 text-muted f-15" for="category_0">
+												Semua
+											</label>
+										</div>
 										@forelse ($categories as $key => $category)
 											<div class="custom-control custom-radio">
-												<input type="radio" id="{{ $category->id }}" name="kategori" class="custom-control-input">
-												<label class="custom-control-label ml-1 text-muted f-15" for="{{ $category->id }}">{{ $category->name }}</label>
+												<input type="radio" id="category_{{ $category->id }}" name="category_id" value="{{ $category->id }}" class="custom-control-input category-filter" {{ request('category') == $category->id ? 'checked' : '' }}>
+												<label class="custom-control-label ml-1 text-muted f-15" for="category_{{ $category->id }}">
+													{{ $category->name }}
+												</label>
 											</div>
 										@empty
 											<p class="text-center mx-auto">Tidak ada data</p>
@@ -93,13 +100,15 @@
 						<div class="col-lg-12">
 							<div class="show-results">
 								<div class="float-left">
-									<h5 class="text-dark mb-0 pt-2 f-18">Menampilkan data dari 1 - 20</h5>
+									<h5 class="text-dark mb-0 pt-2 f-18 info-showing">
+										Menampilkan data dari 1 - {{ request()->get('per_page', 10) }}
+									</h5>
 								</div>
 
 								<div class="float-right">
 									<div class="form-inline">
 										<label class="mr-2">Tampilkan:</label>
-										<select id="perPage" class="form-control form-control-sm" style="width: auto;">
+										<select id="perPage" name="per_page" class="form-control form-control-sm" style="width: auto;">
 											<option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
 											<option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
 											<option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
@@ -110,59 +119,77 @@
 						</div>
 					</div>
 
-					<div class="row">
-						@forelse ($jobs as $key => $job)
-							<div class="col-lg-12 mt-4 pt-2">
-								<div class="job-list-box border rounded">
-									<div class="p-3">
-										<div class="row align-items-center">
-											<div class="col-lg-2">
-												<div class="company-logo-img">
-													<img src="{{ asset('assets/candidate/images/job-placeholder.png') }}" width="100" alt="" class="img-fluid mx-auto d-block rounded">
-												</div>
-											</div>
-											<div class="col-lg-7 col-md-9">
-												<div class="job-list-desc">
-													<h6 class="mb-2"><a href="{{ route('candidate.jobs.vacancies.show' , $job->uuid) }}" class="text-dark">{{ $job->code }} - {{ $job->title }}</a></h6>
-													<p class="text-muted mb-0">{{ $job->category->name }}</p>
-													<ul class="list-inline mb-0">
-														<li class="list-inline-item mr-3">
-															<p class="text-muted mb-0"><i class="mdi mdi-map-marker mr-2"></i>Cianjur, Jawa Barat</p>
-														</li>
-													</ul>
-												</div>
-											</div>
-											<div class="col-lg-3 col-md-3">
-												<div class="job-list-button-sm text-right">
-													<span class="badge badge-success">{{ $job->type }}</span>
-													<div class="mt-3">
-														<a href="{{ route('candidate.jobs.vacancies.show', $job->uuid) }}" class="btn btn-sm btn-primary">
-															Lamar Sekarang
-														</a>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						@empty
-							<p class="text-center mx-auto mt-3">Tidak ada data</p>
-						@endforelse
+					<div id="job-list-container">
 					</div>
 
 					{{-- Pagination Links --}}
-					<div class="mt-4 d-flex justify-content-center">
+					<div id="pagination-container" class="mt-4 d-flex justify-content-center">
 						{{ $jobs->appends(request()->query())->links('pagination::bootstrap-4') }}
 					</div>
 					
 					{{-- Info Pagination --}}
-					<div class="mt-2 text-center text-muted small">
-						Menampilkan {{ $jobs->firstItem() }} - {{ $jobs	->lastItem() }} 
-						dari {{ $jobs->total() }} lowongan pekerjaan
+					<div class="mt-2 text-center text-muted small info-showing">
+						Menampilkan {{ $jobs->firstItem() }} - {{ $jobs	->lastItem() }} dari {{ $jobs->total() }} lowongan pekerjaan
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
+@endsection
+@section('js')
+	<script>
+		function getParams() {
+			let params = new URLSearchParams(window.location.search);
+			params.set('q', $('input[name="q"]').val());
+			params.set('job_type', $('select[name="job_type"]').val());  
+			params.set('category', $('input[name="category_id"]:checked').val() ?? '');
+			params.set('per_page', $('#perPage').val());
+			return params;
+		}
+
+		function fetchJobs(page = 1) {
+			let params = getParams();
+			if(page) {
+				params.set('page', page); 
+			}
+
+			$.ajax({
+				url: "{{ route('candidate.jobs.vacancies.index') }}",
+				data: params.toString(),
+				headers: { 'X-Requested-With': 'XMLHttpRequest' },
+				success: function(response) {
+					$('#job-list-container').html(response.html);
+					$('#pagination-container').html(response.pagination);
+					$('.info-showing').text(
+						'Menampilkan ' + response.firstItem + ' - ' + response.lastItem + ' dari ' + response.total + ' lowongan'
+					);
+					window.history.pushState({}, '', '?' + params.toString());
+				}
+			});
+		}
+		// Klik pagination pakai fetchJobsOnPage
+		$(document).on('click', '#pagination-container a', function(e) {
+			e.preventDefault();
+			let page = new URL($(this).attr('href')).searchParams.get('page');
+			fetchJobs(page);
+		});
+
+		// Submit form
+		$('#filter-form').submit(function(e) {
+			e.preventDefault();
+			fetchJobs();
+		});
+
+		// Category filter
+		$('.category-filter').change(function() {
+			fetchJobs();
+		});
+
+		// Per page
+		$('#perPage').change(function() {
+			fetchJobs();
+		});
+
+		fetchJobs();
+	</script>
 @endsection

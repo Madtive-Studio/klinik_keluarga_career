@@ -20,7 +20,7 @@ class VacancyService
         $activeBatchId = $activeBatch->id ?? 0;
 
         $filters = [
-            'searchQuery' => $searchQuery,
+            'searchQuery' => strtolower($searchQuery),
             'categoryId' => $categoryId,
             'jobType' => $jobType,
             'batchId' => $activeBatchId,

@@ -19,9 +19,10 @@ class JobRepository
         $query = Job::with(['category', 'batch'])->where('batch_id', $batchId)->orderBy('created_at', 'desc');
 
         if (!empty($searchQuery)) {
-            $query->where(function ($q) use ($searchQuery) {
-                $q->where('title', 'LIKE', '%' . $searchQuery . '%')
-                  ->orWhere('description', 'LIKE', '%' . $searchQuery . '%');
+            $keyword = '%' . $searchQuery . '%';
+            
+            $query->where(function ($q) use ($keyword) {
+                $q->whereRaw('LOWER(title) LIKE ?', [$keyword]);
             });
         }
 
@@ -32,7 +33,6 @@ class JobRepository
         if (!empty($jobType)) {
             $query->where('type', $jobType);
         }
-
         return $query->paginate($perPage);
     }
 }

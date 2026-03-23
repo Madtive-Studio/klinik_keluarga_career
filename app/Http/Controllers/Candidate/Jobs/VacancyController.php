@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Candidate\Jobs;
 
+use App\Enums\JobType;
 use App\Http\Controllers\Controller;
 use App\Services\VacancyService;
 use Illuminate\Http\Request;
@@ -20,12 +21,29 @@ class VacancyController extends Controller
     {
         $data = $this->service->getVacancyListPaginated(
             $request->get('q'),
-            $request->get('kategori'),
-            $request->get('jenis'),
+            $request->get('category') == 'SEMUA' ? '' : $request->get('category'),
+            $request->get('job_type') == 'SEMUA' ? '' : $request->get('job_type'),
             $request->get('per_page', 10)
         );
 
-        return view('candidate.jobs.vacancies.index', $data);
+        if ($request->ajax()) {
+            $jobs = $data['jobs'];
+            
+            return response()->json([
+                'html'       => view('candidate.jobs.vacancies.section._job_list', $data)->render(),
+                'pagination' => (string) $jobs->appends($request->query())->links('pagination::bootstrap-4'),
+                'total'      => $jobs->total() ?? 0,
+                'firstItem'  => $jobs->firstItem() ?? 0,
+                'lastItem'   => $jobs->lastItem() ?? 0,
+            ]);
+        }
+
+        $jobTypes = JobType::getWithLabels();
+
+        return view('candidate.jobs.vacancies.index', [
+            'jobTypes' => $jobTypes,
+            ...$data,
+        ]);
     }
 
     /**
