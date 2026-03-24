@@ -13,6 +13,9 @@ Route::prefix('jobs')->name('jobs.')->group(function () {
     Route::resource('vacancies', JobVacancyController::class)
         ->only(['index', 'show'])
         ->parameters(['vacancies' => 'uuid']);
+    Route::get('vacancies/{uuid}/apply', [JobVacancyController::class, 'apply'])
+        ->name('vacancies.apply')
+        ->middleware(['auth:candidate', 'verified']);
 
     // -------------------------------------------------------
     // APPLICATIONS — wajib login kandidat

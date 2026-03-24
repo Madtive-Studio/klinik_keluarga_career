@@ -6,6 +6,7 @@ use App\Enums\JobType;
 use App\Http\Controllers\Controller;
 use App\Services\VacancyService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VacancyController extends Controller
 {
@@ -55,5 +56,19 @@ class VacancyController extends Controller
         $data = $this->service->getVacancyDetail($uuid);
 
         return view('candidate.jobs.vacancies.detail', $data);
+    }
+
+    public function apply(string $uuid)
+    {
+        $resultData = $this->service->getVacanyAppliesFormData(
+            $uuid,
+            Auth::guard('candidate')->id(),
+        );
+
+        if (isset($resultData['already_applied'])) {
+            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href="' . route('candidate.my.applies') . '"><u>Lamaran Saya</u></a> untuk melihat status lamaran kamu.');
+        }
+
+        return view('candidate.jobs.vacancies.apply', $resultData);
     }
 }

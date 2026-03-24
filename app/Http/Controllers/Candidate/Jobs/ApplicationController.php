@@ -30,20 +30,11 @@ class ApplicationController extends Controller
 
     /**
      * Form lamaran pekerjaan
-     * GET /candidate/jobs/applications/{uuid}
+     * GET /candidate/jobs/
      */
     public function show(string $uuid)
     {
-        $resultData = $this->service->getApplyFormData(
-            $uuid,
-            Auth::guard('candidate')->id(),
-        );
-
-        if (isset($resultData['already_applied'])) {
-            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href="' . route('candidate.my.applies') . '"><u>Lamaran Saya</u></a> untuk melihat status lamaran kamu.');
-        }
-
-        return view('candidate.jobs.vacancies.apply', $resultData);
+        
     }
 
     /**

@@ -110,7 +110,7 @@
 						</div>
 					</div>
 					<div class="job-detail border rounded mt-4">
-						<a href="{{ route('candidate.jobs.applications.show', $job->uuid) }}" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#exampleModal">
+						<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#exampleModal">
 							Lamar Sekarang
 						</a>
 					</div>

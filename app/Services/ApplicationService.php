@@ -13,34 +13,12 @@ use Illuminate\Support\Str;
 class ApplicationService
 {
     public function __construct(
-        protected ApplicationRepository $applicationRepo,
-        protected BatchRepository $batchRepo,
-        protected CandidateRepository $candidateRepo,
-        protected JobRepository $jobRepo,
-        protected DocumentRepository $documentRepo,
+        private ApplicationRepository $applicationRepo,
+        private BatchRepository $batchRepo,
+        private CandidateRepository $candidateRepo,
+        private JobRepository $jobRepo,
+        private DocumentRepository $documentRepo,
     ) {}
-
-    /**
-     * Get data untuk halaman form apply
-     */
-    public function getApplyFormData(string $uuid, int $candidateId): array
-    {
-        $job = $this->jobRepo->findByUuid($uuid);
-        $appliesTotal = $job->applies()->count();
-
-        $hasApplied = $this->IsCandidateHasApplied($candidateId, $job);
-        if ($hasApplied && $hasApplied ) {
-            return ['already_applied' => true];
-        }
-
-        return [
-            'job'                   => $job,
-            'activeBatch'           => $this->batchRepo->getActiveBatch(),
-            'formattedAppliesTotal' => $appliesTotal < 10 ? '0' . $appliesTotal : $appliesTotal,
-            'hasApplied'            => $this->applicationRepo->findByJobBatchAndCandidate($job->id, $job->batch->id, $candidateId),
-            'candidate'             => $this->candidateRepo->findWithDocuments($candidateId),
-        ];
-    }
 
     /**
      * Get data untuk halaman daftar lamaran saya
@@ -129,12 +107,13 @@ class ApplicationService
         return $document->id ?? null;
     }
 
-    private function IsCandidateHasApplied(int $candidateId, Job $job): bool
+    public function IsCandidateHasApplied(int $candidateId, Job $job): bool
     {
         $alreadyApplied = $this->applicationRepo->findByJobBatchAndCandidate($job->id, $job->batch->id, $candidateId);
         if ($alreadyApplied) {
             return true;
         }
+        
         return false;
     }
 }

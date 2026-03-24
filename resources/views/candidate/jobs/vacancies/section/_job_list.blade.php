@@ -23,7 +23,7 @@
                         <div class="job-list-button-sm text-right">
                             <span class="badge badge-success">{{ $job->type }}</span>
                             <div class="mt-3">
-                                <a href="{{ route('candidate.jobs.vacancies.show', $job->uuid) }}" class="btn btn-sm btn-primary">
+                                <a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-sm btn-primary">
                                     Lamar Sekarang
                                 </a>
                             </div>
