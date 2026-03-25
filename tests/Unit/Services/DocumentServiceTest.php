@@ -152,7 +152,7 @@ class DocumentServiceTest extends TestCase
         $fakeCandidate->documents = $paginator;
 
         $this->candidateRepo
-            ->shouldReceive('findWithDocumentsPaginated')
+            ->shouldReceive('getWithDocumentsPaginated')
             ->once()
             ->with(1, 5, '*')
             ->andReturn($fakeCandidate);
