@@ -25,15 +25,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-8 col-md-7">
-					@if ($message = Session::get('error'))
-						<div class="row">
-							<div class="col-lg-12">
-								<div class="alert alert-danger" role="alert">
-									<p class="mb-0">{{ $message }}</p>
-								</div>
-							</div>
-						</div>
-					@endif
+					@include('layouts.alert-section')
 					<div class="job-detail border rounded p-4">
 						<div class="job-detail-content">
 							<img src="images/featured-job/img-4.png" alt="" class="img-fluid float-left mr-md-3 mr-2 mx-auto d-block">
@@ -45,8 +37,9 @@
 							</div>
 						</div>
 					</div>
-					<form action="{{ route('candidate.jobs.applications.process', $job->uuid) }}" method="POST" enctype="multipart/form-data">
+					<form action="{{ route('candidate.jobs.applications.store') }}" method="POST" enctype="multipart/form-data">
 						@csrf
+						<input type="hidden" name="job_uuid" value="{{ $job->uuid }}">
 						<div class="row mt-4">
 							<div class="col-lg-12">
 								<div class="job-detail border rounded p-4">
@@ -56,40 +49,41 @@
 											<div class="row">
 												<div class="col-md-2">
 													<label for="upload_cv">
-														<input type="radio" name="type_of_cv" class="type_of_cv" id="upload_cv" value="upload"
-															{{ old('type_of_cv') === 'upload' ? 'checked' : 'checked' }}> Upload
+														<input type="radio" name="type_of_document" class="type_of_document" id="upload_cv" value="upload" 
+															{{ old('type_of_document') === 'upload' ? 'checked' : 'checked' }}> Upload
 													</label>
 												</div>
 												<div class="col-md-2">
 													<label for="select_cv">
-														<input type="radio" name="type_of_cv" class="type_of_cv" id="select_cv" value="select"
-															{{ old('type_of_cv') === 'select' ? 'checked' : '' }}> Pilih
+														<input type="radio" name="type_of_document" class="type_of_document" id="select_cv" value="select"
+															{{ old('type_of_document') === 'select' ? 'checked' : '' }}> Pilih
 													</label>
 												</div>
 											</div>
-											@error('type_of_cv')
+											@error('type_of_document')
 												<span class="text-danger font-weight-bold">{{ $message }}</span>
 											@enderror
 										</div>
-										<div class="form-group" id="form_new_cv">
-											<input type="file" name="new_cv" class="form-control" id="new_cv">
-											@error('new_cv')
+										<div class="form-group" id="form_new_document">
+											<input type="file" name="new_document" class="form-control" id="new_document">
+											@error('new_document')
 												<span class="text-danger font-weight-bold">{{ $message }}</span>
 											@enderror
 										</div>
-										<div class="form-group" id="form_cv_id">
-											<select name="cv_id" id="cv_id" class="form-control">
-												<option value=""></option>
-												@foreach ($candidateCVs as $key => $value)
-													<option value="{{ $value->id }}">{{ $value->name }}</option>
+										<div class="form-group" id="form_document_id">
+											<select name="document_id" id="document_id" class="form-control">
+												@foreach ($candidate->documents as $key => $value)
+													<option value="{{ $value->id }}" {{ old('document_id') == $value->id ? 'selected' : '' }}>
+														{{ $value->name }}
+													</option>
 												@endforeach
 											</select>
-											@error('cv_id')
+											@error('document_id')
 												<span class="text-danger font-weight-bold">{{ $message }}</span>
 											@enderror
 										</div>
 										<div class="form-group">
-											<label for="">Cover Letter : </label>
+											<label for="">Surat Lamaran : </label>
 											<div id="quill-editor-cover_letter" class="mb-3" style="height: 100px;"></div>
 											<textarea class="mb-3 d-none" name="cover_letter" id="quill-editor-cover_letter-area"></textarea>
 											@error('cover_letter')
@@ -162,150 +156,70 @@
 @endsection
 @section('js')
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			if (document.getElementById('quill-editor-description-area')) {
-				const toolbarOptions = [
-					['bold', 'italic', 'underline', 'strike'],
-					['blockquote', 'code-block'],
-					[{
-						'header': 1
-					}, {
-						'header': 2
-					}],
-					[{
-						'list': 'ordered'
-					}, {
-						'list': 'bullet'
-					}, {
-						'list': 'check'
-					}],
-					[{
-						'indent': '-1'
-					}, {
-						'indent': '+1'
-					}],
-					[{
-						'direction': 'rtl'
-					}],
-					[{
-						'size': ['small', false, 'large', 'huge']
-					}],
-					[{
-						'header': [1, 2, 3, 4, 5, 6, false]
-					}],
-					[{
-						'color': []
-					}, {
-						'background': []
-					}],
-					[{
-						'font': []
-					}],
-					[{
-						'align': []
-					}],
-					['clean']
-				];
-				var editor = new Quill('#quill-editor-description', {
-					theme: 'snow',
-					modules: {
-						toolbar: toolbarOptions
-					}
-				});
-				var quillEditor = document.getElementById('quill-editor-description-area');
-				editor.root.innerHTML = ``;
+		$(document).ready(function() {
+			const toolbarOptions = [
+				['bold', 'italic', 'underline', 'strike'],
+				['blockquote', 'code-block'],
+				[{ 'header': 1 }, { 'header': 2 }],
+				[{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+				[{ 'indent': '-1' }, { 'indent': '+1' }],
+				[{ 'direction': 'rtl' }],
+				[{ 'size': ['small', false, 'large', 'huge'] }],
+				[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+				[{ 'color': [] }, { 'background': [] }],
+				[{ 'font': [] }],
+				[{ 'align': [] }],
+				['clean']
+			];
 
-				editor.on('text-change', function() {
-					quillEditor.value = editor.root.innerHTML;
+			function initQuill(editorId, areaId, oldValue = '') {
+				if (!$('#' + areaId).length) return;
+
+				var editor = new Quill('#' + editorId, {
+					theme: 'snow',
+					modules: { toolbar: toolbarOptions }
 				});
-				quillEditor.addEventListener('input', function() {
-					editor.root.innerHTML = quillEditor.value;
+
+				// Restore old value saat ada error validasi
+				if (oldValue) {
+					editor.root.innerHTML = oldValue;
+				}
+
+				// Sync Quill → textarea
+				editor.on('text-change', function() {
+					$('#' + areaId).val(editor.root.innerHTML);
+				});
+
+				// Sync textarea → Quill
+				$('#' + areaId).on('input', function() {
+					editor.root.innerHTML = $(this).val();
 				});
 			}
-		});
 
-		document.addEventListener('DOMContentLoaded', function() {
-			if (document.getElementById('quill-editor-cover_letter-area')) {
-				const toolbarOptions = [
-					['bold', 'italic', 'underline', 'strike'],
-					['blockquote', 'code-block'],
-					[{
-						'header': 1
-					}, {
-						'header': 2
-					}],
-					[{
-						'list': 'ordered'
-					}, {
-						'list': 'bullet'
-					}, {
-						'list': 'check'
-					}],
-					[{
-						'indent': '-1'
-					}, {
-						'indent': '+1'
-					}],
-					[{
-						'direction': 'rtl'
-					}],
-					[{
-						'size': ['small', false, 'large', 'huge']
-					}],
-					[{
-						'header': [1, 2, 3, 4, 5, 6, false]
-					}],
-					[{
-						'color': []
-					}, {
-						'background': []
-					}],
-					[{
-						'font': []
-					}],
-					[{
-						'align': []
-					}],
-					['clean']
-				];
-				var editor = new Quill('#quill-editor-cover_letter', {
-					theme: 'snow',
-					modules: {
-						toolbar: toolbarOptions
-					}
-				});
-				var quillEditor = document.getElementById('quill-editor-cover_letter-area');
-				editor.root.innerHTML = ``;
-
-				editor.on('text-change', function() {
-					quillEditor.value = editor.root.innerHTML;
-				});
-				quillEditor.addEventListener('input', function() {
-					editor.root.innerHTML = quillEditor.value;
-				});
-			}
+			initQuill('quill-editor-description', 'quill-editor-description-area', `{!! old('description') !!}`);
+			initQuill('quill-editor-cover_letter', 'quill-editor-cover_letter-area', `{!! old('cover_letter') !!}`);
 		});
 
 		$(function() {
-			@if (old('type_of_cv') === 'upload')
-				$('#form_new_cv').show()
-				$('#form_cv_id').hide()
-			@elseif (old('type_of_cv') === 'select')
-				$('#form_new_cv').hide()
-				$('#form_cv_id').show()
+			@if (old('type_of_document') === 'upload')
+				$('#form_new_document').show()
+				$('#form_document_id').hide()
+			@elseif (old('type_of_document') === 'select')
+				$('#form_new_document').hide()
+				$('#form_document_id').show()
 			@else
-				$('#form_new_cv').show()
-				$('#form_cv_id').hide()
+				$('#form_new_document').show()
+				$('#form_document_id').hide()
 			@endif
 
-			$(document).on('change', '.type_of_cv', function() {
+			$(document).on('change', '.type_of_document', function() {
 				let checkedValue = $(this).val()
 				if (checkedValue === 'upload') {
-					$('#form_new_cv').show()
-					$('#form_cv_id').hide()
+					$('#form_new_document').show()
+					$('#form_document_id').hide()
 				} else if (checkedValue === 'select') {
-					$('#form_new_cv').hide()
-					$('#form_cv_id').show()
+					$('#form_new_document').hide()
+					$('#form_document_id').show()
 				}
 			})
 		})

@@ -24,11 +24,7 @@
 	</section>
 	<section class="section pt-5">
 		<div class="container">
-			@if ($message = Session::get('has_applied'))
-				<div class="alert alert-primary" role="alert">
-					<p class="mb-0">Kamu sudah melamar lowongan pekerjaan ini.</p>
-				</div>
-			@endif
+			@include('layouts.alert-section')
 			<div class="row">
 				<div class="col-lg-8 col-md-7">
 					<div class="job-detail border rounded p-4">
@@ -114,7 +110,7 @@
 						</div>
 					</div>
 					<div class="job-detail border rounded mt-4">
-						<a href="{{ route('candidate.jobs.applications.apply', $job->uuid) }}" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#exampleModal">
+						<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#exampleModal">
 							Lamar Sekarang
 						</a>
 					</div>

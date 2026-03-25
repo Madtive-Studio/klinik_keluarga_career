@@ -121,7 +121,7 @@
 													</div>
 													<div class="col-md-3">
 														<div>
-															<h5 class="f-18"><a href="{{ route('candidate.jobs.vacancies.detail', $job->uuid) }}" class="text-dark">{{ $job->title ?? '-' }}</a>
+															<h5 class="f-18"><a href="{{ route('candidate.jobs.vacancies.show', $job->uuid) }}" class="text-dark">{{ $job->title ?? '-' }}</a>
 															</h5>
 															<p class="text-muted mb-0">{{ $job->category->name ?? '-' }}</p>
 														</div>
@@ -154,7 +154,7 @@
 													</div>
 													<div class="col-md-2">
 														<div>
-															<a href="{{ route('candidate.jobs.vacancies.detail',  $job->uuid) }}" class="text-primary"><strong>Lamar Sekarang</strong> <i class="mdi mdi-chevron-double-right"></i></a>
+															<a href="{{ route('candidate.jobs.vacancies.apply',  $job->uuid) }}" class="text-primary"><strong>Lamar Sekarang</strong> <i class="mdi mdi-chevron-double-right"></i></a>
 														</div>
 													</div>
 												</div>

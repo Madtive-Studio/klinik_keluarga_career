@@ -5,14 +5,19 @@ use App\Models\Candidate;
 
 class CandidateRepository
 {
-    public function findWithDocuments($userId)
+    public function find($candidateId)
     {
-        return Candidate::with(['documents'])->where('id', $userId)->first();
+        return Candidate::find($candidateId);
+    }
+    
+    public function findWithDocuments($candidateId)
+    {
+        return Candidate::with(['documents'])->where('id', $candidateId)->first();
     }
 
-    public function findWithDocumentsPaginated($userId, $perPage, $typeBy)
+    public function getWithDocumentsPaginated($candidateId, $perPage, $typeBy)
     {
-        $candidate = Candidate::findOrFail($userId);
+        $candidate = Candidate::findOrFail($candidateId);
         
         $query = $candidate->documents()->orderBy('created_at', 'desc');
         

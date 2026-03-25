@@ -75,9 +75,9 @@
         <div class="content">
             <h2>Lamaran Kamu Berhasil Dikirim</h2>
             <p>Halo <strong>{{ $candidate->name }}</strong>,</p>
-            <p>Terima kasih telah melamar posisi <strong>{{ $job->type }}</strong> - <strong>{{ $job->title }}</strong> di departemen <strong>{{ $job->category->name }}</strong> batch <strong>{{ $job->batch->code }} - {{ $job->batch->name }}</strong>.</p>
+            <p>Terima kasih telah melamar posisi <strong>{{ $job->type }}</strong> - <strong>{{ $job->title }}</strong> di departemen <strong>{{ $category->name }}</strong> batch <strong>{{ $batch->code }} - {{ $batch->name }}</strong>.</p>
             <p>Saat ini, lamaran kamu berstatus <strong style="color: #2F55D4;">SEDANG DILAMAR</strong>.</p>
-            <p>Jangan lupa untuk selalu mengecek status lamaran kamu di <a href="{{ route('candidate.my.applies') }}">madtive.com</a>.</p>
+            <p>Jangan lupa untuk selalu mengecek status lamaran kamu di <a href="{{ route('candidate.my.applications.index') }}">madtive.com</a>.</p>
             <p>Salam, <br>
                 Tim Madtive Studio</p>
         </div>

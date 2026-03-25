@@ -4,18 +4,29 @@
 	<section class="section pt-5">
 		<div class="container">
 			<div class="row">
-				@include('candidate.jobs.applications.tab-menu')
+				@include('candidate.jobs.applications.tab_menu')
 				<div class="col-lg-8 col-md-5 mt-4 mt-sm-0">
-					<h5>{{ $appliesCount }} lamaran dalam setahun terakhir</h5>
+					<h5 class="mb-2">Total : {{ $applies->apply_count }} Dokumen</h5>
 					<div class="show-results">
 						<div class="sort-button float-left">
-							<select class="nice-select rounded" name="urutkan" id="urutkan">
+							<select class="nice-select rounded" id="sortedBy">
 								<option value="">Tampilkan Berdasarkan</option>
-								<option value="Terbaru" {{ !empty(request('urutkan')) && request('urutkan') === 'Terbaru' ? 'selected' : '' }}>Paling Baru</option>
-								<option value="Terlama" {{ !empty(request('urutkan')) && request('urutkan') === 'Terlama' ? 'selected' : '' }}>Paling Lama</option>
+								<option value="Newest" {{ request('sortedBy') === 'Newest' ? 'selected' : '' }}>Paling Baru</option>
+								<option value="Oldest" {{ request('sortedBy') === 'Oldest' ? 'selected' : '' }}>Paling Lama</option>
 							</select>
 						</div>
 					</div>
+
+					<div class="show-results">
+						<div class="sort-button float-right">
+							<select id="perPage" class="nice-select rounded" style="width: auto;">
+								<option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
+								<option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+								<option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+							</select>
+						</div>
+					</div>
+
 					<div class="clearfix"></div>
 					<div class="jobs-list">
 						@forelse ($applies as $key => $apply)
@@ -24,8 +35,7 @@
 									<div class="row align-items-center">
 										<div class="col-lg-2">
 											<div class="company-logo-img">
-												<img src="{{ asset('client/images/job-placeholder.png') }}" width="100" alt=""
-													class="img-fluid mx-auto d-block rounded">
+												<img src="{{ asset('assets/candidate/images/job-placeholder.png') }}" width="100" alt="" class="img-fluid mx-auto d-block rounded">
 											</div>
 										</div>
 										<div class="col-lg-7 col-md-9">
@@ -52,6 +62,17 @@
 						@empty
 							<p class="mb-0 text-center">Belum ada data.</p>
 						@endforelse
+
+						{{-- Pagination Links --}}
+						<div class="mt-4 d-flex justify-content-center">
+							{{ $applies->appends(request()->query())->links('pagination::bootstrap-4') }}
+						</div>
+						
+						{{-- Info Pagination --}}
+						<div class="mt-2 text-center text-muted small">
+							Menampilkan {{ $applies->firstItem() }} - {{ $applies->lastItem() }} 
+							dari {{ $applies->total() }} dokumen
+						</div>
 					</div>
 				</div>
 			</div>
@@ -61,10 +82,19 @@
 @section('js')
 	<script>
 		$(function() {
-			$(document).on('change', '#urutkan', function() {
+			$('#sortedBy').on('change', function() {
 				let orderBy = $(this).find('option:selected').val()
-				window.location.href = 'lamaran-saya?urutkan=' + orderBy
+				var url = new URL(window.location.href);
+				url.searchParams.set('sorted_by', orderBy);
+				window.location.href = url.toString();
 			})
+
+			$('#perPage').on('change', function() {
+				var perPage = $(this).val();
+				var url = new URL(window.location.href);
+				url.searchParams.set('per_page', perPage);
+				window.location.href = url.toString();
+			});
 		})
 	</script>
 @endsection

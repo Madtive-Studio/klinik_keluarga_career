@@ -23,7 +23,7 @@ class DocumentService
 
     public function getCandidateDocumentsPaginated($userId, $perPage = 5, $typeBy = '*')
     {
-        $candidate = $this->candidateRepository->findWithDocumentsPaginated($userId, $perPage, $typeBy);
+        $candidate = $this->candidateRepository->getWithDocumentsPaginated($userId, $perPage, $typeBy);
         $candidate->documents_count = $candidate->documents->total();
 
         return $candidate;

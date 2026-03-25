@@ -11,43 +11,39 @@ class Apply extends Model
     use HasFactory;
 
     protected $table = 'applies';
-    protected $fillable = ['uuid', 'candidate_id', 'cv_id', 'job_id', 'batch_id', 'cover_letter', 'status', 'description', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'uuid',
+        'candidate_id',
+        'document_id', 
+        'job_id',
+        'batch_id',
+        'cover_letter',
+        'status',
+        'description',
+        'created_at',
+        'updated_at',
+    ];
 
-    /**
-     * Get the job that owns the Apply
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
     public function job(): BelongsTo
     {
         return $this->belongsTo(Job::class, 'job_id', 'id');
     }
 
-    /**
-     * Get the batch that owns the Apply
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function batch(): BelongsTo
     {
         return $this->belongsTo(Batch::class, 'batch_id');
     }
 
-    /**
-     * Get the cv that owns the Apply
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function cv(): BelongsTo
+    public function document(): BelongsTo
     {
-        return $this->belongsTo(CV::class, 'cv_id', 'id');
+        return $this->belongsTo(Document::class, 'documents_id', 'id');  
     }
 
-    /**
-     * Get the candidate that owns the Apply
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function candidate(): BelongsTo
     {
         return $this->belongsTo(Candidate::class, 'candidate_id', 'id');
