@@ -9,7 +9,8 @@ use App\Http\Controllers\Admin\JobManagementController;
 use App\Http\Controllers\Admin\CandidateController;
 use App\Http\Controllers\Admin\ScheduleInterviewController;
 use App\Http\Controllers\Candidate\AuthController;
-use App\Http\Controllers\Candidate\ApplyController;
+use App\Http\Controllers\Candidate\Jobs\VacancyController as JobVacancyController;
+use App\Http\Controllers\Candidate\Jobs\ApplicationController as JobApplicationController;
 use App\Http\Controllers\Candidate\DocumentController;
 use App\Http\Controllers\Candidate\HomeController;
 use Illuminate\Support\Facades\Mail;
@@ -81,17 +82,25 @@ Route::prefix('candidate')->name('candidate.')->group(function () {
     Route::get('/', [HomeController::class, 'home'])->name('home');
 
     // Jobs
-    include_once('candidate/jobs.php');
+    Route::prefix('jobs')->name('jobs.')->group(function () {
+        Route::resource('vacancies', JobVacancyController::class)->only(['index', 'show'])->parameters(['vacancies' => 'uuid']);
+        Route::get('vacancies/{uuid}/apply', [JobVacancyController::class, 'apply'])->name('vacancies.apply')->middleware(['auth:candidate', 'verified']);        
+        Route::resource('applications', JobApplicationController::class)->only(['show', 'store'])->parameters(['applications' => 'uuid']);
+        Route::get('applications/{uuid}/success', [JobApplicationController::class, 'applySuccess'])->name('applications.success');
+    });
 
     // My
     Route::group(['middleware' => ['auth:candidate', 'verified']], function () {
         Route::prefix('my')->name('my.')->group(function () {
-            Route::get('interview', [ApplyController::class, 'myInterviews'])->name('interview');
-            Route::get('apply', [ApplyController::class, 'myApplies'])->name('applies');
-            Route::get('cv', [ApplyController::class, 'myCV'])->name('cv');
-            Route::get('cv/create', [ApplyController::class, 'createMyCV'])->name('cv.create');
-            Route::post('cv/process', [ApplyController::class, 'storeMyCV'])->name('cv.process');
+            // Route::get('interview', [ApplyController::class, 'myInterviews'])->name('interview');
+            // Route::get('apply', [ApplyController::class, 'myApplies'])->name('applies');
+            // Route::get('cv', [ApplyController::class, 'myCV'])->name('cv');
+            // Route::get('cv/create', [ApplyController::class, 'createMyCV'])->name('cv.create');
+            // Route::post('cv/process', [ApplyController::class, 'storeMyCV'])->name('cv.process');
 
+            Route::middleware(['auth:candidate', 'verified'])->group(function () {
+                Route::resource('applications', JobApplicationController::class)->only(['index'])->parameters(['applications' => 'uuid']);
+            });
             Route::resource('documents', DocumentController::class);
         });
 

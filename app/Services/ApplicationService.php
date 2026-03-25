@@ -23,14 +23,13 @@ class ApplicationService
     /**
      * Get data untuk halaman daftar lamaran saya
      */
-    public function getMyApplications(int $candidateId, ?string $status): array
+    public function getMyApplicationsPaginated(int $candidateId, int $per_page = 5, array $filters): object
     {
-        $applies = $this->applicationRepo->findByCandidateWithFilters($candidateId, $status, date('Y'));
+        $filters['sortedBy'] = $filters['sortedBy'] == 'NEWEST' ? 'DESC' : 'ASC';
+        $applies = $this->applicationRepo->getByCandidateWithFiltersPaginated($candidateId, $per_page, $filters);
+        $applies->apply_count = $applies->count();
 
-        return [
-            'applies'      => $applies,
-            'appliesCount' => $applies->count() < 10 ? '0' . $applies->count() : $applies->count(),
-        ];
+        return $applies;
     }
 
     /**
@@ -46,7 +45,7 @@ class ApplicationService
 
         $hasApplied = $this->IsCandidateHasApplied($candidateId, $job);
         if ($hasApplied) {
-            return ['already_applied' => true, 'warning' => 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href="' . route('candidate.my.applies') . '">Lamaran Saya</a> untuk melihat status lamaran kamu.'];
+            return ['already_applied' => true, 'warning' => 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href="' . route('candidate.my.applications.index') . '">Lamaran Saya</a> untuk melihat status lamaran kamu.'];
         }
 
         $applyData = [

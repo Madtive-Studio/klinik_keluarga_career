@@ -30,12 +30,16 @@ class ApplicationRepository
         return Apply::create($data);
     }
 
-    public function findByCandidateWithFilters(int $candidateId, ?string $status, int $year)
+    public function getByCandidateWithFiltersPaginated(int $candidateId, string $per_page, array $filters): ?Object
     {
+        $status = $filters['status'];
+        $sortedBy = $filters['sortedBy'];
+
         return Apply::with(['job.category'])
                     ->where('candidate_id', $candidateId)
                     ->when($status, fn($q) => $q->where('status', $status))
-                    ->whereYear('created_at', $year)
-                    ->get();
+                    ->whereYear('created_at', date('Y'))
+                    ->orderBy('created_at', $sortedBy)
+                    ->paginate($per_page);
     }
 }

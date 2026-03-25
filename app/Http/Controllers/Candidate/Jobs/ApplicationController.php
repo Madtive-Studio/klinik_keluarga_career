@@ -20,12 +20,20 @@ class ApplicationController extends Controller
      */
     public function index(Request $request)
     {
-        $data = $this->service->getMyApplications(
+        $filters = [
+            'status' => $request->get('status'),
+            'sortedBy' => $request->get('sortedBy'),
+        ];
+        $per_page = $request->get('per_page', 5);
+        $data = $this->service->getMyApplicationsPaginated(
             Auth::guard('candidate')->id(),
-            $request->get('status'),
+            $per_page,
+            $filters
         );
 
-        return view('candidate.jobs.applications.index', $data);
+        return view('candidate.jobs.applications.index', [
+            'applies' => $data,
+        ]);
     }
 
     /**
