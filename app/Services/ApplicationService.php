@@ -6,7 +6,7 @@ use App\Enums\DocumentType;
 use App\Models\Apply;
 use App\Models\Job;
 use App\Notifications\ApplicationSubmittedNotification;
-use App\Repositories\{ApplicationRepository, BatchRepository, CandidateRepository, DocumentRepository, JobRepository};
+use App\Repositories\{ApplicationRepository, CandidateRepository, DocumentRepository, JobRepository};
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
@@ -14,20 +14,19 @@ class ApplicationService
 {
     public function __construct(
         private ApplicationRepository $applicationRepo,
-        private BatchRepository $batchRepo,
         private CandidateRepository $candidateRepo,
         private JobRepository $jobRepo,
         private DocumentRepository $documentRepo,
     ) {}
 
     /**
-     * Get data untuk halaman daftar lamaran saya
+     * Data untuk halaman daftar lamaran saya (paginated).
      */
-    public function getMyApplicationsPaginated(int $candidateId, int $per_page = 5, array $filters): object
+    public function getApplicationsByCandidatePaginated(int $candidateId, int $per_page = 5, array $filters): object
     {
         $filters['sortedBy'] = $filters['sortedBy'] == 'NEWEST' ? 'DESC' : 'ASC';
-        $applies = $this->applicationRepo->getByCandidateWithFiltersPaginated($candidateId, $per_page, $filters);
-        $applies->apply_count = $applies->count();
+        $applies = $this->applicationRepo->getApplicationsByCandidatePaginated($candidateId, $per_page, $filters);
+        $applies->apply_count = $applies->total();
 
         return $applies;
     }
@@ -43,8 +42,7 @@ class ApplicationService
             return ['error' => 'Data lowongan pekerjaan tidak ditemukan'];
         }
 
-        $hasApplied = $this->IsCandidateHasApplied($candidateId, $job);
-        if ($hasApplied) {
+        if ($this->candidateHasApplied($candidateId, $job)) {
             return ['already_applied' => true, 'warning' => 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href="' . route('candidate.my.applications.index') . '">Lamaran Saya</a> untuk melihat status lamaran kamu.'];
         }
 
@@ -60,7 +58,7 @@ class ApplicationService
             'updated_at'   => now(),
         ];
 
-        if (strtoupper($requestData['type_of_document']) === 'UPLOAD') {
+        if (strtolower((string) $requestData['type_of_document']) === 'upload') {
             $documentId = $this->handleDocumentUpload($documentFile, $candidateId);
             if (!$documentId) {
                 return ['error' => 'Gagal mengupload dokumen CV kamu'];
@@ -79,9 +77,9 @@ class ApplicationService
         return ['success' => $apply, 'candidate' => $candidate];
     }
 
-    public function getJobWithCandidate(string $jobUuid, int $candidateId): ?Apply
+    public function findApplicationByJobUuidAndCandidate(string $jobUuid, int $candidateId): ?Apply
     {
-        return $this->applicationRepo->findWithJobAndCandidate($jobUuid, $candidateId);
+        return $this->applicationRepo->findApplicationByJobUuidAndCandidate($jobUuid, $candidateId);
     }
 
     private function handleDocumentUpload(?UploadedFile $file, int $candidateId): ?int
@@ -106,13 +104,8 @@ class ApplicationService
         return $document->id ?? null;
     }
 
-    public function IsCandidateHasApplied(int $candidateId, Job $job): bool
+    public function candidateHasApplied(int $candidateId, Job $job): bool
     {
-        $alreadyApplied = $this->applicationRepo->findByJobBatchAndCandidate($job->id, $job->batch->id, $candidateId);
-        if ($alreadyApplied) {
-            return true;
-        }
-        
-        return false;
+        return (bool) $this->applicationRepo->findByJobBatchAndCandidate($job->id, $job->batch->id, $candidateId);
     }
 }

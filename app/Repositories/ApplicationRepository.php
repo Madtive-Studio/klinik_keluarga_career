@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Apply;
-use App\Models\CV;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ApplicationRepository
 {
@@ -15,7 +15,7 @@ class ApplicationRepository
                     ->first();
     }
 
-    public function findWithJobAndCandidate(string $jobUuid, int $candidateId): ?Apply
+    public function findApplicationByJobUuidAndCandidate(string $jobUuid, int $candidateId): ?Apply
     {
         return Apply::with(['job', 'candidate', 'job.category', 'batch'])
                     ->whereHas('job', function ($q) use ($jobUuid) {
@@ -30,16 +30,16 @@ class ApplicationRepository
         return Apply::create($data);
     }
 
-    public function getByCandidateWithFiltersPaginated(int $candidateId, string $per_page, array $filters): ?Object
+    public function getApplicationsByCandidatePaginated(int $candidateId, int|string $perPage, array $filters): LengthAwarePaginator
     {
         $status = $filters['status'];
         $sortedBy = $filters['sortedBy'];
 
         return Apply::with(['job.category'])
                     ->where('candidate_id', $candidateId)
-                    ->when($status, fn($q) => $q->where('status', $status))
+                    ->when($status, fn ($q) => $q->where('status', $status))
                     ->whereYear('created_at', date('Y'))
                     ->orderBy('created_at', $sortedBy)
-                    ->paginate($per_page);
+                    ->paginate($perPage);
     }
 }

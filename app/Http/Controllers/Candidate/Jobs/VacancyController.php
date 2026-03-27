@@ -20,7 +20,7 @@ class VacancyController extends Controller
      */
     public function index(Request $request)
     {
-        $data = $this->service->getVacancyListPaginated(
+        $data = $this->service->getVacanciesPaginated(
             $request->get('q'),
             $request->get('category') == 'SEMUA' ? '' : $request->get('category'),
             $request->get('job_type') == 'SEMUA' ? '' : $request->get('job_type'),
@@ -53,20 +53,20 @@ class VacancyController extends Controller
      */
     public function show(string $uuid)
     {
-        $data = $this->service->getVacancyDetail($uuid);
+        $data = $this->service->findVacancyForDisplay($uuid);
 
         return view('candidate.jobs.vacancies.detail', $data);
     }
 
     public function apply(string $uuid)
     {
-        $resultData = $this->service->getVacanyAppliesFormData(
+        $resultData = $this->service->findVacancyApplyFormData(
             $uuid,
             Auth::guard('candidate')->id(),
         );
 
         if (isset($resultData['already_applied'])) {
-            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href="' . route('candidate.my.applies') . '"><u>Lamaran Saya</u></a> untuk melihat status lamaran kamu.');
+            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href="' . route('candidate.my.applications.index') . '"><u>Lamaran Saya</u></a> untuk melihat status lamaran kamu.');
         }
 
         return view('candidate.jobs.vacancies.apply', $resultData);

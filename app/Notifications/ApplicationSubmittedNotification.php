@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -40,7 +39,10 @@ class ApplicationSubmittedNotification extends Notification
     {
         return (new MailMessage)
             ->subject('Lamaran Kamu Berhasil Dikirim')
-            ->view('candidate.jobs.vacancies.apply-email', [
+            ->view('emails.candidate.job-application-mail', [
+                'pageTitle' => 'Lamaran Kamu Berhasil Dikirim',
+                'heading' => 'Lamaran Kamu Berhasil Dikirim',
+                'variant' => 'application_submitted',
                 'candidate' => $this->candidate,
                 'job' => $this->job,
             ]);

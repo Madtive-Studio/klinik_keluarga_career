@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Repositories;
 
+use App\Models\Candidate;
 use App\Models\Document;
 use App\Repositories\DocumentRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -39,7 +40,7 @@ class DocumentRepositoryTest extends TestCase
             'name'         => 'cv_john.pdf',
             'file'         => 'candidates/documents/cv/cv_john.pdf',
             'type'         => 'CV',
-            'candidate_id' => \App\Models\Candidate::factory()->create()->id,
+            'candidate_id' => Candidate::factory()->create()->id,
             'created_at'   => now(),
             'updated_at'   => now(),
         ];
@@ -76,5 +77,46 @@ class DocumentRepositoryTest extends TestCase
         $result = $this->repository->delete($nonExistentId);
 
         $this->assertFalse($result);
+    }
+
+    // =========================================================
+    // createFromUpload()
+    // =========================================================
+
+    #[Test]
+    public function createFromUploadReturnsDocumentModel(): void
+    {
+        $candidateId = Candidate::factory()->create()->id;
+        $data = [
+            'name'         => 'upload.pdf',
+            'file'         => 'candidates/documents/cv/x.pdf',
+            'type'         => 'CV',
+            'candidate_id' => $candidateId,
+            'created_at'   => now(),
+            'updated_at'   => now(),
+        ];
+
+        $document = $this->repository->createFromUpload($data);
+
+        $this->assertInstanceOf(Document::class, $document);
+        $this->assertSame('upload.pdf', $document->name);
+        $this->assertDatabaseHas('documents', ['id' => $document->id]);
+    }
+
+    // =========================================================
+    // findCVsByCandidate()
+    // =========================================================
+
+    #[Test]
+    public function findCVsByCandidateReturnsOnlyCvDocuments(): void
+    {
+        $candidate = Candidate::factory()->create();
+        Document::factory()->for($candidate)->cv()->create(['name' => 'a.pdf']);
+        Document::factory()->for($candidate)->mcu()->create(['name' => 'b.pdf']);
+
+        $cvs = $this->repository->findCVsByCandidate($candidate->id);
+
+        $this->assertCount(1, $cvs);
+        $this->assertSame('a.pdf', $cvs->first()->name);
     }
 }
