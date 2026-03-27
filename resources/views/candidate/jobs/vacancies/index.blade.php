@@ -38,7 +38,7 @@
 										<select id="select-category" name="job_type" class="demo-default">
 											<option value="SEMUA">Semua</option>
 											@foreach ($jobTypes as $value => $label)
-												<option value="{{ $value }}" {{ request()->get('job_type') != $value ?? 'selected' }} >{{ $label }}</option>
+												<option value="{{ $value }}" {{ request()->get('job_type') == $value ? 'selected' : '' }}>{{ $label }}</option>
 											@endforeach
 										</select>
 									</div>

@@ -84,6 +84,20 @@ class JobFactory extends Factory
         ]);
     }
 
+    public function wfhRemote(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => JobType::WFH_REMOTE->value,
+        ]);
+    }
+
+    public function partimeFreelancer(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => JobType::PARTIME_FREELANCER->value,
+        ]);
+    }
+
     // State untuk pakai batch & category yang sudah ada (tidak buat baru)
     public function forBatchAndCategory(int $batchId, int $categoryId): static
     {

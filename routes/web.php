@@ -80,6 +80,7 @@ Route::prefix('candidate')->name('candidate.')->group(function () {
 
     // Home
     Route::get('/', [HomeController::class, 'home'])->name('home');
+    Route::get('home/jobs-by-type', [HomeController::class, 'jobsByType'])->name('home.jobs-by-type');
 
     // Jobs
     Route::prefix('jobs')->name('jobs.')->group(function () {

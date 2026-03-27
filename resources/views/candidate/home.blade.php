@@ -30,7 +30,7 @@
 											<div class="col-md-3">
 												<div class="registration-form-box">
 													<i class="fa fa-list-alt"></i>
-													<select id="select-category" name="kategori" class="demo-default">
+													<select id="select-category" name="category" class="demo-default">
 														<option value="">Kategori...</option>
 														@foreach ($categories as $category)
 															<option value="{{ $category->id }}"
@@ -44,12 +44,12 @@
 											<div class="col-md-2">
 												<div class="registration-form-box">
 													<i class="fa fa-list-alt"></i>
-													<select id="select-category" name="jenis" class="demo-default">
+													<select id="select-category" name="job_type" class="demo-default">
 														<option value="">Jenis...</option>
-														<option value="WFH/Remote">WFH/Remote</option>
-														<option value="Fulltime/Onsite">Fulltime/Onsite</option>
-														<option value="Partime/Freelancer">Partime/Freelancer</option>
-														<option value="Internship">Internship</option>
+														<option value="SEMUA">Semua</option>
+														@foreach ($jobTypes as $value => $label)
+															<option value="{{ $value }}" {{ request()->get('job_type') == $value ? 'selected' : '' }}>{{ $label }}</option>
+														@endforeach
 													</select>
 												</div>
 											</div>
@@ -81,98 +81,78 @@
 			</div>
 			<div class="row justify-content-center">
 				<div class="col-lg-9 text-center mt-4 pt-2">
-					<ul class="nav nav-pills nav nav-pills bg-white rounded nav-justified flex-column flex-sm-row"
-						id="pills-tab" role="tablist">
+					<ul class="nav nav-pills nav nav-pills bg-white rounded nav-justified flex-column flex-sm-row" id="pills-tab" role="tablist">
 						<li class="nav-item">
-							<a class="nav-link rounded active" id="all-tab" data-toggle="pill" href="#all"
-								role="tab" aria-controls="all" aria-selected="true">Semua</a>
+							<a class="nav-link rounded active" id="all-tab" data-toggle="pill" href="#all" role="tab" aria-controls="all" aria-selected="true" data-job-type="All">Semua</a>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link rounded" id="fulltime-tab" data-toggle="pill" href="#fulltime"
-								role="tab" aria-controls="fulltime" aria-selected="false">Fulltime/Onsite</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link rounded" id="internship-tab" data-toggle="pill" href="#internship" role="tab"
-								aria-controls="internship" aria-selected="false">Internship</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link rounded" id="wfh-tab" data-toggle="pill" href="#wfh" role="tab"
-								aria-controls="wfh" aria-selected="false">WFH/Remote</a>
-						</li>
+						@foreach ($jobTypes as $value => $label)
+							@php $tabId = \Illuminate\Support\Str::slug($value, '-'); @endphp
+							<li class="nav-item">
+								<a class="nav-link rounded" id="{{ $tabId }}-tab" data-toggle="pill" href="#{{ $tabId }}" role="tab" aria-controls="{{ $tabId }}" aria-selected="false" data-job-type="{{ $value }}">{{ $label }}</a>
+							</li>
+						@endforeach
 					</ul>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-12">
 					<div class="tab-content mt-2" id="pills-tabContent">
-						<div class="tab-pane fade show active" id="all-tab" role="tabpanel"
-							aria-labelledby="all-tab-tab">
-							<div class="row">
-								@forelse ($jobsByType['All'] as $job)
-									<div class="col-lg-12">
-										<div class="job-box bg-white overflow-hidden border rounded mt-4 position-relative overflow-hidden">
-											<div class="p-4">
-												<div class="row align-items-center">
-													<div class="col-md-2">
-														<div class="mo-mb-2">
-															<img src="{{ asset('assets/candidate/images/job-placeholder.png') }}" width="100" alt=""
-																class="img-fluid mx-auto d-block rounded">
-														</div>
-													</div>
-													<div class="col-md-3">
-														<div>
-															<h5 class="f-18"><a href="{{ route('candidate.jobs.vacancies.show', $job->uuid) }}" class="text-dark">{{ $job->title ?? '-' }}</a>
-															</h5>
-															<p class="text-muted mb-0">{{ $job->category->name ?? '-' }}</p>
-														</div>
-													</div>
-													<div class="col-md-3">
-														<div>
-															<p class="text-muted mb-0"><i class="mdi mdi-map-marker text-primary mr-2"></i>Cianjur, Jawa Barat</p>
-														</div>
-													</div>
-													@if ($job->is_show_salary)
-														<div class="col-md-2">
-															<div>
-																<p class="text-muted mb-0 mo-mb-2">{{ $job->salary }}</p>
-															</div>
-														</div>
-													@endif
-													<div class="col-md-2">
-														<div>
-															<p class="text-muted mb-0">{{ $job->type ?? '-' }}</p>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="p-3 bg-light">
-												<div class="row">
-													<div class="col-md-10">
-														<div>
-															<p class="text-muted mb-0 mo-mb-2">{{ $job->experience ?? '-' }}</p>
-														</div>
-													</div>
-													<div class="col-md-2">
-														<div>
-															<a href="{{ route('candidate.jobs.vacancies.apply',  $job->uuid) }}" class="text-primary"><strong>Lamar Sekarang</strong> <i class="mdi mdi-chevron-double-right"></i></a>
-														</div>
-													</div>
-												</div>
-											</div>
+						@php
+							$tabSets = ['All' => 'Semua'] + $jobTypes;
+						@endphp
+						@foreach ($tabSets as $value => $label)
+							@php
+								$isAll = $value === 'All';
+								$tabId = $isAll ? 'all' : \Illuminate\Support\Str::slug($value, '-');
+								$jobs = $jobsByType[$value] ?? collect();
+							@endphp
+							<div class="tab-pane fade {{ $isAll ? 'show active' : '' }}" id="{{ $tabId }}" role="tabpanel" aria-labelledby="{{ $tabId }}-tab">
+								<div class="row jobs-container" id="jobs-container-{{ $tabId }}">
+									@if ($isAll)
+										@include('candidate.home.section._job_list', ['jobs' => $jobs])
+									@else
+										<div class="col-lg-12">
+											<div class="text-center mt-3 text-muted">Klik tab untuk memuat data terbaru.</div>
 										</div>
-									</div>
-								@empty
-									<div class="col-lg-12">
-										<div class="text-center mt-3">
-											<p>No data available</p>
-										</div>
-									</div>
-								@endforelse
+									@endif
+								</div>
 							</div>
-						</div>
+						@endforeach
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
+@endsection
+@section('js')
+	<script>
+		function fetchHomeJobs(jobType, tabId) {
+			const container = $('#jobs-container-' + tabId);
+			container.html('<div class="col-lg-12"><div class="text-center mt-3 text-muted">Memuat data...</div></div>');
+
+			$.ajax({
+				url: "{{ route('candidate.home.jobs-by-type') }}",
+				method: 'GET',
+				data: {
+					job_type: jobType
+				},
+				headers: { 'X-Requested-With': 'XMLHttpRequest' },
+				success: function(response) {
+					container.html(response.html);
+				},
+				error: function() {
+					container.html('<div class="col-lg-12"><div class="text-center mt-3 text-danger">Gagal memuat data.</div></div>');
+				}
+			});
+		}
+
+		$(function() {
+			$('a[data-toggle="pill"]').on('shown.bs.tab', function(e) {
+				const tab = $(e.target);
+				const tabId = tab.attr('href').replace('#', '');
+				const jobType = tab.data('job-type');
+				fetchHomeJobs(jobType, tabId);
+			});
+		});
+	</script>
 @endsection
