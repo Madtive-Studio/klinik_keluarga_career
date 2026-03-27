@@ -25,7 +25,7 @@ class ApplicationController extends Controller
             'sortedBy' => $request->get('sortedBy'),
         ];
         $per_page = $request->get('per_page', 5);
-        $data = $this->service->getMyApplicationsPaginated(
+        $data = $this->service->getApplicationsByCandidatePaginated(
             Auth::guard('candidate')->id(),
             $per_page,
             $filters
@@ -37,17 +37,8 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Form lamaran pekerjaan
-     * GET /candidate/jobs/
-     */
-    public function show(string $uuid)
-    {
-        
-    }
-
-    /**
      * Proses submit lamaran
-     * POST /candidate/jobs/applications/{uuid}
+     * POST /candidate/jobs/applications (job_uuid di body)
      */
     public function store(ApplicationRequest $request)
     {
@@ -76,12 +67,21 @@ class ApplicationController extends Controller
      */
     public function applySuccess($uuid)
     {
-        $jobAppliedData = $this->service->getJobWithCandidate($uuid, Auth::guard('candidate')->id());
+        if (!Auth::guard('candidate')->check()) {
+            return redirect()->route('candidate.login.form');
+        }
+
+        $apply = $this->service->findApplicationByJobUuidAndCandidate($uuid, Auth::guard('candidate')->id());
+        if (!$apply) {
+            return redirect()->route('candidate.jobs.vacancies.index')
+                ->with('warning', 'Data lamaran tidak ditemukan.');
+        }
+
         return view('candidate.jobs.vacancies.apply-success', [
-            'job' => $jobAppliedData,
-            'candidate' => $jobAppliedData?->candidate,
-            'category' => $jobAppliedData?->job?->category,
-            'batch'=> $jobAppliedData?->batch,
+            'job' => $apply->job,
+            'candidate' => $apply->candidate,
+            'category' => $apply->job?->category,
+            'batch' => $apply->batch,
         ]);
     }
 }

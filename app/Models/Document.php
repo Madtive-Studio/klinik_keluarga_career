@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\DocumentType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 class Document extends Model
@@ -18,6 +19,11 @@ class Document extends Model
         'type' => DocumentType::class,
     ];
     protected $appends = ['file_url'];
+
+    public function candidate(): BelongsTo
+    {
+        return $this->belongsTo(Candidate::class, 'candidate_id');
+    }
 
     public function getFileUrlAttribute()
     {

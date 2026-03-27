@@ -152,7 +152,7 @@ class DocumentServiceTest extends TestCase
         $fakeCandidate->documents = $paginator;
 
         $this->candidateRepo
-            ->shouldReceive('findWithDocumentsPaginated')
+            ->shouldReceive('getWithDocumentsPaginated')
             ->once()
             ->with(1, 5, '*')
             ->andReturn($fakeCandidate);
@@ -160,6 +160,30 @@ class DocumentServiceTest extends TestCase
         $result = $this->service->getCandidateDocumentsPaginated(1, 5, '*');
 
         $this->assertEquals(7, $result->documents_count);
+    }
+
+    #[Test]
+    public function getCandidateDocumentsPaginatedSetsDocumentsCountToZeroWhenNoDocuments(): void
+    {
+        $emptyPaginator = new LengthAwarePaginator(
+            items:       collect(),
+            total:       0,
+            perPage:     5,
+            currentPage: 1
+        );
+
+        $fakeCandidate            = new \stdClass();
+        $fakeCandidate->documents = $emptyPaginator;
+
+        $this->candidateRepo
+            ->shouldReceive('getWithDocumentsPaginated')
+            ->once()
+            ->with(2, 5, '*')
+            ->andReturn($fakeCandidate);
+
+        $result = $this->service->getCandidateDocumentsPaginated(2, 5, '*');
+
+        $this->assertSame(0, $result->documents_count);
     }
 
     // =========================================================

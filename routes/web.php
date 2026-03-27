@@ -85,8 +85,8 @@ Route::prefix('candidate')->name('candidate.')->group(function () {
     Route::prefix('jobs')->name('jobs.')->group(function () {
         Route::resource('vacancies', JobVacancyController::class)->only(['index', 'show'])->parameters(['vacancies' => 'uuid']);
         Route::get('vacancies/{uuid}/apply', [JobVacancyController::class, 'apply'])->name('vacancies.apply')->middleware(['auth:candidate', 'verified']);        
-        Route::resource('applications', JobApplicationController::class)->only(['show', 'store'])->parameters(['applications' => 'uuid']);
-        Route::get('applications/{uuid}/success', [JobApplicationController::class, 'applySuccess'])->name('applications.success');
+        Route::resource('applications', JobApplicationController::class)->only(['store'])->parameters(['applications' => 'uuid'])->middleware(['auth:candidate', 'verified']);
+        Route::get('applications/{uuid}/success', [JobApplicationController::class, 'applySuccess'])->name('applications.success')->middleware(['auth:candidate', 'verified']);
     });
 
     // My

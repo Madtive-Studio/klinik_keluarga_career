@@ -33,6 +33,7 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password,
+            'level' => 'ADMIN',
             'remember_token' => Str::random(10),
         ];
     }

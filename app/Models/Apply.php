@@ -41,7 +41,7 @@ class Apply extends Model
 
     public function document(): BelongsTo
     {
-        return $this->belongsTo(Document::class, 'documents_id', 'id');  
+        return $this->belongsTo(Document::class, 'document_id', 'id');
     }
 
     public function candidate(): BelongsTo

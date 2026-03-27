@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lamaran Kamu Berhasil Dikirim</title>
+    <title>@yield('title', config('app.name'))</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -15,7 +15,7 @@
 
         .container {
             max-width: 600px;
-            margin: 20px auto;
+            margin: 0 auto;
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -73,16 +73,10 @@
             <img src="{{ asset('logo-white.png') }}" alt="" width="200">
         </div>
         <div class="content">
-            <h2>Lamaran Kamu Berhasil Dikirim</h2>
-            <p>Halo <strong>{{ $candidate->name }}</strong>,</p>
-            <p>Terima kasih telah melamar posisi <strong>{{ $job->type }}</strong> - <strong>{{ $job->title }}</strong> di departemen <strong>{{ $job->category->name }}</strong> batch <strong>{{ $job->batch->code }} - {{ $job->batch->name }}</strong>.</p>
-            <p>Saat ini, lamaran kamu berstatus <strong style="color: #2F55D4;">SEDANG DILAMAR</strong>.</p>
-            <p>Jangan lupa untuk selalu mengecek status lamaran kamu di <a href="{{ route('candidate.my.applications.index') }}">madtive.com</a>.</p>
-            <p>Salam, <br>
-                Tim Madtive Studio</p>
+            @yield('content')
         </div>
         <div class="footer">
-            <p>&copy; 2022 Madtive Studio. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} Madtive Studio. All rights reserved.</p>
         </div>
     </div>
 </body>
