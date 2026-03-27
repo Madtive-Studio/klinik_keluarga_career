@@ -26,9 +26,9 @@
 				<ul class="navigation-menu justify-content-end">
 					<li><a class="text-dark" href="{{ route('candidate.home') }}">Beranda</a></li>
 					<li><a class="text-dark" href="{{ route('candidate.jobs.vacancies.index') }}">Lowongan Pekerjaan</a></li>
-					<li>
+					{{-- <li>
 						<a class="text-dark" href="#footer">Kontak Kami</a>
-					</li>
+					</li> --}}
 					@if (Auth::guard('candidate')->check())
 						<li class="has-submenu"><a class="text-dark" href="javascript:void(0)"> <i class="mdi mdi-account"></i> Selamat Datang, {{ auth()->guard('candidate')->user()->name }}</a><span class="submenu-arrow"></span>
 							<ul class="submenu">
@@ -95,9 +95,9 @@
 				<ul class="navigation-menu justify-content-end">
 					<li><a href="{{ route('candidate.home') }}">Beranda</a></li>
 					<li><a href="{{ route('candidate.jobs.vacancies.index') }}">Lowongan Pekerjaan</a></li>
-					<li>
+					{{-- <li>
 						<a href="#footer">Kontak Kami</a>
-					</li>
+					</li> --}}
 					@if (Auth::guard('candidate')->check())
 						<li class="has-submenu"><a href="javascript:void(0)"> <i class="mdi mdi-account"></i> Selamat Datang, {{ auth()->guard('candidate')->user()->name }}</a><span class="submenu-arrow"></span>
 							<ul class="submenu">
