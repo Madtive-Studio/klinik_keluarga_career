@@ -2,19 +2,22 @@
 
 namespace Tests\Unit\Repositories;
 
+use App\Enums\DocumentType;
 use App\Models\Candidate;
 use App\Models\Document;
 use App\Repositories\DocumentRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * Unit Test for DocumentRepository.
- *
- * This layer is thin (no business logic), so we only verify
- * that the DB operations (create, delete) work correctly.
- * Uses RefreshDatabase because the purpose here IS to hit the DB.
+ * Unit Test for DocumentRepository (Thick Repository Pattern).
+ * 
+ * This repository contains both DB operations AND business logic.
+ * Tests cover both layers since they're tightly coupled here.
  */
 class DocumentRepositoryTest extends TestCase
 {
@@ -30,7 +33,7 @@ class DocumentRepositoryTest extends TestCase
     }
 
     // =========================================================
-    // create()
+    // DB Operations Tests
     // =========================================================
 
     #[Test]
@@ -118,5 +121,73 @@ class DocumentRepositoryTest extends TestCase
 
         $this->assertCount(1, $cvs);
         $this->assertSame('a.pdf', $cvs->first()->name);
+    }
+
+    // =========================================================
+    // Business Logic Tests (moved from Service)
+    // =========================================================
+
+    #[Test]
+    public function uploadDocumentStoresFileUnderCorrectTypePath(): void
+    {
+        Storage::fake('public');
+
+        $file = UploadedFile::fake()->create('mcu_result.pdf', 100, 'application/pdf');
+        $path = $this->repository->uploadDocument($file, DocumentType::MCU);
+
+        $this->assertStringContainsString('candidates/documents/mcu', $path);
+        Storage::disk('public')->assertExists($path);
+    }
+
+    #[Test]
+    public function storeReturnsTrueOnSuccessfulUpload(): void
+    {
+        Storage::fake('public');
+        Auth::shouldReceive('guard')->with('candidate')->andReturnSelf();
+        Auth::shouldReceive('id')->andReturn(1);
+
+        $candidate = Candidate::factory()->create(['id' => 1]);
+        $fakeFile = UploadedFile::fake()->create('cv.pdf', 200, 'application/pdf');
+        $fakeRequest = new class($fakeFile) {
+            private $file;
+            public function __construct($file) {
+                $this->file = $file;
+            }
+            public function file($key) {
+                return $this->file;
+            }
+            public function __get($name) {
+                if ($name === 'type') return 'CV';
+                return null;
+            }
+        };
+
+        $result = $this->repository->store($fakeRequest);
+
+        $this->assertTrue($result);
+        $this->assertDatabaseHas('documents', [
+            'name' => 'cv.pdf',
+            'type' => 'CV',
+            'candidate_id' => 1,
+        ]);
+    }
+
+    #[Test]
+    public function storeThrowsDomainExceptionWhenFileIsNull(): void
+    {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('File invalid');
+
+        $fakeRequest = new class {
+            public function file($key) {
+                return null;
+            }
+            public function __get($name) {
+                if ($name === 'type') return 'CV';
+                return null;
+            }
+        };
+
+        $this->repository->store($fakeRequest);
     }
 }

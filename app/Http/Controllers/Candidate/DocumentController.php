@@ -4,18 +4,17 @@ namespace App\Http\Controllers\Candidate;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DocumentRequest;
-use App\Services\DocumentService;
+use App\Repositories\DocumentRepository;
 use App\Enums\DocumentType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DocumentController extends Controller
 {
     public function __construct(
-        protected DocumentService $service
+        protected DocumentRepository $repository
     ) {}
     /**
      * Display a listing of the resource.
@@ -25,10 +24,8 @@ class DocumentController extends Controller
     public function index(): View
     {
         $userId = Auth::guard('candidate')->id();
-        $yearNow = date('Y');
-
         $perPage = request('per_page', 5);
-        $candidate = $this->service->getCandidateDocumentsPaginated($userId, $perPage);
+        $candidate = $this->repository->getCandidateDocumentsPaginated($userId, $perPage);
 
         return view('candidate.documents.index', [
             'candidate' => $candidate,
@@ -57,7 +54,7 @@ class DocumentController extends Controller
     public function store(DocumentRequest $request): RedirectResponse
     {
         try {
-            $this->service->store($request);
+            $this->repository->store($request);
             return redirect()->back()->with('success', 'Berhasil upload dokumen');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal upload: ' . $e->getMessage());
@@ -106,8 +103,12 @@ class DocumentController extends Controller
      */
     public function destroy($id): RedirectResponse
     {
-        $document = $this->service->delete($id);
-        $message = $document ? 'Dokumen berhasil dihapus' : 'Gagal menghapus dokumen';
-        return redirect()->back()->with('success', $message);
+        try {
+            $success = $this->repository->delete($id);
+            $message = $success ? 'Dokumen berhasil dihapus' : 'Gagal menghapus dokumen';
+            return redirect()->back()->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus: ' . $e->getMessage());
+        }
     }
 }
