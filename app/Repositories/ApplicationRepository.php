@@ -16,7 +16,6 @@ class ApplicationRepository
     public function __construct(
         private DocumentRepository $documentRepo,
         private CandidateRepository $candidateRepo,
-        private JobRepository $jobRepo,
     ) {}
 
     public function findByJobBatchAndCandidate(int $jobId, int $batchId, int $candidateId): ?Apply
@@ -72,7 +71,7 @@ class ApplicationRepository
      */
     public function submitApplication(string $uuid, int $candidateId, array $requestData, ?UploadedFile $documentFile): array
     {
-        $job = $this->jobRepo->findByUuid($uuid);
+        $job = app(JobRepository::class)->findByUuid($uuid);
 
         if (!$job) {
             return ['error' => 'Data lowongan pekerjaan tidak ditemukan'];

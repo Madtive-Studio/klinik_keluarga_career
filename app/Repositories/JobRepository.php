@@ -50,7 +50,7 @@ class JobRepository
     public function getVacanciesPaginated(?string $searchQuery, ?string $categoryId, ?string $jobType, ?int $perPage): array
     {
         $activeBatch = $this->batchRepo->getActiveBatch();
-        $activeBatchId = $activeBatch->id ?? 0;
+        $activeBatchId = $activeBatch?->id ?? 0;
 
         $filters = [
             'searchQuery' => strtolower($searchQuery),

@@ -100,7 +100,7 @@ class JobRepositoryTest extends TestCase
     #[Test]
     public function getVacanciesPaginatedReturnsJobsAndCategories(): void
     {
-        $batch = Batch::factory()->isActive()->create();
+        $batch = Batch::factory()->active()->create();
         $category = Category::factory()->create();
         Job::factory()->create([
             'batch_id' => $batch->id,
