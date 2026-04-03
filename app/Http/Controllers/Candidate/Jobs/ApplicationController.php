@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Candidate\Jobs;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApplicationRequest;
-use App\Services\ApplicationService;
+use App\Repositories\ApplicationRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
     public function __construct(
-        private ApplicationService $service,
+        private ApplicationRepository $repository,
     ) {}
 
     /**
@@ -25,7 +25,7 @@ class ApplicationController extends Controller
             'sortedBy' => $request->get('sortedBy'),
         ];
         $per_page = $request->get('per_page', 5);
-        $data = $this->service->getApplicationsByCandidatePaginated(
+        $data = $this->repository->getApplicationsByCandidatePaginatedFormatted(
             Auth::guard('candidate')->id(),
             $per_page,
             $filters
@@ -43,7 +43,7 @@ class ApplicationController extends Controller
     public function store(ApplicationRequest $request)
     {
         $uuid = $request->input('job_uuid');
-        $resultData = $this->service->submitApplication(
+        $resultData = $this->repository->submitApplication(
             $uuid,
             Auth::guard('candidate')->id(),
             $request->validated(),
@@ -71,7 +71,7 @@ class ApplicationController extends Controller
             return redirect()->route('candidate.login.form');
         }
 
-        $apply = $this->service->findApplicationByJobUuidAndCandidate($uuid, Auth::guard('candidate')->id());
+        $apply = $this->repository->findApplicationByJobUuidAndCandidate($uuid, Auth::guard('candidate')->id());
         if (!$apply) {
             return redirect()->route('candidate.jobs.vacancies.index')
                 ->with('warning', 'Data lamaran tidak ditemukan.');
