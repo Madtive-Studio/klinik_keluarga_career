@@ -20,7 +20,7 @@ class ApplicationRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new ApplicationRepository();
+        $this->repository = app(ApplicationRepository::class);
     }
 
     #[Test]
@@ -116,5 +116,45 @@ class ApplicationRepositoryTest extends TestCase
 
         $this->assertSame(1, $paginator->total());
         $this->assertSame('IN REVIEW', $paginator->first()->status);
+    }
+
+    #[Test]
+    public function getApplicationsByCandidatePaginatedFormattedAddsApplyCount(): void
+    {
+        $candidate = Candidate::factory()->create();
+        $document = Document::factory()->for($candidate)->cv()->create();
+        $job = Job::factory()->create();
+
+        Apply::factory()->forJobAndCandidate($job, $candidate, $document)->count(3)->create();
+
+        $filters = [
+            'status' => null,
+            'sortedBy' => 'NEWEST',
+        ];
+
+        $result = $this->repository->getApplicationsByCandidatePaginatedFormatted($candidate->id, 10, $filters);
+
+        $this->assertSame(3, $result->apply_count);
+        $this->assertSame(3, $result->total());
+    }
+
+    #[Test]
+    public function candidateHasAppliedReturnsTrueWhenApplyExists(): void
+    {
+        $candidate = Candidate::factory()->create();
+        $job = Job::factory()->create();
+        $document = Document::factory()->for($candidate)->cv()->create();
+        Apply::factory()->forJobAndCandidate($job, $candidate, $document)->create();
+
+        $this->assertTrue($this->repository->candidateHasApplied($candidate->id, $job));
+    }
+
+    #[Test]
+    public function candidateHasAppliedReturnsFalseWhenNoApply(): void
+    {
+        $candidate = Candidate::factory()->create();
+        $job = Job::factory()->create();
+
+        $this->assertFalse($this->repository->candidateHasApplied($candidate->id, $job));
     }
 }

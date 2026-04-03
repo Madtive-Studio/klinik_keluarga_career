@@ -3,7 +3,11 @@
 namespace Tests\Unit\Repositories;
 
 use App\Enums\JobType;
+use App\Models\Apply;
+use App\Models\Batch;
+use App\Models\Candidate;
 use App\Models\Category;
+use App\Models\Document;
 use App\Models\Job;
 use App\Repositories\JobRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,7 +23,7 @@ class JobRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new JobRepository();
+        $this->repository = app(JobRepository::class);
     }
 
     #[Test]
@@ -91,5 +95,66 @@ class JobRepositoryTest extends TestCase
 
         $this->assertSame(1, $paginator->total());
         $this->assertSame($match->id, $paginator->first()->id);
+    }
+
+    #[Test]
+    public function getVacanciesPaginatedReturnsJobsAndCategories(): void
+    {
+        $batch = Batch::factory()->isActive()->create();
+        $category = Category::factory()->create();
+        Job::factory()->create([
+            'batch_id' => $batch->id,
+            'category_id' => $category->id,
+        ]);
+
+        $result = $this->repository->getVacanciesPaginated(null, null, null, 10);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('jobs', $result);
+        $this->assertArrayHasKey('categories', $result);
+        $this->assertSame(1, $result['jobs']->total());
+    }
+
+    #[Test]
+    public function findVacancyForDisplayReturnsJobWithAppliesCount(): void
+    {
+        $job = Job::factory()->create();
+        $candidate = Candidate::factory()->create(['email_verified_at' => now()]);
+        $document = Document::factory()->for($candidate)->cv()->create();
+        Apply::factory()->forJobAndCandidate($job, $candidate, $document)->create();
+
+        $result = $this->repository->findVacancyForDisplay($job->uuid);
+
+        $this->assertArrayHasKey('job', $result);
+        $this->assertArrayHasKey('activeBatch', $result);
+        $this->assertArrayHasKey('formattedAppliesTotal', $result);
+        $this->assertSame('01', $result['formattedAppliesTotal']);
+    }
+
+    #[Test]
+    public function findVacancyApplyFormDataReturnsFormDataWhenNotApplied(): void
+    {
+        $job = Job::factory()->create();
+        $candidate = Candidate::factory()->create(['email_verified_at' => now()]);
+
+        $result = $this->repository->findVacancyApplyFormData($job->uuid, $candidate->id);
+
+        $this->assertArrayHasKey('job', $result);
+        $this->assertArrayHasKey('candidate', $result);
+        $this->assertArrayNotHasKey('already_applied', $result);
+    }
+
+    #[Test]
+    public function findVacancyApplyFormDataReturnsAlreadyAppliedWhenExists(): void
+    {
+        $job = Job::factory()->create();
+        $candidate = Candidate::factory()->create(['email_verified_at' => now()]);
+        $document = Document::factory()->for($candidate)->cv()->create();
+        Apply::factory()->forJobAndCandidate($job, $candidate, $document)->create();
+
+        $result = $this->repository->findVacancyApplyFormData($job->uuid, $candidate->id);
+
+        $this->assertArrayHasKey('already_applied', $result);
+        $this->assertTrue($result['already_applied']);
     }
 }

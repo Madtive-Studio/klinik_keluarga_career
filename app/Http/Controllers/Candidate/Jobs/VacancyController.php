@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Candidate\Jobs;
 
 use App\Enums\JobType;
 use App\Http\Controllers\Controller;
-use App\Services\VacancyService;
+use App\Repositories\JobRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class VacancyController extends Controller
 {
     public function __construct(
-        private VacancyService $service
+        private JobRepository $repository
     ) {}
 
     /**
@@ -20,7 +20,7 @@ class VacancyController extends Controller
      */
     public function index(Request $request)
     {
-        $data = $this->service->getVacanciesPaginated(
+        $data = $this->repository->getVacanciesPaginated(
             $request->get('q'),
             $request->get('category') == 'SEMUA' ? '' : $request->get('category'),
             $request->get('job_type') == 'SEMUA' ? '' : $request->get('job_type'),
@@ -53,14 +53,14 @@ class VacancyController extends Controller
      */
     public function show(string $uuid)
     {
-        $data = $this->service->findVacancyForDisplay($uuid);
+        $data = $this->repository->findVacancyForDisplay($uuid);
 
         return view('candidate.jobs.vacancies.detail', $data);
     }
 
     public function apply(string $uuid)
     {
-        $resultData = $this->service->findVacancyApplyFormData(
+        $resultData = $this->repository->findVacancyApplyFormData(
             $uuid,
             Auth::guard('candidate')->id(),
         );
