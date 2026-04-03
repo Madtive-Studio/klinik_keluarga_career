@@ -42,7 +42,7 @@ class DocumentService
         $file = $data->file('file');
         $type = DocumentType::from($data->type); 
         
-        if (!$file || !$file->isValid()) {
+        if (!$file || !$file->isValid() || !$data->file) {
             throw new \DomainException('File invalid');
         }
         
