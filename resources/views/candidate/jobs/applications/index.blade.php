@@ -6,7 +6,7 @@
 			<div class="row">
 				@include('candidate.jobs.applications.tab_menu')
 				<div class="col-lg-8 col-md-5 mt-4 mt-sm-0">
-					<h5 class="mb-2">Total : {{ $applies->apply_count }} Dokumen</h5>
+					<h5 class="mb-2">Total : {{ $applies->total() }} Lamaran</h5>
 					<div class="show-results">
 						<div class="sort-button float-left">
 							<select class="nice-select rounded" id="sortedBy">

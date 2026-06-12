@@ -13,7 +13,6 @@ class ApplicationRequest extends FormRequest
 
     /**
      * Form memakai value="upload" / "select" (lihat apply.blade.php).
-     * Harus selaras dengan ApplicationService::submitApplication().
      */
     public function rules(): array
     {

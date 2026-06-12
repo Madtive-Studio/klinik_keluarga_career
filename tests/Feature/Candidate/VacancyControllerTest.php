@@ -1,95 +1,80 @@
 <?php
 
-namespace Tests\Feature\Candidate;
-
-use App\Models\Candidate;
-use App\Models\Job;
+use App\Models\Batch;
 use App\Models\Apply;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use App\Models\Candidate;
+use App\Models\Document;
+use App\Models\Job;
 
-class VacancyControllerTest extends TestCase
-{
-    use RefreshDatabase;
+it('displays vacancy list', function () {
+    Job::factory()->count(2)->create();
 
-    #[Test]
-    public function indexDisplaysVacancyList(): void
-    {
-        Job::factory()->count(2)->create();
+    $response = $this->get(route('candidate.jobs.vacancies.index'));
 
-        $response = $this->get(route('candidate.jobs.vacancies.index'));
+    $response->assertOk()
+        ->assertViewIs('candidate.jobs.vacancies.index')
+        ->assertViewHas('jobs');
+});
 
-        $response->assertStatus(200);
-        $response->assertViewIs('candidate.jobs.vacancies.index');
-        $response->assertViewHas('jobs');
-    }
+it('displays job detail', function () {
+    $job = Job::factory()->create();
 
-    #[Test]
-    public function showDisplaysJobDetail(): void
-    {
-        $job = Job::factory()->create();
+    $response = $this->get(route('candidate.jobs.vacancies.show', $job->uuid));
 
-        $response = $this->get(route('candidate.jobs.vacancies.show', $job->uuid));
+    $response->assertOk()
+        ->assertViewIs('candidate.jobs.vacancies.detail')
+        ->assertViewHas('job');
+});
 
-        $response->assertStatus(200);
-        $response->assertViewIs('candidate.jobs.vacancies.detail');
-        $response->assertViewHas('job');
-    }
+it('returns 404 for unknown job uuid', function () {
+    $response = $this->get(route('candidate.jobs.vacancies.show', '00000000-0000-0000-0000-000000000000'));
 
-    #[Test]
-    public function showReturns404ForUnknownUuid(): void
-    {
-        $response = $this->get(route('candidate.jobs.vacancies.show', '00000000-0000-0000-0000-000000000000'));
+    $response->assertNotFound();
+});
 
-        $response->assertNotFound();
-    }
+it('redirects guests to login on apply page', function () {
+    $job = Job::factory()->create();
 
-    #[Test]
-    public function applyRedirectsGuestsToLogin(): void
-    {
-        $job = Job::factory()->create();
+    $response = $this->get(route('candidate.jobs.vacancies.apply', $job->uuid));
 
-        $response = $this->get(route('candidate.jobs.vacancies.apply', $job->uuid));
+    $response->assertRedirect();
+});
 
-        $response->assertRedirect();
-    }
+it('shows apply form for authenticated candidate', function () {
+    $candidate = Candidate::factory()->create(['email_verified_at' => now()]);
+    $job = Job::factory()->create();
 
-    #[Test]
-    public function applyShowsFormWhenAuthenticatedAndNotYetApplied(): void
-    {
-        $candidate = Candidate::factory()->create([
-            'email_verified_at' => now(),
-        ]);
-        $job = Job::factory()->create();
+    $this->actingAs($candidate, 'candidate');
 
-        $this->actingAs($candidate, 'candidate');
+    $response = $this->get(route('candidate.jobs.vacancies.apply', $job->uuid));
 
-        $response = $this->get(route('candidate.jobs.vacancies.apply', $job->uuid));
+    $response->assertOk()
+        ->assertViewIs('candidate.jobs.vacancies.apply')
+        ->assertViewHas('job');
+});
 
-        $response->assertStatus(200);
-        $response->assertViewIs('candidate.jobs.vacancies.apply');
-        $response->assertViewHas('job');
-    }
+it('redirects when candidate already applied', function () {
+    $candidate = Candidate::factory()->create(['email_verified_at' => now()]);
+    $job = Job::factory()->create();
+    $document = Document::factory()->for($candidate)->cv()->create();
 
-    #[Test]
-    public function applyRedirectsWhenAlreadyApplied(): void
-    {
-        $candidate = Candidate::factory()->create([
-            'email_verified_at' => now(),
-        ]);
-        $job = Job::factory()->create();
+    Apply::factory()->forJobAndCandidate($job, $candidate, $document)->create();
 
-        Apply::factory()->forJobAndCandidate(
-            $job,
-            $candidate,
-            \App\Models\Document::factory()->for($candidate)->cv()->create()
-        )->create();
+    $this->actingAs($candidate, 'candidate');
 
-        $this->actingAs($candidate, 'candidate');
+    $response = $this->get(route('candidate.jobs.vacancies.apply', $job->uuid));
 
-        $response = $this->get(route('candidate.jobs.vacancies.apply', $job->uuid));
+    $response->assertRedirect(route('candidate.jobs.vacancies.show', $job->uuid));
+});
 
-        $response->assertRedirect(route('candidate.jobs.vacancies.show', $job->uuid));
-    }
-}
+it('returns json resource on ajax vacancy search', function () {
+    Batch::factory()->active()->create();
+    Job::factory()->count(2)->create();
+
+    $response = $this->getJson(route('candidate.jobs.vacancies.index', ['q' => '']), [
+        'X-Requested-With' => 'XMLHttpRequest',
+    ]);
+
+    $response->assertOk()
+        ->assertJsonStructure(['data', 'html', 'meta']);
+});

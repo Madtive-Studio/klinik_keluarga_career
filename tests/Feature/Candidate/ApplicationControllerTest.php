@@ -1,153 +1,119 @@
 <?php
 
-namespace Tests\Feature\Candidate;
-
 use App\Models\Apply;
 use App\Models\Candidate;
 use App\Models\Document;
 use App\Models\Job;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class ApplicationControllerTest extends TestCase
-{
-    use RefreshDatabase;
+beforeEach(function () {
+    $this->candidate = Candidate::factory()->create([
+        'email_verified_at' => now(),
+    ]);
+});
 
-    private Candidate $candidate;
+it('displays applications for authenticated candidate', function () {
+    $this->actingAs($this->candidate, 'candidate');
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $response = $this->get(route('candidate.my.applications.index'));
 
-        $this->candidate = Candidate::factory()->create([
-            'email_verified_at' => now(),
-        ]);
-    }
+    $response->assertOk()
+        ->assertViewIs('candidate.jobs.applications.index')
+        ->assertViewHas('applies');
+});
 
-    #[Test]
-    public function indexDisplaysApplicationsForAuthenticatedCandidate(): void
-    {
-        $this->actingAs($this->candidate, 'candidate');
+it('redirects guests to login on applications index', function () {
+    $response = $this->get(route('candidate.my.applications.index'));
 
-        $response = $this->get(route('candidate.my.applications.index'));
+    $response->assertRedirect();
+});
 
-        $response->assertStatus(200);
-        $response->assertViewIs('candidate.jobs.applications.index');
-        $response->assertViewHas('applies');
-    }
+it('fails validation when required fields are missing', function () {
+    $this->actingAs($this->candidate, 'candidate');
 
-    #[Test]
-    public function indexRedirectsGuestsToLogin(): void
-    {
-        $response = $this->get(route('candidate.my.applications.index'));
+    $response = $this->post(route('candidate.jobs.applications.store'), []);
 
-        $response->assertRedirect();
-    }
+    $response->assertSessionHasErrors();
+});
 
-    #[Test]
-    public function storeValidationFailsWhenFieldsMissing(): void
-    {
-        $this->actingAs($this->candidate, 'candidate');
+it('creates application with document upload', function () {
+    Notification::fake();
+    Storage::fake('public');
+    $this->actingAs($this->candidate, 'candidate');
 
-        $response = $this->post(route('candidate.jobs.applications.store'), []);
+    $job = Job::factory()->create();
+    $file = UploadedFile::fake()->create('cv.pdf', 500, 'application/pdf');
 
-        $response->assertSessionHasErrors();
-    }
+    $response = $this->post(route('candidate.jobs.applications.store'), [
+        'job_uuid' => $job->uuid,
+        'type_of_document' => 'upload',
+        'cover_letter' => 'Saya tertarik dengan posisi ini.',
+        'description' => 'Pengalaman saya sesuai kebutuhan.',
+        'new_document' => $file,
+    ]);
 
-    #[Test]
-    public function storeCreatesApplicationWithDocumentUpload(): void
-    {
-        Notification::fake();
-        Storage::fake('public');
+    $response->assertRedirect(route('candidate.jobs.applications.success', $job->uuid));
 
-        $this->actingAs($this->candidate, 'candidate');
+    $this->assertDatabaseHas('applies', [
+        'candidate_id' => $this->candidate->id,
+        'job_id' => $job->id,
+        'batch_id' => $job->batch_id,
+    ]);
+});
 
-        $job = Job::factory()->create();
-        $file = UploadedFile::fake()->create('cv.pdf', 500, 'application/pdf');
+it('creates application with existing document', function () {
+    Notification::fake();
+    $this->actingAs($this->candidate, 'candidate');
 
-        $response = $this->post(route('candidate.jobs.applications.store'), [
-            'job_uuid'         => $job->uuid,
-            'type_of_document' => 'upload',
-            'cover_letter'     => 'Saya tertarik dengan posisi ini.',
-            'description'      => 'Pengalaman saya sesuai kebutuhan.',
-            'new_document'     => $file,
-        ]);
+    $job = Job::factory()->create();
+    $document = Document::factory()->for($this->candidate)->cv()->create();
 
-        $response->assertRedirect(route('candidate.jobs.applications.success', $job->uuid));
+    $response = $this->post(route('candidate.jobs.applications.store'), [
+        'job_uuid' => $job->uuid,
+        'type_of_document' => 'select',
+        'document_id' => (string) $document->id,
+        'cover_letter' => 'Cover letter.',
+        'description' => 'Deskripsi.',
+    ]);
 
-        $this->assertDatabaseHas('applies', [
-            'candidate_id' => $this->candidate->id,
-            'job_id'       => $job->id,
-            'batch_id'     => $job->batch_id,
-        ]);
-    }
+    $response->assertRedirect(route('candidate.jobs.applications.success', $job->uuid));
 
-    #[Test]
-    public function storeCreatesApplicationWithExistingDocument(): void
-    {
-        Notification::fake();
+    $this->assertDatabaseHas('applies', [
+        'candidate_id' => $this->candidate->id,
+        'document_id' => $document->id,
+        'job_id' => $job->id,
+    ]);
+});
 
-        $this->actingAs($this->candidate, 'candidate');
+it('shows success page when application exists', function () {
+    $this->actingAs($this->candidate, 'candidate');
 
-        $job = Job::factory()->create();
-        $document = Document::factory()->for($this->candidate)->cv()->create();
+    $job = Job::factory()->create();
+    $document = Document::factory()->for($this->candidate)->cv()->create();
+    Apply::factory()->forJobAndCandidate($job, $this->candidate, $document)->create();
 
-        $response = $this->post(route('candidate.jobs.applications.store'), [
-            'job_uuid'         => $job->uuid,
-            'type_of_document' => 'select',
-            'document_id'      => (string) $document->id,
-            'cover_letter'     => 'Cover letter.',
-            'description'      => 'Deskripsi.',
-        ]);
+    $response = $this->get(route('candidate.jobs.applications.success', $job->uuid));
 
-        $response->assertRedirect(route('candidate.jobs.applications.success', $job->uuid));
+    $response->assertOk()
+        ->assertViewIs('candidate.jobs.vacancies.apply-success');
+});
 
-        $this->assertDatabaseHas('applies', [
-            'candidate_id' => $this->candidate->id,
-            'document_id'  => $document->id,
-            'job_id'       => $job->id,
-        ]);
-    }
+it('redirects success page when no application found', function () {
+    $this->actingAs($this->candidate, 'candidate');
 
-    #[Test]
-    public function applySuccessShowsPageWhenApplicationExists(): void
-    {
-        $this->actingAs($this->candidate, 'candidate');
+    $job = Job::factory()->create();
 
-        $job = Job::factory()->create();
-        $document = Document::factory()->for($this->candidate)->cv()->create();
+    $response = $this->get(route('candidate.jobs.applications.success', $job->uuid));
 
-        Apply::factory()->forJobAndCandidate($job, $this->candidate, $document)->create();
+    $response->assertRedirect(route('candidate.jobs.vacancies.index'));
+});
 
-        $response = $this->get(route('candidate.jobs.applications.success', $job->uuid));
+it('redirects guests on success page to login', function () {
+    $job = Job::factory()->create();
 
-        $response->assertStatus(200);
-        $response->assertViewIs('candidate.jobs.vacancies.apply-success');
-    }
+    $response = $this->get(route('candidate.jobs.applications.success', $job->uuid));
 
-    #[Test]
-    public function applySuccessRedirectsWhenNoApplication(): void
-    {
-        $this->actingAs($this->candidate, 'candidate');
-
-        $job = Job::factory()->create();
-
-        $response = $this->get(route('candidate.jobs.applications.success', $job->uuid));
-
-        $response->assertRedirect(route('candidate.jobs.vacancies.index'));
-    }
-
-    #[Test]
-    public function applySuccessRedirectsGuestsToLogin(): void
-    {
-        $job = Job::factory()->create();
-
-        $response = $this->get(route('candidate.jobs.applications.success', $job->uuid));
-
-        $response->assertRedirect(route('candidate.login.form'));
-    }
-}
+    $response->assertRedirect(route('candidate.login.form'));
+});

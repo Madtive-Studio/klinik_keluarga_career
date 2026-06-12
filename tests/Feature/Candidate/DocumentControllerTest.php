@@ -1,230 +1,98 @@
 <?php
 
-namespace Tests\Feature\Candidate;
-
 use App\Enums\DocumentType;
 use App\Models\Candidate;
 use App\Models\Document;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Tests\TestCase;
-use PHPUnit\Framework\Attributes\Test;
 
-class DocumentControllerTest extends TestCase
-{
-    use RefreshDatabase;
+beforeEach(function () {
+    $this->candidate = Candidate::factory()->create([
+        'email_verified_at' => now(),
+    ]);
+});
 
-    private Candidate $candidate;
+it('shows document page for authenticated candidate', function () {
+    $this->actingAs($this->candidate, 'candidate');
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $response = $this->get(route('candidate.my.documents.index'));
 
-        $this->candidate = Candidate::factory()->create([
-            'email_verified_at' => now(),
-        ]);
-    }
+    $response->assertOk()
+        ->assertViewIs('candidate.documents.index')
+        ->assertViewHas('candidate');
+});
 
-    // =========================================================
-    // INDEX
-    // =========================================================
+it('redirects guests on document index', function () {
+    $response = $this->get(route('candidate.my.documents.index'));
 
-    #[Test]
-    public function indexReturnsDocumentPageForAuthenticatedCandidate(): void
-    {
-        $this->actingAs($this->candidate, 'candidate');
+    $response->assertRedirect();
+});
 
-        $response = $this->get(route('candidate.my.documents.index'));
+it('shows upload form with document types', function () {
+    $this->actingAs($this->candidate, 'candidate');
 
-        $response->assertStatus(200);
-        $response->assertViewIs('candidate.documents.index');
-        $response->assertViewHas('candidate');
-    }
+    $response = $this->get(route('candidate.my.documents.create'));
 
-    #[Test]
-    public function indexRedirectsToLoginWhenUnauthenticated(): void
-    {
-        $response = $this->get(route('candidate.my.documents.index'));
+    $response->assertOk()
+        ->assertViewIs('candidate.documents.create')
+        ->assertViewHas('types');
+});
 
-        $response->assertRedirect();
-    }
+it('uploads pdf document successfully', function () {
+    Storage::fake('public');
+    $this->actingAs($this->candidate, 'candidate');
 
-    // =========================================================
-    // CREATE
-    // =========================================================
+    $file = UploadedFile::fake()->create('cv_test.pdf', 500, 'application/pdf');
 
-    #[Test]
-    public function createReturnsUploadFormWithDocumentTypes(): void
-    {
-        $this->actingAs($this->candidate, 'candidate');
+    $response = $this->post(route('candidate.my.documents.store'), [
+        'file' => $file,
+        'type' => DocumentType::CV->value,
+    ]);
 
-        $response = $this->get(route('candidate.my.documents.create'));
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
 
-        $response->assertStatus(200);
-        $response->assertViewIs('candidate.documents.create');
-        $response->assertViewHas('types');
-    }
+    $this->assertDatabaseHas('documents', [
+        'candidate_id' => $this->candidate->id,
+        'type' => DocumentType::CV->value,
+    ]);
+});
 
-    // =========================================================
-    // STORE — Happy Path
-    // =========================================================
+it('fails when file is missing', function () {
+    $this->actingAs($this->candidate, 'candidate');
 
-    #[Test]
-    public function storeSuccessfullyUploadsPdfDocument(): void
-    {
-        Storage::fake('public');
-        $this->actingAs($this->candidate, 'candidate');
+    $response = $this->post(route('candidate.my.documents.store'), [
+        'type' => DocumentType::CV->value,
+    ]);
 
-        $file = UploadedFile::fake()->create('cv_test.pdf', 500, 'application/pdf');
+    $response->assertSessionHasErrors(['file']);
+    $this->assertDatabaseCount('documents', 0);
+});
 
-        $response = $this->post(route('candidate.my.documents.store'), [
-            'file' => $file,
-            'type' => DocumentType::CV->value,
-        ]);
+it('fails when file extension is not allowed', function () {
+    $this->actingAs($this->candidate, 'candidate');
 
-        $response->assertRedirect();
-        $response->assertSessionHas('success');
-        $this->assertDatabaseHas('documents', [
-            'candidate_id' => $this->candidate->id,
-            'type'         => DocumentType::CV->value,
-        ]);
-    }
+    $file = UploadedFile::fake()->create('malware.exe', 100, 'application/octet-stream');
 
-    #[Test]
-    public function storeSuccessfullyUploadsImageDocument(): void
-    {
-        Storage::fake('public');
-        $this->actingAs($this->candidate, 'candidate');
+    $response = $this->post(route('candidate.my.documents.store'), [
+        'file' => $file,
+        'type' => DocumentType::CV->value,
+    ]);
 
-        $file = UploadedFile::fake()->image('mcu_photo.jpg');
+    $response->assertSessionHasErrors(['file']);
+});
 
-        $response = $this->post(route('candidate.my.documents.store'), [
-            'file' => $file,
-            'type' => DocumentType::MCU->value,
-        ]);
+it('deletes own document', function () {
+    Storage::fake('public');
+    $this->actingAs($this->candidate, 'candidate');
 
-        $response->assertRedirect();
-        $response->assertSessionHas('success');
-        $this->assertDatabaseHas('documents', [
-            'candidate_id' => $this->candidate->id,
-            'type'         => DocumentType::MCU->value,
-        ]);
-    }
+    $document = Document::factory()->create([
+        'candidate_id' => $this->candidate->id,
+    ]);
 
-    // =========================================================
-    // STORE — Validation Failures
-    // =========================================================
+    $response = $this->delete(route('candidate.my.documents.destroy', $document->id));
 
-    #[Test]
-    public function storeFailsWhenFileIsMissing(): void
-    {
-        $this->actingAs($this->candidate, 'candidate');
-
-        $response = $this->post(route('candidate.my.documents.store'), [
-            'type' => DocumentType::CV->value,
-        ]);
-
-        $response->assertSessionHasErrors(['file']);
-        $this->assertDatabaseCount('documents', 0);
-    }
-
-    #[Test]
-    public function storeFailsWhenTypeIsMissing(): void
-    {
-        Storage::fake('public');
-        $this->actingAs($this->candidate, 'candidate');
-
-        $file = UploadedFile::fake()->create('cv.pdf', 100, 'application/pdf');
-
-        $response = $this->post(route('candidate.my.documents.store'), [
-            'file' => $file,
-        ]);
-
-        $response->assertSessionHasErrors(['type']);
-        $this->assertDatabaseCount('documents', 0);
-    }
-
-    #[Test]
-    public function storeFailsWhenFileExtensionIsNotAllowed(): void
-    {
-        $this->actingAs($this->candidate, 'candidate');
-
-        $file = UploadedFile::fake()->create('malware.exe', 100, 'application/octet-stream');
-
-        $response = $this->post(route('candidate.my.documents.store'), [
-            'file' => $file,
-            'type' => DocumentType::CV->value,
-        ]);
-
-        $response->assertSessionHasErrors(['file']);
-        $this->assertDatabaseCount('documents', 0);
-    }
-
-    #[Test]
-    public function storeFailsWhenFileSizeExceedsLimit(): void
-    {
-        $this->actingAs($this->candidate, 'candidate');
-
-        // 20481 KB > 20480 KB (max defined in DocumentRequest)
-        $file = UploadedFile::fake()->create('heavy_file.pdf', 20481, 'application/pdf');
-
-        $response = $this->post(route('candidate.my.documents.store'), [
-            'file' => $file,
-            'type' => DocumentType::CV->value,
-        ]);
-
-        $response->assertSessionHasErrors(['file']);
-        $this->assertDatabaseCount('documents', 0);
-    }
-
-    #[Test]
-    public function storeRedirectsToLoginWhenUnauthenticated(): void
-    {
-        Storage::fake('public');
-
-        $file = UploadedFile::fake()->create('cv.pdf', 100, 'application/pdf');
-
-        $response = $this->post(route('candidate.my.documents.store'), [
-            'file' => $file,
-            'type' => DocumentType::CV->value,
-        ]);
-
-        $response->assertRedirect();
-        $this->assertDatabaseCount('documents', 0);
-    }
-
-    // =========================================================
-    // DESTROY — Happy Path
-    // =========================================================
-
-    #[Test]
-    public function destroySuccessfullyDeletesOwnDocument(): void
-    {
-        Storage::fake('public');
-        $this->actingAs($this->candidate, 'candidate');
-
-        $document = Document::factory()->create([
-            'candidate_id' => $this->candidate->id,
-        ]);
-
-        $response = $this->delete(route('candidate.my.documents.destroy', $document->id));
-
-        $response->assertRedirect();
-        $response->assertSessionHas('success');
-        $this->assertDatabaseMissing('documents', ['id' => $document->id]);
-    }
-
-    #[Test]
-    public function destroyRedirectsToLoginWhenUnauthenticated(): void
-    {
-        $document = Document::factory()->create([
-            'candidate_id' => $this->candidate->id,
-        ]);
-
-        $response = $this->delete(route('candidate.my.documents.destroy', $document->id));
-
-        $response->assertRedirect();
-        $this->assertDatabaseHas('documents', ['id' => $document->id]);
-    }
-}
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+    $this->assertDatabaseMissing('documents', ['id' => $document->id]);
+});

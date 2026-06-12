@@ -16,7 +16,8 @@ class EnsureEmailIsVerified
     public function handle($request, Closure $next)
     {
         if (!$request->user() || !$request->user()->email_verified_at) {
-            return redirect()->route('client.login')->with('error', 'Email kamu belum di verifikasi');
+            return redirect()->route('candidate.login.form')
+                ->with('error', 'Email kamu belum di verifikasi');
         }
 
         return $next($request);

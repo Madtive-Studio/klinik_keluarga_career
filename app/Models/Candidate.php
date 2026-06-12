@@ -14,7 +14,24 @@ class Candidate extends Authenticatable
 {
     use HasFactory, Notifiable;
     protected $table = 'candidates';
-    protected $fillable = ['name', 'email', 'password', 'phone', 'birth_date', 'phone', 'password', 'verification_token', 'email_verified_at', 'address'];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone',
+        'birth_date',
+        'verification_token',
+        'email_verified_at',
+        'address',
+        'ktp_number',
+        'passport_number',
+        'driving_license_number',
+        'gender',
+        'education_background',
+        'work_experience',
+        'identity_verified',
+        'document_completed',
+    ];
 
     protected $hidden = [
         'password',
@@ -23,11 +40,18 @@ class Candidate extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'identity_verified' => 'boolean',
+        'document_completed' => 'boolean',
     ];
 
     public function documents(): HasMany
     {
         return $this->hasMany(Document::class);
+    }
+
+    public function identities(): HasMany
+    {
+        return $this->hasMany(CandidateIdentity::class);
     }
 
     /**
@@ -67,5 +91,69 @@ class Candidate extends Authenticatable
         } else {
             $this->attributes['password'] = Hash::make($value);
         }
+    }
+
+    /**
+     * Check if candidate has completed all required documents
+     */
+    public function hasCompletedDocuments(): bool
+    {
+        $requiredDocuments = $this->documents()->where('is_required', true)->count();
+        $verifiedDocuments = $this->documents()
+            ->where('is_required', true)
+            ->where('status', 'VERIFIED')
+            ->count();
+
+        return $requiredDocuments > 0 && $requiredDocuments === $verifiedDocuments;
+    }
+
+    /**
+     * Check if candidate has completed all identity verification
+     */
+    public function hasCompletedIdentity(): bool
+    {
+        // Check basic identity fields
+        $basicFields = [
+            $this->ktp_number,
+            $this->gender,
+            $this->education_background,
+        ];
+
+        return !collect($basicFields)->contains(null);
+    }
+
+    /**
+     * Get document completeness percentage
+     */
+    public function getDocumentCompletenessPercentage(): float
+    {
+        $totalRequired = $this->documents()->where('is_required', true)->count();
+        if ($totalRequired === 0) {
+            return 100;
+        }
+
+        $verifiedCount = $this->documents()
+            ->where('is_required', true)
+            ->where('status', 'VERIFIED')
+            ->count();
+
+        return ($verifiedCount / $totalRequired) * 100;
+    }
+
+    /**
+     * Get identity completeness percentage
+     */
+    public function getIdentityCompletenessPercentage(): float
+    {
+        $required = ['ktp_number', 'gender', 'education_background'];
+        $completed = 0;
+
+        foreach ($required as $field) {
+            if (!empty($this->$field)) {
+                $completed++;
+            }
+        }
+
+        return ($completed / count($required)) * 100;
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ApplicationStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateApplicantStatusRequest;
 use App\Models\Apply;
 use App\Models\Candidate;
 use App\Models\Job;
@@ -14,18 +16,10 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ApplicantController extends Controller
 {
-    private const STATUS_LABELS = [
-        'IN REVIEW' => 'Sedang Dalam Review',
-        'NOT SUITABLE' => 'Tidak Sesuai',
-        'SHORTLISTED' => 'Lolos Tahap Selanjutnya',
-        'HIRED' => 'Diterima',
-    ];
-
     public function index(Request $request)
     {
-        $status = $request->get('status');
         return view('admin.applies.index', [
-            'status' => $status
+            'status' => $request->get('status'),
         ]);
     }
 
@@ -35,12 +29,11 @@ class ApplicantController extends Controller
         $query = Apply::query();
 
         if (!empty($status)) {
-            $query->where(function ($query) use ($status) {
-                return $query->where('status', $status);
-            });
+            $query->where('status', $status);
         }
 
-        $query = $query->with(['candidate', 'job', 'batch', 'document'])->orderBy('created_at', 'ASC');
+        $query = $query->with(['candidate', 'job', 'batch', 'document'])
+            ->orderBy('created_at', 'ASC');
 
         return DataTables::of($query)
             ->addIndexColumn()
@@ -59,28 +52,36 @@ class ApplicantController extends Controller
             ->make(true);
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         $apply = Apply::findOrFail($id);
+
         return view('admin.applies.detail', [
-            'uuid' => (string)Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'apply' => $apply,
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateApplicantStatusRequest $request, int $id)
     {
         $apply = Apply::findOrFail($id);
-        $apply->update(['status' => $request->status]);
+        $status = ApplicationStatus::from($request->validated('status'));
 
-        $candidate = Candidate::where('id', $apply->candidate_id)->first();
-        $job = Job::with(['category', 'batch'])->where('id', $apply->job_id)->first();
+        $apply->update(['status' => $status->value]);
+
+        $candidate = Candidate::find($apply->candidate_id);
+        $job = Job::with(['category', 'batch'])->find($apply->job_id);
 
         if ($candidate && $job) {
-            $statusLabel = self::STATUS_LABELS[$request->status] ?? (string) $request->status;
-            $candidate->notify(new ApplicationStatusUpdatedNotification($candidate, $job, $statusLabel));
+            $candidate->notify(new ApplicationStatusUpdatedNotification(
+                $candidate,
+                $job,
+                $status->getLabel()
+            ));
         }
 
-        return redirect()->route('admin.applies.index')->with('success', 'Berhasil mengubah status lamaran kandidat');
+        return redirect()
+            ->route('admin.applies.index')
+            ->with('success', 'Berhasil mengubah status lamaran kandidat');
     }
 }

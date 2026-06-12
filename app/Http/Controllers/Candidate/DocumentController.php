@@ -2,111 +2,71 @@
 
 namespace App\Http\Controllers\Candidate;
 
+use App\Enums\DocumentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DocumentRequest;
-use App\Repositories\DocumentRepository;
+use App\Models\Document;
 use App\Enums\DocumentType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DocumentController extends Controller
 {
-    public function __construct(
-        protected DocumentRepository $repository
-    ) {}
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(): View
     {
-        $userId = Auth::guard('candidate')->id();
-        $perPage = request('per_page', 5);
-        $candidate = $this->repository->getCandidateDocumentsPaginated($userId, $perPage);
+        $documents = Document::where('candidate_id', Auth::guard('candidate')->id())
+            ->orderByDesc('created_at')
+            ->paginate((int) request('per_page', 5));
 
         return view('candidate.documents.index', [
-            'candidate' => $candidate,
+            'candidate' => (object) [
+                'documents_count' => $documents->total(),
+                'documents' => $documents,
+            ],
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(): View
     {
-        $types = DocumentType::getWithLabels();
         return view('candidate.documents.create', [
-            'types' => $types
+            'types' => DocumentType::getWithLabels(),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(DocumentRequest $request): RedirectResponse
     {
         try {
-            $this->repository->store($request);
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('documents', $fileName, 'public');
+
+            $documentType = DocumentType::from($request->type);
+
+            Document::create([
+                'candidate_id' => Auth::guard('candidate')->id(),
+                'name' => $file->getClientOriginalName(),
+                'file' => $path,
+                'type' => $documentType,
+                'category' => $documentType->getCategory(),
+                'status' => DocumentStatus::PENDING,
+            ]);
+
             return redirect()->back()->with('success', 'Berhasil upload dokumen');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal upload: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         try {
-            $success = $this->repository->delete($id);
-            $message = $success ? 'Dokumen berhasil dihapus' : 'Gagal menghapus dokumen';
-            return redirect()->back()->with('success', $message);
+            $document = Document::where('candidate_id', Auth::guard('candidate')->id())
+                ->findOrFail($id);
+
+            $document->delete();
+
+            return redirect()->back()->with('success', 'Dokumen berhasil dihapus');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menghapus: ' . $e->getMessage());
         }

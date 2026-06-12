@@ -13,7 +13,6 @@ use App\Http\Controllers\Candidate\Jobs\VacancyController as JobVacancyControlle
 use App\Http\Controllers\Candidate\Jobs\ApplicationController as JobApplicationController;
 use App\Http\Controllers\Candidate\DocumentController;
 use App\Http\Controllers\Candidate\HomeController;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -110,30 +109,3 @@ Route::prefix('candidate')->name('candidate.')->group(function () {
 });
 
 
-Route::get('/test-email', function () {
-    try {
-        Mail::raw('This is a test email from Laravel.', function ($message) {
-            $message->to('zab.com2004@gmail.com')
-                    ->subject('Test Email from Laravel MADTIVE');
-        });
-
-        return 'Email sent successfully!';
-    } catch (\Exception $e) {
-        return 'Error sending email: ' . $e->getMessage();
-    }
-});
-
-Route::get('/test-hash', function() {
-    $plain = '123123123';
-    $hashFromDB = App\Models\Candidate::where('email', 'usertest@gmail.com')->first()->password;
-    
-    // Generate ulang hash untuk test
-    $newHash = Hash::make($plain);
-    
-    return [
-        'hash_lama_db' => $hashFromDB,
-        'hash_baru' => $hashFromDB,
-        'cocok_dengan_hash_lama' => Hash::check($plain, $hashFromDB) ? 'YA' : 'TIDAK',
-        'cocok_dengan_hash_baru' => Hash::check($plain, $newHash) ? 'YA' : 'TIDAK',
-    ];
-});

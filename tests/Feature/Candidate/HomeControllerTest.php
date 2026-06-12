@@ -1,44 +1,39 @@
 <?php
 
-namespace Tests\Feature\Candidate;
-
 use App\Models\Batch;
 use App\Models\Job;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class HomeControllerTest extends TestCase
-{
-    use RefreshDatabase;
+it('displays home page with expected data', function () {
+    $batch = Batch::factory()->active()->create();
+    Job::factory()->count(3)->create(['batch_id' => $batch->id]);
 
-    #[Test]
-    public function homeDisplaysPageWithExpectedData(): void
-    {
-        $batch = Batch::factory()->active()->create();
-        Job::factory()->count(3)->create(['batch_id' => $batch->id]);
+    $response = $this->get(route('candidate.home'));
 
-        $response = $this->get(route('candidate.home'));
+    $response->assertOk()
+        ->assertViewIs('candidate.home')
+        ->assertViewHas('jobsByType')
+        ->assertViewHas('jobTypes')
+        ->assertViewHas('categories')
+        ->assertViewHas('formattedBatch');
+});
 
-        $response->assertStatus(200);
-        $response->assertViewIs('candidate.home');
-        $response->assertViewHas('jobsByType');
-        $response->assertViewHas('jobTypes');
-        $response->assertViewHas('categories');
-        $response->assertViewHas('formattedBatch');
-    }
+it('returns job list html via ajax', function () {
+    $batch = Batch::factory()->active()->create();
+    Job::factory()->count(2)->internship()->create(['batch_id' => $batch->id]);
 
-    #[Test]
-    public function jobsByTypeReturnsRenderedHtmlViaAjax(): void
-    {
-        $batch = Batch::factory()->active()->create();
-        Job::factory()->count(2)->internship()->create(['batch_id' => $batch->id]);
+    $response = $this->getJson(route('candidate.home.jobs-by-type', [
+        'job_type' => 'Internship',
+    ]));
 
-        $response = $this->getJson(route('candidate.home.jobs-by-type', [
-            'job_type' => 'Internship',
-        ]));
+    $response->assertOk()
+        ->assertJsonStructure(['data', 'html']);
+});
 
-        $response->assertStatus(200);
-        $response->assertJsonStructure(['html']);
-    }
-}
+it('shows message when no active batch exists', function () {
+    Batch::factory()->inactive()->create();
+
+    $response = $this->get(route('candidate.home'));
+
+    $response->assertOk()
+        ->assertViewHas('message', 'Belum ada batch yang aktif');
+});

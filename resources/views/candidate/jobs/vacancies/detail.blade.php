@@ -34,7 +34,7 @@
 								<h4 class="mb-2"><a href="#" class="text-dark">{{ $job->code }} - {{ $job->title }}</a></h4>
 								<p class="text-muted mb-0"><i class="mdi mdi-link-variant mr-2"></i>{{ $job->category->name }}</p>
 								<p class="text-muted mb-0"><i class="mdi mdi-laptop mr-2"></i>{{ $job->type }} | {{ $job->experience }}</p>
-								<p class="text-muted mb-0"><i class="mdi mdi-account mr-2"></i>{{ $formattedAppliesTotal }} orang melamar pekerjaan ini</p>
+								<p class="text-muted mb-0"><i class="mdi mdi-account mr-2"></i>{{ $appliesCount }} orang melamar pekerjaan ini</p>
 							</div>
 						</div>
 					</div>

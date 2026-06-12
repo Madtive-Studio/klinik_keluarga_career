@@ -1,55 +1,86 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Create The Application
-|--------------------------------------------------------------------------
-|
-| The first thing we will do is create a new Laravel application instance
-| which serves as the "glue" for all the components of Laravel, and is
-| the IoC container for the system binding all of the various parts.
-|
-*/
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Http\Request;
+use Illuminate\Session\TokenMismatchException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'auth' => \App\Http\Middleware\Authenticate::class,
+            'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'admin' => \App\Http\Middleware\IsAdmin::class,
+            'candidate' => \App\Http\Middleware\IsCandidate::class,
+            'checkLevel' => \App\Http\Middleware\CheckLevel::class,
+        ]);
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->shouldRenderJsonWhen(
+            fn (Request $request, Throwable $e) => $request->expectsJson() || $request->is('api/*')
+        );
 
-/*
-|--------------------------------------------------------------------------
-| Bind Important Interfaces
-|--------------------------------------------------------------------------
-|
-| Next, we need to bind some important interfaces into the container so
-| we will be able to resolve them when needed. The kernels serve the
-| incoming requests to this application from both the web and CLI.
-|
-*/
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Halaman tidak ditemukan.'], 404);
+            }
+        });
 
-$app->singleton(
-    Illuminate\Contracts\Http\Kernel::class,
-    App\Http\Kernel::class
-);
+        $exceptions->render(function (AccessDeniedHttpException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Akses ditolak.'], 403);
+            }
+        });
 
-$app->singleton(
-    Illuminate\Contracts\Console\Kernel::class,
-    App\Console\Kernel::class
-);
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Silakan login terlebih dahulu.'], 401);
+            }
+        });
 
-$app->singleton(
-    Illuminate\Contracts\Debug\ExceptionHandler::class,
-    App\Exceptions\Handler::class
-);
+        $exceptions->render(function (TokenMismatchException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Sesi kedaluwarsa. Muat ulang halaman.'], 419);
+            }
+        });
 
-/*
-|--------------------------------------------------------------------------
-| Return The Application
-|--------------------------------------------------------------------------
-|
-| This script returns the application instance. The instance is given to
-| the calling script so we can separate the building of the instances
-| from the actual running of the application and sending responses.
-|
-*/
+        $exceptions->render(function (ThrottleRequestsException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Terlalu banyak permintaan. Coba lagi nanti.'], 429);
+            }
+        });
 
-return $app;
+        $exceptions->render(function (ServiceUnavailableHttpException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Layanan sedang tidak tersedia.'], 503);
+            }
+        });
+
+        $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Metode permintaan tidak diizinkan.'], 405);
+            }
+        });
+
+        $exceptions->render(function (HttpExceptionInterface $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage() ?: 'Terjadi kesalahan pada permintaan.',
+                ], $e->getStatusCode());
+            }
+        });
+    })->create();
