@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\{ User, Candidate, Company };
+use App\Models\Candidate;
+use App\Models\Company;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,31 +18,31 @@ class DatabaseSeeder extends Seeder
             ['email' => 'madtive@gmail.com'],
             [
                 'name' => 'HR Madtive Studio',
+                'email_verified_at' => now(),
                 'password' => '12345678',
                 'level' => 'admin',
-                'updated_at' => date('Y-m-d H:i:s'),
             ]
         );
 
-        Candidate::create([
-            'name' => 'John Doe',
-            'email' => 'usertest@gmail.com',
-            'email_verified_at' => now(),
-            'password' => '12345678',
-            'phone' => '081222534937',
-            'birth_date' => '2002-04-27',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+        Candidate::updateOrCreate(
+            ['email' => 'usertest@gmail.com'],
+            [
+                'name' => 'John Doe',
+                'email_verified_at' => now(),
+                'password' => '12345678',
+                'phone' => '081222534937',
+                'birth_date' => '2002-04-27',
+            ]
+        );
 
-        Company::create([
-            'name' => 'Madtive Studio',
-            'address' => 'Perumahan Rancabali, No 93. Muka, Kec. Cianjur, Kabupaten Cianjur, Jawa Barat 43216',
-            'location' => 'Cianjur, Jawa Barat',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
-        
+        Company::updateOrCreate(
+            ['name' => 'Madtive Studio'],
+            [
+                'address' => 'Perumahan Rancabali, No 93. Muka, Kec. Cianjur, Kabupaten Cianjur, Jawa Barat 43216',
+                'location' => 'Cianjur, Jawa Barat',
+            ]
+        );
+
         $this->call(BatchSeeder::class);
         $this->call(CategorySeeder::class);
         $this->call(JobSeeder::class);

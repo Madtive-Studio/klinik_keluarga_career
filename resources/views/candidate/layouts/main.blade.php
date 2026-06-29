@@ -15,7 +15,9 @@
 
 	@include('candidate.layouts.navbar')
 
-	@yield('content')
+	<main class="main-content">
+		@yield('content')
+	</main>
 
 	@include('candidate.layouts.footer')
 </body>

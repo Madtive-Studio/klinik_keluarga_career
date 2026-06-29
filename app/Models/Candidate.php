@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\Hash;
 
 class Candidate extends Authenticatable
 {
@@ -42,6 +41,7 @@ class Candidate extends Authenticatable
         'email_verified_at' => 'datetime',
         'identity_verified' => 'boolean',
         'document_completed' => 'boolean',
+        'password' => 'hashed',
     ];
 
     public function documents(): HasMany
@@ -82,15 +82,6 @@ class Candidate extends Authenticatable
     public function interviews()
     {
         return $this->hasMany(ScheduleInterview::class);
-    }
-
-    public function setPasswordAttribute($value)
-    {
-        if (strlen($value) === 60 && preg_match('/^\$2y\$/', $value)) {
-            $this->attributes['password'] = $value;
-        } else {
-            $this->attributes['password'] = Hash::make($value);
-        }
     }
 
     /**

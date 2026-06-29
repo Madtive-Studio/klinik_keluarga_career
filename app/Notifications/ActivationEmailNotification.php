@@ -40,7 +40,7 @@ class ActivationEmailNotification extends Notification
     {
         return (new MailMessage)
                     ->subject('Verifikasi Email Kamu')
-                    ->view('client.email_verification', [
+                    ->view('candidate.auth.email-verification', [
                         'candidate' => $this->candidate,
                         'verificationUrl' => $this->verificationUrl,
                     ]);

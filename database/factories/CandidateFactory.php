@@ -14,7 +14,7 @@ class CandidateFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'password' => bcrypt('password123'),
+            'password' => 'password123',
             'phone' => $this->faker->phoneNumber(),
             'birth_date' => $this->faker->date(),
             'address' => $this->faker->address(),

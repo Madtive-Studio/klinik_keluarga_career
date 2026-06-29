@@ -7,30 +7,39 @@ use App\Models\Category;
 use App\Models\Job;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use RuntimeException;
 
 class JobSeeder extends Seeder
 {
     public function run(): void
     {
-        $user        = User::where('email', 'madtive@gmail.com')->first();
+        $user = User::where('level', 'admin')->first();
         $activeBatch = Batch::where('status', 'ACTIVE')->first();
-        $categories  = Category::all();
+        $categories = Category::all();
 
-        // Buat job untuk setiap kategori (variasi type)
+        if (!$user) {
+            throw new RuntimeException('Admin user not found. Pastikan DatabaseSeeder dijalankan terlebih dahulu.');
+        }
+
+        if (!$activeBatch) {
+            throw new RuntimeException('Batch ACTIVE not found. Pastikan BatchSeeder dijalankan terlebih dahulu.');
+        }
+
+        if ($categories->isEmpty()) {
+            throw new RuntimeException('Category not found. Pastikan CategorySeeder dijalankan terlebih dahulu.');
+        }
+
         $categories->each(function ($category) use ($activeBatch, $user) {
-            // 1 fulltime per kategori
             Job::factory()
                 ->fulltime()
                 ->forBatchAndCategory($activeBatch->id, $category->id)
                 ->create(['user_id' => $user->id]);
 
-            // 1 random type per kategori
             Job::factory()
                 ->forBatchAndCategory($activeBatch->id, $category->id)
                 ->create(['user_id' => $user->id]);
         });
 
-        // Tambah beberapa internship
         Job::factory()
             ->count(3)
             ->internship()

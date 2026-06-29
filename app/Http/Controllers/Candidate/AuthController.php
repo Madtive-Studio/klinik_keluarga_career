@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Candidate;
 
 use App\Http\Controllers\Controller;
 use App\Models\Candidate;
-use App\Models\User;
 use App\Notifications\ActivationEmailNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +21,7 @@ class AuthController extends Controller
     public function process(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required|min:8',
         ]);
 
@@ -30,20 +29,19 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator);
         }
 
-        if (Auth::guard('candidate')->attempt([
-            'email' => $request->email,
-            'password' => $request->password
-        ])) {
-            $candidate = Candidate::where('email', $request->email)->whereNotNull('email_verified_at')->first();
-            if (!$candidate) {
-                return redirect()->back()->with('error', 'Email kamu belum di verifikasi');
-            }
+        $candidate = Candidate::where('email', $request->email)->first();
 
-            return redirect()->route('candidate.home');
-
-        } else {
+        if (!$candidate || !Hash::check($request->password, $candidate->password)) {
             return redirect()->back()->with('error', 'Email atau password salah!');
         }
+
+        if (!$candidate->email_verified_at) {
+            return redirect()->back()->with('error', 'Email kamu belum di verifikasi');
+        }
+
+        Auth::guard('candidate')->login($candidate, $request->boolean('remember'));
+
+        return redirect()->route('candidate.home');
     }
 
     public function register()
@@ -65,10 +63,16 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput($request->all());
         }
-        
-        $request['password'] = bcrypt($request->password);
-        $request['verification_token'] = Str::random(64);
-        $candidate = Candidate::create($request->all());
+
+        $candidate = Candidate::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'phone' => $request->phone,
+            'birth_date' => $request->birth_date,
+            'address' => $request->address,
+            'verification_token' => Str::random(64),
+        ]);
 
         $verificationUrl = route('candidate.email-verification', ['token' => $candidate->verification_token]);
         $candidate->notify(new ActivationEmailNotification($candidate, $verificationUrl));
@@ -82,21 +86,18 @@ class AuthController extends Controller
         if ($candidate) {
             $candidate->update([
                 'email_verified_at' => now(),
-                'verification_token' => null
+                'verification_token' => null,
             ]);
-    
+
             return view('candidate.auth.success_verification');
         }
 
-        return redirect()->route('candidate.login')->with('success', 'Email kamu sudah di verifikasi');
+        return redirect()->route('candidate.login.form')->with('success', 'Email kamu sudah di verifikasi');
     }
 
     public function logout()
     {
-        $user = auth()->guard('candidate')->user();
-        if ($user) {
-            Auth::logout();
-        }
+        Auth::guard('candidate')->logout();
 
         return redirect()->route('candidate.home');
     }

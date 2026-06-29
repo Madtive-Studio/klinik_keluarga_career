@@ -64,8 +64,8 @@
                 <label class="form-label" for="password">Password</label>
                 <div class="input-group input-group-merge">
                   <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-                  <span class="input-group-text cursor-pointer">
-                    <i class="ti ti-eye-off"></i>
+                  <span class="input-group-text cursor-pointer toggle-password" role="button" aria-label="Tampilkan password">
+                    <i class="ti ti-eye-off toggle-password-icon"></i>
                   </span>
                 </div>
               </div>
@@ -94,6 +94,20 @@
 		<script src="{{ asset('assets/admin/assets') }}/vendor/libs/@form-validation/auto-focus.js"></script>
 		<script src="{{ asset('assets/admin/assets') }}/js/main.js"></script>
 		<script src="{{ asset('assets/admin/assets') }}/js/pages-auth.js"></script>
+		<script>
+			document.querySelectorAll('.toggle-password').forEach(function (button) {
+				button.addEventListener('click', function () {
+					const input = button.closest('.input-group').querySelector('input');
+					const icon = button.querySelector('.toggle-password-icon');
+					const isHidden = input.type === 'password';
+
+					input.type = isHidden ? 'text' : 'password';
+					icon.classList.toggle('ti-eye-off', !isHidden);
+					icon.classList.toggle('ti-eye', isHidden);
+					button.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
+				});
+			});
+		</script>
     </body>
 
 </html>

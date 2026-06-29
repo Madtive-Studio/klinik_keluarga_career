@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -42,20 +41,6 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
-
-    /**
-     * Automatically hash the password when setting it.
-     *
-     * @param string $value
-     * @return void
-     */
-    public function setPasswordAttribute($value)
-    {
-        if (strlen($value) === 60 && preg_match('/^\$2y\$/', $value)) {
-            $this->attributes['password'] = $value;
-        } else {
-            $this->attributes['password'] = Hash::make($value);
-        }
-    }
 }

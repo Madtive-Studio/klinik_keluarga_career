@@ -76,7 +76,12 @@
 										<div class="col-lg-12">
 											<div class="form-group position-relative">
 												<label>Password <span class="text-danger">*</span></label>
-												<input type="password" name="password" class="form-control" placeholder="Password">
+												<div class="input-group">
+													<input type="password" name="password" id="password" class="form-control" placeholder="Password">
+													<button type="button" class="btn btn-outline-secondary toggle-password" aria-label="Tampilkan password">
+														<i class="mdi mdi-eye-off-outline toggle-password-icon"></i>
+													</button>
+												</div>
 												@error('password')
 													<span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
 												@enderror
@@ -106,6 +111,20 @@
 	<script src="{{ asset('assets/candidate/js/selectize.min.js') }}"></script>
 	<script src="{{ asset('assets/candidate/js/jquery.nice-select.min.js') }}"></script>
 	<script src="{{ asset('assets/candidate/js/app.js') }}"></script>
+	<script>
+		document.querySelectorAll('.toggle-password').forEach(function (button) {
+			button.addEventListener('click', function () {
+				const input = button.closest('.input-group').querySelector('input');
+				const icon = button.querySelector('.toggle-password-icon');
+				const isHidden = input.type === 'password';
+
+				input.type = isHidden ? 'text' : 'password';
+				icon.classList.toggle('mdi-eye-off-outline', !isHidden);
+				icon.classList.toggle('mdi-eye-outline', isHidden);
+				button.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
+			});
+		});
+	</script>
 </body>
 
 </html>
