@@ -7,7 +7,7 @@
 			</div>
 			{{-- <div class="col-lg-1 col-md-5 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0"> --}}
 			{{-- </div> --}}
-			<div class="col-lg-4 col-md-5 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0 pl-3">
+			<div class="col-lg-4 col-md-5 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0 ps-3">
 				<p class="text-white mb-4 footer-list-title">Alamat & Kontak Kami</p>
 				<p class="mt-4">Kampung Cigombong No. 64 Rt.01/09 <br> Kecamatan Pacet, Cianjur <br> Jawa Barat - Indonesia, 43253</p>
 

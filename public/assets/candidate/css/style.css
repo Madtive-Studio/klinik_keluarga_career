@@ -759,16 +759,7 @@ button:not(:disabled) {
 	font-size: 16px;
 }
 
-.form-group {
-	margin-bottom: 20px;
-}
-
-.form-group label {
-	font-size: 14px;
-	font-weight: 700;
-}
-
-.form-group .form-control {
+.form-control {
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	border: 1px solid #dee2e6;
@@ -779,26 +770,26 @@ button:not(:disabled) {
 	transition: all 0.5s ease;
 }
 
-.form-group .form-control:focus,
-.form-group .form-control.active {
-	border-color: #2f55d4;
+.form-control:focus,
+.form-control.active {
+	border-color: #2f55d4 !important;
 }
 
-.form-group textarea {
-	height: 120px !important;
-}
-
-.form-group textarea.form-control {
-	line-height: 25px;
-}
-
-.custom-control-input:checked ~ .custom-control-label::before {
-	color: #ffffff;
-	border-color: #2f55d4;
+.form-check-input:checked {
 	background-color: #2f55d4;
+	border-color: #2f55d4;
 }
 
-.custom-control-input:focus ~ .custom-control-label::before,
+.form-check-input:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border-color: #2f55d4 !important;
+}
+
+.form-check-label {
+	font-size: 14px;
+}
+
 .form-control:focus,
 .nice-select:active,
 .nice-select.open,
@@ -2063,25 +2054,6 @@ a.job-list[data-toggle='collapse'].collapsed:before {
 	margin-bottom: 0 !important;
 }
 
-.custom-control-label:before {
-	border: 1px solid #8492a6;
-	background-color: transparent;
-	width: 17px;
-	height: 17px;
-	top: 3px;
-}
-
-.custom-control-label:after {
-	width: 18px;
-	height: 18px;
-	top: 2px;
-	left: -25px;
-}
-
-.custom-control {
-	margin: 11px 20px;
-}
-
 .nice-select:after {
 	margin-top: -5px;
 	height: 7px;
@@ -2195,7 +2167,8 @@ a.job-list[data-toggle='collapse'].collapsed:before {
 		text-align: center;
 		margin-bottom: 18px !important;
 	}
-	.show-results .float-left {
+	.show-results .float-left,
+	.show-results .float-start {
 		float: none !important;
 	}
 	.job-detail-com-desc {

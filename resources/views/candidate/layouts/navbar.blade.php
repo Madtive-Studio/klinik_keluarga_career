@@ -47,7 +47,7 @@
 	<header id="topnav" class="defaultscroll scroll-active">
 		<div class="tagline">
 			<div class="container">
-				<div class="float-left">
+				<div class="float-start">
 					<div class="schedule-open">
 						<i class="mdi mdi-calendar-blank"></i>  Jadwal Buka : Setiap Hari
 					</div>
@@ -55,7 +55,7 @@
 						<i class="mdi mdi-clock-outline"></i>  Pagi: 06.00 - 13.00, Siang: 14.00 - 20.00
 					</div>
 				</div>
-				<div class="float-right">
+				<div class="float-end">
 					<div class="phone">
 						<i class="mdi mdi-phone-classic"></i> 0263 513513
 					</div>

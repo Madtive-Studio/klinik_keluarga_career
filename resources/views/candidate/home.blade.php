@@ -9,7 +9,7 @@
 					<div class="row justify-content-center">
 						<div class="col-lg-10">
 							<div class="title-heading text-center text-white">
-								<h1 class="heading font-weight-bold mb-3">Bergabunglah Bersama Kami!</h1>
+								<h1 class="heading fw-bold mb-3">Bergabunglah Bersama Kami!</h1>
 								<h6 class="small-title text-light mb-3 px-5">Kami memiliki komitmen ingin membuat Kota Cianjur sebagai ekosistem IT terbesar, kamu bisa wujudkan impian kamu bersama Madtive Studio!</h6>
 								<p class="mb-5">Aktif Batch : {{ $formattedBatch }}</p>
 							</div>
@@ -83,12 +83,12 @@
 				<div class="col-lg-9 text-center mt-4 pt-2">
 					<ul class="nav nav-pills nav nav-pills bg-white rounded nav-justified flex-column flex-sm-row" id="pills-tab" role="tablist">
 						<li class="nav-item">
-							<a class="nav-link rounded active" id="all-tab" data-toggle="pill" href="#all" role="tab" aria-controls="all" aria-selected="true" data-job-type="All">Semua</a>
+							<a class="nav-link rounded active" id="all-tab" data-bs-toggle="pill" href="#all" role="tab" aria-controls="all" aria-selected="true" data-job-type="All">Semua</a>
 						</li>
 						@foreach ($jobTypes as $value => $label)
 							@php $tabId = \Illuminate\Support\Str::slug($value, '-'); @endphp
 							<li class="nav-item">
-								<a class="nav-link rounded" id="{{ $tabId }}-tab" data-toggle="pill" href="#{{ $tabId }}" role="tab" aria-controls="{{ $tabId }}" aria-selected="false" data-job-type="{{ $value }}">{{ $label }}</a>
+								<a class="nav-link rounded" id="{{ $tabId }}-tab" data-bs-toggle="pill" href="#{{ $tabId }}" role="tab" aria-controls="{{ $tabId }}" aria-selected="false" data-job-type="{{ $value }}">{{ $label }}</a>
 							</li>
 						@endforeach
 					</ul>
@@ -147,7 +147,7 @@
 		}
 
 		$(function() {
-			$('a[data-toggle="pill"]').on('shown.bs.tab', function(e) {
+			$('a[data-bs-toggle="pill"]').on('shown.bs.tab', function(e) {
 				const tab = $(e.target);
 				const tabId = tab.attr('href').replace('#', '');
 				const jobType = tab.data('job-type');

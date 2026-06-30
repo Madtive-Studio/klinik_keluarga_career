@@ -8,7 +8,7 @@
 				<div class="col-lg-8 col-md-5 mt-4 mt-sm-0">
 					<h5>{{ $interviewsCount }} Tahap Wawancara dalam setahun terakhir</h5>
 					<div class="show-results">
-						<div class="sort-button float-left">
+						<div class="sort-button float-start">
 							<select class="nice-select rounded" name="urutkan" id="urutkan">
 								<option value="">Tampilkan Berdasarkan</option>
 								<option value="Terbaru" {{ !empty(request('urutkan')) && request('urutkan') === 'Terbaru' ? 'selected' : '' }}>Paling Baru</option>
@@ -35,12 +35,12 @@
 												<p class="text-muted mb-0">{{ $interview->job->category->name ?? '-' }}
 												</p>
 												<ul class="list-inline mb-0">
-													<li class="list-inline-item mr-3">
-														<p class="text-muted mb-0"><i class="mdi mdi-calendar mr-2"></i>Waktu : {{ \Carbon\Carbon::parse($interview->start_datetime)->format('d/m/Y H:i') }} - {{ \Carbon\Carbon::parse($interview->end_datetime)->format('d/m/Y H:i') }}</p>
+													<li class="list-inline-item me-3">
+														<p class="text-muted mb-0"><i class="mdi mdi-calendar me-2"></i>Waktu : {{ \Carbon\Carbon::parse($interview->start_datetime)->format('d/m/Y H:i') }} - {{ \Carbon\Carbon::parse($interview->end_datetime)->format('d/m/Y H:i') }}</p>
 														@if ($interview->is_online)
-															<p class="text-muted mb-0"><i class="mdi mdi-link mr-2"></i>Link : <a href="{{ $interview->link }}" target="_blank">{{ $interview->link }}</a></p>
+															<p class="text-muted mb-0"><i class="mdi mdi-link me-2"></i>Link : <a href="{{ $interview->link }}" target="_blank">{{ $interview->link }}</a></p>
 														@else
-															<p class="text-muted mb-0"><i class="mdi mdi-map-marker mr-2"></i>Alamat : {{ $company->address }}</p>
+															<p class="text-muted mb-0"><i class="mdi mdi-map-marker me-2"></i>Alamat : {{ $company->address }}</p>
 														@endif
 													</li>
 												</ul>

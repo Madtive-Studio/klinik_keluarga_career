@@ -65,7 +65,7 @@
 									@csrf
 									<div class="row">
 										<div class="col-lg-12">
-											<div class="form-group position-relative">
+											<div class="mb-3 position-relative">
 												<label>Email <span class="text-danger">*</span></label>
 												<input type="email" class="form-control" placeholder="Email" name="email">
 												@error('email')
@@ -74,7 +74,7 @@
 											</div>
 										</div>
 										<div class="col-lg-12">
-											<div class="form-group position-relative">
+											<div class="mb-3 position-relative">
 												<label>Password <span class="text-danger">*</span></label>
 												<input type="password" name="password" class="form-control" placeholder="Password">
 												@error('password')
@@ -86,8 +86,8 @@
 											<button class="btn btn-primary w-100">Login</button>
 										</div>
 										<div class="col-12 text-center">
-											<p class="mb-0 mt-3"><small class="text-dark mr-2">Belum punya akun?</small>
-												<a href="{{ route('candidate.register.form') }}" class="text-dark font-weight-bold">Daftar</a>
+											<p class="mb-0 mt-3"><small class="text-dark me-2">Belum punya akun?</small>
+												<a href="{{ route('candidate.register.form') }}" class="text-dark fw-bold">Daftar</a>
 											</p>
 										</div>
 									</div>

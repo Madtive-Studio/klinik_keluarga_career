@@ -9,9 +9,9 @@
 					<div class="text-center text-white">
 						<h4 class="text-uppercase title mb-4">Lowongan Pekerjaan</h4>
 						<ul class="page-next d-inline-block mb-0">
-							<li><a href="#" class="text-uppercase font-weight-bold">Beranda</a></li>
+							<li><a href="#" class="text-uppercase fw-bold">Beranda</a></li>
 							<li>
-								<span class="text-uppercase text-white font-weight-bold">Cari Lowongan Pekerjaan</span>
+								<span class="text-uppercase text-white fw-bold">Cari Lowongan Pekerjaan</span>
 							</li>
 						</ul>
 					</div>
@@ -64,7 +64,7 @@
 					<div class="left-sidebar">
 						<div class="accordion" id="accordionExample">
 							<div class="card rounded mt-4">
-								<a data-toggle="collapse" href="#collapsetwo" class="job-list" aria-expanded="true"
+								<a data-bs-toggle="collapse" href="#collapsetwo" class="job-list" aria-expanded="true"
 									aria-controls="collapsetwo">
 									<div class="card-header" id="headingtwo">
 										<h6 class="mb-0 text-dark f-18">Filter berdasarkan <br> kategori</h6>
@@ -72,16 +72,16 @@
 								</a>
 								<div id="collapsetwo" class="collapse show" aria-labelledby="headingtwo">
 									<div class="card-body p-0">
-										<div class="custom-control custom-radio">
-											<input type="radio" id="category_0" name="category_id" value="SEMUA" class="custom-control-input category-filter" {{ !request('category') ? 'checked' : '' }}>
-											<label class="custom-control-label ml-1 text-muted f-15" for="category_0">
+										<div class="form-check">
+											<input type="radio" id="category_0" name="category_id" value="SEMUA" class="form-check-input category-filter" {{ !request('category') ? 'checked' : '' }}>
+											<label class="form-check-label ms-1 text-muted f-15" for="category_0">
 												Semua
 											</label>
 										</div>
 										@forelse ($categories as $key => $category)
-											<div class="custom-control custom-radio">
-												<input type="radio" id="category_{{ $category->id }}" name="category_id" value="{{ $category->id }}" class="custom-control-input category-filter" {{ request('category') == $category->id ? 'checked' : '' }}>
-												<label class="custom-control-label ml-1 text-muted f-15" for="category_{{ $category->id }}">
+											<div class="form-check">
+												<input type="radio" id="category_{{ $category->id }}" name="category_id" value="{{ $category->id }}" class="form-check-input category-filter" {{ request('category') == $category->id ? 'checked' : '' }}>
+												<label class="form-check-label ms-1 text-muted f-15" for="category_{{ $category->id }}">
 													{{ $category->name }}
 												</label>
 											</div>
@@ -99,15 +99,15 @@
 					<div class="row align-items-center">
 						<div class="col-lg-12">
 							<div class="show-results">
-								<div class="float-left">
+								<div class="float-start">
 									<h5 class="text-dark mb-0 pt-2 f-18 info-showing">
 										Menampilkan data dari 1 - {{ request()->get('per_page', 10) }}
 									</h5>
 								</div>
 
-								<div class="float-right">
+								<div class="float-end">
 									<div class="form-inline">
-										<label class="mr-2">Tampilkan:</label>
+										<label class="me-2">Tampilkan:</label>
 										<select id="perPage" name="per_page" class="form-control form-control-sm" style="width: auto;">
 											<option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
 											<option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
@@ -124,7 +124,7 @@
 
 					{{-- Pagination Links --}}
 					<div id="pagination-container" class="mt-4 d-flex justify-content-center">
-						{{ $jobs->appends(request()->query())->links('pagination::bootstrap-4') }}
+						{{ $jobs->appends(request()->query())->links('pagination::bootstrap-5') }}
 					</div>
 					
 					{{-- Info Pagination --}}

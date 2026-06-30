@@ -65,7 +65,7 @@
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>Nama lengkap <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="..." name="name" value="{{ old('name') }}">
                                                 @error('name') 
@@ -74,7 +74,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>Nomor Telepon (WA) <span class="text-danger">*</span></label>
                                                 <input type="number" class="form-control" placeholder="..." name="phone" value="{{ old('phone') }}">
                                                 @error('phone') 
@@ -83,7 +83,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>Tanggal Lahir <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control flatpickr" readonly placeholder="..." name="birth_date" value="{{ old('birth_date') }}">
                                                 @error('birth_date') <span
@@ -92,7 +92,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>Email <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="..." name="email" value="{{ old('email') }}">
                                                 @error('email') 
@@ -101,7 +101,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>Alamat Lengkap <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="..." name="address" value="{{ old('address') }}">
                                                 @error('address') 
@@ -110,7 +110,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>Password <span class="text-danger">*</span></label>
                                                 <input type="password" class="form-control" placeholder="..." name="password">
                                                 @error('password') 
@@ -119,7 +119,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>Konfirmasi Password <span class="text-danger">*</span></label>
                                                 <input type="password" class="form-control" placeholder="..." name="password_confirmation">
                                                 @error('password_confirmation') 
@@ -131,8 +131,8 @@
                                             <button class="btn btn-primary w-100">Register</button>
                                         </div>
                                         <div class="mx-auto">
-                                            <p class="mb-0 mt-3"><small class="text-dark mr-2">Sudah punya akun?</small>
-                                                <a href="{{ route('candidate.login.form') }}" class="text-dark font-weight-bold">Login</a>
+                                            <p class="mb-0 mt-3"><small class="text-dark me-2">Sudah punya akun?</small>
+                                                <a href="{{ route('candidate.login.form') }}" class="text-dark fw-bold">Login</a>
                                             </p>
                                         </div>
                                     </div>

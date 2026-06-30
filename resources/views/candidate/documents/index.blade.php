@@ -29,7 +29,7 @@
 						
 						{{-- Optional: Pilihan jumlah item per halaman --}}
 						<div class="form-inline">
-							<label class="mr-2">Tampilkan:</label>
+							<label class="me-2">Tampilkan:</label>
 							<select id="perPage" class="form-control form-control-sm" style="width: auto;">
 								<option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
 								<option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
@@ -59,9 +59,9 @@
 													</a>
 												</h6>
 												<ul class="list-inline mb-0">
-													<li class="list-inline-item mr-3">
+													<li class="list-inline-item me-3">
 														<p class="text-muted mb-0">
-															<i class="mdi mdi-calendar mr-2"></i>
+															<i class="mdi mdi-calendar me-2"></i>
 															Diupload {{ $document->created_at->diffForHumans() }}
 														</p>
 													</li>
@@ -69,7 +69,7 @@
 											</div>
 										</div>
 										<div class="col-lg-3 col-md-3">
-											<div class="job-list-button-sm text-right d-flex justify-content-end gap-1">
+											<div class="job-list-button-sm text-end d-flex justify-content-end gap-1">
 												<form action="{{ route('candidate.my.documents.destroy', $document->id) }}" method="POST">
 													@csrf
 													@method('DELETE')
@@ -94,7 +94,7 @@
 					
 					{{-- Pagination Links --}}
 					<div class="mt-4 d-flex justify-content-center">
-						{{ $candidate->documents->appends(request()->query())->links('pagination::bootstrap-4') }}
+						{{ $candidate->documents->appends(request()->query())->links('pagination::bootstrap-5') }}
 					</div>
 					
 					{{-- Info Pagination --}}
