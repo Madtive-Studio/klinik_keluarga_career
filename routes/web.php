@@ -12,6 +12,7 @@ use App\Http\Controllers\Candidate\AuthController;
 use App\Http\Controllers\Candidate\Jobs\VacancyController as JobVacancyController;
 use App\Http\Controllers\Candidate\Jobs\ApplicationController as JobApplicationController;
 use App\Http\Controllers\Candidate\DocumentController;
+use App\Http\Controllers\Candidate\ProfileController;
 use App\Http\Controllers\Candidate\HomeController;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -103,6 +104,8 @@ Route::prefix('candidate')->name('candidate.')->group(function () {
                 Route::resource('applications', JobApplicationController::class)->only(['index'])->parameters(['applications' => 'uuid']);
             });
             Route::resource('documents', DocumentController::class);
+            Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+            Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
         });
 
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');

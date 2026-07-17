@@ -16,6 +16,8 @@
 							<th>Job</th>
 							<th>Batch</th>
 							<th>CV</th>
+							<th>Score</th>
+							<th>Rekomendasi</th>
 							<th>Status</th>
 							<th>Action</th>
 						</tr>
@@ -60,7 +62,16 @@
 							data: 'batch.name'
 						},
 						{
-							data: 'cv.name'
+							data: 'document.name'
+						},
+						{
+							data: 'auto_score',
+							className: 'text-center'
+						},
+						{
+							data: 'score_recommendation',
+							orderable: false,
+							searchable: false
 						},
 						{
 							data: 'status'
@@ -70,7 +81,7 @@
 						}
 					],
 					order: [
-						[1, 'asc']
+						[5, 'desc']
 					],
 					dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-6 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end mt-n6 mt-md-0"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
 					displayLength: 7,

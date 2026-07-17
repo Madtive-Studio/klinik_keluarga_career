@@ -17,9 +17,9 @@ class ApplyFactory extends Factory
     {
         return [
             'uuid'         => (string) Str::uuid(),
-            'cover_letter' => $this->faker->paragraph(),
+            'cover_letter' => Str::limit($this->faker->sentence(), 250, ''),
             'status'       => 'IN REVIEW',
-            'description'  => $this->faker->paragraph(),
+            'description'  => Str::limit($this->faker->sentence(), 250, ''),
             'created_at'   => now(),
             'updated_at'   => now(),
         ];

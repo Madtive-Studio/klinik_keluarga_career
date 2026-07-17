@@ -14,14 +14,23 @@ class Apply extends Model
     protected $fillable = [
         'uuid',
         'candidate_id',
-        'document_id', 
+        'document_id',
         'job_id',
         'batch_id',
         'cover_letter',
         'status',
         'description',
+        'auto_score',
+        'score_recommendation',
+        'score_breakdown',
+        'scored_at',
         'created_at',
         'updated_at',
+    ];
+
+    protected $casts = [
+        'score_breakdown' => 'array',
+        'scored_at' => 'datetime',
     ];
 
     public function getRouteKeyName()
@@ -42,6 +51,11 @@ class Apply extends Model
     public function document(): BelongsTo
     {
         return $this->belongsTo(Document::class, 'document_id', 'id');
+    }
+
+    public function cv(): BelongsTo
+    {
+        return $this->document();
     }
 
     public function candidate(): BelongsTo

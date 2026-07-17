@@ -4,6 +4,7 @@ namespace Tests\Feature\Candidate;
 
 use App\Models\Apply;
 use App\Models\Candidate;
+use App\Models\CandidateProfile;
 use App\Models\Document;
 use App\Models\Job;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -25,6 +26,11 @@ class ApplicationControllerTest extends TestCase
 
         $this->candidate = Candidate::factory()->create([
             'email_verified_at' => now(),
+        ]);
+
+        CandidateProfile::factory()->for($this->candidate)->create([
+            'education_level' => 'S1',
+            'years_of_experience' => 2,
         ]);
     }
 
@@ -84,6 +90,10 @@ class ApplicationControllerTest extends TestCase
             'job_id'       => $job->id,
             'batch_id'     => $job->batch_id,
         ]);
+
+        $apply = Apply::where('candidate_id', $this->candidate->id)->where('job_id', $job->id)->first();
+        $this->assertNotNull($apply->auto_score);
+        $this->assertNotNull($apply->score_recommendation);
     }
 
     #[Test]
