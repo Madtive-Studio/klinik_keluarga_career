@@ -28,6 +28,58 @@
 <script src="{{ asset('assets/admin/assets/vendor/libs/swiper/swiper.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/js/main.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const input = document.getElementById('admin-global-search');
+  const resultsBox = document.getElementById('admin-global-search-results');
+  if (!input || !resultsBox) return;
+
+  let timer = null;
+
+  const renderResults = (items) => {
+    if (!items.length) {
+      resultsBox.innerHTML = '<div class="dropdown-item text-muted">Tidak ada hasil</div>';
+      resultsBox.style.display = 'block';
+      return;
+    }
+
+    resultsBox.innerHTML = items.map(item => `
+      <a href="${item.url}" class="dropdown-item">
+        <span class="badge bg-label-primary me-2">${item.type}</span>${item.label}
+      </a>
+    `).join('');
+    resultsBox.style.display = 'block';
+  };
+
+  input.addEventListener('input', function () {
+    clearTimeout(timer);
+    const q = this.value.trim();
+    if (q.length < 2) {
+      resultsBox.style.display = 'none';
+      return;
+    }
+
+    timer = setTimeout(async () => {
+      const response = await fetch(`{{ route('admin.search') }}?q=${encodeURIComponent(q)}`);
+      const data = await response.json();
+      renderResults(data.results || []);
+    }, 250);
+  });
+
+  document.addEventListener('click', function (event) {
+    if (!input.contains(event.target) && !resultsBox.contains(event.target)) {
+      resultsBox.style.display = 'none';
+    }
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if ((event.ctrlKey || event.metaKey) && event.key === '/') {
+      event.preventDefault();
+      input.focus();
+    }
+  });
+});
+</script>
 <script src="{{ asset('assets/admin/assets/js/dashboards-analytics.js') }}"></script>
 @yield('js')
 @endsection

@@ -35,23 +35,11 @@
     </li>
 
     <!-- Job Management -->
-    <li class="menu-item {{ request()->is('admin/jobs*') ? 'active open' : '' }}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
+    <li class="menu-item {{ request()->is('admin/jobs*') ? 'active' : '' }}">
+      <a href="{{ route('admin.jobs.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-files"></i>
-        <div data-i18n="Job Management">Job Management</div>
+        <div data-i18n="Job List">Job List</div>
       </a>
-      <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('admin.jobs.index') ? 'active' : '' }}">
-          <a href="{{ route('admin.jobs.index') }}" class="menu-link">
-            <div data-i18n="Job List">Job List</div>
-          </a>
-        </li>
-        <li class="menu-item {{ request()->routeIs('admin.jobs.create') ? 'active' : '' }}">
-          <a href="{{ route('admin.jobs.create') }}" class="menu-link">
-            <div data-i18n="Create New Job">Create New Job</div>
-          </a>
-        </li>
-      </ul>
     </li>
 
     <li class="menu-header small">
@@ -70,7 +58,7 @@
             <div data-i18n="Candidate List">Candidate List</div>
           </a>
         </li>
-        <li class="menu-item {{ request()->routeIs('admin.applies.index') ? 'active' : '' }}">
+        <li class="menu-item {{ request()->routeIs('admin.applies.*') ? 'active' : '' }}">
           <a href="{{ route('admin.applies.index') }}" class="menu-link">
             <div data-i18n="Apply List">Apply List</div>
           </a>
@@ -82,24 +70,5 @@
         </li>
       </ul>
     </li>
-
-    <!-- Apply Status Filters (submenu dari applies) -->
-    <li class="menu-item menu-sub-header">
-      <span class="menu-link" style="cursor: default; opacity: 0.7;">
-        <i class="menu-icon tf-icons ti ti-filter"></i>
-        <div data-i18n="Filter by Status">Filter by Status</div>
-      </span>
-    </li>
-    @php
-    $statuses = ['IN REVIEW', 'NOT SUITABLE', 'SHORTLISTED', 'HIRED'];
-    @endphp
-
-    @foreach($statuses as $status)
-    <li class="menu-item {{ request()->fullUrlIs(route('admin.applies.index', ['status' => $status])) ? 'active' : '' }}" style="padding-left: 2rem;">
-      <a href="{{ route('admin.applies.index', ['status' => $status]) }}" class="menu-link">
-        <div data-i18n="{{ $status }}">{{ str_replace('_', ' ', ucwords(strtolower($status))) }}</div>
-      </a>
-    </li>
-    @endforeach
   </ul>
 </aside>

@@ -6,6 +6,18 @@
 				<strong>{{ $message }}</strong>
 			</div>
 		@endif
+
+		<ul class="nav nav-pills flex-wrap gap-2 mb-4">
+			<li class="nav-item">
+				<a class="nav-link {{ empty($status) ? 'active' : '' }}" href="{{ route('admin.applies.index') }}">Semua</a>
+			</li>
+			@foreach ($statuses as $value => $label)
+				<li class="nav-item">
+					<a class="nav-link {{ $status === $value ? 'active' : '' }}" href="{{ route('admin.applies.index', ['status' => $value]) }}">{{ $label }}</a>
+				</li>
+			@endforeach
+		</ul>
+
 		<div class="card">
 			<div class="card-datatable table-responsive pt-0">
 				<table class="datatables-basic table">

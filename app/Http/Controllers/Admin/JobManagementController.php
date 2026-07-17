@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JobRequest;
+use App\Enums\JobType;
+use App\Models\Apply;
 use App\Models\Job;
 use App\Models\Batch;
 use App\Models\Category;
+use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 
@@ -24,11 +27,32 @@ class JobManagementController extends Controller
 
     public function datatables()
     {
-        $query = Job::with(['batch', 'category'])->orderBy('created_at', 'DESC');
+        $query = Job::with(['batch', 'category'])->orderBy('id', 'ASC');
         return DataTables::of($query)
             ->addIndexColumn()
             ->editColumn('is_show_salary', function ($row) {
-                return $row->is_show_salary ? 'YES' : 'NO';
+                $checked = $row->is_show_salary ? ' checked' : '';
+                $stateLabel = $row->is_show_salary ? 'switch-on' : 'switch-off';
+
+                return '<label class="switch switch-primary switch-sm mb-0">'
+                    . '<input type="checkbox" class="switch-input toggle-show-salary" data-id="' . $row->id . '"' . $checked . '>'
+                    . '<span class="switch-toggle-slider">'
+                    . '<span class="' . $stateLabel . '"></span>'
+                    . '</span>'
+                    . '</label>';
+            })
+            ->editColumn('salary', function ($row) {
+                return formatSalaryShort($row->salary);
+            })
+            ->editColumn('type', function ($row) {
+                return JobType::tryBadge($row->type);
+            })
+            ->editColumn('quota', function ($row) {
+                $applicants = Apply::where('job_id', $row->id)
+                    ->where('batch_id', $row->batch_id)
+                    ->count();
+
+                return $applicants . '/' . (int) $row->quota;
             })
             ->addColumn('action', function ($row) {
                 $btn = '<div class="btn-group" role="group" aria-label="Basic example">';
@@ -38,7 +62,7 @@ class JobManagementController extends Controller
 
                 return $btn;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'is_show_salary', 'type'])
             ->make(true);
     }
 
@@ -69,7 +93,7 @@ class JobManagementController extends Controller
             'salary', 'experience', 'qualification', 'description',
         ]) + [
             'user_id' => auth()->user()->id,
-            'is_show_salary' => strtolower((string) $request->is_show_salary) === 'on',
+            'is_show_salary' => $request->input('is_show_salary') === '1',
         ]);
 
         $job->criteria()->create($request->criteriaAttributes());
@@ -113,7 +137,7 @@ class JobManagementController extends Controller
             'salary', 'experience', 'qualification', 'description',
         ]) + [
             'user_id' => auth()->user()->id,
-            'is_show_salary' => strtolower((string) $request->is_show_salary) === 'on',
+            'is_show_salary' => $request->input('is_show_salary') === '1',
         ]);
 
         $job->criteria()->updateOrCreate(
@@ -122,6 +146,23 @@ class JobManagementController extends Controller
         );
 
         return redirect()->route('admin.jobs.index')->with('success', 'Berhasil mengubah data lowongan pekerjaan');
+    }
+
+    public function toggleShowSalary(Request $request, string $id)
+    {
+        $request->validate([
+            'is_show_salary' => ['required', 'boolean'],
+        ]);
+
+        $job = Job::findOrFail($id);
+        $job->update([
+            'is_show_salary' => $request->boolean('is_show_salary'),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'is_show_salary' => (bool) $job->is_show_salary,
+        ]);
     }
 
     /**

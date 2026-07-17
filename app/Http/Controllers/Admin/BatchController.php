@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Batch;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -22,9 +23,15 @@ class BatchController extends Controller
 
     public function datatables()
     {
-        $query = Batch::orderBy('created_at', 'DESC');
+        $query = Batch::orderBy('id', 'ASC');
         return DataTables::of($query)
             ->addIndexColumn()
+            ->editColumn('start_date', function ($row) {
+                return Carbon::parse($row->start_date)->diffForHumans();
+            })
+            ->editColumn('end_date', function ($row) {
+                return Carbon::parse($row->end_date)->diffForHumans();
+            })
             ->editColumn('status', function ($row) {
                 $bg = $row->status == 'ACTIVE' ? 'success' : 'danger';
                 $badge = '<span class="badge bg-'.$bg.'">'.strtoupper($row->status).'</span>';

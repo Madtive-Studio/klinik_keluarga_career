@@ -1,66 +1,105 @@
 @extends('admin.layouts.main')
 @section('content')
 	<div class="container-fluid flex-grow-1 container-p-y">
-		<div class="row g-6">
+		<div class="row g-4 mb-4">
 			@if (!empty($activeBatch))
 				<div class="col-md-3">
 					<div class="card h-100">
-						<div class="card-header pb-3">
-							<h5 class="card-title mb-1">Active Batch</h5>
-							<p class="card-subtitle">Current batch active</p>
-						</div>
 						<div class="card-body">
-							<div id="ordersLastWeek"></div>
-							<div class="d-flex justify-content-between flex-column gap-1">
-								<h5 class="mb-0">{{ $activeBatch->code }} - {{ $activeBatch->name }}</h5>
-								<small>{{ \Carbon\Carbon::parse($activeBatch->start_date)->translatedFormat('d M Y') }} - {{ \Carbon\Carbon::parse($activeBatch->end_date)->translatedFormat('d M Y') }}</small>
-							</div>
+							<span class="badge bg-label-success mb-2">Active Batch</span>
+							<h5 class="mb-1">{{ $activeBatch->code }} - {{ $activeBatch->name }}</h5>
+							<small class="text-muted">{{ \Carbon\Carbon::parse($activeBatch->start_date)->diffForHumans() }} s/d {{ \Carbon\Carbon::parse($activeBatch->end_date)->diffForHumans() }}</small>
 						</div>
 					</div>
 				</div>
 			@endif
 			<div class="col-md-3">
 				<div class="card h-100">
-					<div class="card-header pb-0">
-						<h5 class="card-title mb-1">Job List</h5>
-						<p class="card-subtitle">All of job list total</p>
-					</div>
-					<div id="salesLastYear"></div>
-					<div class="card-body pt-0">
-						<div class="d-flex justify-content-between align-items-center mt-3 gap-3">
-							<h4 class="mb-0">{{ $jobList }}</h4>
-						</div>
+					<div class="card-body">
+						<p class="mb-1 text-muted">Job List</p>
+						<h3 class="mb-0">{{ $jobList }}</h3>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-3">
 				<div class="card h-100">
-					<div class="card-header pb-0">
-						<h5 class="card-title mb-1">Applicants</h5>
-						<p class="card-subtitle">All of applicants total</p>
-					</div>
-					<div id="salesLastYear"></div>
-					<div class="card-body pt-0">
-						<div class="d-flex justify-content-between align-items-center mt-3 gap-3">
-							<h4 class="mb-0">{{ $applicants }}</h4>
-						</div>
+					<div class="card-body">
+						<p class="mb-1 text-muted">Applicants</p>
+						<h3 class="mb-0">{{ $applicants }}</h3>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-3">
 				<div class="card h-100">
-					<div class="card-header pb-0">
-						<h5 class="card-title mb-1">Hired</h5>
-						<p class="card-subtitle">All of hired total</p>
-					</div>
-					<div id="salesLastYear"></div>
-					<div class="card-body pt-0">
-						<div class="d-flex justify-content-between align-items-center mt-3 gap-3">
-							<h4 class="mb-0">{{ $hired }}</h4>
-						</div>
+					<div class="card-body">
+						<p class="mb-1 text-muted">Hired</p>
+						<h3 class="mb-0">{{ $hired }}</h3>
 					</div>
 				</div>
 			</div>
 		</div>
+
+		<div class="card">
+			<div class="card-header">
+				<h5 class="card-title mb-1">Grafik Pendaftaran & Diterima</h5>
+				<p class="card-subtitle mb-0">12 bulan terakhir</p>
+			</div>
+			<div class="card-body">
+				<div id="dashboardRecruitmentChart"></div>
+			</div>
+		</div>
 	</div>
+@endsection
+
+@section('js')
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const chartEl = document.querySelector('#dashboardRecruitmentChart');
+			if (!chartEl || typeof ApexCharts === 'undefined') {
+				return;
+			}
+
+			const options = {
+				chart: {
+					height: 360,
+					type: 'area',
+					toolbar: { show: false }
+				},
+				series: [
+					{
+						name: 'Kandidat Daftar',
+						data: @json($candidateSeries)
+					},
+					{
+						name: 'Diterima (Hired)',
+						data: @json($hiredSeries)
+					}
+				],
+				colors: ['#7367F0', '#28C76F'],
+				dataLabels: { enabled: false },
+				stroke: { curve: 'smooth', width: 3 },
+				fill: {
+					type: 'gradient',
+					gradient: {
+						shadeIntensity: 0.8,
+						opacityFrom: 0.45,
+						opacityTo: 0.05
+					}
+				},
+				xaxis: {
+					categories: @json($chartLabels)
+				},
+				yaxis: {
+					labels: {
+						formatter: value => Math.round(value)
+					}
+				},
+				legend: {
+					position: 'top'
+				}
+			};
+
+			new ApexCharts(chartEl, options).render();
+		});
+	</script>
 @endsection
