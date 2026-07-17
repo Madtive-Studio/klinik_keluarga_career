@@ -49,14 +49,16 @@
 
 			if (dt_basic_table.length) {
 				dt_basic = dt_basic_table.DataTable({
-					ajax: "{{ route('admin.candidates.datatables') }}",
+					ajax: "{{ route('admin.candidates.datatables') }}" + (window.location.search || ''),
 					columns: [{
-							data: 'DT_RowIndex',
-							name: 'DT_RowIndex',
+							data: null,
 							searchable: false,
-							sortable: false,
+							orderable: false,
 							className: 'text-center',
-							width: '5%'
+							width: '5%',
+							render: function (data, type, row, meta) {
+								return meta.row + meta.settings._iDisplayStart + 1;
+							}
 						},
 						{
 							data: 'name'
@@ -91,7 +93,7 @@
 						targets: 0,
 					}, ],
 					order: [
-						[1, 'asc']
+						[0, 'asc']
 					],
 					dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-6 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end mt-n6 mt-md-0"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
 					displayLength: 7,

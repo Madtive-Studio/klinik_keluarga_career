@@ -25,8 +25,10 @@ class ApplicantController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('status');
+
         return view('admin.applies.index', [
-            'status' => $status
+            'status' => $status,
+            'statuses' => self::STATUS_LABELS,
         ]);
     }
 

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
@@ -21,9 +22,12 @@ class CategoryController extends Controller
 
     public function datatables()
     {
-        $query = Category::orderBy('created_at', 'DESC');
+        $query = Category::orderBy('id', 'ASC');
         return DataTables::of($query)
             ->addIndexColumn()
+            ->editColumn('created_at', function ($row) {
+                return Carbon::parse($row->created_at)->diffForHumans();
+            })
             ->addColumn('action', function ($row) {
                 $btn = '<div class="btn-group" role="group" aria-label="Basic example">';
                 $btn .= '<button type="button" class="btn btn-sm btn-warning edit" data-route="'.route('admin.categories.edit', $row->id).'"><i class="ti ti-pencil"></i></button>';

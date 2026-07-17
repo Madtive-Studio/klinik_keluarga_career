@@ -13,14 +13,12 @@
 						<tr>
 							<th>No</th>
 							<th>Batch</th>
-							<th>Code</th>
 							<th>Title</th>
 							<th>Category</th>
-							<th>Is Show Salary</th>
+							<th>Show Salary</th>
 							<th>Salary</th>
 							<th>Type</th>
-							<th>Experience</th>
-							<th>Quota</th>
+							<th>Pendaftar / Quota</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -53,18 +51,17 @@
 				dt_basic = dt_basic_table.DataTable({
 					ajax: "{{ route('admin.jobs.datatables') }}",
 					columns: [{
-							data: 'DT_RowIndex',
-							name: 'DT_RowIndex',
+							data: null,
 							searchable: false,
-							sortable: false,
+							orderable: false,
 							className: 'text-center',
-							width: '5%'
+							width: '5%',
+							render: function (data, type, row, meta) {
+								return meta.row + meta.settings._iDisplayStart + 1;
+							}
 						},
 						{
 							data: 'batch.code'
-						},
-						{
-							data: 'code'
 						},
 						{
 							data: 'title'
@@ -82,9 +79,6 @@
 							data: 'type'
 						},
 						{
-							data: 'experience'
-						},
-						{
 							data: 'quota'
 						},
 						{
@@ -99,7 +93,7 @@
 						targets: 0,
 					}, ],
 					order: [
-						[1, 'asc']
+						[0, 'asc']
 					],
 					dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-6 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end mt-n6 mt-md-0"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
 					displayLength: 7,
@@ -111,7 +105,7 @@
 						}
 					},
 					buttons: [{
-						text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Create</span>',
+						text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Tambah Job</span>',
 						className: 'create-new btn btn-primary waves-effect waves-light'
 					}],
 					initComplete: function(settings, json) {
@@ -137,6 +131,25 @@
 					let route = getAttrValue(this, 'route')
 					window.location.href = route
 				}
+			})
+
+			$(document).on('change', '.toggle-show-salary', function() {
+				const checkbox = $(this)
+				const jobId = checkbox.data('id')
+				const isShowSalary = checkbox.is(':checked')
+
+				$.ajax({
+					url: "{{ url('admin/jobs') }}/" + jobId + "/toggle-salary",
+					method: 'PATCH',
+					data: {
+						_token: '{{ csrf_token() }}',
+						is_show_salary: isShowSalary ? 1 : 0,
+					},
+					error: function() {
+						checkbox.prop('checked', !isShowSalary)
+						alert('Gagal mengubah Show Salary')
+					}
+				})
 			})
 		});
 	</script>

@@ -4,92 +4,51 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Candidate;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Str;
 
 class CandidateController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('admin.candidates.index', [
-
-        ]);
+        return view('admin.candidates.index');
     }
 
-    public function datatables()
+    public function datatables(Request $request)
     {
-        $query = Candidate::with(['CVs'])->orderBy('created_at', 'DESC');
+        $query = Candidate::withCount('documents')->orderBy('id', 'ASC');
+
+        if ($request->filled('q')) {
+            $keyword = '%' . mb_strtolower($request->get('q')) . '%';
+            $query->where(function ($builder) use ($keyword) {
+                $builder->whereRaw('LOWER(name) LIKE ?', [$keyword])
+                    ->orWhereRaw('LOWER(email) LIKE ?', [$keyword])
+                    ->orWhereRaw('LOWER(phone) LIKE ?', [$keyword]);
+            });
+        }
+
         return DataTables::of($query)
             ->addIndexColumn()
-            ->editColumn('name', function ($row) {
-                if (!isset($row->name) && empty($row->name)) {
-                    return '-';
-                }
-                return $row->name;
+            ->editColumn('email_verified_at', function ($row) {
+                return $row->email_verified_at
+                    ? Carbon::parse($row->email_verified_at)->diffForHumans()
+                    : '-';
+            })
+            ->editColumn('birth_date', function ($row) {
+                return $row->birth_date
+                    ? Carbon::parse($row->birth_date)->translatedFormat('d M Y')
+                    : '-';
             })
             ->addColumn('cv_total', function ($row) {
-                return $row->CVs->count() . " Total CV/Resume";
+                return $row->documents_count . ' Total CV/Resume';
             })
             ->addColumn('is_online', function ($row) {
-                $status = '<div class="d-flex align-items-center lh-1 me-4 mb-4 mb-sm-0">';
-                $status .= '<span class="badge badge-dot bg-success me-1"></span> Online';
-                $status .= '</div>';
-
-                return $status;
+                return $row->email_verified_at
+                    ? '<span class="badge bg-label-success">Verified</span>'
+                    : '<span class="badge bg-label-secondary">Unverified</span>';
             })
-            ->rawColumns(['is_online', 'action'])
+            ->rawColumns(['is_online'])
             ->make(true);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

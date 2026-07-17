@@ -3,10 +3,12 @@
 use App\Http\Controllers\Admin\ApplicantController;
 use App\Http\Controllers\Admin\BatchController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\GlobalSearchController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\JobManagementController;
 use App\Http\Controllers\Admin\CandidateController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\ScheduleInterviewController;
 use App\Http\Controllers\Candidate\AuthController;
 use App\Http\Controllers\Candidate\Jobs\VacancyController as JobVacancyController;
@@ -24,6 +26,9 @@ Route::get('/', function () {
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::group(['middleware' => ['auth:admin']], function () {
         Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+        Route::get('search', GlobalSearchController::class)->name('search');
+        Route::get('profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('profile', [AdminProfileController::class, 'update'])->name('profile.update');
         Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
         // Batches
@@ -43,6 +48,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Jobs
         Route::resource('jobs', JobManagementController::class)->except(['show']);
         Route::get('jobs/datatables', [JobManagementController::class, 'datatables'])->name('jobs.datatables');
+        Route::patch('jobs/{id}/toggle-salary', [JobManagementController::class, 'toggleShowSalary'])->name('jobs.toggle-salary');
 
         // Candidates
         Route::resource('candidates', CandidateController::class)->except(['create','store','show','edit','update','destroy']);

@@ -1,17 +1,31 @@
 @extends('admin.layouts.main')
 @section('content')
 	<div class="container-xxl flex-grow-1 container-p-y">
-		<div class="row">
-			<form class="row" id="form-add-new-record" method="POST" action="{{ !empty($job) ? route('admin.jobs.update', $job->id) : route('admin.jobs.store') }}">
-				@csrf
-				@if (!empty($job))
-					@method('PATCH')
-				@endif
-				<div class="col-md-6 mb-6">
-					<div class="card">
-						<div class="card-header d-flex justify-content-between align-items-center">
-							<h5 class="mb-0">Form {{ isset($job) ? 'Edit' : 'Create' }} Job</h5>
-						</div>
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<div>
+				<h4 class="mb-1">{{ isset($job) ? 'Edit Job' : 'Create Job' }}</h4>
+				<p class="text-muted mb-0">Kelola informasi lowongan, deskripsi, dan kriteria penilaian.</p>
+			</div>
+			<a href="{{ route('admin.jobs.index') }}" class="btn btn-outline-secondary">
+				<i class="ti ti-arrow-left me-1"></i> Kembali ke Job List
+			</a>
+		</div>
+
+		<form id="form-add-new-record" method="POST" action="{{ !empty($job) ? route('admin.jobs.update', $job->id) : route('admin.jobs.store') }}">
+			@csrf
+			@if (!empty($job))
+				@method('PATCH')
+			@endif
+
+			<ul class="nav nav-pills mb-4" role="tablist">
+				<li class="nav-item"><button type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-basic">Informasi Utama</button></li>
+				<li class="nav-item"><button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-content">Kualifikasi & Deskripsi</button></li>
+				<li class="nav-item"><button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-scoring">Kriteria Penilaian</button></li>
+			</ul>
+
+			<div class="tab-content">
+				<div class="tab-pane fade show active" id="tab-basic">
+					<div class="card mb-4">
 						<div class="card-body row">
 							<div class="col-md-6">
 								<div class="mb-3">
@@ -72,10 +86,9 @@
 								<div class="input-group input-group-merge">
 									<select name="type" id="type" class="form-control" required>
 										<option value="">-- Select Type --</option>
-										<option value="WFH/Remote" {{ isset($job) && $job->type == 'WFH/Remote' ? 'selected' : '' }}>WFH/Remote</option>
-										<option value="Partime/Freelancer" {{ isset($job) && $job->type == 'Partime/Freelancer' ? 'selected' : '' }}>Partime/Freelancer</option>
-										<option value="Fulltime/Onsite" {{ isset($job) && $job->type == 'Fulltime/Onsite' ? 'selected' : '' }}>Fulltime/Onsite</option>
-										<option value="Internship" {{ isset($job) && $job->type == 'Internship' ? 'selected' : '' }}>Internship</option>
+										@foreach (\App\Enums\JobType::cases() as $jobType)
+											<option value="{{ $jobType->value }}" @selected(isset($job) && $job->type === $jobType->value)>{{ $jobType->getLabel() }}</option>
+										@endforeach
 									</select>
 								</div>
 							</div>
@@ -95,11 +108,18 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-4">
-								<div class="mb-3">
-									<label class="form-label">Show salary for candidate?</label>
-									<br>
-									<input type="checkbox" name="is_show_salary" {{ isset($job) && $job->is_show_salary ? 'checked' : '' }}>
+							@php
+								$showSalary = old('is_show_salary', isset($job) ? ($job->is_show_salary ? '1' : '0') : '1');
+							@endphp
+							<div class="col-md-12 mb-3">
+								<label class="form-label d-block">Show salary for candidate?</label>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="is_show_salary" id="show_salary_on" value="1" @checked((string) $showSalary === '1')>
+									<label class="form-check-label" for="show_salary_on">On</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="is_show_salary" id="show_salary_off" value="0" @checked((string) $showSalary === '0')>
+									<label class="form-check-label" for="show_salary_off">Off</label>
 								</div>
 							</div>
 							<div class="mb-3">
@@ -110,21 +130,34 @@
 							</div>
 						</div>
 					</div>
-					<div class="card mt-6">
-						<div class="card-header d-flex justify-content-between align-items-center">
-							<h5 class="mb-0">Qualification</h5>
+				</div>
+
+				<div class="tab-pane fade" id="tab-content">
+					<div class="row">
+						<div class="col-md-6 mb-4">
+							<div class="card h-100">
+								<div class="card-header"><h5 class="mb-0">Qualification</h5></div>
+								<div class="card-body">
+									<div id="quill-editor-qualification" class="mb-3" style="height: 220px;"></div>
+									<textarea class="d-none" name="qualification" id="quill-editor-qualification-area"></textarea>
+								</div>
+							</div>
 						</div>
-						<div class="card-body">
-							<div class="mb-3">
-								<div id="quill-editor-qualification" class="mb-3" style="height: 150px;"></div>
-								<textarea class="mb-3 d-none" name="qualification" id="quill-editor-qualification-area"></textarea>
+						<div class="col-md-6 mb-4">
+							<div class="card h-100">
+								<div class="card-header"><h5 class="mb-0">Description</h5></div>
+								<div class="card-body">
+									<div id="quill-editor-description" class="mb-3" style="height: 220px;"></div>
+									<textarea class="d-none" name="description" id="quill-editor-description-area"></textarea>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="card mt-6">
-						<div class="card-header d-flex justify-content-between align-items-center">
-							<h5 class="mb-0">Kriteria Penilaian Otomatis</h5>
-						</div>
+				</div>
+
+				<div class="tab-pane fade" id="tab-scoring">
+					<div class="card mb-4">
+						<div class="card-header"><h5 class="mb-0">Kriteria Penilaian Otomatis</h5></div>
 						<div class="card-body row">
 							@php
 								$criteria = isset($job) ? $job->criteria : null;
@@ -181,25 +214,13 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-6 mb-6">
-					<div class="card">
-						<div class="card-header d-flex justify-content-between align-items-center">
-							<h5 class="mb-0">Description</h5>
-						</div>
-						<div class="card-body">
-							<div class="mb-3">
-								<div id="quill-editor-description" class="mb-3" style="height: 175px;"></div>
-								<textarea class="mb-3 d-none" name="description" id="quill-editor-description-area"></textarea>
-							</div>
-							<div class="mb-3">
-								<button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">Submit</button>
-								<a href="{{ route('admin.jobs.index') }}" class="btn btn-outline-secondary">Cancel</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</form>
-		</div>
+			</div>
+
+			<div class="d-flex justify-content-end gap-2 mt-2">
+				<a href="{{ route('admin.jobs.index') }}" class="btn btn-outline-secondary">Cancel</a>
+				<button type="submit" class="btn btn-primary">Simpan Job</button>
+			</div>
+		</form>
 	</div>
 @endsection
 @section('js')

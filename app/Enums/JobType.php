@@ -27,10 +27,31 @@ enum JobType: string
     public function getLabel(): string
     {
         return match ($this) {
-            self::WFH_REMOTE => 'WFH/Remote',
-            self::PARTIME_FREELANCER => 'Partime/Freelancer',
-            self::FULLTIME_ONSITE => 'Fulltime/Onsite',
+            self::WFH_REMOTE => 'WFH / Remote',
+            self::PARTIME_FREELANCER => 'Part-time / Freelance',
+            self::FULLTIME_ONSITE => 'Full-time / Onsite',
             self::INTERNSHIP => 'Internship',
         };
+    }
+
+    public function badgeClass(): string
+    {
+        return match ($this) {
+            self::WFH_REMOTE => 'bg-label-info',
+            self::PARTIME_FREELANCER => 'bg-label-warning',
+            self::FULLTIME_ONSITE => 'bg-label-primary',
+            self::INTERNSHIP => 'bg-label-success',
+        };
+    }
+
+    public static function tryBadge(?string $value): string
+    {
+        $type = self::tryFrom((string) $value);
+
+        if (!$type) {
+            return '<span class="badge bg-label-secondary">' . e($value ?: '-') . '</span>';
+        }
+
+        return '<span class="badge ' . $type->badgeClass() . '">' . e($type->getLabel()) . '</span>';
     }
 }

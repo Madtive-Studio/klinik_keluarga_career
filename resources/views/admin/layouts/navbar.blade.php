@@ -7,12 +7,13 @@
 
   <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
     <!-- Search -->
-    <div class="navbar-nav align-items-center">
-      <div class="nav-item navbar-search-wrapper mb-0">
-        <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
-          <i class="ti ti-search ti-md me-2 me-lg-4 ti-lg"></i>
-          <span class="d-none d-md-inline-block text-muted fw-normal">Search (Ctrl+/)</span>
-        </a>
+    <div class="navbar-nav align-items-center flex-grow-1">
+      <div class="nav-item w-100 px-2 position-relative">
+        <div class="input-group input-group-merge">
+          <span class="input-group-text"><i class="ti ti-search"></i></span>
+          <input type="text" id="admin-global-search" class="form-control" placeholder="Cari job, kandidat, batch, kategori..." autocomplete="off">
+        </div>
+        <div id="admin-global-search-results" class="dropdown-menu w-100 shadow-sm" style="display:none; max-height: 320px; overflow-y: auto;"></div>
       </div>
     </div>
     <!-- /Search -->
@@ -111,7 +112,7 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
           <li>
-            <a class="dropdown-item mt-0" href="pages-account-settings-account.html">
+            <a class="dropdown-item mt-0" href="{{ route('admin.profile.edit') }}">
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0 me-2">
                   <div class="avatar avatar-online">
@@ -119,8 +120,8 @@
                   </div>
                 </div>
                 <div class="flex-grow-1">
-                  <h6 class="mb-0">John Doe</h6>
-                  <small class="text-muted">Admin</small>
+                  <h6 class="mb-0">{{ auth('admin')->user()->name }}</h6>
+                  <small class="text-muted">{{ strtoupper(auth('admin')->user()->level) }}</small>
                 </div>
               </div>
             </a>
@@ -129,7 +130,7 @@
             <div class="dropdown-divider my-1 mx-n2"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="pages-profile-user.html">
+            <a class="dropdown-item" href="{{ route('admin.profile.edit') }}">
               <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
             </a>
           </li>
