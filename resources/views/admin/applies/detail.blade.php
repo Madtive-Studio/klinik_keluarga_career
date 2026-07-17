@@ -76,8 +76,34 @@
 							</h5>
 						</div>
 						<div class="card-body">
+							@if ($apply->auto_score !== null)
+								@php
+									$recommendation = $apply->score_recommendation
+										? \App\Enums\ScoreRecommendation::from($apply->score_recommendation)
+										: null;
+								@endphp
+								<div class="alert alert-light border mb-3">
+									<h6 class="mb-2">Penilaian Otomatis</h6>
+									<p class="mb-1"><strong>Score:</strong> {{ $apply->auto_score }}/100</p>
+									@if ($recommendation)
+										<p class="mb-1"><strong>Rekomendasi:</strong>
+											<span class="badge {{ $recommendation->badgeClass() }}">{{ $recommendation->label() }}</span>
+										</p>
+									@endif
+									@if ($apply->score_breakdown)
+										<ul class="mb-0 mt-2">
+											<li>Pendidikan: {{ $apply->score_breakdown['education'] ?? 0 }}</li>
+											<li>Pengalaman: {{ $apply->score_breakdown['experience'] ?? 0 }}</li>
+											<li>Skill: {{ $apply->score_breakdown['skills'] ?? 0 }}</li>
+											<li>Kelengkapan Profil: {{ $apply->score_breakdown['profile'] ?? 0 }}</li>
+											<li>Cover Letter: {{ $apply->score_breakdown['cover_letter'] ?? 0 }}</li>
+										</ul>
+									@endif
+									<small class="text-muted d-block mt-2">Dihitung: {{ optional($apply->scored_at)->format('d M Y H:i') ?? '-' }}</small>
+								</div>
+							@endif
 							<div class="mb-3">
-								<a href="{{ Illuminate\Support\Facades\Storage::url($apply->cv->file) }}" target="_blank" class="btn btn-info btn-sm">
+								<a href="{{ Illuminate\Support\Facades\Storage::url($apply->document->file) }}" target="_blank" class="btn btn-info btn-sm">
 									<i class="ti ti-download"></i> Lihat & Unduh CV / Resume
 								</a>
 							</div>

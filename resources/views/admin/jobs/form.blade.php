@@ -121,6 +121,65 @@
 							</div>
 						</div>
 					</div>
+					<div class="card mt-6">
+						<div class="card-header d-flex justify-content-between align-items-center">
+							<h5 class="mb-0">Kriteria Penilaian Otomatis</h5>
+						</div>
+						<div class="card-body row">
+							@php
+								$criteria = isset($job) ? $job->criteria : null;
+								$requiredSkills = old('required_skills', $criteria ? implode(', ', $criteria->required_skills ?? []) : '');
+							@endphp
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Min. Pendidikan</label>
+								<select name="min_education" class="form-control">
+									<option value="">-- Tidak ada syarat --</option>
+									@foreach (['SMA', 'D3', 'S1', 'S2', 'S3'] as $level)
+										<option value="{{ $level }}" @selected(old('min_education', $criteria?->min_education) === $level)>{{ $level }}</option>
+									@endforeach
+								</select>
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Min. Pengalaman (tahun)</label>
+								<input type="number" min="0" max="50" name="min_experience_years" class="form-control" value="{{ old('min_experience_years', $criteria?->min_experience_years ?? 0) }}">
+							</div>
+							<div class="col-md-12 mb-3">
+								<label class="form-label">Skill Wajib (pisahkan dengan koma)</label>
+								<textarea name="required_skills" class="form-control" rows="2" placeholder="Contoh: Komunikasi, Microsoft Office, Keperawatan">{{ $requiredSkills }}</textarea>
+							</div>
+							<div class="col-md-12"><hr><p class="mb-2"><strong>Bobot Penilaian (total harus 100)</strong></p></div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Bobot Pendidikan</label>
+								<input type="number" min="0" max="100" name="weight_education" class="form-control" value="{{ old('weight_education', $criteria?->weight_education ?? 25) }}">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Bobot Pengalaman</label>
+								<input type="number" min="0" max="100" name="weight_experience" class="form-control" value="{{ old('weight_experience', $criteria?->weight_experience ?? 25) }}">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Bobot Skill</label>
+								<input type="number" min="0" max="100" name="weight_skills" class="form-control" value="{{ old('weight_skills', $criteria?->weight_skills ?? 30) }}">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Bobot Kelengkapan Profil</label>
+								<input type="number" min="0" max="100" name="weight_profile" class="form-control" value="{{ old('weight_profile', $criteria?->weight_profile ?? 10) }}">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Bobot Cover Letter</label>
+								<input type="number" min="0" max="100" name="weight_cover_letter" class="form-control" value="{{ old('weight_cover_letter', $criteria?->weight_cover_letter ?? 10) }}">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Threshold Shortlist</label>
+								<input type="number" min="0" max="100" name="threshold_shortlist" class="form-control" value="{{ old('threshold_shortlist', $criteria?->threshold_shortlist ?? 70) }}">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Threshold Reject</label>
+								<input type="number" min="0" max="100" name="threshold_reject" class="form-control" value="{{ old('threshold_reject', $criteria?->threshold_reject ?? 40) }}">
+							</div>
+							@error('weight_education') <div class="col-12"><small class="text-danger">{{ $message }}</small></div> @enderror
+							@error('threshold_shortlist') <div class="col-12"><small class="text-danger">{{ $message }}</small></div> @enderror
+						</div>
+					</div>
 				</div>
 				<div class="col-md-6 mb-6">
 					<div class="card">

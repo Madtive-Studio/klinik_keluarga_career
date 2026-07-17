@@ -32,7 +32,7 @@
 					@if (Auth::guard('candidate')->check())
 						<li class="has-submenu"><a class="text-dark" href="javascript:void(0)"> <i class="mdi mdi-account"></i> Selamat Datang, {{ auth()->guard('candidate')->user()->name }}</a><span class="submenu-arrow"></span>
 							<ul class="submenu">
-								<li><a class="text-dark" href="">Profil Saya</a></li>
+								<li><a class="text-dark" href="{{ route('candidate.my.profile.edit') }}">Profil Saya</a></li>
 								<li><a class="text-dark" href="{{ route('candidate.my.applications.index') }}">Lamaran Saya</a></li>
 								<li><a class="text-dark" href="{{ route('candidate.my.documents.index') }}">Dokumen Saya</a></li>
 								<li><a class="text-dark" href="{{ route('candidate.logout') }}">Logout</a></li>
@@ -101,7 +101,7 @@
 					@if (Auth::guard('candidate')->check())
 						<li class="has-submenu"><a href="javascript:void(0)"> <i class="mdi mdi-account"></i> Selamat Datang, {{ auth()->guard('candidate')->user()->name }}</a><span class="submenu-arrow"></span>
 							<ul class="submenu">
-								<li><a href="">Profil Saya</a></li>
+								<li><a href="{{ route('candidate.my.profile.edit') }}">Profil Saya</a></li>
 								<li><a class="text-dark" href="{{ route('candidate.my.applications.index') }}">Lamaran Saya</a></li>
 								<li><a href="{{ route('candidate.my.documents.index') }}">Dokumen Saya</a></li>
 								<li><a href="{{ route('candidate.logout') }}">Logout</a></li>

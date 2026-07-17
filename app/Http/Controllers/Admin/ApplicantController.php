@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Enums\ScoreRecommendation;
 use App\Models\Apply;
 use App\Models\Candidate;
 use App\Models\Job;
@@ -40,12 +41,24 @@ class ApplicantController extends Controller
             });
         }
 
-        $query = $query->with(['candidate', 'job', 'batch', 'document'])->orderBy('created_at', 'ASC');
+        $query = $query->with(['candidate', 'job', 'batch', 'document'])->orderByDesc('auto_score')->orderBy('created_at', 'ASC');
 
         return DataTables::of($query)
             ->addIndexColumn()
             ->editColumn('job.title', function ($row) {
                 return $row->job->code . ' - ' . $row->job->title;
+            })
+            ->editColumn('auto_score', function ($row) {
+                return $row->auto_score !== null ? $row->auto_score . '/100' : '-';
+            })
+            ->editColumn('score_recommendation', function ($row) {
+                if (!$row->score_recommendation) {
+                    return '-';
+                }
+
+                $recommendation = ScoreRecommendation::from($row->score_recommendation);
+
+                return '<span class="badge ' . $recommendation->badgeClass() . '">' . $recommendation->label() . '</span>';
             })
             ->addColumn('action', function ($row) {
                 $btn = '<div class="btn-group" role="group" aria-label="Basic example">';
@@ -55,13 +68,13 @@ class ApplicantController extends Controller
 
                 return $btn;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'score_recommendation'])
             ->make(true);
     }
 
     public function show($id)
     {
-        $apply = Apply::findOrFail($id);
+        $apply = Apply::with(['candidate.profile', 'candidate.skills', 'job.criteria', 'document'])->findOrFail($id);
         return view('admin.applies.detail', [
             'uuid' => (string)Str::uuid(),
             'apply' => $apply,

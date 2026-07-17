@@ -4,8 +4,12 @@ namespace App\Repositories;
 
 use App\Enums\DocumentType;
 use App\Models\Apply;
+use App\Models\Candidate;
 use App\Models\Job;
 use App\Notifications\ApplicationSubmittedNotification;
+use App\Repositories\CandidateRepository;
+use App\Repositories\DocumentRepository;
+use App\Services\ScoringService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +20,7 @@ class ApplicationRepository
     public function __construct(
         private DocumentRepository $documentRepo,
         private CandidateRepository $candidateRepo,
+        private ScoringService $scoringService,
     ) {}
 
     public function findByJobBatchAndCandidate(int $jobId, int $batchId, int $candidateId): ?Apply
@@ -81,6 +86,15 @@ class ApplicationRepository
             return ['already_applied' => true, 'warning' => 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href="' . route('candidate.my.applications.index') . '">Lamaran Saya</a> untuk melihat status lamaran kamu.'];
         }
 
+        $candidate = $this->candidateRepo->find($candidateId);
+        $candidate?->load(['profile', 'skills']);
+
+        if (!$candidate?->profile?->education_level) {
+            return [
+                'error' => 'Lengkapi profil kamu terlebih dahulu di halaman <a href="' . route('candidate.my.profile.edit') . '">Profil Saya</a> sebelum melamar.',
+            ];
+        }
+
         $applyData = [
             'uuid'         => (string) Str::uuid(),
             'candidate_id' => $candidateId,
@@ -104,9 +118,19 @@ class ApplicationRepository
             $applyData['document_id'] = $requestData['document_id'];
         }
 
+        $scoreResult = $this->scoringService->calculate(
+            $candidate,
+            $job,
+            (string) $requestData['cover_letter']
+        );
+
+        $applyData['auto_score'] = $scoreResult['score'];
+        $applyData['score_recommendation'] = $scoreResult['recommendation'];
+        $applyData['score_breakdown'] = $scoreResult['breakdown'];
+        $applyData['scored_at'] = now();
+
         $apply = $this->create($applyData);
 
-        $candidate = $this->candidateRepo->find($candidateId);
         $candidate->notify(new ApplicationSubmittedNotification($candidate, $job));
 
         return ['success' => $apply, 'candidate' => $candidate];

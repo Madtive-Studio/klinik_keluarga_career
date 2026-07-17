@@ -30,6 +30,16 @@ class Candidate extends Authenticatable
         return $this->hasMany(Document::class);
     }
 
+    public function profile(): HasOne
+    {
+        return $this->hasOne(CandidateProfile::class);
+    }
+
+    public function skills(): HasMany
+    {
+        return $this->hasMany(CandidateSkill::class);
+    }
+
     /**
      * Get all of the comments for the Candidate
      *

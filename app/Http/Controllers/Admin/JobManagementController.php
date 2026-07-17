@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\JobRequest;
 use App\Models\Job;
 use App\Models\Batch;
 use App\Models\Category;
@@ -52,7 +52,7 @@ class JobManagementController extends Controller
         $categories = Category::orderBy('created_at', 'DESC')->get();
 
         return view('admin.jobs.form', [
-            'uuid' => (string)Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'code' => $code,
             'batches' => $batches,
             'categories' => $categories,
@@ -62,11 +62,18 @@ class JobManagementController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(JobRequest $request)
     {
-        $request['user_id'] = auth()->user()->id;
-        $request['is_show_salary'] = strtolower($request['is_show_salary']) == 'on' ? true : false;
-        Job::create($request->all());
+        $job = Job::create($request->safe()->only([
+            'uuid', 'code', 'batch_id', 'category_id', 'title', 'type', 'quota',
+            'salary', 'experience', 'qualification', 'description',
+        ]) + [
+            'user_id' => auth()->user()->id,
+            'is_show_salary' => strtolower((string) $request->is_show_salary) === 'on',
+        ]);
+
+        $job->criteria()->create($request->criteriaAttributes());
+
         return redirect()->route('admin.jobs.index')->with('success', 'Berhasil membuat lowongan pekerjaan baru');
     }
 
@@ -83,7 +90,7 @@ class JobManagementController extends Controller
      */
     public function edit(string $id)
     {
-        $job = Job::findOrFail($id);
+        $job = Job::with('criteria')->findOrFail($id);
         $batches = Batch::orderBy('created_at', 'DESC')->get();
         $categories = Category::orderBy('created_at', 'DESC')->get();
 
@@ -97,12 +104,23 @@ class JobManagementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(JobRequest $request, string $id)
     {
-        $request['user_id'] = auth()->user()->id;
-        $request['is_show_salary'] = strtolower($request['is_show_salary']) == 'on' ? true : false;
-        
-        Job::findOrFail($id)->update($request->all());
+        $job = Job::findOrFail($id);
+
+        $job->update($request->safe()->only([
+            'uuid', 'code', 'batch_id', 'category_id', 'title', 'type', 'quota',
+            'salary', 'experience', 'qualification', 'description',
+        ]) + [
+            'user_id' => auth()->user()->id,
+            'is_show_salary' => strtolower((string) $request->is_show_salary) === 'on',
+        ]);
+
+        $job->criteria()->updateOrCreate(
+            ['job_id' => $job->id],
+            $request->criteriaAttributes()
+        );
+
         return redirect()->route('admin.jobs.index')->with('success', 'Berhasil mengubah data lowongan pekerjaan');
     }
 
