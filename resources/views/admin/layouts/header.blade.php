@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="{{ asset('assets/admin/assets/vendor/libs/flatpickr/flatpickr.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/admin/assets/vendor/css/pages/cards-advance.css') }}" />
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+@yield('css')
 <script src="{{ asset('assets/admin/assets/vendor/js/helpers.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/vendor/js/template-customizer.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/js/config.js') }}"></script>

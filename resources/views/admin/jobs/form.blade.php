@@ -86,6 +86,43 @@
 								</div>
 								@error('title') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
+							@php
+								$initialJobImages = collect(old('images', $job->images ?? []))
+									->map(function ($path) {
+										if (! is_string($path) || ! \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+											return null;
+										}
+
+										return [
+											'path' => $path,
+											'url' => \Illuminate\Support\Facades\Storage::url($path),
+										];
+									})
+									->filter()
+									->values()
+									->all();
+							@endphp
+							<div class="col-md-12 mb-3">
+								<label class="form-label d-block">{{ __('admin.jobs.images') }}</label>
+								<input type="file" id="job-image-input" class="d-none" accept="image/jpeg,image/png,image/webp" multiple>
+								<div id="job-image-dropzone" class="job-image-dropzone @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror">
+									<div id="job-image-gallery" class="job-image-gallery"></div>
+									<div id="job-image-placeholder" class="job-image-placeholder">
+										<i class="ti ti-photo-plus ti-lg mb-2"></i>
+										<p class="mb-1 fw-medium">{{ __('admin.jobs.image_drop_title') }}</p>
+										<small class="text-muted">{{ __('admin.jobs.image_drop_hint') }}</small>
+									</div>
+								</div>
+								<div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+									<button type="button" class="btn btn-sm btn-outline-primary" id="job-image-browse">{{ __('admin.jobs.image_browse') }}</button>
+									<small class="text-muted" id="job-image-counter">{{ __('admin.jobs.image_counter', ['count' => count($initialJobImages), 'max' => 3]) }}</small>
+								</div>
+								<small class="text-muted d-block mt-2">{{ __('admin.jobs.image_help') }}</small>
+								<div id="job-image-error" class="text-danger small mt-1 d-none"></div>
+								<div id="job-image-hidden-inputs"></div>
+								@error('images') <small class="text-danger d-block">{{ $message }}</small> @enderror
+								@error('images.*') <small class="text-danger d-block">{{ $message }}</small> @enderror
+							</div>
 							<div class="mb-3">
 								<label class="form-label">{{ __('admin.jobs.type') }}</label>
 								<div class="input-group input-group-merge">
@@ -98,48 +135,61 @@
 								</div>
 								@error('type') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
-							<div class="col-md-4">
-								<div class="mb-3">
-									<label class="form-label">{{ __('admin.jobs.quota') }}</label>
-									<div class="input-group input-group-merge">
-										<input type="number" name="quota" class="form-control @error('quota') is-invalid @enderror" required value="{{ old('quota', $job->quota ?? 0) }}">
+							<div class="row align-items-end">
+								@php
+									$salaryMinValue = old('salary_min', $job->salary_min ?? '');
+									$salaryMaxValue = old('salary_max', $job->salary_max ?? '');
+									$salaryMinDisplay = $salaryMinValue !== '' && $salaryMinValue !== null
+										? number_format((int) $salaryMinValue, 0, ',', '.')
+										: '';
+									$salaryMaxDisplay = $salaryMaxValue !== '' && $salaryMaxValue !== null
+										? number_format((int) $salaryMaxValue, 0, ',', '.')
+										: '';
+									$showSalary = old('is_show_salary', isset($job) ? ($job->is_show_salary ? '1' : '0') : '1');
+								@endphp
+								<div class="col-md-2">
+									<div class="mb-3">
+										<label class="form-label">{{ __('admin.jobs.quota') }}</label>
+										<div class="input-group input-group-merge">
+											<input type="number" name="quota" class="form-control @error('quota') is-invalid @enderror" required value="{{ old('quota', $job->quota ?? 0) }}">
+										</div>
+										@error('quota') <small class="text-danger">{{ $message }}</small> @enderror
 									</div>
-									@error('quota') <small class="text-danger">{{ $message }}</small> @enderror
 								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="mb-3">
-									<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
-									<div class="input-group input-group-merge">
-										<span class="input-group-text">Rp</span>
-										<input type="number" min="1" step="1" name="salary_min" class="form-control @error('salary_min') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_min_placeholder') }}" required value="{{ old('salary_min', $job->salary_min ?? '') }}">
+								<div class="col-md-4">
+									<div class="mb-3">
+										<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
+										<div class="input-group input-group-merge">
+											<span class="input-group-text">Rp</span>
+											<input type="text" inputmode="numeric" id="salary_min_display" class="form-control salary-amount-input @error('salary_min') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_min_placeholder') }}" required value="{{ $salaryMinDisplay }}" autocomplete="off">
+											<input type="hidden" name="salary_min" id="salary_min" value="{{ $salaryMinValue }}">
+										</div>
+										@error('salary_min') <small class="text-danger">{{ $message }}</small> @enderror
 									</div>
-									@error('salary_min') <small class="text-danger">{{ $message }}</small> @enderror
 								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="mb-3">
-									<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
-									<div class="input-group input-group-merge">
-										<span class="input-group-text">Rp</span>
-										<input type="number" min="1" step="1" name="salary_max" class="form-control @error('salary_max') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_max_placeholder') }}" required value="{{ old('salary_max', $job->salary_max ?? '') }}">
+								<div class="col-md-4">
+									<div class="mb-3">
+										<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
+										<div class="input-group input-group-merge">
+											<span class="input-group-text">Rp</span>
+											<input type="text" inputmode="numeric" id="salary_max_display" class="form-control salary-amount-input @error('salary_max') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_max_placeholder') }}" required value="{{ $salaryMaxDisplay }}" autocomplete="off">
+											<input type="hidden" name="salary_max" id="salary_max" value="{{ $salaryMaxValue }}">
+										</div>
+										<small class="text-muted">{{ __('admin.jobs.salary_range_hint') }}</small>
+										@error('salary_max') <small class="text-danger d-block">{{ $message }}</small> @enderror
 									</div>
-									<small class="text-muted">{{ __('admin.jobs.salary_range_hint') }}</small>
-									@error('salary_max') <small class="text-danger d-block">{{ $message }}</small> @enderror
 								</div>
-							</div>
-							@php
-								$showSalary = old('is_show_salary', isset($job) ? ($job->is_show_salary ? '1' : '0') : '1');
-							@endphp
-							<div class="col-md-12 mb-3">
-								<label class="form-label d-block">{{ __('admin.jobs.show_salary_question') }}</label>
-								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="is_show_salary" id="show_salary_on" value="1" @checked((string) $showSalary === '1')>
-									<label class="form-check-label" for="show_salary_on">{{ __('admin.jobs.on') }}</label>
-								</div>
-								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="is_show_salary" id="show_salary_off" value="0" @checked((string) $showSalary === '0')>
-									<label class="form-check-label" for="show_salary_off">{{ __('admin.jobs.off') }}</label>
+								<div class="col-md-2">
+									<div class="mb-3">
+										<label class="form-label d-block">{{ __('admin.jobs.show_salary') }}</label>
+										<input type="hidden" name="is_show_salary" value="0">
+										<label class="switch switch-primary switch-sm mt-1">
+											<input type="checkbox" class="switch-input" name="is_show_salary" id="show_salary_switch" value="1" @checked((string) $showSalary === '1')>
+											<span class="switch-toggle-slider">
+												<span class="{{ (string) $showSalary === '1' ? 'switch-on' : 'switch-off' }}"></span>
+											</span>
+										</label>
+									</div>
 								</div>
 							</div>
 							<div class="mb-3">
@@ -265,11 +315,78 @@
 		</form>
 	</div>
 @endsection
+@section('css')
+	<style>
+		.job-image-dropzone {
+			border: 2px dashed rgba(67, 89, 113, 0.35);
+			border-radius: 0.75rem;
+			padding: 1rem;
+			background: rgba(67, 89, 113, 0.03);
+			cursor: pointer;
+			transition: border-color 0.15s ease, background-color 0.15s ease;
+		}
+
+		.job-image-dropzone.is-dragover {
+			border-color: var(--bs-primary, #7367f0);
+			background: rgba(115, 103, 240, 0.08);
+		}
+
+		.job-image-dropzone.is-uploading {
+			opacity: 0.75;
+			pointer-events: none;
+		}
+
+		.job-image-gallery {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.75rem;
+		}
+
+		.job-image-gallery:not(:empty) + .job-image-placeholder {
+			display: none;
+		}
+
+		.job-image-item {
+			position: relative;
+			width: 120px;
+		}
+
+		.job-image-item img {
+			width: 120px;
+			height: 120px;
+			object-fit: cover;
+			border-radius: 0.5rem;
+			border: 1px solid rgba(67, 89, 113, 0.15);
+		}
+
+		.job-image-item__remove {
+			position: absolute;
+			top: 0.35rem;
+			right: 0.35rem;
+			width: 1.75rem;
+			height: 1.75rem;
+			border: 0;
+			border-radius: 999px;
+			background: rgba(255, 255, 255, 0.95);
+			color: #ea5455;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+		}
+
+		.job-image-placeholder {
+			color: #6c757d;
+			text-align: center;
+			padding: 1rem 0.5rem;
+		}
+	</style>
+@endsection
 @section('js')
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
 			const tabFieldMap = {
-				'tab-basic': ['batch_id', 'category_id', 'title', 'type', 'quota', 'salary_min', 'salary_max', 'experience'],
+				'tab-basic': ['batch_id', 'category_id', 'title', 'images', 'type', 'quota', 'salary_min', 'salary_max', 'is_show_salary', 'experience'],
 				'tab-content': ['qualification', 'description'],
 				'tab-scoring': [
 					'min_education', 'required_skills',
@@ -336,6 +453,294 @@
 				input.addEventListener('input', updateWeightTotal);
 			});
 			updateWeightTotal();
+
+			const salaryInputs = [
+				{ display: document.getElementById('salary_min_display'), hidden: document.getElementById('salary_min') },
+				{ display: document.getElementById('salary_max_display'), hidden: document.getElementById('salary_max') },
+			];
+
+			function parseSalaryAmount(value) {
+				const digits = String(value || '').replace(/\D/g, '');
+				return digits ? parseInt(digits, 10) : '';
+			}
+
+			function formatSalaryAmount(value) {
+				const amount = parseSalaryAmount(value);
+				if (amount === '') {
+					return '';
+				}
+
+				return new Intl.NumberFormat('id-ID').format(amount);
+			}
+
+			function syncSalaryHiddenInput(displayInput, hiddenInput) {
+				if (!displayInput || !hiddenInput) return;
+				const amount = parseSalaryAmount(displayInput.value);
+				hiddenInput.value = amount === '' ? '' : String(amount);
+				displayInput.value = amount === '' ? '' : formatSalaryAmount(amount);
+			}
+
+			salaryInputs.forEach(function (pair) {
+				if (!pair.display || !pair.hidden) return;
+
+				pair.display.addEventListener('input', function () {
+					const digits = pair.display.value.replace(/\D/g, '');
+					pair.hidden.value = digits;
+					pair.display.value = digits ? formatSalaryAmount(digits) : '';
+				});
+
+				pair.display.addEventListener('blur', function () {
+					syncSalaryHiddenInput(pair.display, pair.hidden);
+				});
+			});
+
+			document.getElementById('form-add-new-record')?.addEventListener('submit', function () {
+				salaryInputs.forEach(function (pair) {
+					syncSalaryHiddenInput(pair.display, pair.hidden);
+				});
+			});
+
+			const showSalarySwitch = document.getElementById('show_salary_switch');
+			showSalarySwitch?.addEventListener('change', function () {
+				const state = this.closest('.switch')?.querySelector('.switch-toggle-slider span');
+				if (!state) return;
+				state.classList.toggle('switch-on', this.checked);
+				state.classList.toggle('switch-off', !this.checked);
+			});
+
+			@php
+				$jobImageI18n = [
+					'invalidType' => __('admin.js.image_invalid_type'),
+					'tooLarge' => __('admin.js.image_too_large'),
+					'maxReached' => __('admin.js.image_max_reached'),
+					'uploadFailed' => __('admin.js.image_upload_failed'),
+					'uploading' => __('admin.js.image_uploading'),
+					'counter' => __('admin.jobs.image_counter'),
+				];
+			@endphp
+			const jobImageI18n = @json($jobImageI18n);
+			const jobUuid = @json(old('uuid', $job->uuid ?? $uuid ?? ''));
+			const maxJobImages = 3;
+			const maxImageSize = 5 * 1024 * 1024;
+			const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
+			const uploadUrl = @json(route('admin.jobs.upload-image'));
+			const deleteUrl = @json(route('admin.jobs.destroy-image'));
+			const csrfToken = @json(csrf_token());
+			let jobImages = @json($initialJobImages);
+
+			const imageInput = document.getElementById('job-image-input');
+			const imageDropzone = document.getElementById('job-image-dropzone');
+			const imageGallery = document.getElementById('job-image-gallery');
+			const imagePlaceholder = document.getElementById('job-image-placeholder');
+			const imageBrowseBtn = document.getElementById('job-image-browse');
+			const imageCounter = document.getElementById('job-image-counter');
+			const imageError = document.getElementById('job-image-error');
+			const hiddenInputs = document.getElementById('job-image-hidden-inputs');
+
+			function showImageError(message) {
+				if (!imageError) return;
+				imageError.textContent = message;
+				imageError.classList.remove('d-none');
+				imageDropzone?.classList.add('is-invalid');
+			}
+
+			function clearImageError() {
+				if (!imageError) return;
+				imageError.textContent = '';
+				imageError.classList.add('d-none');
+				imageDropzone?.classList.remove('is-invalid');
+			}
+
+			function updateImageCounter() {
+				if (!imageCounter) return;
+				imageCounter.textContent = jobImageI18n.counter
+					.replace(':count', jobImages.length)
+					.replace(':max', maxJobImages);
+			}
+
+			function syncHiddenInputs() {
+				if (!hiddenInputs) return;
+				hiddenInputs.innerHTML = jobImages.map(function(image) {
+					return '<input type="hidden" name="images[]" value="' + image.path.replace(/"/g, '&quot;') + '">';
+				}).join('');
+			}
+
+			function renderJobImages() {
+				if (!imageGallery) return;
+
+				imageGallery.innerHTML = jobImages.map(function(image, index) {
+					return ''
+						+ '<div class="job-image-item" data-index="' + index + '">'
+						+ '<img src="' + image.url + '" alt="">'
+						+ '<button type="button" class="job-image-item__remove" data-index="' + index + '" aria-label="Remove">'
+						+ '<i class="ti ti-x"></i>'
+						+ '</button>'
+						+ '</div>';
+				}).join('');
+
+				if (imagePlaceholder) {
+					imagePlaceholder.style.display = jobImages.length ? 'none' : 'block';
+				}
+
+				updateImageCounter();
+				syncHiddenInputs();
+			}
+
+			function validateImageFile(file) {
+				if (!allowedImageTypes.includes(file.type)) {
+					showImageError(jobImageI18n.invalidType);
+					return false;
+				}
+
+				if (file.size > maxImageSize) {
+					showImageError(jobImageI18n.tooLarge);
+					return false;
+				}
+
+				clearImageError();
+				return true;
+			}
+
+			async function uploadJobImage(file) {
+				const formData = new FormData();
+				formData.append('image', file);
+				formData.append('job_uuid', jobUuid);
+				formData.append('_token', csrfToken);
+
+				const response = await fetch(uploadUrl, {
+					method: 'POST',
+					body: formData,
+					headers: {
+						'X-Requested-With': 'XMLHttpRequest',
+						'Accept': 'application/json',
+					},
+				});
+
+				if (!response.ok) {
+					const payload = await response.json().catch(function() {
+						return {};
+					});
+					const message = payload.errors?.image?.[0]
+						|| payload.message
+						|| jobImageI18n.uploadFailed;
+					throw new Error(message);
+				}
+
+				return response.json();
+			}
+
+			async function removeJobImage(index) {
+				const image = jobImages[index];
+				if (!image) return;
+
+				await fetch(deleteUrl, {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRF-TOKEN': csrfToken,
+						'X-Requested-With': 'XMLHttpRequest',
+						'Accept': 'application/json',
+					},
+					body: JSON.stringify({
+						job_uuid: jobUuid,
+						path: image.path,
+					}),
+				});
+
+				jobImages.splice(index, 1);
+				renderJobImages();
+				clearImageError();
+			}
+
+			async function handleSelectedFiles(fileList) {
+				const files = Array.from(fileList || []);
+				if (!files.length) return;
+
+				if (jobImages.length >= maxJobImages) {
+					showImageError(jobImageI18n.maxReached);
+					return;
+				}
+
+				imageDropzone?.classList.add('is-uploading');
+
+				try {
+					for (const file of files) {
+						if (jobImages.length >= maxJobImages) {
+							showImageError(jobImageI18n.maxReached);
+							break;
+						}
+
+						if (!validateImageFile(file)) {
+							continue;
+						}
+
+						const uploaded = await uploadJobImage(file);
+						jobImages.push({
+							path: uploaded.path,
+							url: uploaded.url,
+						});
+					}
+
+					renderJobImages();
+				} catch (error) {
+					showImageError(error.message || jobImageI18n.uploadFailed);
+				} finally {
+					imageDropzone?.classList.remove('is-uploading');
+					if (imageInput) {
+						imageInput.value = '';
+					}
+				}
+			}
+
+			imageBrowseBtn?.addEventListener('click', function(event) {
+				event.preventDefault();
+				event.stopPropagation();
+				imageInput?.click();
+			});
+
+			imageDropzone?.addEventListener('click', function(event) {
+				if (event.target.closest('.job-image-item__remove, #job-image-browse')) {
+					return;
+				}
+				if (jobImages.length >= maxJobImages) {
+					showImageError(jobImageI18n.maxReached);
+					return;
+				}
+				imageInput?.click();
+			});
+
+			imageInput?.addEventListener('change', function() {
+				handleSelectedFiles(this.files);
+			});
+
+			imageGallery?.addEventListener('click', function(event) {
+				const button = event.target.closest('.job-image-item__remove');
+				if (!button) return;
+				event.preventDefault();
+				removeJobImage(parseInt(button.dataset.index, 10));
+			});
+
+			['dragenter', 'dragover'].forEach(function(eventName) {
+				imageDropzone?.addEventListener(eventName, function(event) {
+					event.preventDefault();
+					event.stopPropagation();
+					imageDropzone.classList.add('is-dragover');
+				});
+			});
+
+			['dragleave', 'drop'].forEach(function(eventName) {
+				imageDropzone?.addEventListener(eventName, function(event) {
+					event.preventDefault();
+					event.stopPropagation();
+					imageDropzone.classList.remove('is-dragover');
+				});
+			});
+
+			imageDropzone?.addEventListener('drop', function(event) {
+				handleSelectedFiles(event.dataTransfer?.files);
+			});
+
+			renderJobImages();
 
 			if (document.getElementById('quill-editor-qualification-area')) {
 				const toolbarOptions = [

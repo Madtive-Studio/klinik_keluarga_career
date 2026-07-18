@@ -53,6 +53,8 @@ return [
         'new_document' => 'berkas CV',
         'document_id' => 'dokumen CV',
         'file' => 'file',
+        'image' => 'gambar lowongan',
+        'images' => 'gambar lowongan',
         'education_level' => 'tingkat pendidikan',
         'years_of_experience' => 'pengalaman kerja',
         'skills.*.name' => 'nama skill',
@@ -91,6 +93,17 @@ return [
             'file' => 'File harus berupa file.',
             'mimes' => 'File harus berupa Gambar, PDF, Word, atau Excel.',
             'max' => 'Ukuran file harus kurang dari 20MB.',
+        ],
+        'image' => [
+            'image' => 'Gambar harus berupa file gambar yang valid.',
+            'mimes' => 'Format gambar harus JPG, PNG, atau WEBP.',
+            'max' => 'Ukuran gambar maksimal 5MB.',
+            'uploaded' => 'Gambar gagal diunggah. Pastikan ukuran maksimal 5MB.',
+        ],
+        'images' => [
+            'max' => 'Maksimal 3 gambar lowongan.',
+            'invalid_path' => 'Path gambar tidak valid.',
+            'missing_file' => 'File gambar tidak ditemukan.',
         ],
         'type' => [
             'required' => 'Tipe wajib diisi.',

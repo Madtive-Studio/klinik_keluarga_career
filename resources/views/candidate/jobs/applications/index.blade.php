@@ -35,7 +35,7 @@
 									<div class="row align-items-center">
 										<div class="col-lg-2">
 											<div class="company-logo-img">
-												<img src="{{ asset('assets/candidate/images/job-placeholder.png') }}" width="100" alt="" class="img-fluid mx-auto d-block rounded">
+												<img src="{{ $job->image_url }}" width="100" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded">
 											</div>
 										</div>
 										<div class="col-lg-7 col-md-9">

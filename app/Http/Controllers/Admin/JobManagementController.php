@@ -3,18 +3,26 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\JobImageUploadRequest;
 use App\Http\Requests\JobRequest;
 use App\Enums\JobType;
 use App\Models\Apply;
 use App\Models\Job;
 use App\Models\Batch;
 use App\Models\Category;
+use App\Services\JobImageService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 
 class JobManagementController extends Controller
 {
+    public function __construct(
+        private JobImageService $jobImageService,
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -88,15 +96,27 @@ class JobManagementController extends Controller
      */
     public function store(JobRequest $request)
     {
-        $job = Job::create($request->safe()->only([
+        $imagePaths = $request->resolvedImagePaths();
+
+        $attributes = $request->safe()->only([
             'uuid', 'code', 'batch_id', 'category_id', 'title', 'type', 'quota',
             'salary_min', 'salary_max', 'experience', 'qualification', 'description',
         ]) + [
             'user_id' => auth()->user()->id,
             'is_show_salary' => $request->input('is_show_salary') === '1',
-        ]);
+            'images' => $imagePaths,
+        ];
 
-        $job->criteria()->create($request->criteriaAttributes());
+        try {
+            DB::transaction(function () use ($request, $attributes) {
+                $job = Job::create($attributes);
+                $job->criteria()->create($request->criteriaAttributes());
+            });
+        } catch (\Throwable $exception) {
+            $this->jobImageService->deletePaths($imagePaths);
+
+            throw $exception;
+        }
 
         return redirect()->route('admin.jobs.index')->with('success', __('messages.admin.job.created'));
     }
@@ -131,21 +151,63 @@ class JobManagementController extends Controller
     public function update(JobRequest $request, string $id)
     {
         $job = Job::findOrFail($id);
+        $previousImages = $job->images ?? [];
+        $requestedPaths = $request->resolvedImagePaths();
+        $removedPaths = $this->jobImageService->removedJobImages($previousImages, $requestedPaths);
+        $newPaths = $this->jobImageService->newlyAddedJobImages($previousImages, $requestedPaths);
 
-        $job->update($request->safe()->only([
+        $attributes = $request->safe()->only([
             'uuid', 'code', 'batch_id', 'category_id', 'title', 'type', 'quota',
             'salary_min', 'salary_max', 'experience', 'qualification', 'description',
         ]) + [
             'user_id' => auth()->user()->id,
             'is_show_salary' => $request->input('is_show_salary') === '1',
-        ]);
+            'images' => $this->jobImageService->finalizeJobImages($previousImages, $requestedPaths),
+        ];
 
-        $job->criteria()->updateOrCreate(
-            ['job_id' => $job->id],
-            $request->criteriaAttributes()
-        );
+        try {
+            DB::transaction(function () use ($request, $job, $attributes) {
+                $job->update($attributes);
+                $job->criteria()->updateOrCreate(
+                    ['job_id' => $job->id],
+                    $request->criteriaAttributes()
+                );
+            });
+
+            $this->jobImageService->deletePaths($removedPaths);
+        } catch (\Throwable $exception) {
+            $this->jobImageService->deletePaths($newPaths);
+
+            throw $exception;
+        }
 
         return redirect()->route('admin.jobs.index')->with('success', __('messages.admin.job.updated'));
+    }
+
+    public function uploadImage(JobImageUploadRequest $request): JsonResponse
+    {
+        $path = $this->jobImageService->storeUpload(
+            $request->file('image'),
+            $request->input('job_uuid')
+        );
+
+        return response()->json([
+            'path' => $path,
+            'url' => \Illuminate\Support\Facades\Storage::url($path),
+        ]);
+    }
+
+    public function destroyImage(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'job_uuid' => ['required', 'uuid'],
+            'path' => ['required', 'string', 'max:255'],
+        ]);
+
+        $this->jobImageService->assertPathsBelongToJob([$validated['path']], $validated['job_uuid']);
+        $this->jobImageService->deletePaths([$validated['path']]);
+
+        return response()->json(['success' => true]);
     }
 
     public function toggleShowSalary(Request $request, string $id)

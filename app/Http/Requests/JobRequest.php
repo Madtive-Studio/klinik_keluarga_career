@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\EducationLevel;
+use App\Services\JobImageService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -38,6 +39,8 @@ class JobRequest extends FormRequest
             'weight_cover_letter' => ['nullable', 'integer', 'min:0', 'max:100'],
             'threshold_shortlist' => ['nullable', 'integer', 'min:0', 'max:100'],
             'threshold_reject' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'images' => ['nullable', 'array', 'max:' . JobImageService::MAX_IMAGES],
+            'images.*' => ['string', 'max:255'],
         ];
     }
 
@@ -63,6 +66,8 @@ class JobRequest extends FormRequest
             'weight_cover_letter' => __('validation.attributes.weight_cover_letter'),
             'threshold_shortlist' => __('validation.attributes.threshold_shortlist'),
             'threshold_reject' => __('validation.attributes.threshold_reject'),
+            'images' => __('validation.attributes.images'),
+            'images.*' => __('validation.attributes.image'),
         ];
     }
 
@@ -93,7 +98,25 @@ class JobRequest extends FormRequest
                     __('validation.custom.weight_education.threshold_order')
                 );
             }
+
+            if ($validator->errors()->isNotEmpty()) {
+                return;
+            }
+
+            $imageService = app(JobImageService::class);
+            $paths = $imageService->normalizePaths($this->input('images'));
+
+            try {
+                $imageService->assertPathsBelongToJob($paths, (string) $this->input('uuid'));
+            } catch (\InvalidArgumentException $exception) {
+                $validator->errors()->add('images', $exception->getMessage());
+            }
         });
+    }
+
+    public function resolvedImagePaths(): array
+    {
+        return app(JobImageService::class)->normalizePaths($this->input('images'));
     }
 
     public function criteriaAttributes(): array

@@ -29,7 +29,15 @@
 				<div class="col-lg-8 col-md-7">
 					<div class="job-detail border rounded p-4">
 						<div class="job-detail-content">
-							<img src="images/featured-job/img-4.png" alt="" class="img-fluid float-left mr-md-3 mr-2 mx-auto d-block">
+							@if (count($job->image_urls) > 1)
+								<div class="d-flex flex-wrap gap-2 mb-3">
+									@foreach ($job->image_urls as $imageUrl)
+										<img src="{{ $imageUrl }}" alt="{{ $job->title }}" class="rounded" style="width: 120px; height: 120px; object-fit: cover;">
+									@endforeach
+								</div>
+							@else
+								<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid float-left mr-md-3 mr-2 mx-auto d-block">
+							@endif
 							<div class="job-detail-com-desc overflow-hidden d-block">
 								<h4 class="mb-2"><a href="#" class="text-dark">{{ $job->code }} - {{ $job->title }}</a></h4>
 								<p class="text-muted mb-0"><i class="mdi mdi-link-variant mr-2"></i>{{ $job->category->name }}</p>

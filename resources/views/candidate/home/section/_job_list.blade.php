@@ -5,7 +5,7 @@
 				<div class="row align-items-center">
 					<div class="col-md-2">
 						<div class="mo-mb-2">
-							<img src="{{ asset('assets/candidate/images/job-placeholder.png') }}" width="100" alt="" class="img-fluid mx-auto d-block rounded">
+							<img src="{{ $job->image_url }}" width="100" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded">
 						</div>
 					</div>
 					<div class="col-md-3">

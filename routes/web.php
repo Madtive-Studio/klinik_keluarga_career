@@ -51,6 +51,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Jobs
         Route::resource('jobs', JobManagementController::class)->except(['show']);
         Route::get('jobs/datatables', [JobManagementController::class, 'datatables'])->name('jobs.datatables');
+        Route::post('jobs/upload-image', [JobManagementController::class, 'uploadImage'])->name('jobs.upload-image');
+        Route::delete('jobs/upload-image', [JobManagementController::class, 'destroyImage'])->name('jobs.destroy-image');
         Route::patch('jobs/{id}/toggle-salary', [JobManagementController::class, 'toggleShowSalary'])->name('jobs.toggle-salary');
 
         // Candidates

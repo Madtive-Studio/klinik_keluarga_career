@@ -159,6 +159,17 @@ return [
             'mimes' => 'File must be an image, PDF, Word, or Excel file.',
             'max' => 'File size must be less than 20MB.',
         ],
+        'image' => [
+            'image' => 'Image must be a valid image file.',
+            'mimes' => 'Image format must be JPG, PNG, or WEBP.',
+            'max' => 'Maximum image size is 5MB.',
+            'uploaded' => 'Image failed to upload. Maximum size is 5MB.',
+        ],
+        'images' => [
+            'max' => 'Maximum 3 job images allowed.',
+            'invalid_path' => 'Invalid image path.',
+            'missing_file' => 'Image file not found.',
+        ],
         'type' => [
             'required' => 'Type is required.',
             'string' => 'Type must be text.',
@@ -207,6 +218,8 @@ return [
         'new_document' => 'CV file',
         'document_id' => 'CV document',
         'file' => 'file',
+        'image' => 'job image',
+        'images' => 'job images',
         'education_level' => 'education level',
         'years_of_experience' => 'years of experience',
         'skills.*.name' => 'skill name',
