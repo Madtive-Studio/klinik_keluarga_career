@@ -50,20 +50,45 @@ class DocumentControllerTest extends TestCase
         $response->assertRedirect();
     }
 
+    #[Test]
+    public function indexFiltersDocumentsByType(): void
+    {
+        $this->actingAs($this->candidate, 'candidate');
+
+        Document::factory()->cv()->create(['candidate_id' => $this->candidate->id]);
+        Document::factory()->mcu()->create(['candidate_id' => $this->candidate->id]);
+
+        $response = $this->get(route('candidate.my.documents.index', ['type' => DocumentType::CV->value]));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('activeType', DocumentType::CV);
+        $documents = $response->viewData('candidate')->documents;
+        $this->assertCount(1, $documents);
+        $this->assertSame(DocumentType::CV->value, $documents->first()->type->value);
+    }
+
+    #[Test]
+    public function indexReturnsNotFoundForInvalidDocumentType(): void
+    {
+        $this->actingAs($this->candidate, 'candidate');
+
+        $response = $this->get(route('candidate.my.documents.index', ['type' => 'INVALID']));
+
+        $response->assertNotFound();
+    }
+
     // =========================================================
-    // CREATE
+    // CREATE (legacy redirect)
     // =========================================================
 
     #[Test]
-    public function createReturnsUploadFormWithDocumentTypes(): void
+    public function createRedirectsToDocumentsIndex(): void
     {
         $this->actingAs($this->candidate, 'candidate');
 
         $response = $this->get(route('candidate.my.documents.create'));
 
-        $response->assertStatus(200);
-        $response->assertViewIs('candidate.documents.create');
-        $response->assertViewHas('types');
+        $response->assertRedirect(route('candidate.my.documents.index'));
     }
 
     // =========================================================
@@ -110,6 +135,42 @@ class DocumentControllerTest extends TestCase
             'candidate_id' => $this->candidate->id,
             'type'         => DocumentType::MCU->value,
         ]);
+    }
+
+    #[Test]
+    public function storeReturnsJsonResponseForAjaxRequest(): void
+    {
+        Storage::fake('public');
+        $this->actingAs($this->candidate, 'candidate');
+
+        $file = UploadedFile::fake()->create('str_document.pdf', 500, 'application/pdf');
+
+        $response = $this->postJson(route('candidate.my.documents.store'), [
+            'file' => $file,
+            'type' => DocumentType::STR->value,
+        ]);
+
+        $response->assertOk();
+        $response->assertJson([
+            'message' => __('messages.document.upload_success'),
+        ]);
+        $this->assertDatabaseHas('documents', [
+            'candidate_id' => $this->candidate->id,
+            'type' => DocumentType::STR->value,
+        ]);
+    }
+
+    #[Test]
+    public function storeReturnsJsonValidationErrorsForAjaxRequest(): void
+    {
+        $this->actingAs($this->candidate, 'candidate');
+
+        $response = $this->postJson(route('candidate.my.documents.store'), [
+            'type' => DocumentType::CV->value,
+        ]);
+
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors(['file']);
     }
 
     // =========================================================

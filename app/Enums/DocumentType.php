@@ -5,6 +5,10 @@ namespace App\Enums;
 enum DocumentType: string
 {
     case CV = 'CV';
+    case IJAZAH = 'IJAZAH';
+    case STR = 'STR';
+    case SIP = 'SIP';
+    case CERTIFICATE = 'CERTIFICATE';
     case MCU = 'MCU';
     case OTHERS = 'OTHERS';
 
@@ -26,6 +30,10 @@ enum DocumentType: string
     {
         return match($this) {
             self::CV => 'candidates/documents/cv',
+            self::IJAZAH => 'candidates/documents/ijazah',
+            self::STR => 'candidates/documents/str',
+            self::SIP => 'candidates/documents/sip',
+            self::CERTIFICATE => 'candidates/documents/certificate',
             self::MCU => 'candidates/documents/mcu',
             self::OTHERS => 'candidates/documents/others',
         };
@@ -34,5 +42,18 @@ enum DocumentType: string
     public function getLabel(): string
     {
         return __('enums.document_type.' . $this->value);
+    }
+
+    public function getBadgeClass(): string
+    {
+        return match($this) {
+            self::CV => 'badge-primary',
+            self::IJAZAH => 'badge-info',
+            self::STR => 'badge-success',
+            self::SIP => 'badge-success',
+            self::CERTIFICATE => 'badge-warning',
+            self::MCU => 'badge-danger',
+            self::OTHERS => 'badge-secondary',
+        };
     }
 }

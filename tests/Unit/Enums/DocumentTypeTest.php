@@ -20,20 +20,14 @@ class DocumentTypeTest extends TestCase
     // =========================================================
 
     #[Test]
-    public function getPathReturnsCvStoragePath(): void
+    public function getPathReturnsExpectedStoragePaths(): void
     {
         $this->assertEquals('candidates/documents/cv', DocumentType::CV->getPath());
-    }
-
-    #[Test]
-    public function getPathReturnsMcuStoragePath(): void
-    {
+        $this->assertEquals('candidates/documents/ijazah', DocumentType::IJAZAH->getPath());
+        $this->assertEquals('candidates/documents/str', DocumentType::STR->getPath());
+        $this->assertEquals('candidates/documents/sip', DocumentType::SIP->getPath());
+        $this->assertEquals('candidates/documents/certificate', DocumentType::CERTIFICATE->getPath());
         $this->assertEquals('candidates/documents/mcu', DocumentType::MCU->getPath());
-    }
-
-    #[Test]
-    public function getPathReturnsOthersStoragePath(): void
-    {
         $this->assertEquals('candidates/documents/others', DocumentType::OTHERS->getPath());
     }
 
@@ -42,20 +36,14 @@ class DocumentTypeTest extends TestCase
     // =========================================================
 
     #[Test]
-    public function getLabelReturnsCvLabel(): void
+    public function getLabelReturnsExpectedLabels(): void
     {
         $this->assertEquals('Curriculum Vitae', DocumentType::CV->getLabel());
-    }
-
-    #[Test]
-    public function getLabelReturnsMcuLabel(): void
-    {
+        $this->assertEquals('Ijazah / Transkrip', DocumentType::IJAZAH->getLabel());
+        $this->assertEquals('STR', DocumentType::STR->getLabel());
+        $this->assertEquals('SIP', DocumentType::SIP->getLabel());
+        $this->assertEquals('Sertifikat Kompetensi / Pelatihan', DocumentType::CERTIFICATE->getLabel());
         $this->assertEquals('Medical Checkup Unit', DocumentType::MCU->getLabel());
-    }
-
-    #[Test]
-    public function getLabelReturnsOthersLabel(): void
-    {
         $this->assertEquals('Dokumen Lainnya', DocumentType::OTHERS->getLabel());
     }
 
@@ -69,9 +57,13 @@ class DocumentTypeTest extends TestCase
         $values = DocumentType::getValues();
 
         $this->assertContains('CV', $values);
+        $this->assertContains('IJAZAH', $values);
+        $this->assertContains('STR', $values);
+        $this->assertContains('SIP', $values);
+        $this->assertContains('CERTIFICATE', $values);
         $this->assertContains('MCU', $values);
         $this->assertContains('OTHERS', $values);
-        $this->assertCount(3, $values);
+        $this->assertCount(7, $values);
     }
 
     #[Test]
@@ -80,6 +72,10 @@ class DocumentTypeTest extends TestCase
         $labels = DocumentType::getWithLabels();
 
         $this->assertArrayHasKey('CV', $labels);
+        $this->assertArrayHasKey('IJAZAH', $labels);
+        $this->assertArrayHasKey('STR', $labels);
+        $this->assertArrayHasKey('SIP', $labels);
+        $this->assertArrayHasKey('CERTIFICATE', $labels);
         $this->assertArrayHasKey('MCU', $labels);
         $this->assertArrayHasKey('OTHERS', $labels);
         $this->assertEquals('Curriculum Vitae', $labels['CV']);

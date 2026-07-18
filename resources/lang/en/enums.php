@@ -22,6 +22,10 @@ return [
     ],
     'document_type' => [
         'CV' => 'Curriculum Vitae',
+        'IJAZAH' => 'Diploma / Transcript',
+        'STR' => 'STR (Professional Registration)',
+        'SIP' => 'SIP (Practice License)',
+        'CERTIFICATE' => 'Competency / Training Certificate',
         'MCU' => 'Medical Checkup Unit',
         'OTHERS' => 'Other Documents',
     ],

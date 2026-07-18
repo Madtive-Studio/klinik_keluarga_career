@@ -22,6 +22,10 @@ return [
     ],
     'document_type' => [
         'CV' => 'Curriculum Vitae',
+        'IJAZAH' => 'Ijazah / Transkrip',
+        'STR' => 'STR',
+        'SIP' => 'SIP',
+        'CERTIFICATE' => 'Sertifikat Kompetensi / Pelatihan',
         'MCU' => 'Medical Checkup Unit',
         'OTHERS' => 'Dokumen Lainnya',
     ],

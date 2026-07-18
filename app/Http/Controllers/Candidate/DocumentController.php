@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DocumentRequest;
 use App\Repositories\DocumentRepository;
 use App\Enums\DocumentType;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -24,39 +25,60 @@ class DocumentController extends Controller
     public function index(): View
     {
         $userId = Auth::guard('candidate')->id();
-        $perPage = request('per_page', 5);
-        $candidate = $this->repository->getCandidateDocumentsPaginated($userId, $perPage);
+        $perPage = (int) request('per_page', 5);
+        $requestedType = request('type');
+        $typeFilter = '*';
+        $activeType = null;
+
+        if ($requestedType) {
+            $activeType = DocumentType::tryFrom($requestedType);
+
+            if (!$activeType) {
+                abort(404);
+            }
+
+            $typeFilter = $activeType->value;
+        }
+
+        $candidate = $this->repository->getCandidateDocumentsPaginated($userId, $perPage, $typeFilter);
 
         return view('candidate.documents.index', [
             'candidate' => $candidate,
+            'activeType' => $activeType,
+            'documentTypes' => DocumentType::getWithLabels(),
         ]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Redirect legacy upload page to documents index.
      */
-    public function create(): View
+    public function create(): RedirectResponse
     {
-        $types = DocumentType::getWithLabels();
-        return view('candidate.documents.create', [
-            'types' => $types
-        ]);
+        return redirect()->route('candidate.my.documents.index');
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(DocumentRequest $request): RedirectResponse
+    public function store(DocumentRequest $request): RedirectResponse|JsonResponse
     {
         try {
             $this->repository->store($request);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => __('messages.document.upload_success'),
+                ]);
+            }
+
             return redirect()->back()->with('success', __('messages.document.upload_success'));
         } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => __('messages.document.upload_failed', ['error' => $e->getMessage()]),
+                ], 422);
+            }
+
             return redirect()->back()->with('error', __('messages.document.upload_failed', ['error' => $e->getMessage()]));
         }
     }

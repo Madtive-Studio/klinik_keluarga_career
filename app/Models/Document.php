@@ -18,7 +18,7 @@ class Document extends Model
     protected $casts = [
         'type' => DocumentType::class,
     ];
-    protected $appends = ['file_url'];
+    protected $appends = ['file_url', 'type_label', 'type_badge'];
 
     public function candidate(): BelongsTo
     {
@@ -28,5 +28,15 @@ class Document extends Model
     public function getFileUrlAttribute()
     {
         return $this->file ? Storage::url($this->file) : null;
+    }
+
+    public function getTypeLabelAttribute(): string
+    {
+        return $this->type?->getLabel() ?? '-';
+    }
+
+    public function getTypeBadgeAttribute(): string
+    {
+        return $this->type?->getBadgeClass() ?? 'badge-secondary';
     }
 }
