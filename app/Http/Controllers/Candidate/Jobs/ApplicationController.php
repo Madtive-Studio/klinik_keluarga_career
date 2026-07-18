@@ -55,7 +55,7 @@ class ApplicationController extends Controller
         }
 
         if (isset($resultData['already_applied'])) {
-            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', 'Kamu sudah melamar lowongan pekerjaan ini');
+            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', __('messages.application.already_applied'));
         }
 
         return redirect()->route('candidate.jobs.applications.success', $uuid)->with($resultData);
@@ -74,7 +74,7 @@ class ApplicationController extends Controller
         $apply = $this->repository->findApplicationByJobUuidAndCandidate($uuid, Auth::guard('candidate')->id());
         if (!$apply) {
             return redirect()->route('candidate.jobs.vacancies.index')
-                ->with('warning', 'Data lamaran tidak ditemukan.');
+                ->with('warning', __('messages.application.not_found'));
         }
 
         return view('candidate.jobs.vacancies.apply-success', [

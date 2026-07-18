@@ -56,7 +56,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         Category::create($request->all());
-        return redirect()->route('admin.categories.index')->with('success', 'Berhasil membuat kategori baru');
+        return redirect()->route('admin.categories.index')->with('success', __('messages.admin.category.created'));
     }
 
     /**
@@ -84,7 +84,7 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
         Category::findOrFail($id)->update($request->all());
-        return redirect()->route('admin.categories.index')->with('success', 'Berhasil mengubah data kategori');
+        return redirect()->route('admin.categories.index')->with('success', __('messages.admin.category.updated'));
     }
 
     /**
@@ -96,6 +96,6 @@ class CategoryController extends Controller
         if ($category) {
             $category->delete();
         }
-        return redirect()->route('admin.categories.index')->with('success', 'Berhasil menghapus data kategori');
+        return redirect()->route('admin.categories.index')->with('success', __('messages.admin.category.deleted'));
     }
 }

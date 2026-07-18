@@ -1,18 +1,18 @@
 @extends('candidate.layouts.main', ['navbarType' => 'candidate'])
-@section('title', 'Lamaran Saya')
+@section('title', __('candidate.applications.title'))
 @section('content')
 	<section class="section pt-5">
 		<div class="container">
 			<div class="row">
 				@include('candidate.jobs.applications.tab_menu')
 				<div class="col-lg-8 col-md-5 mt-4 mt-sm-0">
-					<h5 class="mb-2">Total : {{ $applies->apply_count }} Dokumen</h5>
+					<h5 class="mb-2">{{ __('common.total') }} : {{ __('candidate.applications.total_documents', ['count' => $applies->apply_count]) }}</h5>
 					<div class="show-results">
 						<div class="sort-button float-left">
 							<select class="nice-select rounded" id="sortedBy">
-								<option value="">Tampilkan Berdasarkan</option>
-								<option value="Newest" {{ request('sortedBy') === 'Newest' ? 'selected' : '' }}>Paling Baru</option>
-								<option value="Oldest" {{ request('sortedBy') === 'Oldest' ? 'selected' : '' }}>Paling Lama</option>
+								<option value="">{{ __('candidate.applications.sort_by') }}</option>
+								<option value="Newest" {{ request('sortedBy') === 'Newest' ? 'selected' : '' }}>{{ __('candidate.applications.newest') }}</option>
+								<option value="Oldest" {{ request('sortedBy') === 'Oldest' ? 'selected' : '' }}>{{ __('candidate.applications.oldest') }}</option>
 							</select>
 						</div>
 					</div>
@@ -45,10 +45,10 @@
 												</p>
 												<ul class="list-inline mb-0">
 													<li class="list-inline-item mr-3">
-														<p class="text-muted mb-0"><i class="mdi mdi-calendar mr-2"></i>Dikirim pada {{ date('d M Y H:i:s', strtotime($apply->created_at)) }}</p>
+														<p class="text-muted mb-0"><i class="mdi mdi-calendar mr-2"></i>{{ __('common.sent_at') }} {{ date('d M Y H:i:s', strtotime($apply->created_at)) }}</p>
 													</li>
 												</ul>
-												<span class="badge badge-primary mt-2">Dilamar</span>
+												<span class="badge badge-primary mt-2">{{ __('common.applied') }}</span>
 											</div>
 										</div>
 										<div class="col-lg-3 col-md-3">
@@ -60,7 +60,7 @@
 								</div>
 							</div>
 						@empty
-							<p class="mb-0 text-center">Belum ada data.</p>
+							<p class="mb-0 text-center">{{ __('common.no_data') }}</p>
 						@endforelse
 
 						{{-- Pagination Links --}}
@@ -70,8 +70,7 @@
 						
 						{{-- Info Pagination --}}
 						<div class="mt-2 text-center text-muted small">
-							Menampilkan {{ $applies->firstItem() }} - {{ $applies->lastItem() }} 
-							dari {{ $applies->total() }} dokumen
+							{{ __('common.showing', ['from' => $applies->firstItem(), 'to' => $applies->lastItem(), 'total' => $applies->total(), 'unit' => __('common.documents')]) }}
 						</div>
 					</div>
 				</div>

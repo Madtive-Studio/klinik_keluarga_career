@@ -26,12 +26,7 @@ enum JobType: string
 
     public function getLabel(): string
     {
-        return match ($this) {
-            self::WFH_REMOTE => 'WFH / Remote',
-            self::PARTIME_FREELANCER => 'Part-time / Freelance',
-            self::FULLTIME_ONSITE => 'Full-time / Onsite',
-            self::INTERNSHIP => 'Internship',
-        };
+        return __('enums.job_type.' . $this->value);
     }
 
     public function badgeClass(): string

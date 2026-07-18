@@ -10,31 +10,31 @@
 				<div class="col-md-6 mb-6">
 					<div class="card">
 						<div class="card-header d-flex justify-content-between align-items-center">
-							<h5 class="mb-0">Form {{ isset($scheduleInterview) ? 'Edit' : 'Create' }} Schedule Interview</h5>
+							<h5 class="mb-0">{{ isset($scheduleInterview) ? __('admin.schedule_interviews.form_edit') : __('admin.schedule_interviews.form_create') }}</h5>
 						</div>
 						<div class="card-body row">
 							<div class="col-md-6">
 								<div class="mb-3">
-									<label class="form-label">UUID</label>
+									<label class="form-label">{{ __('admin.schedule_interviews.uuid') }}</label>
 									<div class="input-group input-group-merge">
-										<input type="text" class="form-control dt-full-name" name="uuid" readonly placeholder="Code" required value="{{ isset($scheduleInterview) ? $scheduleInterview->uuid : $uuid }}" />
+										<input type="text" class="form-control dt-full-name" name="uuid" readonly placeholder="{{ __('admin.schedule_interviews.code') }}" required value="{{ isset($scheduleInterview) ? $scheduleInterview->uuid : $uuid }}" />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="mb-3">
-									<label class="form-label">Code</label>
+									<label class="form-label">{{ __('admin.schedule_interviews.code') }}</label>
 									<div class="input-group input-group-merge">
-										<input type="text" class="form-control dt-full-name" name="code" readonly placeholder="Code" required value="{{ isset($scheduleInterview) ? $scheduleInterview->code : $code }}" />
+										<input type="text" class="form-control dt-full-name" name="code" readonly placeholder="{{ __('admin.schedule_interviews.code') }}" required value="{{ isset($scheduleInterview) ? $scheduleInterview->code : $code }}" />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="mb-3">
-									<label class="form-label">Select Apply Data</label>
+									<label class="form-label">{{ __('admin.schedule_interviews.select_apply') }}</label>
 									<div class="input-group input-group-merge">
 										<select name="apply_id" id="apply_id" class="form-control" required>
-											<option value="">-- Select Apply Data --</option>
+											<option value="">{{ __('admin.schedule_interviews.select_apply') }}</option>
 											@foreach ($applies as $apply)
 												<option value="{{ $apply->id }}"
 													{{ isset($scheduleInterview) && isset($scheduleInterview->apply_id) && $scheduleInterview->apply_id == (isset($apply) ? $apply->id : null) ? 'selected' : '' }}>
@@ -46,53 +46,53 @@
 								</div>
 							</div>
 							<div class="mb-3">
-								<label class="form-label">Title</label>
+								<label class="form-label">{{ __('admin.schedule_interviews.title_col') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" class="form-control dt-full-name" name="title" placeholder="Title" value="{{ isset($scheduleInterview) ? $scheduleInterview->title : '' }}" required />
+									<input type="text" class="form-control dt-full-name" name="title" placeholder="{{ __('admin.schedule_interviews.title_col') }}" value="{{ isset($scheduleInterview) ? $scheduleInterview->title : '' }}" required />
 								</div>
 							</div>
 							<div class="col-md-4" style="align-self: center;">
 								<div class="mb-3">
 									<label for="is_online">
-										<input type="checkbox" name="is_online" id="is_online" {{ isset($scheduleInterview) && $scheduleInterview->is_online ? 'checked' : '' }}> Interview Online?
+										<input type="checkbox" name="is_online" id="is_online" {{ isset($scheduleInterview) && $scheduleInterview->is_online ? 'checked' : '' }}> {{ __('admin.schedule_interviews.interview_online') }}
 									</label>
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="mb-3">
-									<label class="form-label">Start Datetime</label>
+									<label class="form-label">{{ __('admin.schedule_interviews.start_datetime') }}</label>
 									<div class="input-group input-group-merge">
-										<input type="text" class="form-control flatpickr-datetime" name="start_datetime" placeholder="dd-mm-yyyy HH:mm:ss" required value="{{ old('start_datetime', isset($scheduleInterview) ? formatFlatpickrDatetime($scheduleInterview->start_datetime) : '') }}" />
+										<input type="text" class="form-control flatpickr-datetime" name="start_datetime" placeholder="{{ __('admin.form.datetime_placeholder') }}" required value="{{ old('start_datetime', isset($scheduleInterview) ? formatFlatpickrDatetime($scheduleInterview->start_datetime) : '') }}" />
 									</div>
 									@error('start_datetime') <small class="text-danger">{{ $message }}</small> @enderror
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="mb-3">
-									<label class="form-label">End Datetime</label>
+									<label class="form-label">{{ __('admin.schedule_interviews.end_datetime') }}</label>
 									<div class="input-group input-group-merge">
-										<input type="text" class="form-control flatpickr-datetime" name="end_datetime" placeholder="dd-mm-yyyy HH:mm:ss" required value="{{ old('end_datetime', isset($scheduleInterview) ? formatFlatpickrDatetime($scheduleInterview->end_datetime) : '') }}" />
+										<input type="text" class="form-control flatpickr-datetime" name="end_datetime" placeholder="{{ __('admin.form.datetime_placeholder') }}" required value="{{ old('end_datetime', isset($scheduleInterview) ? formatFlatpickrDatetime($scheduleInterview->end_datetime) : '') }}" />
 									</div>
 									@error('end_datetime') <small class="text-danger">{{ $message }}</small> @enderror
 								</div>
 							</div>
 							<div class="col-md-12" id="form_link">
 								<div class="mb-3">
-									<label class="form-label">Link Zoom/Gmeet</label>
+									<label class="form-label">{{ __('admin.schedule_interviews.link') }}</label>
 									<div class="input-group input-group-merge">
 										<input type="text" name="link" class="form-control" required value="{{ isset($scheduleInterview) ? $scheduleInterview->link : '' }}">
 									</div>
 								</div>
 							</div>
 							<div class="mb-3">
-								<label class="form-label">Description</label>
+								<label class="form-label">{{ __('admin.schedule_interviews.description') }}</label>
 								<div class="input-group input-group-merge">
 									<textarea name="description" id="" class="form-control" required>{{ isset($scheduleInterview) ? $scheduleInterview->description : '' }}</textarea>
 								</div>
 							</div>
 							<div class="mb-3">
-								<button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">Submit</button>
-								<a href="{{ route('admin.schedule-interviews.index') }}" class="btn btn-outline-secondary">Cancel</a>
+								<button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">{{ __('admin.form.submit') }}</button>
+								<a href="{{ route('admin.schedule-interviews.index') }}" class="btn btn-outline-secondary">{{ __('admin.form.cancel') }}</a>
 							</div>
 						</div>
 					</div>

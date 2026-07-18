@@ -11,15 +11,15 @@
 				<table class="datatables-basic table">
 					<thead>
 						<tr>
-							<th>No</th>
-							<th>Name</th>
-							<th>Email</th>
-							<th>Email Verified At</th>
-							<th>Phone</th>
-							<th>Date of Birth</th>
-							<th>Address</th>
-							<th>CV/Resume</th>
-							<th>Status</th>
+							<th>{{ __('admin.datatable.no') }}</th>
+							<th>{{ __('admin.candidates.name') }}</th>
+							<th>{{ __('admin.candidates.email') }}</th>
+							<th>{{ __('admin.candidates.email_verified_at') }}</th>
+							<th>{{ __('admin.candidates.phone') }}</th>
+							<th>{{ __('admin.candidates.birth_date') }}</th>
+							<th>{{ __('admin.candidates.address') }}</th>
+							<th>{{ __('admin.candidates.cv') }}</th>
+							<th>{{ __('admin.candidates.status') }}</th>
 						</tr>
 					</thead>
 				</table>
@@ -109,7 +109,7 @@
 						$('.card-header').after('<hr class="my-0">');
 					}
 				});
-				$('div.head-label').html('<h5 class="card-title mb-0">Candidates Datatable</h5>');
+				$('div.head-label').html('<h5 class="card-title mb-0">{{ __('admin.candidates.title') }}</h5>');
 			}
 
 
@@ -119,7 +119,7 @@
 			}, 300);
 
 			$(document).on('click', '.delete', function() {
-				let value = confirm('Konfirmasi hapus?')
+				let value = confirm(window.adminI18n.confirm_delete)
 				if (value) {
 					let route = getAttrValue(this, 'route')
 					window.location.href = route

@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Enums\JobType;
+use App\Notifications\Concerns\UsesNotificationLocale;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -9,54 +11,36 @@ use Illuminate\Notifications\Notification;
 class ApplicationSubmittedNotification extends Notification
 {
     use Queueable;
+    use UsesNotificationLocale;
 
-    public $candidate;
-    public $job;
+    public function __construct(
+        public $candidate,
+        public $job,
+    ) {}
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct($candidate, $job)
-    {
-        $this->candidate = $candidate;
-        $this->job = $job;
-    }
-
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toMail(object $notifiable): MailMessage
     {
+        $this->withNotificationLocale();
+
         return (new MailMessage)
-            ->subject('Lamaran Kamu Berhasil Dikirim')
+            ->subject(__('emails.application_submitted.subject'))
             ->view('emails.candidate.job-application-mail', [
-                'pageTitle' => 'Lamaran Kamu Berhasil Dikirim',
-                'heading' => 'Lamaran Kamu Berhasil Dikirim',
+                'pageTitle' => __('emails.application_submitted.heading'),
+                'heading' => __('emails.application_submitted.heading'),
                 'variant' => 'application_submitted',
                 'candidate' => $this->candidate,
                 'job' => $this->job,
+                'jobTypeLabel' => JobType::tryFrom($this->job->type)?->getLabel() ?? $this->job->type,
             ]);
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(object $notifiable): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 }

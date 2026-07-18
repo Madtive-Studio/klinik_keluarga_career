@@ -1,7 +1,7 @@
 <!doctype html>
 
 <html
-	lang="en"
+	lang="{{ str_replace('_', '-', app()->getLocale()) }}"
 	class="light-style layout-wide customizer-hide"
 	dir="ltr"
 	data-theme="theme-default"
@@ -12,7 +12,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-		<title>{{ config('app.name') }} | Login Admin</title>
+		<title>{{ config('app.name') }} | {{ __('admin.auth.login_title') }}</title>
 		<meta name="description" content="" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -35,6 +35,9 @@
 	</head>
 
 <body>
+  <div class="position-absolute" style="top: 20px; right: 20px; z-index: 1000">
+    @include('layouts.locale-switcher')
+  </div>
   <div class="container-xxl">
     <div class="authentication-wrapper authentication-basic container-p-y">
       <div class="authentication-inner py-6">
@@ -56,12 +59,12 @@
             <form class="mb-4" action="{{ route("admin.process") }}" method="POST">
               @csrf
               <div class="mb-6">
-                <label for="email" class="form-label">Email</label>
-                <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" autofocus />
+                <label for="email" class="form-label">{{ __('common.email') }}</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="{{ __('admin.auth.enter_email') }}" autofocus />
               </div>
 
               <div class="mb-6 form-password-toggle">
-                <label class="form-label" for="password">Password</label>
+                <label class="form-label" for="password">{{ __('common.password') }}</label>
                 <div class="input-group input-group-merge">
                   <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
                   <span class="input-group-text cursor-pointer">
@@ -71,7 +74,7 @@
               </div>
 
               <div class="mb-6">
-                <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
+                <button class="btn btn-primary d-grid w-100" type="submit">{{ __('common.login') }}</button>
               </div>
             </form>
           </div>

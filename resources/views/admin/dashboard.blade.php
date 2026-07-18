@@ -6,9 +6,9 @@
 				<div class="col-md-3">
 					<div class="card h-100">
 						<div class="card-body">
-							<span class="badge bg-label-success mb-2">Active Batch</span>
+							<span class="badge bg-label-success mb-2">{{ __('admin.dashboard.active_batch') }}</span>
 							<h5 class="mb-1">{{ $activeBatch->code }} - {{ $activeBatch->name }}</h5>
-							<small class="text-muted">{{ \Carbon\Carbon::parse($activeBatch->start_date)->diffForHumans() }} s/d {{ \Carbon\Carbon::parse($activeBatch->end_date)->diffForHumans() }}</small>
+							<small class="text-muted">{{ \Carbon\Carbon::parse($activeBatch->start_date)->diffForHumans() }} {{ __('admin.dashboard.until') }} {{ \Carbon\Carbon::parse($activeBatch->end_date)->diffForHumans() }}</small>
 						</div>
 					</div>
 				</div>
@@ -16,7 +16,7 @@
 			<div class="col-md-3">
 				<div class="card h-100">
 					<div class="card-body">
-						<p class="mb-1 text-muted">Job List</p>
+						<p class="mb-1 text-muted">{{ __('admin.dashboard.job_list') }}</p>
 						<h3 class="mb-0">{{ $jobList }}</h3>
 					</div>
 				</div>
@@ -24,7 +24,7 @@
 			<div class="col-md-3">
 				<div class="card h-100">
 					<div class="card-body">
-						<p class="mb-1 text-muted">Applicants</p>
+						<p class="mb-1 text-muted">{{ __('admin.dashboard.applicants') }}</p>
 						<h3 class="mb-0">{{ $applicants }}</h3>
 					</div>
 				</div>
@@ -32,7 +32,7 @@
 			<div class="col-md-3">
 				<div class="card h-100">
 					<div class="card-body">
-						<p class="mb-1 text-muted">Hired</p>
+						<p class="mb-1 text-muted">{{ __('admin.dashboard.hired') }}</p>
 						<h3 class="mb-0">{{ $hired }}</h3>
 					</div>
 				</div>
@@ -41,8 +41,8 @@
 
 		<div class="card">
 			<div class="card-header">
-				<h5 class="card-title mb-1">Grafik Pendaftaran & Diterima</h5>
-				<p class="card-subtitle mb-0">12 bulan terakhir</p>
+				<h5 class="card-title mb-1">{{ __('admin.dashboard.chart_title') }}</h5>
+				<p class="card-subtitle mb-0">{{ __('admin.dashboard.chart_subtitle') }}</p>
 			</div>
 			<div class="card-body">
 				<div id="dashboardRecruitmentChart"></div>
@@ -67,11 +67,11 @@
 				},
 				series: [
 					{
-						name: 'Kandidat Daftar',
+						name: @json(__('admin.dashboard.series_candidates')),
 						data: @json($candidateSeries)
 					},
 					{
-						name: 'Diterima (Hired)',
+						name: @json(__('admin.dashboard.series_hired')),
 						data: @json($hiredSeries)
 					}
 				],

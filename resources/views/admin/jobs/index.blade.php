@@ -11,15 +11,15 @@
 				<table class="datatables-basic table">
 					<thead>
 						<tr>
-							<th>No</th>
-							<th>Batch</th>
-							<th>Title</th>
-							<th>Category</th>
-							<th>Show Salary</th>
-							<th>Salary</th>
-							<th>Type</th>
-							<th>Pendaftar / Quota</th>
-							<th>Action</th>
+							<th>{{ __('admin.datatable.no') }}</th>
+							<th>{{ __('admin.jobs.batch') }}</th>
+							<th>{{ __('admin.jobs.title_col') }}</th>
+							<th>{{ __('admin.jobs.category') }}</th>
+							<th>{{ __('admin.jobs.show_salary') }}</th>
+							<th>{{ __('admin.jobs.salary') }}</th>
+							<th>{{ __('admin.jobs.type') }}</th>
+							<th>{{ __('admin.jobs.applicants_quota') }}</th>
+							<th>{{ __('admin.datatable.action') }}</th>
 						</tr>
 					</thead>
 				</table>
@@ -105,14 +105,14 @@
 						}
 					},
 					buttons: [{
-						text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Tambah Job</span>',
+						text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">{{ __('admin.jobs.add') }}</span>',
 						className: 'create-new btn btn-primary waves-effect waves-light'
 					}],
 					initComplete: function(settings, json) {
 						$('.card-header').after('<hr class="my-0">');
 					}
 				});
-				$('div.head-label').html('<h5 class="card-title mb-0">Jobs Datatable</h5>');
+				$('div.head-label').html('<h5 class="card-title mb-0">{{ __('admin.jobs.datatable') }}</h5>');
 			}
 
 
@@ -126,7 +126,7 @@
 			})
 
 			$(document).on('click', '.delete', function() {
-				let value = confirm('Konfirmasi hapus?')
+				let value = confirm(window.adminI18n.confirm_delete)
 				if (value) {
 					let route = getAttrValue(this, 'route')
 					window.location.href = route
@@ -147,7 +147,7 @@
 					},
 					error: function() {
 						checkbox.prop('checked', !isShowSalary)
-						alert('Gagal mengubah Show Salary')
+						alert(window.adminI18n.toggle_salary_failed)
 					}
 				})
 			})

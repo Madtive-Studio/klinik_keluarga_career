@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
 	<meta charset="UTF-8">
 	<title>Karir | Madtive Studio - Login</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta property="og:locale" content="id_ID" />
+	<meta property="og:locale" content="{{ app()->getLocale() === 'id' ? 'id_ID' : 'en_US' }}" />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="Madtive Studio" />
 	<meta property="og:description" content="Madtive Studio adalah studio atau software house yang bergerak di bidang Teknologi Informasi, Sistem dan juga Branding yang berdiri sejak tahun 2015" />
@@ -26,8 +26,11 @@
 	<div id="preloader">
 		<div id="status">
 			<img src="{{ asset('logo.png') }}" width="250" class="d-block mx-auto" alt="">
-			<p class="mt-3 text-center"><strong>Tunggu Sebentar...</strong></p>
+			<p class="mt-3 text-center"><strong>{{ __('common.loading') }}</strong></p>
 		</div>
+	</div>
+	<div class="position-absolute" style="top: 20px; right: 20px; z-index: 1000">
+		@include('layouts.locale-switcher')
 	</div>
 	<div class="back-to-home rounded d-none d-sm-block">
 		<a href="{{ route('candidate.home') }}" class="text-white rounded d-inline-block text-center"><i class="mdi mdi-home"></i></a>
@@ -43,7 +46,7 @@
 							<div class="login-page bg-white shadow rounded p-4">
 								<div class="text-center">
 									<h4 class="mb-4">
-										<strong>Login</strong>
+										<strong>{{ __('candidate.auth.login_title') }}</strong>
 									</h4>
 								</div>
 								@if ($message = Session::get('error'))
@@ -66,8 +69,8 @@
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="form-group position-relative">
-												<label>Email <span class="text-danger">*</span></label>
-												<input type="email" class="form-control" placeholder="Email" name="email">
+												<label>{{ __('common.email') }} <span class="text-danger">*</span></label>
+												<input type="email" class="form-control" placeholder="{{ __('common.email') }}" name="email">
 												@error('email')
 													<span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
 												@enderror
@@ -75,19 +78,19 @@
 										</div>
 										<div class="col-lg-12">
 											<div class="form-group position-relative">
-												<label>Password <span class="text-danger">*</span></label>
-												<input type="password" name="password" class="form-control" placeholder="Password">
+												<label>{{ __('common.password') }} <span class="text-danger">*</span></label>
+												<input type="password" name="password" class="form-control" placeholder="{{ __('common.password') }}">
 												@error('password')
 													<span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
 												@enderror
 											</div>
 										</div>
 										<div class="col-lg-12 mb-0">
-											<button class="btn btn-primary w-100">Login</button>
+											<button class="btn btn-primary w-100">{{ __('common.login') }}</button>
 										</div>
 										<div class="col-12 text-center">
-											<p class="mb-0 mt-3"><small class="text-dark mr-2">Belum punya akun?</small>
-												<a href="{{ route('candidate.register.form') }}" class="text-dark font-weight-bold">Daftar</a>
+											<p class="mb-0 mt-3"><small class="text-dark mr-2">{{ __('candidate.auth.no_account') }}</small>
+												<a href="{{ route('candidate.register.form') }}" class="text-dark font-weight-bold">{{ __('common.register') }}</a>
 											</p>
 										</div>
 									</div>

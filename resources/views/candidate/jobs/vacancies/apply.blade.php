@@ -1,4 +1,5 @@
 @extends('candidate.layouts.main', ['navbarType' => 'default'])
+@section('title', __('candidate.apply.title'))
 @section('content')
 	<section class="bg-half page-next-level">
 		<div class="bg-overlay"></div>
@@ -8,9 +9,9 @@
 					<div class="text-center text-white">
 						<h4 class="text-uppercase title mb-4">{{ $job->code }} - {{ $job->title }}</h4>
 						<ul class="page-next d-inline-block mb-0">
-							<li><a href="#" class="text-uppercase font-weight-bold">Beranda</a></li>
+							<li><a href="#" class="text-uppercase font-weight-bold">{{ __('candidate.nav.home') }}</a></li>
 							<li>
-								<span class="text-uppercase text-white">Lowongan Pekerjaan</span>
+								<span class="text-uppercase text-white">{{ __('candidate.nav.jobs') }}</span>
 							</li>
 							<li>
 								<span class="text-uppercase text-white font-weight-bold">{{ $job->code }} - {{ $job->title }}</span>
@@ -30,10 +31,10 @@
 						<div class="job-detail-content">
 							<img src="images/featured-job/img-4.png" alt="" class="img-fluid float-left mr-md-3 mr-2 mx-auto d-block">
 							<div class="job-detail-com-desc overflow-hidden d-block">
-								<h4 class="mb-2"><a href="#" class="text-dark">Lamaran | {{ $job->code }} - {{ $job->title }}</a></h4>
+								<h4 class="mb-2"><a href="#" class="text-dark">{{ __('candidate.apply.application_label') }} | {{ $job->code }} - {{ $job->title }}</a></h4>
 								<p class="text-muted mb-0"><i class="mdi mdi-link-variant mr-2"></i>{{ $job->category->name }}</p>
-								<p class="text-muted mb-0"><i class="mdi mdi-laptop mr-2"></i>{{ $job->type }} | {{ $job->experience }}</p>
-								<p class="text-muted mb-0"><i class="mdi mdi-account mr-2"></i>{{ $formattedAppliesTotal }} orang melamar pekerjaan ini</p>
+								<p class="text-muted mb-0"><i class="mdi mdi-laptop mr-2"></i>{{ \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type }} | {{ $job->experience }}</p>
+								<p class="text-muted mb-0"><i class="mdi mdi-account mr-2"></i>{{ __('candidate.jobs.applicants_count', ['count' => $formattedAppliesTotal]) }}</p>
 							</div>
 						</div>
 					</div>
@@ -45,18 +46,18 @@
 								<div class="job-detail border rounded p-4">
 									<div class="job-detail-content">
 										<div class="form-group">
-											<label for="">CV / Resume : </label>
+											<label for="">{{ __('candidate.apply.cv_resume') }} : </label>
 											<div class="row">
 												<div class="col-md-2">
 													<label for="upload_cv">
 														<input type="radio" name="type_of_document" class="type_of_document" id="upload_cv" value="upload" 
-															{{ old('type_of_document') === 'upload' ? 'checked' : 'checked' }}> Upload
+															{{ old('type_of_document') === 'upload' ? 'checked' : 'checked' }}> {{ __('candidate.apply.upload') }}
 													</label>
 												</div>
 												<div class="col-md-2">
 													<label for="select_cv">
 														<input type="radio" name="type_of_document" class="type_of_document" id="select_cv" value="select"
-															{{ old('type_of_document') === 'select' ? 'checked' : '' }}> Pilih
+															{{ old('type_of_document') === 'select' ? 'checked' : '' }}> {{ __('candidate.apply.select') }}
 													</label>
 												</div>
 											</div>
@@ -83,7 +84,7 @@
 											@enderror
 										</div>
 										<div class="form-group">
-											<label for="">Surat Lamaran : </label>
+											<label for="">{{ __('candidate.apply.cover_letter') }} : </label>
 											<div id="quill-editor-cover_letter" class="mb-3" style="height: 100px;"></div>
 											<textarea class="mb-3 d-none" name="cover_letter" id="quill-editor-cover_letter-area"></textarea>
 											@error('cover_letter')
@@ -91,7 +92,7 @@
 											@enderror
 										</div>
 										<div class="form-group">
-											<label for="">Deskripsikan kenapa kamu melamar pekerjaan ini : </label>
+											<label for="">{{ __('candidate.apply.why_apply') }} : </label>
 											<div id="quill-editor-description" class="mb-3" style="height: 150px;"></div>
 											<textarea class="mb-3 d-none" name="description" id="quill-editor-description-area"></textarea>
 											@error('description')
@@ -100,7 +101,7 @@
 										</div>
 									</div>
 									<button type="submit" class="btn btn-primary btn-block">
-										Lamar Sekarang
+										{{ __('candidate.jobs.apply_now') }}
 									</button>
 								</div>
 							</div>
@@ -109,7 +110,7 @@
 				</div>
 				<div class="col-lg-4 col-md-5 mt-4 mt-sm-0">
 					<div class="job-detail border rounded p-4">
-						<h5 class="text-muted text-center pb-2"><i class="mdi mdi-info mr-2"></i>Informasi</h5>
+						<h5 class="text-muted text-center pb-2"><i class="mdi mdi-info mr-2"></i>{{ __('candidate.jobs.information') }}</h5>
 						<div class="job-detail-location pt-4 border-top">
 							<div class="job-details-desc-item">
 								<div class="float-left mr-2">
@@ -121,7 +122,7 @@
 								<div class="float-left mr-2">
 									<i class="mdi mdi-laptop text-muted"></i>
 								</div>
-								<p class="text-muted mb-2">{{ $job->type }}</p>
+								<p class="text-muted mb-2">{{ \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type }}</p>
 							</div>
 							<div class="job-details-desc-item">
 								<div class="float-left mr-2">
@@ -133,19 +134,19 @@
 								<div class="float-left mr-2">
 									<i class="mdi mdi-account text-muted"></i>
 								</div>
-								<p class="text-muted mb-2">{{ $job->quota }} orang (Kuota)</p>
+								<p class="text-muted mb-2">{{ __('candidate.apply.quota_people', ['count' => $job->quota]) }}</p>
 							</div>
 							<div class="job-details-desc-item">
 								<div class="float-left mr-2">
 									<i class="mdi mdi-currency-usd text-muted"></i>
 								</div>
-								<p class="text-muted mb-2">: {{ $job->is_show_salary ? $job->salary : 'Tidak disebutkan' }}</p>
+								<p class="text-muted mb-2">: {{ $job->is_show_salary ? $job->salary : __('candidate.apply.salary_not_stated') }}</p>
 							</div>
 							<div class="job-details-desc-item">
 								<div class="float-left mr-2">
 									<i class="mdi mdi-clock-outline text-muted"></i>
 								</div>
-								<p class="text-muted mb-2">: Senin - Jum'at</p>
+								<p class="text-muted mb-2">: {{ __('candidate.apply.weekdays') }}</p>
 							</div>
 						</div>
 					</div>

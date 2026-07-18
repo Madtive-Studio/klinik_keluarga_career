@@ -33,10 +33,6 @@ enum DocumentType: string
 
     public function getLabel(): string
     {
-        return match ($this) {
-            self::CV => 'Curriculum Vitae',
-            self::MCU => 'Medical Checkup Unit',
-            self::OTHERS => 'Dokumen Lainnya',
-        };
+        return __('enums.document_type.' . $this->value);
     }
 }

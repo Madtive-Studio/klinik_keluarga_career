@@ -53,13 +53,13 @@
     $(window).ready(function() {
         const today = new Date();
 
-        flatpickr.localize(flatpickr.l10ns.id);
+        flatpickr.localize(window.appLocale === 'id' ? flatpickr.l10ns.id : flatpickr.l10ns.default);
         $(".flatpickr").flatpickr({
             dateFormat: "Y-m-d",
             allowInput: true,
             altInput: true,
             altFormat: "d F Y",
-            locale: "id",
+            locale: window.appLocale === 'id' ? 'id' : 'default',
             disableMobile: "true",
             defaultDate: today
         });

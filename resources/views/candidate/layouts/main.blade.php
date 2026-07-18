@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="no-js">
 
 <head>
 	@include('candidate.layouts.header')
@@ -9,7 +9,7 @@
 	<div id="preloader">
 		<div id="status">
 			<img src="{{ asset('assets/logo/letter-logo.png') }}" width="250" class="d-block mx-auto" alt="">
-			<p class="mt-3 text-center"><strong>Tunggu Sebentar...</strong></p>
+			<p class="mt-3 text-center"><strong>{{ __('common.loading') }}</strong></p>
 		</div>
 	</div>
 

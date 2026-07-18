@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
@@ -76,7 +76,7 @@
             @yield('content')
         </div>
         <div class="footer">
-            <p>&copy; {{ date('Y') }} Madtive Studio. All rights reserved.</p>
+            <p>{{ __('emails.footer', ['year' => date('Y')]) }}</p>
         </div>
     </div>
 </body>

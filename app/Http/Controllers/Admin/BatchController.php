@@ -74,7 +74,7 @@ class BatchController extends Controller
 
         Batch::create($data);
 
-        return redirect()->route('admin.batches.index')->with('success', 'Berhasil membuat batch baru');
+        return redirect()->route('admin.batches.index')->with('success', __('messages.admin.batch.created'));
     }
 
     /**
@@ -103,7 +103,7 @@ class BatchController extends Controller
     {
         Batch::findOrFail($id)->update($this->validatedBatchData($request));
 
-        return redirect()->route('admin.batches.index')->with('success', 'Berhasil mengubah data batch');
+        return redirect()->route('admin.batches.index')->with('success', __('messages.admin.batch.updated'));
     }
 
     private function validatedBatchData(Request $request): array
@@ -137,7 +137,7 @@ class BatchController extends Controller
         if ($batch) {
             $batch->delete();
         }
-        return redirect()->route('admin.batches.index')->with('success', 'Berhasil menghapus data batch');
+        return redirect()->route('admin.batches.index')->with('success', __('messages.admin.batch.deleted'));
     }
 
     public function status(string $id)
@@ -146,6 +146,6 @@ class BatchController extends Controller
         $batch->update(['status' => 'ACTIVE']);
         $other = Batch::whereNotIn('id', [$batch->id])->update(['status' => 'INACTIVE']);
 
-        return redirect()->route('admin.batches.index')->with('success', 'Berhasil ubah status batch');
+        return redirect()->route('admin.batches.index')->with('success', __('messages.admin.batch.status_updated'));
     }
 }

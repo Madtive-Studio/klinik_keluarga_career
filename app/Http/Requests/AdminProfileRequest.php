@@ -30,10 +30,10 @@ class AdminProfileRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => 'nama',
-            'email' => 'email',
-            'current_password' => 'password saat ini',
-            'password' => 'password baru',
+            'name' => __('validation.attributes.name'),
+            'email' => __('validation.attributes.email'),
+            'current_password' => __('validation.attributes.current_password'),
+            'password' => __('validation.attributes.password'),
         ];
     }
 }

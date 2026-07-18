@@ -6,11 +6,12 @@
 					<img src="{{ asset('assets/logo/letter-logo.png') }}" alt="" class="logo-light" height="30" />
 				</a>
 			</div>
-			@if (!Auth::guard('candidate')->check())
-				<div class="buy-button">
-					<a href="{{ route('candidate.login.form') }}" class="btn btn-primary"><i class="mdi mdi-login-variant"></i> Masuk</a>
-				</div>
-			@endif
+			<div class="d-flex align-items-center buy-button gap-2">
+				@include('layouts.locale-switcher', ['class' => 'me-2'])
+				@if (!Auth::guard('candidate')->check())
+					<a href="{{ route('candidate.login.form') }}" class="btn btn-primary"><i class="mdi mdi-login-variant"></i> {{ __('candidate.nav.login') }}</a>
+				@endif
+			</div>
 			<div class="menu-extras">
 				<div class="menu-item">
 					<a class="navbar-toggle">
@@ -24,18 +25,15 @@
 			</div>
 			<div id="navigation">
 				<ul class="navigation-menu justify-content-end">
-					<li><a class="text-dark" href="{{ route('candidate.home') }}">Beranda</a></li>
-					<li><a class="text-dark" href="{{ route('candidate.jobs.vacancies.index') }}">Lowongan Pekerjaan</a></li>
-					{{-- <li>
-						<a class="text-dark" href="#footer">Kontak Kami</a>
-					</li> --}}
+					<li><a class="text-dark" href="{{ route('candidate.home') }}">{{ __('candidate.nav.home') }}</a></li>
+					<li><a class="text-dark" href="{{ route('candidate.jobs.vacancies.index') }}">{{ __('candidate.nav.jobs') }}</a></li>
 					@if (Auth::guard('candidate')->check())
-						<li class="has-submenu"><a class="text-dark" href="javascript:void(0)"> <i class="mdi mdi-account"></i> Selamat Datang, {{ auth()->guard('candidate')->user()->name }}</a><span class="submenu-arrow"></span>
+						<li class="has-submenu"><a class="text-dark" href="javascript:void(0)"> <i class="mdi mdi-account"></i> {{ __('candidate.nav.welcome', ['name' => auth()->guard('candidate')->user()->name]) }}</a><span class="submenu-arrow"></span>
 							<ul class="submenu">
-								<li><a class="text-dark" href="{{ route('candidate.my.profile.edit') }}">Profil Saya</a></li>
-								<li><a class="text-dark" href="{{ route('candidate.my.applications.index') }}">Lamaran Saya</a></li>
-								<li><a class="text-dark" href="{{ route('candidate.my.documents.index') }}">Dokumen Saya</a></li>
-								<li><a class="text-dark" href="{{ route('candidate.logout') }}">Logout</a></li>
+								<li><a class="text-dark" href="{{ route('candidate.my.profile.edit') }}">{{ __('candidate.nav.my_profile') }}</a></li>
+								<li><a class="text-dark" href="{{ route('candidate.my.applications.index') }}">{{ __('candidate.nav.my_applications') }}</a></li>
+								<li><a class="text-dark" href="{{ route('candidate.my.documents.index') }}">{{ __('candidate.nav.my_documents') }}</a></li>
+								<li><a class="text-dark" href="{{ route('candidate.logout') }}">{{ __('common.logout') }}</a></li>
 							</ul>
 						</li>
 					@endif
@@ -49,15 +47,15 @@
 			<div class="container">
 				<div class="float-left">
 					<div class="schedule-open">
-						<i class="mdi mdi-calendar-blank"></i>  Jadwal Buka : Setiap Hari
+						<i class="mdi mdi-calendar-blank"></i> {{ __('candidate.nav.schedule_open') }}
 					</div>
 					<div class="schedule-open-time">
-						<i class="mdi mdi-clock-outline"></i>  Pagi: 06.00 - 13.00, Siang: 14.00 - 20.00
+						<i class="mdi mdi-clock-outline"></i> {{ __('candidate.nav.schedule_time') }}
 					</div>
 				</div>
 				<div class="float-right">
 					<div class="phone">
-						<i class="mdi mdi-phone-classic"></i> 0263 513513
+						<i class="mdi mdi-phone-classic"></i>0263 513513
 					</div>
 					<div class="email">
 						<a href="#">
@@ -75,11 +73,12 @@
 					<img src="{{ asset('assets/logo/letter-logo.png') }}" alt="" class="logo-dark" height="30" />
 				</a>
 			</div>
-			@if (!Auth::guard('candidate')->check())
-				<div class="buy-button">
-					<a href="{{ route('candidate.login.form') }}" class="btn btn-primary"><i class="mdi mdi-login-variant"></i> Masuk</a>
-				</div>
-			@endif
+			<div class="d-flex align-items-center buy-button gap-2">
+				@include('layouts.locale-switcher', ['class' => 'me-2'])
+				@if (!Auth::guard('candidate')->check())
+					<a href="{{ route('candidate.login.form') }}" class="btn btn-primary"><i class="mdi mdi-login-variant"></i> {{ __('candidate.nav.login') }}</a>
+				@endif
+			</div>
 			<div class="menu-extras">
 				<div class="menu-item">
 					<a class="navbar-toggle">
@@ -93,18 +92,15 @@
 			</div>
 			<div id="navigation">
 				<ul class="navigation-menu justify-content-end">
-					<li><a href="{{ route('candidate.home') }}">Beranda</a></li>
-					<li><a href="{{ route('candidate.jobs.vacancies.index') }}">Lowongan Pekerjaan</a></li>
-					{{-- <li>
-						<a href="#footer">Kontak Kami</a>
-					</li> --}}
+					<li><a href="{{ route('candidate.home') }}">{{ __('candidate.nav.home') }}</a></li>
+					<li><a href="{{ route('candidate.jobs.vacancies.index') }}">{{ __('candidate.nav.jobs') }}</a></li>
 					@if (Auth::guard('candidate')->check())
-						<li class="has-submenu"><a href="javascript:void(0)"> <i class="mdi mdi-account"></i> Selamat Datang, {{ auth()->guard('candidate')->user()->name }}</a><span class="submenu-arrow"></span>
+						<li class="has-submenu"><a href="javascript:void(0)"> <i class="mdi mdi-account"></i> {{ __('candidate.nav.welcome', ['name' => auth()->guard('candidate')->user()->name]) }}</a><span class="submenu-arrow"></span>
 							<ul class="submenu">
-								<li><a href="{{ route('candidate.my.profile.edit') }}">Profil Saya</a></li>
-								<li><a class="text-dark" href="{{ route('candidate.my.applications.index') }}">Lamaran Saya</a></li>
-								<li><a href="{{ route('candidate.my.documents.index') }}">Dokumen Saya</a></li>
-								<li><a href="{{ route('candidate.logout') }}">Logout</a></li>
+								<li><a href="{{ route('candidate.my.profile.edit') }}">{{ __('candidate.nav.my_profile') }}</a></li>
+								<li><a class="text-dark" href="{{ route('candidate.my.applications.index') }}">{{ __('candidate.nav.my_applications') }}</a></li>
+								<li><a href="{{ route('candidate.my.documents.index') }}">{{ __('candidate.nav.my_documents') }}</a></li>
+								<li><a href="{{ route('candidate.logout') }}">{{ __('common.logout') }}</a></li>
 							</ul>
 						</li>
 					@endif

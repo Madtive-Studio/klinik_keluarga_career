@@ -3,17 +3,17 @@
 	<div class="container-xxl flex-grow-1 container-p-y">
 		<div class="d-flex justify-content-between align-items-center mb-4">
 			<div>
-				<h4 class="mb-1">{{ isset($job) ? 'Edit Job' : 'Create Job' }}</h4>
-				<p class="text-muted mb-0">Kelola informasi lowongan, deskripsi, dan kriteria penilaian.</p>
+				<h4 class="mb-1">{{ isset($job) ? __('admin.jobs.edit') : __('admin.jobs.create') }}</h4>
+				<p class="text-muted mb-0">{{ __('admin.jobs.subtitle') }}</p>
 			</div>
 			<a href="{{ route('admin.jobs.index') }}" class="btn btn-outline-secondary">
-				<i class="ti ti-arrow-left me-1"></i> Kembali ke Job List
+				<i class="ti ti-arrow-left me-1"></i> {{ __('admin.jobs.back_to_list') }}
 			</a>
 		</div>
 
 		@if ($errors->any())
 			<div class="alert alert-danger" role="alert">
-				<strong>Validasi gagal.</strong> Periksa field yang ditandai di bawah ini.
+				<strong>{{ __('admin.jobs.validation_failed') }}</strong> {{ __('admin.jobs.validation_hint') }}
 				<ul class="mb-0 mt-2">
 					@foreach ($errors->all() as $error)
 						<li>{{ $error }}</li>
@@ -29,9 +29,9 @@
 			@endif
 
 			<ul class="nav nav-pills mb-4" role="tablist">
-				<li class="nav-item"><button type="button" class="nav-link active" id="tab-btn-basic" data-bs-toggle="tab" data-bs-target="#tab-basic">Informasi Utama</button></li>
-				<li class="nav-item"><button type="button" class="nav-link" id="tab-btn-content" data-bs-toggle="tab" data-bs-target="#tab-content">Kualifikasi & Deskripsi</button></li>
-				<li class="nav-item"><button type="button" class="nav-link" id="tab-btn-scoring" data-bs-toggle="tab" data-bs-target="#tab-scoring">Kriteria Penilaian</button></li>
+				<li class="nav-item"><button type="button" class="nav-link active" id="tab-btn-basic" data-bs-toggle="tab" data-bs-target="#tab-basic">{{ __('admin.jobs.tab_basic') }}</button></li>
+				<li class="nav-item"><button type="button" class="nav-link" id="tab-btn-content" data-bs-toggle="tab" data-bs-target="#tab-content">{{ __('admin.jobs.tab_content') }}</button></li>
+				<li class="nav-item"><button type="button" class="nav-link" id="tab-btn-scoring" data-bs-toggle="tab" data-bs-target="#tab-scoring">{{ __('admin.jobs.tab_scoring') }}</button></li>
 			</ul>
 
 			<div class="tab-content">
@@ -41,18 +41,18 @@
 							<input type="hidden" name="uuid" value="{{ old('uuid', $job->uuid ?? $uuid ?? '') }}">
 							<div class="col-md-6">
 								<div class="mb-3">
-									<label class="form-label">Code</label>
+									<label class="form-label">{{ __('admin.jobs.code') }}</label>
 									<div class="input-group input-group-merge">
-										<input type="text" class="form-control dt-full-name" name="code" readonly placeholder="Code" required value="{{ old('code', $job->code ?? $code ?? '') }}" />
+										<input type="text" class="form-control dt-full-name" name="code" readonly placeholder="{{ __('admin.jobs.code') }}" required value="{{ old('code', $job->code ?? $code ?? '') }}" />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="mb-3">
-									<label class="form-label">Select Batch</label>
+									<label class="form-label">{{ __('admin.jobs.select_batch') }}</label>
 									<div class="input-group input-group-merge">
 										<select name="batch_id" id="batch_id" class="form-control @error('batch_id') is-invalid @enderror" required>
-											<option value="">-- Select Batch --</option>
+											<option value="">{{ __('admin.jobs.select_batch') }}</option>
 											@foreach ($batches as $batch)
 												<option value="{{ $batch->id }}" @selected(old('batch_id', $job->batch_id ?? '') == $batch->id)>
 													{{ $batch->code }} - {{ $batch->name }} | {{ $batch->start_date }} - {{ $batch->end_date }}
@@ -65,10 +65,10 @@
 							</div>
 							<div class="col-md-6">
 								<div class="mb-3">
-									<label class="form-label">Select Category</label>
+									<label class="form-label">{{ __('admin.jobs.select_category') }}</label>
 									<div class="input-group input-group-merge">
 										<select name="category_id" id="category_id" class="form-control @error('category_id') is-invalid @enderror" required>
-											<option value="">-- Select Category --</option>
+											<option value="">{{ __('admin.jobs.select_category') }}</option>
 											@foreach ($categories as $category)
 												<option value="{{ $category->id }}" @selected(old('category_id', $job->category_id ?? '') == $category->id)>
 													{{ $category->name }}
@@ -80,17 +80,17 @@
 								</div>
 							</div>
 							<div class="mb-3">
-								<label class="form-label">Title</label>
+								<label class="form-label">{{ __('admin.jobs.title_col') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" class="form-control dt-full-name @error('title') is-invalid @enderror" name="title" placeholder="Title" value="{{ old('title', $job->title ?? '') }}" required />
+									<input type="text" class="form-control dt-full-name @error('title') is-invalid @enderror" name="title" placeholder="{{ __('admin.jobs.title_col') }}" value="{{ old('title', $job->title ?? '') }}" required />
 								</div>
 								@error('title') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="mb-3">
-								<label class="form-label">Type</label>
+								<label class="form-label">{{ __('admin.jobs.type') }}</label>
 								<div class="input-group input-group-merge">
 									<select name="type" id="type" class="form-control @error('type') is-invalid @enderror" required>
-										<option value="">-- Select Type --</option>
+										<option value="">{{ __('admin.jobs.select_type') }}</option>
 										@foreach (\App\Enums\JobType::cases() as $jobType)
 											<option value="{{ $jobType->value }}" @selected(old('type', $job->type ?? '') === $jobType->value)>{{ $jobType->getLabel() }}</option>
 										@endforeach
@@ -100,7 +100,7 @@
 							</div>
 							<div class="col-md-4">
 								<div class="mb-3">
-									<label class="form-label">Quota</label>
+									<label class="form-label">{{ __('admin.jobs.quota') }}</label>
 									<div class="input-group input-group-merge">
 										<input type="number" name="quota" class="form-control @error('quota') is-invalid @enderror" required value="{{ old('quota', $job->quota ?? 0) }}">
 									</div>
@@ -109,9 +109,9 @@
 							</div>
 							<div class="col-md-4">
 								<div class="mb-3">
-									<label class="form-label">Salary</label>
+									<label class="form-label">{{ __('admin.jobs.salary') }}</label>
 									<div class="input-group input-group-merge">
-										<input type="text" name="salary" class="form-control @error('salary') is-invalid @enderror" placeholder="Rp. 2.000.000 - 5.000.000" required value="{{ old('salary', $job->salary ?? '') }}">
+										<input type="text" name="salary" class="form-control @error('salary') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_placeholder') }}" required value="{{ old('salary', $job->salary ?? '') }}">
 									</div>
 									@error('salary') <small class="text-danger">{{ $message }}</small> @enderror
 								</div>
@@ -120,22 +120,22 @@
 								$showSalary = old('is_show_salary', isset($job) ? ($job->is_show_salary ? '1' : '0') : '1');
 							@endphp
 							<div class="col-md-12 mb-3">
-								<label class="form-label d-block">Show salary for candidate?</label>
+								<label class="form-label d-block">{{ __('admin.jobs.show_salary_question') }}</label>
 								<div class="form-check form-check-inline">
 									<input class="form-check-input" type="radio" name="is_show_salary" id="show_salary_on" value="1" @checked((string) $showSalary === '1')>
-									<label class="form-check-label" for="show_salary_on">On</label>
+									<label class="form-check-label" for="show_salary_on">{{ __('admin.jobs.on') }}</label>
 								</div>
 								<div class="form-check form-check-inline">
 									<input class="form-check-input" type="radio" name="is_show_salary" id="show_salary_off" value="0" @checked((string) $showSalary === '0')>
-									<label class="form-check-label" for="show_salary_off">Off</label>
+									<label class="form-check-label" for="show_salary_off">{{ __('admin.jobs.off') }}</label>
 								</div>
 							</div>
 							<div class="mb-3">
-								<label class="form-label">Pengalaman</label>
+								<label class="form-label">{{ __('admin.jobs.experience') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" name="experience" class="form-control @error('experience') is-invalid @enderror" value="{{ old('experience', $job->experience ?? '') }}" required placeholder="Contoh: 1-2 tahun, Fresh Graduate">
+									<input type="text" name="experience" class="form-control @error('experience') is-invalid @enderror" value="{{ old('experience', $job->experience ?? '') }}" required placeholder="{{ __('admin.jobs.experience_placeholder') }}">
 								</div>
-								<small class="text-muted">Digunakan untuk tampilan lowongan dan penilaian otomatis pengalaman kandidat.</small>
+								<small class="text-muted">{{ __('admin.jobs.experience_hint') }}</small>
 								@error('experience') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 						</div>
@@ -146,7 +146,7 @@
 					<div class="row">
 						<div class="col-md-6 mb-4">
 							<div class="card h-100">
-								<div class="card-header"><h5 class="mb-0">Qualification</h5></div>
+								<div class="card-header"><h5 class="mb-0">{{ __('admin.jobs.qualification') }}</h5></div>
 								<div class="card-body">
 									<div id="quill-editor-qualification" class="mb-3 @error('qualification') border border-danger rounded @enderror" style="height: 220px;"></div>
 									<textarea class="d-none" name="qualification" id="quill-editor-qualification-area">{{ old('qualification', $job->qualification ?? '') }}</textarea>
@@ -156,7 +156,7 @@
 						</div>
 						<div class="col-md-6 mb-4">
 							<div class="card h-100">
-								<div class="card-header"><h5 class="mb-0">Description</h5></div>
+								<div class="card-header"><h5 class="mb-0">{{ __('admin.jobs.description') }}</h5></div>
 								<div class="card-body">
 									<div id="quill-editor-description" class="mb-3 @error('description') border border-danger rounded @enderror" style="height: 220px;"></div>
 									<textarea class="d-none" name="description" id="quill-editor-description-area">{{ old('description', $job->description ?? '') }}</textarea>
@@ -169,16 +169,16 @@
 
 				<div class="tab-pane fade" id="tab-scoring">
 					<div class="card mb-4">
-						<div class="card-header"><h5 class="mb-0">Kriteria Penilaian Otomatis</h5></div>
+						<div class="card-header"><h5 class="mb-0">{{ __('admin.jobs.auto_scoring') }}</h5></div>
 						<div class="card-body row">
 							@php
 								$criteria = isset($job) ? $job->criteria : null;
 								$requiredSkills = old('required_skills', $criteria ? implode(', ', $criteria->required_skills ?? []) : '');
 							@endphp
 							<div class="col-md-4 mb-3">
-								<label class="form-label">Min. Pendidikan</label>
+								<label class="form-label">{{ __('admin.jobs.min_education') }}</label>
 								<select name="min_education" class="form-control @error('min_education') is-invalid @enderror">
-									<option value="">-- Tidak ada syarat --</option>
+									<option value="">{{ __('admin.jobs.no_requirement') }}</option>
 									@foreach (\App\Enums\EducationLevel::cases() as $level)
 										<option value="{{ $level->value }}" @selected(old('min_education', $criteria?->min_education) === $level->value)>{{ $level->label() }}</option>
 									@endforeach
@@ -186,59 +186,59 @@
 								@error('min_education') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-12 mb-3">
-								<label class="form-label">Skill Wajib (pisahkan dengan koma)</label>
-								<textarea name="required_skills" class="form-control @error('required_skills') is-invalid @enderror" rows="2" placeholder="Contoh: Komunikasi, Microsoft Office, Keperawatan">{{ $requiredSkills }}</textarea>
+								<label class="form-label">{{ __('admin.jobs.required_skills') }}</label>
+								<textarea name="required_skills" class="form-control @error('required_skills') is-invalid @enderror" rows="2" placeholder="{{ __('admin.jobs.required_skills_placeholder') }}">{{ $requiredSkills }}</textarea>
 								@error('required_skills') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-12 mb-3">
-								<small class="text-muted">Minimum pengalaman untuk penilaian otomatis diambil dari field <strong>Pengalaman</strong> pada tab Informasi Utama.</small>
+								<small class="text-muted">{{ __('admin.jobs.experience_scoring_hint') }}</small>
 							</div>
-							<div class="col-md-12"><hr><p class="mb-2"><strong>Bobot Penilaian</strong></p></div>
+							<div class="col-md-12"><hr><p class="mb-2"><strong>{{ __('admin.jobs.weight_title') }}</strong></p></div>
 							<div class="col-12 mb-3">
 								<div id="weight-total-alert" class="alert alert-warning d-none mb-0" role="alert">
-									<strong>Perlu penyesuaian bobot.</strong>
-									<span id="weight-total-message">Total bobot saat ini 0. Sesuaikan agar berjumlah 100.</span>
+									<strong>{{ __('admin.jobs.weight_adjust') }}</strong>
+									<span id="weight-total-message">{{ __('admin.js.weight_default') }}</span>
 								</div>
 								<div id="weight-total-success" class="alert alert-success d-none mb-0" role="alert">
-									Total bobot sudah 100. Siap disimpan.
+									{{ __('admin.jobs.weight_ready') }}
 								</div>
 							</div>
 							<div class="col-md-4 mb-3">
-								<label class="form-label">Bobot Pendidikan</label>
+								<label class="form-label">{{ __('admin.jobs.weight_education') }}</label>
 								<input type="number" min="0" max="100" name="weight_education" class="form-control weight-input @error('weight_education') is-invalid @enderror" value="{{ old('weight_education', $criteria?->weight_education ?? 25) }}">
 								@error('weight_education') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-4 mb-3">
-								<label class="form-label">Bobot Pengalaman</label>
+								<label class="form-label">{{ __('admin.jobs.weight_experience') }}</label>
 								<input type="number" min="0" max="100" name="weight_experience" class="form-control weight-input @error('weight_experience') is-invalid @enderror" value="{{ old('weight_experience', $criteria?->weight_experience ?? 25) }}">
 								@error('weight_experience') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-4 mb-3">
-								<label class="form-label">Bobot Skill</label>
+								<label class="form-label">{{ __('admin.jobs.weight_skills') }}</label>
 								<input type="number" min="0" max="100" name="weight_skills" class="form-control weight-input @error('weight_skills') is-invalid @enderror" value="{{ old('weight_skills', $criteria?->weight_skills ?? 30) }}">
 								@error('weight_skills') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-4 mb-3">
-								<label class="form-label">Bobot Kelengkapan Profil</label>
+								<label class="form-label">{{ __('admin.jobs.weight_profile') }}</label>
 								<input type="number" min="0" max="100" name="weight_profile" class="form-control weight-input @error('weight_profile') is-invalid @enderror" value="{{ old('weight_profile', $criteria?->weight_profile ?? 10) }}">
 								@error('weight_profile') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-4 mb-3">
-								<label class="form-label">Bobot Surat Lamaran</label>
+								<label class="form-label">{{ __('admin.jobs.weight_cover_letter') }}</label>
 								<input type="number" min="0" max="100" name="weight_cover_letter" class="form-control weight-input @error('weight_cover_letter') is-invalid @enderror" value="{{ old('weight_cover_letter', $criteria?->weight_cover_letter ?? 10) }}">
 								@error('weight_cover_letter') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
-							<div class="col-md-12"><hr><p class="mb-2"><strong>Batas Skor Rekomendasi (skala 0–100)</strong></p></div>
+							<div class="col-md-12"><hr><p class="mb-2"><strong>{{ __('admin.jobs.threshold_title') }}</strong></p></div>
 							<div class="col-md-6 mb-3">
-								<label class="form-label">Batas Skor Direkomendasi</label>
+								<label class="form-label">{{ __('admin.jobs.threshold_shortlist') }}</label>
 								<input type="number" min="0" max="100" name="threshold_shortlist" class="form-control @error('threshold_shortlist') is-invalid @enderror" value="{{ old('threshold_shortlist', $criteria?->threshold_shortlist ?? 70) }}">
-								<small class="text-muted">Skor ≥ nilai ini → kandidat direkomendasikan</small>
+								<small class="text-muted">{{ __('admin.jobs.threshold_shortlist_hint') }}</small>
 								@error('threshold_shortlist') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-6 mb-3">
-								<label class="form-label">Batas Skor Review</label>
+								<label class="form-label">{{ __('admin.jobs.threshold_review') }}</label>
 								<input type="number" min="0" max="100" name="threshold_reject" class="form-control @error('threshold_reject') is-invalid @enderror" value="{{ old('threshold_reject', $criteria?->threshold_reject ?? 40) }}">
-								<small class="text-muted">Skor ≥ nilai ini → perlu review; di bawahnya → kurang sesuai</small>
+								<small class="text-muted">{{ __('admin.jobs.threshold_review_hint') }}</small>
 								@error('threshold_reject') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 						</div>
@@ -247,8 +247,8 @@
 			</div>
 
 			<div class="d-flex justify-content-end gap-2 mt-2">
-				<a href="{{ route('admin.jobs.index') }}" class="btn btn-outline-secondary">Cancel</a>
-				<button type="submit" class="btn btn-primary">Simpan Job</button>
+				<a href="{{ route('admin.jobs.index') }}" class="btn btn-outline-secondary">{{ __('admin.form.cancel') }}</a>
+				<button type="submit" class="btn btn-primary">{{ __('admin.jobs.save') }}</button>
 			</div>
 		</form>
 	</div>
@@ -289,6 +289,12 @@
 			const weightSuccess = document.getElementById('weight-total-success');
 			const weightMessage = document.getElementById('weight-total-message');
 
+			function replacePlaceholders(template, replacements) {
+				return Object.entries(replacements).reduce(function (message, entry) {
+					return message.replace(':' + entry[0], entry[1]);
+				}, template);
+			}
+
 			function updateWeightTotal() {
 				if (!weightInputs.length || !weightAlert || !weightSuccess || !weightMessage) return;
 
@@ -305,10 +311,12 @@
 				weightSuccess.classList.add('d-none');
 				weightAlert.classList.remove('d-none');
 
-				if (total < 100) {
-					weightMessage.textContent = 'Total bobot saat ini ' + total + '. Tambahkan ' + (100 - total) + ' poin agar berjumlah 100.';
+				if (total === 0) {
+					weightMessage.textContent = window.adminI18n.weight_default;
+				} else if (total < 100) {
+					weightMessage.textContent = replacePlaceholders(window.adminI18n.weight_current, { total: total }) + ' ' + replacePlaceholders(window.adminI18n.weight_add, { points: 100 - total });
 				} else {
-					weightMessage.textContent = 'Total bobot saat ini ' + total + '. Kurangi ' + (total - 100) + ' poin agar berjumlah 100.';
+					weightMessage.textContent = replacePlaceholders(window.adminI18n.weight_current, { total: total }) + ' ' + replacePlaceholders(window.adminI18n.weight_reduce, { points: total - 100 });
 				}
 			}
 

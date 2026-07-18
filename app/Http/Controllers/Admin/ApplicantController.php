@@ -15,12 +15,15 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ApplicantController extends Controller
 {
-    private const STATUS_LABELS = [
-        'IN REVIEW' => 'Sedang Dalam Review',
-        'NOT SUITABLE' => 'Tidak Sesuai',
-        'SHORTLISTED' => 'Lolos Tahap Selanjutnya',
-        'HIRED' => 'Diterima',
-    ];
+    public static function statusLabels(): array
+    {
+        return [
+            'IN REVIEW' => __('admin.apply_status.in_review'),
+            'NOT SUITABLE' => __('admin.apply_status.not_suitable'),
+            'SHORTLISTED' => __('admin.apply_status.shortlisted'),
+            'HIRED' => __('admin.apply_status.hired'),
+        ];
+    }
 
     public function index(Request $request)
     {
@@ -28,7 +31,7 @@ class ApplicantController extends Controller
 
         return view('admin.applies.index', [
             'status' => $status,
-            'statuses' => self::STATUS_LABELS,
+            'statuses' => self::statusLabels(),
         ]);
     }
 
@@ -80,6 +83,7 @@ class ApplicantController extends Controller
         return view('admin.applies.detail', [
             'uuid' => (string)Str::uuid(),
             'apply' => $apply,
+            'statuses' => self::statusLabels(),
         ]);
     }
 
@@ -92,10 +96,10 @@ class ApplicantController extends Controller
         $job = Job::with(['category', 'batch'])->where('id', $apply->job_id)->first();
 
         if ($candidate && $job) {
-            $statusLabel = self::STATUS_LABELS[$request->status] ?? (string) $request->status;
+            $statusLabel = self::statusLabels()[$request->status] ?? (string) $request->status;
             $candidate->notify(new ApplicationStatusUpdatedNotification($candidate, $job, $statusLabel));
         }
 
-        return redirect()->route('admin.applies.index')->with('success', 'Berhasil mengubah status lamaran kandidat');
+        return redirect()->route('admin.applies.index')->with('success', __('messages.admin.apply.status_updated'));
     }
 }

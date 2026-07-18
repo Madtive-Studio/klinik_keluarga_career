@@ -1,5 +1,5 @@
 @extends('candidate.layouts.main', ['navbarType' => 'default'])
-@section('title', 'Beranda')
+@section('title', __('candidate.home.title'))
 @section('content')
 	<section class="bg-home">
 		<div class="bg-overlay"></div>
@@ -9,9 +9,9 @@
 					<div class="row justify-content-center">
 						<div class="col-lg-10">
 							<div class="title-heading text-center text-white">
-								<h1 class="heading font-weight-bold mb-3">Bergabunglah Bersama Kami!</h1>
-								<h6 class="small-title text-light mb-3 px-5">Kami memiliki komitmen ingin membuat Kota Cianjur sebagai ekosistem IT terbesar, kamu bisa wujudkan impian kamu bersama Madtive Studio!</h6>
-								<p class="mb-5">Aktif Batch : {{ $formattedBatch }}</p>
+								<h1 class="heading font-weight-bold mb-3">{{ __('candidate.home.heading') }}</h1>
+								<h6 class="small-title text-light mb-3 px-5">{{ __('candidate.home.subtitle') }}</h6>
+								<p class="mb-5">{{ __('candidate.home.active_batch', ['batch' => $formattedBatch]) }}</p>
 							</div>
 						</div>
 					</div>
@@ -24,14 +24,14 @@
 											<div class="col-md-5">
 												<div class="registration-form-box">
 													<i class="fa fa-briefcase"></i>
-													<input type="text" name="q" class="form-control rounded registration-input-box" placeholder="Cari loker...">
+													<input type="text" name="q" class="form-control rounded registration-input-box" placeholder="{{ __('candidate.home.search_placeholder') }}">
 												</div>
 											</div>
 											<div class="col-md-3">
 												<div class="registration-form-box">
 													<i class="fa fa-list-alt"></i>
 													<select id="select-category" name="category" class="demo-default">
-														<option value="">Kategori...</option>
+														<option value="">{{ __('candidate.home.category') }}</option>
 														@foreach ($categories as $category)
 															<option value="{{ $category->id }}"
 																{{ isset($selectedCategory) && $selectedCategory == $category->id ? 'selected' : '' }}>
@@ -45,8 +45,8 @@
 												<div class="registration-form-box">
 													<i class="fa fa-list-alt"></i>
 													<select id="select-category" name="job_type" class="demo-default">
-														<option value="">Jenis...</option>
-														<option value="SEMUA">Semua</option>
+														<option value="">{{ __('candidate.home.type') }}</option>
+														<option value="SEMUA">{{ __('common.all') }}</option>
 														@foreach ($jobTypes as $value => $label)
 															<option value="{{ $value }}" {{ request()->get('job_type') == $value ? 'selected' : '' }}>{{ $label }}</option>
 														@endforeach
@@ -56,7 +56,7 @@
 											<div class="col-md-2">
 												<div class="registration-form-box">
 													<button type="submit" id="submit" class="submitBtn btn btn-primary btn-block">
-														<i class="mdi mdi-filter text-white"></i>&nbsp;&nbsp;&nbsp;Cari
+														<i class="mdi mdi-filter text-white"></i>&nbsp;&nbsp;&nbsp;{{ __('common.search') }}
 													</button>
 												</div>
 											</div>
@@ -75,7 +75,7 @@
 			<div class="row justify-content-center">
 				<div class="col-12">
 					<div class="section-title text-center pb-2">
-						<h4 class="title title-line pb-5">Lowongan Pekerjaan</h4>
+						<h4 class="title title-line pb-5">{{ __('candidate.home.jobs_section') }}</h4>
 					</div>
 				</div>
 			</div>
@@ -83,7 +83,7 @@
 				<div class="col-lg-9 text-center mt-4 pt-2">
 					<ul class="nav nav-pills nav nav-pills bg-white rounded nav-justified flex-column flex-sm-row" id="pills-tab" role="tablist">
 						<li class="nav-item">
-							<a class="nav-link rounded active" id="all-tab" data-toggle="pill" href="#all" role="tab" aria-controls="all" aria-selected="true" data-job-type="All">Semua</a>
+							<a class="nav-link rounded active" id="all-tab" data-toggle="pill" href="#all" role="tab" aria-controls="all" aria-selected="true" data-job-type="All">{{ __('common.all') }}</a>
 						</li>
 						@foreach ($jobTypes as $value => $label)
 							@php $tabId = \Illuminate\Support\Str::slug($value, '-'); @endphp
@@ -98,7 +98,7 @@
 				<div class="col-12">
 					<div class="tab-content mt-2" id="pills-tabContent">
 						@php
-							$tabSets = ['All' => 'Semua'] + $jobTypes;
+							$tabSets = ['All' => __('common.all')] + $jobTypes;
 						@endphp
 						@foreach ($tabSets as $value => $label)
 							@php
@@ -112,7 +112,7 @@
 										@include('candidate.home.section._job_list', ['jobs' => $jobs])
 									@else
 										<div class="col-lg-12">
-											<div class="text-center mt-3 text-muted">Klik tab untuk memuat data terbaru.</div>
+											<div class="text-center mt-3 text-muted">{{ __('candidate.home.click_tab_to_load') }}</div>
 										</div>
 									@endif
 								</div>
@@ -126,9 +126,11 @@
 @endsection
 @section('js')
 	<script>
+		const candidateI18n = @json(__('candidate.js'));
+
 		function fetchHomeJobs(jobType, tabId) {
 			const container = $('#jobs-container-' + tabId);
-			container.html('<div class="col-lg-12"><div class="text-center mt-3 text-muted">Memuat data...</div></div>');
+			container.html('<div class="col-lg-12"><div class="text-center mt-3 text-muted">' + candidateI18n.loading + '</div></div>');
 
 			$.ajax({
 				url: "{{ route('candidate.home.jobs-by-type') }}",
@@ -141,7 +143,7 @@
 					container.html(response.html);
 				},
 				error: function() {
-					container.html('<div class="col-lg-12"><div class="text-center mt-3 text-danger">Gagal memuat data.</div></div>');
+					container.html('<div class="col-lg-12"><div class="text-center mt-3 text-danger">' + candidateI18n.load_failed + '</div></div>');
 				}
 			});
 		}

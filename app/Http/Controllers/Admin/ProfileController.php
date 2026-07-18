@@ -32,6 +32,6 @@ class ProfileController extends Controller
 
         return redirect()
             ->route('admin.profile.edit')
-            ->with('success', 'Profil berhasil diperbarui.');
+            ->with('success', __('messages.admin.profile.updated'));
     }
 }
