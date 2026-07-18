@@ -130,8 +130,42 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'job_uuid' => [
+            'required' => 'Invalid job vacancy.',
+            'exists' => 'Job vacancy not found.',
+        ],
+        'type_of_document' => [
+            'required' => 'Please select a document type first.',
+        ],
+        'cover_letter' => [
+            'required' => 'Cover letter is required.',
+        ],
+        'description' => [
+            'required' => 'Description is required.',
+        ],
+        'new_document' => [
+            'required' => 'Document file is required.',
+            'file' => 'CV file must be a valid file.',
+            'uploaded' => 'File failed to upload. Maximum size is 20MB. Please try again.',
+            'mimes' => 'File format must be PDF, DOC, or DOCX.',
+            'max' => 'Maximum file size is 20MB.',
+        ],
+        'document_id' => [
+            'required' => 'Please select a CV/Resume document first.',
+        ],
+        'file' => [
+            'required' => 'File is required.',
+            'file' => 'File must be a valid file.',
+            'mimes' => 'File must be an image, PDF, Word, or Excel file.',
+            'max' => 'File size must be less than 20MB.',
+        ],
+        'type' => [
+            'required' => 'Type is required.',
+            'string' => 'Type must be text.',
+        ],
+        'weight_education' => [
+            'weight_total' => 'Total scoring weight must be 100. Current total is :total.',
+            'threshold_order' => 'Recommended score threshold must be greater than review score threshold.',
         ],
     ],
 
@@ -146,6 +180,38 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'batch_id' => 'batch',
+        'category_id' => 'category',
+        'title' => 'job title',
+        'type' => 'job type',
+        'quota' => 'quota',
+        'salary' => 'salary',
+        'experience' => 'experience',
+        'qualification' => 'qualification',
+        'description' => 'description',
+        'min_education' => 'minimum education',
+        'required_skills' => 'required skills',
+        'weight_education' => 'education weight',
+        'weight_experience' => 'experience weight',
+        'weight_skills' => 'skills weight',
+        'weight_profile' => 'profile completeness weight',
+        'weight_cover_letter' => 'cover letter weight',
+        'threshold_shortlist' => 'recommended score threshold',
+        'threshold_reject' => 'review score threshold',
+        'job_uuid' => 'job vacancy',
+        'type_of_document' => 'document type',
+        'cover_letter' => 'cover letter',
+        'new_document' => 'CV file',
+        'document_id' => 'CV document',
+        'file' => 'file',
+        'education_level' => 'education level',
+        'years_of_experience' => 'years of experience',
+        'skills.*.name' => 'skill name',
+        'name' => 'name',
+        'email' => 'email',
+        'current_password' => 'current password',
+        'password' => 'new password',
+    ],
 
 ];

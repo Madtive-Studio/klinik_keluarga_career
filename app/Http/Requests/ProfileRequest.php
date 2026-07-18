@@ -37,9 +37,9 @@ class ProfileRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'education_level' => 'tingkat pendidikan',
-            'years_of_experience' => 'pengalaman kerja',
-            'skills.*.name' => 'nama skill',
+            'education_level' => __('validation.attributes.education_level'),
+            'years_of_experience' => __('validation.attributes.years_of_experience'),
+            'skills.*.name' => __('validation.attributes.skills.*.name'),
         ];
     }
 }

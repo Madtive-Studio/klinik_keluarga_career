@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Undangan Wawancara</title>
+	<title>{{ __('emails.interview.title') }}</title>
 	<style>
 		body {
 			font-family: 'Arial', sans-serif;
@@ -35,62 +35,70 @@
 			<img src="{{ asset('logo-white.png') }}" width="200" alt="Logo Madtive Studio" style="margin: 0 auto;">
 		</div>
 		<div style="padding-left: 20px; padding-right: 20px; padding-block: 1em; color: #333333;">
-			<h2 style="font-size: 20px; text-align: center; color: #2F55D4;">Selamat! Kamu Diundang ke Tahap Wawancara</h2>
-			<p>Halo <strong>{{ $candidate->name }}</strong>,</p>
-			<p>Selamat! Kamu telah lolos proses seleksi untuk posisi <strong>{{ $job->type }}</strong> - <strong>{{ $job->title }}</strong> di departemen <strong>{{ $job->category->name }}</strong> batch <strong>{{ $job->batch->code }} - {{ $job->batch->name }}</strong>.</p>
-			<p>Kami mengundang kamu untuk mengikuti wawancara yang dijadwalkan pada:</p>
+			<h2 style="font-size: 20px; text-align: center; color: #2F55D4;">{{ __('emails.interview.heading') }}</h2>
+			<p>{{ __('emails.greeting', ['name' => $candidate->name]) }}</p>
+			@php
+				$jobTypeLabel = \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type;
+			@endphp
+			<p>{!! __('emails.interview.intro', [
+				'type' => $jobTypeLabel,
+				'title' => $job->title,
+				'category' => $job->category->name,
+				'batch' => $job->batch->code . ' - ' . $job->batch->name,
+			]) !!}</p>
+			<p>{{ __('emails.interview.schedule_intro') }}</p>
 			<table>
 				<tr>
-					<th>Judul</th>
+					<th>{{ __('emails.interview.label_title') }}</th>
 					<td>{{ $interview->title }}</td>
 				</tr>
 				<tr>
-					<th>Waktu Mulai</th>
+					<th>{{ __('emails.interview.label_start') }}</th>
 					<td>{{ \Carbon\Carbon::parse($interview->start_datetime)->format('d/m/Y H:i') }}</td>
 				</tr>
 				<tr>
-					<th>Waktu Selesai</th>
+					<th>{{ __('emails.interview.label_end') }}</th>
 					<td>{{ \Carbon\Carbon::parse($interview->end_datetime)->format('d/m/Y H:i') }}</td>
 				</tr>
 				<tr>
-					<th>Durasi</th>
-					<td>{{ \Carbon\Carbon::parse($interview->start_datetime)->diffInHours(\Carbon\Carbon::parse($interview->end_datetime)) }} jam</td>
+					<th>{{ __('emails.interview.label_duration') }}</th>
+					<td>{{ __('emails.interview.duration_hours', ['hours' => \Carbon\Carbon::parse($interview->start_datetime)->diffInHours(\Carbon\Carbon::parse($interview->end_datetime))]) }}</td>
 				</tr>
 				@if ($interview->is_online)
 					<tr>
-						<th>Link Zoom/Gmeet</th>
+						<th>{{ __('emails.interview.label_link') }}</th>
 						<td><a href="{{ $interview->link }}" style="color: #2F55D4;">{{ $interview->link }}</a></td>
 					</tr>
 					<tr>
-						<th>Deskripsi</th>
+						<th>{{ __('emails.interview.label_description') }}</th>
 						<td>{{ $interview->description }}</td>
 					</tr>
 					<tr>
-						<th>Catatan</th>
-						<td>Pastikan untuk menguji koneksi internetmu dan perangkat sebelum wawancara.</td>
+						<th>{{ __('emails.interview.label_note') }}</th>
+						<td>{{ __('emails.interview.online_note') }}</td>
 					</tr>
 				@else
 					<tr>
-						<th>Alamat</th>
+						<th>{{ __('emails.interview.label_address') }}</th>
 						<td>{{ $company->address }}</td>
 					</tr>
 					<tr>
-						<th>Deskripsi</th>
+						<th>{{ __('emails.interview.label_description') }}</th>
 						<td>{{ $interview->description }}</td>
 					</tr>
 					<tr>
-						<th>Catatan</th>
-						<td>Harap datang tepat waktu ke alamat yang tertera di atas.</td>
+						<th>{{ __('emails.interview.label_note') }}</th>
+						<td>{{ __('emails.interview.offline_note') }}</td>
 					</tr>
 				@endif
 			</table>
-			<p style="margin-top: 20px;">Harap pastikan untuk hadir tepat waktu sesuai jadwal wawancara di atas. Jika kamu memiliki pertanyaan atau kendala, silakan hubungi kami.</p>
-			<p style="margin-top: 20px; color: #666666;">Jika Kamu tidak mendaftar di Karir | Madtive Studio, abaikan email ini.</p>
-			<p>Salam,</p>
-			<p><strong>Madtive Studio</strong></p>
+			<p style="margin-top: 20px;">{{ __('emails.interview.footer_note') }}</p>
+			<p style="margin-top: 20px; color: #666666;">{{ __('emails.interview.ignore_note') }}</p>
+			<p>{{ __('emails.regards') }}</p>
+			<p><strong>{{ __('emails.team') }}</strong></p>
 		</div>
 		<div style="background-color: #f1f1f1; padding: 10px; text-align: center; color: #777; font-size: 12px;">
-			&copy; {{ now()->year }} Madtive Studio. All rights reserved.
+			{{ __('emails.footer', ['year' => now()->year]) }}
 		</div>
 	</div>
 </body>

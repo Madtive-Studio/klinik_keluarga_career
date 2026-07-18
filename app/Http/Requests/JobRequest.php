@@ -43,36 +43,24 @@ class JobRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'batch_id' => 'batch',
-            'category_id' => 'kategori',
-            'title' => 'judul lowongan',
-            'type' => 'tipe pekerjaan',
-            'quota' => 'kuota',
-            'salary' => 'gaji',
-            'experience' => 'pengalaman',
-            'qualification' => 'kualifikasi',
-            'description' => 'deskripsi',
-            'min_education' => 'minimum pendidikan',
-            'required_skills' => 'skill wajib',
-            'weight_education' => 'bobot pendidikan',
-            'weight_experience' => 'bobot pengalaman',
-            'weight_skills' => 'bobot skill',
-            'weight_profile' => 'bobot kelengkapan profil',
-            'weight_cover_letter' => 'bobot cover letter',
-            'threshold_shortlist' => 'batas skor direkomendasi',
-            'threshold_reject' => 'batas skor review',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'required' => ':attribute wajib diisi.',
-            'exists' => ':attribute tidak valid.',
-            'numeric' => ':attribute harus berupa angka.',
-            'integer' => ':attribute harus berupa bilangan bulat.',
-            'min' => ':attribute minimal :min.',
-            'max' => ':attribute maksimal :max.',
+            'batch_id' => __('validation.attributes.batch_id'),
+            'category_id' => __('validation.attributes.category_id'),
+            'title' => __('validation.attributes.title'),
+            'type' => __('validation.attributes.type'),
+            'quota' => __('validation.attributes.quota'),
+            'salary' => __('validation.attributes.salary'),
+            'experience' => __('validation.attributes.experience'),
+            'qualification' => __('validation.attributes.qualification'),
+            'description' => __('validation.attributes.description'),
+            'min_education' => __('validation.attributes.min_education'),
+            'required_skills' => __('validation.attributes.required_skills'),
+            'weight_education' => __('validation.attributes.weight_education'),
+            'weight_experience' => __('validation.attributes.weight_experience'),
+            'weight_skills' => __('validation.attributes.weight_skills'),
+            'weight_profile' => __('validation.attributes.weight_profile'),
+            'weight_cover_letter' => __('validation.attributes.weight_cover_letter'),
+            'threshold_shortlist' => __('validation.attributes.threshold_shortlist'),
+            'threshold_reject' => __('validation.attributes.threshold_reject'),
         ];
     }
 
@@ -88,14 +76,20 @@ class JobRequest extends FormRequest
             ];
 
             if (array_sum($weights) !== 100) {
-                $validator->errors()->add('weight_education', 'Total bobot penilaian harus 100. Saat ini totalnya ' . array_sum($weights) . '.');
+                $validator->errors()->add(
+                    'weight_education',
+                    __('validation.custom.weight_education.weight_total', ['total' => array_sum($weights)])
+                );
             }
 
             $shortlist = (int) $this->input('threshold_shortlist', 70);
             $reject = (int) $this->input('threshold_reject', 40);
 
             if ($shortlist <= $reject) {
-                $validator->errors()->add('threshold_shortlist', 'Batas skor direkomendasi harus lebih besar dari batas skor review.');
+                $validator->errors()->add(
+                    'threshold_shortlist',
+                    __('validation.custom.weight_education.threshold_order')
+                );
             }
         });
     }

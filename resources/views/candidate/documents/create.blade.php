@@ -1,5 +1,5 @@
 @extends('candidate.layouts.main', ['navbarType' => 'candidate'])
-@section('title', 'Upload Dokumen')
+@section('title', __('candidate.documents.upload'))
 @section('content')
 	<section class="section pt-5">
 		<div class="container">
@@ -29,10 +29,10 @@
 						<div class="job-list-box border rounded">
 							<div class="p-3">
 								<div class="form-group mt-3" id="form-section">
-									<label for="file">Pilih File</label>
+									<label for="file">{{ __('candidate.documents.select_file') }}</label>
 									<div class="custom-file">
 										<input type="file" name="file" class="custom-file-input" id="customFile">
-										<label class="custom-file-label" for="customFile">Choose file</label>
+										<label class="custom-file-label" for="customFile">{{ __('candidate.documents.choose_file') }}</label>
 									</div>
 									@error('file')
 										<span class="text-danger font-weight-bold">{{ $message }}</span>
@@ -40,7 +40,7 @@
 								</div>
 
 								<div class="form-group mt-3" id="form-section">
-									<label for="type">Tipe File</label>
+									<label for="type">{{ __('candidate.documents.file_type') }}</label>
 									<select class="form-control" name="type" id="type">
 										@foreach ($types as $value => $label)
 											<option value="{{ $value }}">{{ $label }}</option>
@@ -51,7 +51,7 @@
 									@enderror
 								</div>
 								<div class="form-group mt-3">
-									<button type="submit" class="btn btn-success btn-sm">Simpan</button>
+									<button type="submit" class="btn btn-success btn-sm">{{ __('candidate.documents.save') }}</button>
 								</div>
 							</div>
 						</div>
@@ -64,6 +64,9 @@
 @section('js')
 	<script>
 		$(function() {
+			const chooseFileLabel = @json(__('candidate.documents.choose_file'));
+			const fileTooLargeMessage = @json(__('candidate.apply.file_too_large'));
+
 			$('.custom-file-input').on('change', function() {
 				var fileName = $(this).val().split('\\').pop();
 				$(this).next('.custom-file-label').html(fileName);
@@ -82,7 +85,7 @@
 							<div class="row">
 								<div class="col-lg-12">
 									<div class="alert alert-danger" role="alert">
-										<p class="mb-0">File terlalu besar! Maksimal 8MB</p>
+										<p class="mb-0">${fileTooLargeMessage}</p>
 									</div>
 								</div>
 							</div>
@@ -95,7 +98,7 @@
 						}, 500);
 						
 						$(fileInput).val('');
-						$(fileInput).next('.custom-file-label').html('Choose file');
+						$(fileInput).next('.custom-file-label').html(chooseFileLabel);
 
 						setTimeout(function() {
 							$('.alert-danger').fadeOut(300, function() {
