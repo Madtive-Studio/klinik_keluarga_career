@@ -1,5 +1,5 @@
 @extends('candidate.layouts.main', ['navbarType' => 'candidate'])
-@section('title', 'Dokumen Saya')
+@section('title', __('candidate.documents.title'))
 @section('content')
 	<section class="section pt-5">
 		<div class="container">
@@ -25,11 +25,11 @@
 						</div>
 					@endif
 					<div class="d-flex justify-content-between align-items-center mb-3">
-						<h5 class="mb-0">Total : {{ $candidate->documents_count }} Dokumen</h5>
+						<h5 class="mb-0">{{ __('common.total') }} : {{ __('candidate.applications.total_documents', ['count' => $candidate->documents_count]) }}</h5>
 						
 						{{-- Optional: Pilihan jumlah item per halaman --}}
 						<div class="form-inline">
-							<label class="mr-2">Tampilkan:</label>
+							<label class="mr-2">{{ __('common.show') }}:</label>
 							<select id="perPage" class="form-control form-control-sm" style="width: auto;">
 								<option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
 								<option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
@@ -62,7 +62,7 @@
 													<li class="list-inline-item mr-3">
 														<p class="text-muted mb-0">
 															<i class="mdi mdi-calendar mr-2"></i>
-															Diupload {{ $document->created_at->diffForHumans() }}
+															{{ __('common.uploaded') }} {{ $document->created_at->diffForHumans() }}
 														</p>
 													</li>
 												</ul>
@@ -74,11 +74,11 @@
 													@csrf
 													@method('DELETE')
 													<button type="submit" class="btn btn-danger btn-sm delete-btn">
-														<i class="mdi mdi-delete"></i> Hapus
+														<i class="mdi mdi-delete"></i> {{ __('common.delete') }}
 													</button>
 												</form>
 												<a href="{{ $document->file_url }}" target="_blank" download class="btn btn-primary btn-sm">
-													<i class="mdi mdi-download"></i> Unduh
+													<i class="mdi mdi-download"></i> {{ __('common.download') }}
 												</a>
 											</div>
 										</div>
@@ -87,7 +87,7 @@
 							</div>
 						@empty
 							<div class="alert alert-info text-center">
-								<p class="mb-0">Belum ada data.</p>
+								<p class="mb-0">{{ __('common.no_data') }}</p>
 							</div>
 						@endforelse
 					</div>
@@ -99,8 +99,7 @@
 					
 					{{-- Info Pagination --}}
 					<div class="mt-2 text-center text-muted small">
-						Menampilkan {{ $candidate->documents->firstItem() }} - {{ $candidate->documents->lastItem() }} 
-						dari {{ $candidate->documents->total() }} dokumen
+						{{ __('common.showing', ['from' => $candidate->documents->firstItem(), 'to' => $candidate->documents->lastItem(), 'total' => $candidate->documents->total(), 'unit' => __('common.documents')]) }}
 					</div>
 				</div>
 			</div>
@@ -110,6 +109,13 @@
 
 @section('js')
 	<script>
+		const commonI18n = @json([
+			'confirm_delete_title' => __('common.confirm_delete_title'),
+			'confirm_delete_text' => __('common.confirm_delete_text'),
+			'yes_delete' => __('common.yes_delete'),
+			'cancel' => __('common.cancel'),
+		]);
+
 		$(function() {
 			$('.form_add_new_cv').hide()
 			
@@ -128,14 +134,14 @@
 			$('.delete-btn').click(function(e) {
 				e.preventDefault();
 				Swal.fire({
-					title: 'Yakin ingin menghapus?',
-					text: "Data yang dihapus tidak dapat dikembalikan!",
+					title: commonI18n.confirm_delete_title,
+					text: commonI18n.confirm_delete_text,
 					icon: 'warning',
 					showCancelButton: true,
 					confirmButtonColor: '#d33',
 					cancelButtonColor: '#3085d6',
-					confirmButtonText: 'Ya, hapus!',
-					cancelButtonText: 'Batal'
+					confirmButtonText: commonI18n.yes_delete,
+					cancelButtonText: commonI18n.cancel
 				}).then((result) => {
 					if (result.isConfirmed) {
 						$(this).closest('form').submit();

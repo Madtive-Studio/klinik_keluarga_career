@@ -36,13 +36,13 @@ class AuthController extends Controller
         ])) {
             $candidate = Candidate::where('email', $request->email)->whereNotNull('email_verified_at')->first();
             if (!$candidate) {
-                return redirect()->back()->with('error', 'Email kamu belum di verifikasi');
+                return redirect()->back()->with('error', __('messages.auth.email_not_verified'));
             }
 
             return redirect()->route('candidate.home');
 
         } else {
-            return redirect()->back()->with('error', 'Email atau password salah!');
+            return redirect()->back()->with('error', __('messages.auth.invalid_credentials'));
         }
     }
 
@@ -73,7 +73,7 @@ class AuthController extends Controller
         $verificationUrl = route('candidate.email-verification', ['token' => $candidate->verification_token]);
         $candidate->notify(new ActivationEmailNotification($candidate, $verificationUrl));
 
-        return redirect()->back()->with('success', 'Register berhasil, silahkan lihat email kamu untuk verifikasi');
+        return redirect()->back()->with('success', __('messages.auth.register_success'));
     }
 
     public function verification($token)
@@ -88,7 +88,7 @@ class AuthController extends Controller
             return view('candidate.auth.success_verification');
         }
 
-        return redirect()->route('candidate.login')->with('success', 'Email kamu sudah di verifikasi');
+        return redirect()->route('candidate.login.form')->with('success', __('messages.auth.email_verified'));
     }
 
     public function logout()

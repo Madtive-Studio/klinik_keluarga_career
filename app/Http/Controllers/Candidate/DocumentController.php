@@ -55,9 +55,9 @@ class DocumentController extends Controller
     {
         try {
             $this->repository->store($request);
-            return redirect()->back()->with('success', 'Berhasil upload dokumen');
+            return redirect()->back()->with('success', __('messages.document.upload_success'));
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal upload: ' . $e->getMessage());
+            return redirect()->back()->with('error', __('messages.document.upload_failed', ['error' => $e->getMessage()]));
         }
     }
 
@@ -105,10 +105,12 @@ class DocumentController extends Controller
     {
         try {
             $success = $this->repository->delete($id);
-            $message = $success ? 'Dokumen berhasil dihapus' : 'Gagal menghapus dokumen';
+            $message = $success
+                ? __('messages.document.delete_success', ['message' => __('messages.document.deleted')])
+                : __('messages.document.delete_failed_generic');
             return redirect()->back()->with('success', $message);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menghapus: ' . $e->getMessage());
+            return redirect()->back()->with('error', __('messages.document.delete_failed', ['error' => $e->getMessage()]));
         }
     }
 }

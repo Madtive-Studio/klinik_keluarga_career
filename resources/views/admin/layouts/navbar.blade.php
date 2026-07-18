@@ -11,13 +11,16 @@
       <div class="nav-item w-100 px-2 position-relative">
         <div class="input-group input-group-merge">
           <span class="input-group-text"><i class="ti ti-search"></i></span>
-          <input type="text" id="admin-global-search" class="form-control" placeholder="Cari job, kandidat, batch, kategori..." autocomplete="off">
+          <input type="text" id="admin-global-search" class="form-control" placeholder="{{ __('admin.navbar.search_placeholder') }}" autocomplete="off">
         </div>
         <div id="admin-global-search-results" class="dropdown-menu w-100 shadow-sm" style="display:none; max-height: 320px; overflow-y: auto;"></div>
       </div>
     </div>
     <!-- /Search -->
     <ul class="navbar-nav flex-row align-items-center ms-auto">
+      <li class="nav-item me-2">
+        @include('layouts.locale-switcher')
+      </li>
       <li class="nav-item dropdown-style-switcher dropdown">
         <a
           class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow"
@@ -131,13 +134,13 @@
           </li>
           <li>
             <a class="dropdown-item" href="{{ route('admin.profile.edit') }}">
-              <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
+              <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">{{ __('admin.navbar.my_profile') }}</span>
             </a>
           </li>
           <li>
             <div class="d-grid px-2 pt-2 pb-1">
               <a class="btn btn-sm btn-danger d-flex" href="{{ route('admin.logout') }}">
-                <small class="align-middle">Logout</small>
+                <small class="align-middle">{{ __('admin.navbar.logout') }}</small>
                 <i class="ti ti-logout ms-2 ti-14px"></i>
               </a>
             </div>

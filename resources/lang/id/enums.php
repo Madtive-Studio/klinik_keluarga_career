@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'education_level' => [
+        'SMA' => 'SMA/SMK Sederajat',
+        'D3' => 'D3',
+        'D4' => 'D4',
+        'S1' => 'S1',
+        'S2' => 'S2',
+        'S3' => 'S3',
+    ],
+    'score_recommendation' => [
+        'SHORTLIST' => 'Direkomendasikan',
+        'REVIEW' => 'Perlu Ditinjau',
+        'REJECT' => 'Kurang Sesuai',
+    ],
+    'job_type' => [
+        'WFH/Remote' => 'WFH / Remote',
+        'Partime/Freelancer' => 'Part-time / Freelance',
+        'Fulltime/Onsite' => 'Full-time / Onsite',
+        'Internship' => 'Internship',
+    ],
+    'document_type' => [
+        'CV' => 'Curriculum Vitae',
+        'MCU' => 'Medical Checkup Unit',
+        'OTHERS' => 'Dokumen Lainnya',
+    ],
+];

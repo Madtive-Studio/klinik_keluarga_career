@@ -68,6 +68,6 @@ class ProfileController extends Controller
 
         return redirect()
             ->route('candidate.my.profile.edit')
-            ->with('success', 'Profil berhasil disimpan.');
+            ->with('success', __('messages.profile.saved'));
     }
 }

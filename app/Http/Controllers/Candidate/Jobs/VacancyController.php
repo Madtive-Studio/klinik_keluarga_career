@@ -66,7 +66,9 @@ class VacancyController extends Controller
         );
 
         if (isset($resultData['already_applied'])) {
-            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href="' . route('candidate.my.applications.index') . '"><u>Lamaran Saya</u></a> untuk melihat status lamaran kamu.');
+            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', __('messages.application.already_applied_html', [
+                'url' => route('candidate.my.applications.index'),
+            ]));
         }
 
         return view('candidate.jobs.vacancies.apply', $resultData);

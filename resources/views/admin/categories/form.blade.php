@@ -5,7 +5,7 @@
 			<div class="col-md-6 mb-6">
 				<div class="card">
 					<div class="card-header d-flex justify-content-between align-items-center">
-						<h5 class="mb-0">Form {{ isset($category) ? 'Edit' : 'Create' }} Category</h5>
+						<h5 class="mb-0">{{ isset($category) ? __('admin.categories.form_edit') : __('admin.categories.form_create') }}</h5>
 					</div>
 					<div class="card-body">
 						<form class="add-new-record pt-0 row g-2" id="form-add-new-record" method="POST" action="{{ !empty($category) ? route('admin.categories.update', $category->id) : route('admin.categories.store') }}">
@@ -14,14 +14,14 @@
 								@method('PATCH')
 							@endif
 							<div class="mb-3">
-								<label class="form-label">Name</label>
+								<label class="form-label">{{ __('admin.categories.name') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" class="form-control dt-full-name" name="name" placeholder="Name" value="{{ isset($category) ? $category->name : '' }}" required />
+									<input type="text" class="form-control dt-full-name" name="name" placeholder="{{ __('admin.categories.name') }}" value="{{ isset($category) ? $category->name : '' }}" required />
 								</div>
 							</div>
 							<div class="mb-3">
-								<button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">Submit</button>
-								<a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary">Cancel</a>
+								<button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">{{ __('admin.form.submit') }}</button>
+								<a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary">{{ __('admin.form.cancel') }}</a>
 							</div>
 						</form>
 					</div>

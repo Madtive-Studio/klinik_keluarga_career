@@ -13,14 +13,7 @@ enum EducationLevel: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::SMA => 'SMA/SMK Sederajat',
-            self::D3 => 'D3',
-            self::D4 => 'D4',
-            self::S1 => 'S1',
-            self::S2 => 'S2',
-            self::S3 => 'S3',
-        };
+        return __('enums.education_level.' . $this->value);
     }
 
     public function rank(): int
@@ -52,7 +45,7 @@ enum EducationLevel: string
     public static function labelOf(?string $level): string
     {
         if ($level === null) {
-            return '-';
+            return __('common.dash');
         }
 
         return self::tryFrom($level)?->label() ?? $level;

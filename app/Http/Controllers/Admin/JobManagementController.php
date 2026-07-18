@@ -98,7 +98,7 @@ class JobManagementController extends Controller
 
         $job->criteria()->create($request->criteriaAttributes());
 
-        return redirect()->route('admin.jobs.index')->with('success', 'Berhasil membuat lowongan pekerjaan baru');
+        return redirect()->route('admin.jobs.index')->with('success', __('messages.admin.job.created'));
     }
 
     /**
@@ -145,7 +145,7 @@ class JobManagementController extends Controller
             $request->criteriaAttributes()
         );
 
-        return redirect()->route('admin.jobs.index')->with('success', 'Berhasil mengubah data lowongan pekerjaan');
+        return redirect()->route('admin.jobs.index')->with('success', __('messages.admin.job.updated'));
     }
 
     public function toggleShowSalary(Request $request, string $id)
@@ -174,6 +174,6 @@ class JobManagementController extends Controller
         if ($job) {
             $job->delete();
         }
-        return redirect()->route('admin.jobs.index')->with('success', 'Berhasil menghapus data lowongan pekerjaan');
+        return redirect()->route('admin.jobs.index')->with('success', __('messages.admin.job.deleted'));
     }
 }

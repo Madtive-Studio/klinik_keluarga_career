@@ -11,14 +11,14 @@
 				<table class="datatables-basic table">
 					<thead>
 						<tr>
-							<th>No</th>
-							<th>Code</th>
-							<th>Name</th>
-							<th>Start Date</th>
-							<th>End Date</th>
-							<th>Quota</th>
-							<th>Status</th>
-							<th>Action</th>
+							<th>{{ __('admin.datatable.no') }}</th>
+							<th>{{ __('admin.batches.code') }}</th>
+							<th>{{ __('admin.batches.name') }}</th>
+							<th>{{ __('admin.batches.start_date') }}</th>
+							<th>{{ __('admin.batches.end_date') }}</th>
+							<th>{{ __('admin.batches.quota') }}</th>
+							<th>{{ __('admin.batches.status') }}</th>
+							<th>{{ __('admin.datatable.action') }}</th>
 						</tr>
 					</thead>
 				</table>
@@ -101,14 +101,14 @@
 						}
 					},
 					buttons: [{
-						text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Create</span>',
+						text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">{{ __('admin.datatable.create') }}</span>',
 						className: 'create-new btn btn-primary waves-effect waves-light'
 					}],
 					initComplete: function(settings, json) {
 						$('.card-header').after('<hr class="my-0">');
 					}
 				});
-				$('div.head-label').html('<h5 class="card-title mb-0">Batches Datatable</h5>');
+				$('div.head-label').html('<h5 class="card-title mb-0">{{ __('admin.batches.title') }}</h5>');
 			}
 
 
@@ -122,7 +122,7 @@
 			})
 
 			$(document).on('click', '.delete', function() {
-				let value = confirm('Konfirmasi hapus?')
+				let value = confirm(window.adminI18n.confirm_delete)
 				if (value) {
 					let route = getAttrValue(this, 'route')
 					window.location.href = route

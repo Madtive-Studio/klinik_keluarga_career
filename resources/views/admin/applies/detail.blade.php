@@ -12,13 +12,13 @@
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="mb-0">
 								<i class="menu-icon tf-icons ti ti-user"></i>
-								Informasi kandidat dan Lowongan pekerjaan
+								{{ __('admin.applies.detail_title') }}
 							</h5>
 						</div>
 						<div class="card-body row">
 							<div class="col-md-12">
 								<div class="mb-3">
-									<label class="form-label">Batch</label>
+									<label class="form-label">{{ __('admin.applies.batch') }}</label>
 									<div class="input-group input-group-merge">
 										<input type="text" class="form-control dt-full-name" value="{{ $apply->batch->code . ' - ' . $apply->batch->name ?? '-' }}" readonly />
 									</div>
@@ -26,7 +26,7 @@
 							</div>
 							<div class="col-md-12">
 								<div class="mb-3">
-									<label class="form-label">Lowongan pekerjaan</label>
+									<label class="form-label">{{ __('admin.applies.job_vacancy') }}</label>
 									<div class="input-group input-group-merge">
 										<input type="text" class="form-control dt-full-name" value="{{ $apply->job->code . ' - ' . $apply->job->title . ' - ' . $apply->job->type . ' | ' . $apply->job->category->name }}" readonly />
 									</div>
@@ -34,7 +34,7 @@
 							</div>
 							<div class="col-md-12">
 								<div class="mb-3">
-									<label class="form-label">Detail pelamar</label>
+									<label class="form-label">{{ __('admin.applies.applicant_detail') }}</label>
 									<div class="input-group input-group-merge">
 										<input type="text" class="form-control dt-full-name" value="{{ $apply->candidate->name . ' - ' . $apply->candidate->phone . ' - ' . $apply->candidate->email }}" readonly />
 									</div>
@@ -42,7 +42,7 @@
 							</div>
 							<div class="col-md-12">
 								<div class="mb-3">
-									<label class="form-label">Waktu/tanggal melamar</label>
+									<label class="form-label">{{ __('admin.applies.applied_at') }}</label>
 									<div class="input-group input-group-merge">
 										<input type="text" class="form-control dt-full-name" value="{{ date('d M Y H:i:s', strtotime($apply->created_at)) }}" />
 									</div>
@@ -50,7 +50,7 @@
 							</div>
 							<div class="col-md-12">
 								<div class="mb-3">
-									<label class="form-label">Cover letter</label>
+									<label class="form-label">{{ __('admin.applies.cover_letter') }}</label>
 									<div class="input-group input-group-merge">
 										{!! $apply->cover_letter !!}
 									</div>
@@ -58,7 +58,7 @@
 							</div>
 							<div class="col-md-12">
 								<div class="mb-3">
-									<label class="form-label">Deskripsi (alasan melamar pekerjaan ini)</label>
+									<label class="form-label">{{ __('admin.applies.description') }}</label>
 									<div class="input-group input-group-merge">
 										{!! $apply->description !!}
 									</div>
@@ -72,7 +72,7 @@
 						<div class="card-header d-flex justify-content-between align-items-center">
 							<h5 class="mb-0">
 								<i class="menu-icon tf-icons ti ti-info-circle"></i>
-								Tahap screening CV dan status
+								{{ __('admin.applies.screening_title') }}
 							</h5>
 						</div>
 						<div class="card-body">
@@ -83,42 +83,41 @@
 										: null;
 								@endphp
 								<div class="alert alert-light border mb-3">
-									<h6 class="mb-2">Penilaian Otomatis</h6>
-									<p class="mb-1"><strong>Score:</strong> {{ $apply->auto_score }}/100</p>
+									<h6 class="mb-2">{{ __('admin.applies.auto_scoring') }}</h6>
+									<p class="mb-1"><strong>{{ __('admin.applies.score_label') }}:</strong> {{ $apply->auto_score }}/100</p>
 									@if ($recommendation)
-										<p class="mb-1"><strong>Rekomendasi:</strong>
+										<p class="mb-1"><strong>{{ __('admin.applies.recommendation_label') }}:</strong>
 											<span class="badge {{ $recommendation->badgeClass() }}">{{ $recommendation->label() }}</span>
 										</p>
 									@endif
 									@if ($apply->score_breakdown)
 										<ul class="mb-0 mt-2">
-											<li>Pendidikan: {{ $apply->score_breakdown['education'] ?? 0 }}</li>
-											<li>Pengalaman: {{ $apply->score_breakdown['experience'] ?? 0 }}</li>
-											<li>Skill: {{ $apply->score_breakdown['skills'] ?? 0 }}</li>
-											<li>Kelengkapan Profil: {{ $apply->score_breakdown['profile'] ?? 0 }}</li>
-											<li>Cover Letter: {{ $apply->score_breakdown['cover_letter'] ?? 0 }}</li>
+											<li>{{ __('admin.applies.breakdown_education') }}: {{ $apply->score_breakdown['education'] ?? 0 }}</li>
+											<li>{{ __('admin.applies.breakdown_experience') }}: {{ $apply->score_breakdown['experience'] ?? 0 }}</li>
+											<li>{{ __('admin.applies.breakdown_skills') }}: {{ $apply->score_breakdown['skills'] ?? 0 }}</li>
+											<li>{{ __('admin.applies.breakdown_profile') }}: {{ $apply->score_breakdown['profile'] ?? 0 }}</li>
+											<li>{{ __('admin.applies.breakdown_cover_letter') }}: {{ $apply->score_breakdown['cover_letter'] ?? 0 }}</li>
 										</ul>
 									@endif
-									<small class="text-muted d-block mt-2">Dihitung: {{ optional($apply->scored_at)->format('d M Y H:i') ?? '-' }}</small>
+									<small class="text-muted d-block mt-2">{{ __('admin.applies.scored_at') }}: {{ optional($apply->scored_at)->format('d M Y H:i') ?? '-' }}</small>
 								</div>
 							@endif
 							<div class="mb-3">
 								<a href="{{ Illuminate\Support\Facades\Storage::url($apply->document->file) }}" target="_blank" class="btn btn-info btn-sm">
-									<i class="ti ti-download"></i> Lihat & Unduh CV / Resume
+									<i class="ti ti-download"></i> {{ __('admin.applies.view_cv') }}
 								</a>
 							</div>
 							<div class="mb-3">
 								<select name="status" id="status" class="form-control">
-									<option value="">Ubah status</option>
-									<option value="IN REVIEW" {{ $apply->status == 'IN REVIEW' ? 'selected' : '' }}>IN REVIEW</option>
-									<option value="NOT SUITABLE" {{ $apply->status == 'NOT SUITABLE' ? 'selected' : '' }}>NOT SUITABLE</option>
-									<option value="SHORTLISTED" {{ $apply->status == 'SHORTLISTED' ? 'selected' : '' }}>SHORTLISTED</option>
-									<option value="HIRED" {{ $apply->status == 'HIRED' ? 'selected' : '' }}>HIRED</option>
+									<option value="">{{ __('admin.applies.change_status') }}</option>
+									@foreach ($statuses as $value => $label)
+										<option value="{{ $value }}" {{ $apply->status == $value ? 'selected' : '' }}>{{ $label }}</option>
+									@endforeach
 								</select>
 							</div>
 							<div class="mb-3">
-								<button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">Simpan</button>
-								<a href="{{ route('admin.applies.index') }}" class="btn btn-outline-secondary">Cancel</a>
+								<button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">{{ __('admin.form.submit') }}</button>
+								<a href="{{ route('admin.applies.index') }}" class="btn btn-outline-secondary">{{ __('admin.form.cancel') }}</a>
 							</div>
 						</div>
 					</div>

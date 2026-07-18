@@ -30,6 +30,7 @@
 <script src="{{ asset('assets/admin/assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/js/main.js') }}"></script>
 <script>
+window.adminI18n = @json(__('admin.js'));
 document.addEventListener('DOMContentLoaded', function () {
   const flatpickrOptions = {
     enableTime: true,
@@ -87,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const renderResults = (items) => {
     if (!items.length) {
-      resultsBox.innerHTML = '<div class="dropdown-item text-muted">Tidak ada hasil</div>';
+      resultsBox.innerHTML = '<div class="dropdown-item text-muted">{{ __('admin.navbar.no_results') }}</div>';
       resultsBox.style.display = 'block';
       return;
     }

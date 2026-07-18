@@ -88,7 +88,7 @@ class ScheduleInterviewController extends Controller
         $applyData = Apply::where('id', $applyId)->first();
 
         if (!$applyData) {
-            return redirect()->route('admin.schedule-interviews.index')->with('success', 'Data lamaran tidak valid');
+            return redirect()->route('admin.schedule-interviews.index')->with('success', __('messages.admin.schedule_interview.invalid_apply'));
         }
 
         $data = $this->validatedScheduleInterviewData($request);
@@ -105,7 +105,7 @@ class ScheduleInterviewController extends Controller
         $candidate = Candidate::where('id', $applyData->candidate_id)->first();
         $candidate->notify(new InterviewInvitationNotification($candidate, $job, $interview, $company));
 
-        return redirect()->route('admin.schedule-interviews.index')->with('success', 'Berhasil membuat jadwal wawancara baru');
+        return redirect()->route('admin.schedule-interviews.index')->with('success', __('messages.admin.schedule_interview.created'));
     }
 
     public function invitation(Request $request, $id)
@@ -118,7 +118,7 @@ class ScheduleInterviewController extends Controller
         $company = Company::first();
 
         $candidate->notify(new InterviewInvitationNotification($candidate, $job, $interview, $company));
-        return redirect()->route('admin.schedule-interviews.index')->with('success', 'Berhasil mengirim ulang undangan wawancara');
+        return redirect()->route('admin.schedule-interviews.index')->with('success', __('messages.admin.schedule_interview.resent'));
     }
 
     /**
@@ -152,7 +152,7 @@ class ScheduleInterviewController extends Controller
         $applyData = Apply::where('id', $applyId)->first();
 
         if (!$applyData) {
-            return redirect()->route('admin.schedule-interviews.index')->with('success', 'Data lamaran tidak valid');
+            return redirect()->route('admin.schedule-interviews.index')->with('success', __('messages.admin.schedule_interview.invalid_apply'));
         }
 
         $data = $this->validatedScheduleInterviewData($request);
@@ -164,7 +164,7 @@ class ScheduleInterviewController extends Controller
 
         ScheduleInterview::findOrFail($id)->update($data);
 
-        return redirect()->route('admin.schedule-interviews.index')->with('success', 'Berhasil mengubah data jadwal wawancara');
+        return redirect()->route('admin.schedule-interviews.index')->with('success', __('messages.admin.schedule_interview.updated'));
     }
 
     private function validatedScheduleInterviewData(Request $request): array
@@ -202,6 +202,6 @@ class ScheduleInterviewController extends Controller
         if ($scheduleInterview) {
             $scheduleInterview->delete();
         }
-        return redirect()->route('admin.schedule-interviews.index')->with('success', 'Berhasil menghapus data jadwal wawancara');
+        return redirect()->route('admin.schedule-interviews.index')->with('success', __('messages.admin.schedule_interview.deleted'));
     }
 }

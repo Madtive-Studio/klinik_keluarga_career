@@ -9,7 +9,7 @@
 
 		<ul class="nav nav-pills flex-wrap gap-2 mb-4">
 			<li class="nav-item">
-				<a class="nav-link {{ empty($status) ? 'active' : '' }}" href="{{ route('admin.applies.index') }}">Semua</a>
+				<a class="nav-link {{ empty($status) ? 'active' : '' }}" href="{{ route('admin.applies.index') }}">{{ __('admin.applies.all') }}</a>
 			</li>
 			@foreach ($statuses as $value => $label)
 				<li class="nav-item">
@@ -23,15 +23,15 @@
 				<table class="datatables-basic table">
 					<thead>
 						<tr>
-							<th>No</th>
-							<th>Name</th>
-							<th>Job</th>
-							<th>Batch</th>
-							<th>CV</th>
-							<th>Score</th>
-							<th>Rekomendasi</th>
-							<th>Status</th>
-							<th>Action</th>
+							<th>{{ __('admin.datatable.no') }}</th>
+							<th>{{ __('admin.applies.name') }}</th>
+							<th>{{ __('admin.applies.job') }}</th>
+							<th>{{ __('admin.applies.batch') }}</th>
+							<th>{{ __('admin.applies.cv') }}</th>
+							<th>{{ __('admin.applies.score') }}</th>
+							<th>{{ __('admin.applies.recommendation') }}</th>
+							<th>{{ __('admin.applies.status') }}</th>
+							<th>{{ __('admin.datatable.action') }}</th>
 						</tr>
 					</thead>
 				</table>
@@ -109,7 +109,7 @@
 						$('.card-header').after('<hr class="my-0">');
 					}
 				});
-				$('div.head-label').html('<h5 class="card-title mb-0">Applies Datatable</h5>');
+				$('div.head-label').html('<h5 class="card-title mb-0">{{ __('admin.applies.title') }}</h5>');
 			}
 
 

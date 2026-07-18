@@ -11,10 +11,10 @@
 				<table class="datatables-basic table">
 					<thead>
 						<tr>
-							<th>No</th>
-							<th>Name</th>
-							<th>Created</th>
-							<th>Action</th>
+							<th>{{ __('admin.datatable.no') }}</th>
+							<th>{{ __('admin.categories.name') }}</th>
+							<th>{{ __('admin.categories.created') }}</th>
+							<th>{{ __('admin.datatable.action') }}</th>
 						</tr>
 					</thead>
 				</table>
@@ -85,14 +85,14 @@
 						}
 					},
 					buttons: [{
-						text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Create</span>',
+						text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">{{ __('admin.datatable.create') }}</span>',
 						className: 'create-new btn btn-primary waves-effect waves-light'
 					}],
 					initComplete: function(settings, json) {
 						$('.card-header').after('<hr class="my-0">');
 					}
 				});
-				$('div.head-label').html('<h5 class="card-title mb-0">Categories Datatable</h5>');
+				$('div.head-label').html('<h5 class="card-title mb-0">{{ __('admin.categories.title') }}</h5>');
 			}
 
 
@@ -106,7 +106,7 @@
 			})
 
 			$(document).on('click', '.delete', function() {
-				let value = confirm('Konfirmasi hapus?')
+				let value = confirm(window.adminI18n.confirm_delete)
 				if (value) {
 					let route = getAttrValue(this, 'route')
 					window.location.href = route

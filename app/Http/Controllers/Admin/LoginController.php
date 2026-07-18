@@ -25,7 +25,7 @@ class LoginController extends Controller
     if (Auth::guard('admin')->attempt($credentials)) {
         return redirect()->route('admin.dashboard');
     } else {
-        return redirect()->back()->with('error', 'Email atau password salah!');
+        return redirect()->back()->with('error', __('messages.admin.auth.invalid_credentials'));
     }
   }
 

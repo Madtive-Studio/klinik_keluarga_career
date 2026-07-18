@@ -10,11 +10,7 @@ enum ScoreRecommendation: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::SHORTLIST => 'Direkomendasikan',
-            self::REVIEW => 'Perlu Ditinjau',
-            self::REJECT => 'Kurang Sesuai',
-        };
+        return __('enums.score_recommendation.' . $this->value);
     }
 
     public function badgeClass(): string
