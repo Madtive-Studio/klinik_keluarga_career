@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Candidate;
 
 use App\Enums\EducationLevel;
-use App\Enums\SkillLevel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileRequest;
 use App\Models\Candidate;
-use App\Models\CandidateSkill;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,13 +15,12 @@ class ProfileController extends Controller
 {
     public function edit(): View
     {
-        $candidate = Candidate::with(['profile', 'skills'])
+        $candidate = Candidate::with('profile')
             ->findOrFail(Auth::guard('candidate')->id());
 
         return view('candidate.profile.edit', [
             'candidate' => $candidate,
             'educationLevels' => EducationLevel::cases(),
-            'skillLevels' => SkillLevel::values(),
         ]);
     }
 
@@ -43,27 +40,12 @@ class ProfileController extends Controller
                 'city',
                 'province',
                 'expected_salary',
-                'availability_date',
             ]);
 
             $candidate->profile()->updateOrCreate(
                 ['candidate_id' => $candidate->id],
                 $profileData
             );
-
-            $candidate->skills()->delete();
-
-            foreach ($request->input('skills', []) as $skill) {
-                if (empty($skill['name'])) {
-                    continue;
-                }
-
-                CandidateSkill::create([
-                    'candidate_id' => $candidate->id,
-                    'name' => trim($skill['name']),
-                    'level' => $skill['level'] ?? SkillLevel::BASIC->value,
-                ]);
-            }
         });
 
         return redirect()

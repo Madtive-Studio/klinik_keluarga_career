@@ -95,12 +95,14 @@
 												<form action="{{ route('candidate.my.documents.destroy', $document->id) }}" method="POST">
 													@csrf
 													@method('DELETE')
-													<button type="submit" class="btn btn-danger btn-sm delete-btn">
-														<i class="mdi mdi-delete"></i> {{ __('common.delete') }}
+													<button type="submit" class="btn btn-danger btn-sm document-action-btn delete-btn">
+														<i class="mdi mdi-delete"></i>
+														<span>{{ __('common.delete') }}</span>
 													</button>
 												</form>
-												<a href="{{ $document->file_url }}" target="_blank" download class="btn btn-primary btn-sm">
-													<i class="mdi mdi-download"></i> {{ __('common.download') }}
+												<a href="{{ $document->file_url }}" target="_blank" download class="btn btn-primary btn-sm document-action-btn">
+													<i class="mdi mdi-download"></i>
+													<span>{{ __('common.download') }}</span>
 												</a>
 											</div>
 										</div>
@@ -188,6 +190,18 @@
 
 		.document-type-drop.is-dragover .document-type-drop__label {
 			font-weight: 600;
+		}
+
+		.document-action-btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.35rem;
+			line-height: 1.2;
+		}
+
+		.document-action-btn .mdi {
+			font-size: 14px;
+			line-height: 1;
 		}
 	</style>
 	<script>

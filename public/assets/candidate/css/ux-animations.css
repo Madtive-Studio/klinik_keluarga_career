@@ -1,0 +1,108 @@
+@media (prefers-reduced-motion: no-preference) {
+	html.candidate-portal {
+		scroll-behavior: smooth;
+	}
+
+	.candidate-animate {
+		opacity: 0;
+		transform: translateY(18px);
+		transition:
+			opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+			transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 0.25s ease;
+		will-change: opacity, transform;
+	}
+
+	.candidate-animate.candidate-animate--fade {
+		transform: none;
+	}
+
+	.candidate-animate.candidate-animate--scale {
+		transform: scale(0.97);
+	}
+
+	.candidate-animate.is-visible {
+		opacity: 1;
+		transform: none;
+	}
+
+	.candidate-portal .job-list-box {
+		transition:
+			opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+			transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 0.3s ease;
+	}
+
+	.candidate-portal .job-list-box.is-visible:hover {
+		transform: translateY(-4px);
+	}
+
+	.candidate-portal .job-detail,
+	.candidate-portal .document-dropzone,
+	.candidate-portal .candidate-empty-state {
+		transition:
+			opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+			transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+			border-color 0.2s ease,
+			background-color 0.2s ease;
+	}
+
+	.candidate-portal .nav-pills .nav-link {
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	.candidate-portal .nav-pills .nav-link:hover {
+		transform: translateX(3px);
+	}
+
+	.candidate-portal .document-action-btn,
+	.candidate-portal .btn {
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease,
+			background-color 0.2s ease,
+			border-color 0.2s ease;
+	}
+
+	.candidate-portal .document-action-btn:hover,
+	.candidate-portal .btn-primary:hover,
+	.candidate-portal .btn-danger:hover,
+	.candidate-portal .btn-success:hover {
+		transform: translateY(-1px);
+	}
+
+	.candidate-portal .alert {
+		animation: candidate-alert-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
+	.candidate-portal .pagination .page-link {
+		transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+	}
+
+	.candidate-portal .pagination .page-link:hover {
+		transform: translateY(-1px);
+	}
+}
+
+@keyframes candidate-alert-in {
+	from {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.candidate-animate {
+		opacity: 1 !important;
+		transform: none !important;
+		transition: none !important;
+	}
+}

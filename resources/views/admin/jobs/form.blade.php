@@ -235,7 +235,6 @@
 						<div class="card-body row">
 							@php
 								$criteria = isset($job) ? $job->criteria : null;
-								$requiredSkills = old('required_skills', $criteria ? implode(', ', $criteria->required_skills ?? []) : '');
 							@endphp
 							<div class="col-md-4 mb-3">
 								<label class="form-label">{{ __('admin.jobs.min_education') }}</label>
@@ -246,11 +245,6 @@
 									@endforeach
 								</select>
 								@error('min_education') <small class="text-danger">{{ $message }}</small> @enderror
-							</div>
-							<div class="col-md-12 mb-3">
-								<label class="form-label">{{ __('admin.jobs.required_skills') }}</label>
-								<textarea name="required_skills" class="form-control @error('required_skills') is-invalid @enderror" rows="2" placeholder="{{ __('admin.jobs.required_skills_placeholder') }}">{{ $requiredSkills }}</textarea>
-								@error('required_skills') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-12 mb-3">
 								<small class="text-muted">{{ __('admin.jobs.experience_scoring_hint') }}</small>
@@ -265,29 +259,24 @@
 									{{ __('admin.jobs.weight_ready') }}
 								</div>
 							</div>
-							<div class="col-md-4 mb-3">
+							<div class="col-md-3 mb-3">
 								<label class="form-label">{{ __('admin.jobs.weight_education') }}</label>
-								<input type="number" min="0" max="100" name="weight_education" class="form-control weight-input @error('weight_education') is-invalid @enderror" value="{{ old('weight_education', $criteria?->weight_education ?? 25) }}">
+								<input type="number" min="0" max="100" name="weight_education" class="form-control weight-input @error('weight_education') is-invalid @enderror" value="{{ old('weight_education', $criteria?->weight_education ?? 30) }}">
 								@error('weight_education') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
-							<div class="col-md-4 mb-3">
+							<div class="col-md-3 mb-3">
 								<label class="form-label">{{ __('admin.jobs.weight_experience') }}</label>
-								<input type="number" min="0" max="100" name="weight_experience" class="form-control weight-input @error('weight_experience') is-invalid @enderror" value="{{ old('weight_experience', $criteria?->weight_experience ?? 25) }}">
+								<input type="number" min="0" max="100" name="weight_experience" class="form-control weight-input @error('weight_experience') is-invalid @enderror" value="{{ old('weight_experience', $criteria?->weight_experience ?? 30) }}">
 								@error('weight_experience') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
-							<div class="col-md-4 mb-3">
-								<label class="form-label">{{ __('admin.jobs.weight_skills') }}</label>
-								<input type="number" min="0" max="100" name="weight_skills" class="form-control weight-input @error('weight_skills') is-invalid @enderror" value="{{ old('weight_skills', $criteria?->weight_skills ?? 30) }}">
-								@error('weight_skills') <small class="text-danger">{{ $message }}</small> @enderror
-							</div>
-							<div class="col-md-4 mb-3">
+							<div class="col-md-3 mb-3">
 								<label class="form-label">{{ __('admin.jobs.weight_profile') }}</label>
-								<input type="number" min="0" max="100" name="weight_profile" class="form-control weight-input @error('weight_profile') is-invalid @enderror" value="{{ old('weight_profile', $criteria?->weight_profile ?? 10) }}">
+								<input type="number" min="0" max="100" name="weight_profile" class="form-control weight-input @error('weight_profile') is-invalid @enderror" value="{{ old('weight_profile', $criteria?->weight_profile ?? 20) }}">
 								@error('weight_profile') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
-							<div class="col-md-4 mb-3">
+							<div class="col-md-3 mb-3">
 								<label class="form-label">{{ __('admin.jobs.weight_cover_letter') }}</label>
-								<input type="number" min="0" max="100" name="weight_cover_letter" class="form-control weight-input @error('weight_cover_letter') is-invalid @enderror" value="{{ old('weight_cover_letter', $criteria?->weight_cover_letter ?? 10) }}">
+								<input type="number" min="0" max="100" name="weight_cover_letter" class="form-control weight-input @error('weight_cover_letter') is-invalid @enderror" value="{{ old('weight_cover_letter', $criteria?->weight_cover_letter ?? 20) }}">
 								@error('weight_cover_letter') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-12"><hr><p class="mb-2"><strong>{{ __('admin.jobs.threshold_title') }}</strong></p></div>
@@ -389,8 +378,8 @@
 				'tab-basic': ['batch_id', 'category_id', 'title', 'images', 'type', 'quota', 'salary_min', 'salary_max', 'is_show_salary', 'experience'],
 				'tab-content': ['qualification', 'description'],
 				'tab-scoring': [
-					'min_education', 'required_skills',
-					'weight_education', 'weight_experience', 'weight_skills',
+					'min_education',
+					'weight_education', 'weight_experience',
 					'weight_profile', 'weight_cover_letter', 'threshold_shortlist', 'threshold_reject'
 				],
 			};

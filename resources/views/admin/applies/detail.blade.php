@@ -94,7 +94,6 @@
 										<ul class="mb-0 mt-2">
 											<li>{{ __('admin.applies.breakdown_education') }}: {{ $apply->score_breakdown['education'] ?? 0 }}</li>
 											<li>{{ __('admin.applies.breakdown_experience') }}: {{ $apply->score_breakdown['experience'] ?? 0 }}</li>
-											<li>{{ __('admin.applies.breakdown_skills') }}: {{ $apply->score_breakdown['skills'] ?? 0 }}</li>
 											<li>{{ __('admin.applies.breakdown_profile') }}: {{ $apply->score_breakdown['profile'] ?? 0 }}</li>
 											<li>{{ __('admin.applies.breakdown_cover_letter') }}: {{ $apply->score_breakdown['cover_letter'] ?? 0 }}</li>
 										</ul>

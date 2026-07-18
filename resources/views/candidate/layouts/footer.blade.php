@@ -59,6 +59,7 @@
 <script src="{{ asset('assets/candidate/js/counter.int.js') }}"></script>
 <script src="{{ asset('assets/candidate/js/home.js') }}"></script>
 <script src="{{ asset('assets/candidate/js/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('assets/candidate/js/ux-animations.js') }}"></script>
 @if(session('error'))
     <div style="display:none" id="debug-session" data-error="{{ session('error') }}"></div>
     <script>

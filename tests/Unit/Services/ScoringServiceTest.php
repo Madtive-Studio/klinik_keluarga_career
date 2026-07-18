@@ -5,7 +5,6 @@ namespace Tests\Unit\Services;
 use App\Enums\ScoreRecommendation;
 use App\Models\Candidate;
 use App\Models\CandidateProfile;
-use App\Models\CandidateSkill;
 use App\Models\Job;
 use App\Models\JobCriteria;
 use App\Services\ScoringService;
@@ -36,19 +35,17 @@ class ScoringServiceTest extends TestCase
             'city' => 'Jakarta',
             'province' => 'DKI Jakarta',
         ]);
-        CandidateSkill::create(['candidate_id' => $candidate->id, 'name' => 'Komunikasi', 'level' => 'advanced']);
-        CandidateSkill::create(['candidate_id' => $candidate->id, 'name' => 'Microsoft Office', 'level' => 'intermediate']);
 
         $job = Job::factory()->create(['experience' => '2 Tahun']);
         JobCriteria::factory()->for($job)->create([
             'min_education' => 'S1',
-            'required_skills' => ['Komunikasi', 'Microsoft Office'],
         ]);
 
         $result = $this->service->calculate($candidate, $job, str_repeat('Motivasi melamar posisi ini. ', 5));
 
         $this->assertGreaterThanOrEqual(70, $result['score']);
         $this->assertSame(ScoreRecommendation::SHORTLIST->value, $result['recommendation']);
+        $this->assertArrayNotHasKey('skills', $result['breakdown']);
     }
 
     #[Test]
@@ -63,7 +60,6 @@ class ScoringServiceTest extends TestCase
         $job = Job::factory()->create(['experience' => '3 tahun']);
         JobCriteria::factory()->for($job)->create([
             'min_education' => 'S1',
-            'required_skills' => ['Keperawatan', 'ICU'],
         ]);
 
         $result = $this->service->calculate($candidate, $job, 'Singkat');
@@ -88,17 +84,15 @@ class ScoringServiceTest extends TestCase
         $job = Job::factory()->create(['experience' => 'Fresh Graduate']);
         JobCriteria::factory()->for($job)->create([
             'min_education' => 'D3',
-            'weight_education' => 25,
-            'weight_experience' => 25,
-            'weight_skills' => 30,
-            'weight_profile' => 10,
-            'weight_cover_letter' => 10,
-            'required_skills' => [],
+            'weight_education' => 30,
+            'weight_experience' => 30,
+            'weight_profile' => 20,
+            'weight_cover_letter' => 20,
         ]);
 
         $result = $this->service->calculate($candidate, $job, str_repeat('Saya sangat tertarik dengan posisi ini. ', 4));
 
-        $this->assertSame(25, $result['breakdown']['education']);
+        $this->assertSame(30, $result['breakdown']['education']);
     }
 
     #[Test]
@@ -117,10 +111,8 @@ class ScoringServiceTest extends TestCase
             'min_education' => null,
             'weight_education' => 0,
             'weight_experience' => 20,
-            'weight_skills' => 0,
             'weight_profile' => 0,
             'weight_cover_letter' => 0,
-            'required_skills' => [],
         ]);
 
         $result = $this->service->calculate($candidate, $job, '');

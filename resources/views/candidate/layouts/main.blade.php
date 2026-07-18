@@ -5,7 +5,7 @@
 	@include('candidate.layouts.header')
 </head>
 
-<body>
+<body class="candidate-portal">
 	<div id="preloader">
 		<div id="status">
 			<img src="{{ asset('assets/logo/letter-logo.png') }}" width="250" class="d-block mx-auto" alt="">

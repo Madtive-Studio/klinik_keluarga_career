@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Enums\EducationLevel;
-use App\Enums\SkillLevel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,10 +26,6 @@ class ProfileRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:255'],
             'province' => ['nullable', 'string', 'max:255'],
             'expected_salary' => ['nullable', 'integer', 'min:0'],
-            'availability_date' => ['nullable', 'date'],
-            'skills' => ['nullable', 'array'],
-            'skills.*.name' => ['required_with:skills', 'string', 'max:255'],
-            'skills.*.level' => ['nullable', Rule::in(SkillLevel::values())],
         ];
     }
 
@@ -39,7 +34,6 @@ class ProfileRequest extends FormRequest
         return [
             'education_level' => __('validation.attributes.education_level'),
             'years_of_experience' => __('validation.attributes.years_of_experience'),
-            'skills.*.name' => __('validation.attributes.skills.*.name'),
         ];
     }
 }

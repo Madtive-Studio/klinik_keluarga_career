@@ -12,7 +12,7 @@ class ScoringService
 {
     public function calculate(Candidate $candidate, Job $job, string $coverLetter): array
     {
-        $candidate->loadMissing(['profile', 'skills']);
+        $candidate->loadMissing('profile');
         $job->loadMissing('criteria');
 
         $criteria = $job->criteria ?? new JobCriteria(JobCriteria::defaultsForJob($job->id));
@@ -20,14 +20,12 @@ class ScoringService
 
         $educationScore = $this->scoreEducation($profile?->education_level, $criteria);
         $experienceScore = $this->scoreExperience($profile?->years_of_experience ?? 0, $criteria, $job->experience);
-        $skillsScore = $this->scoreSkills($candidate, $criteria);
         $profileScore = $this->scoreProfileCompleteness($profile, $criteria);
         $coverLetterScore = $this->scoreCoverLetter($coverLetter, $criteria);
 
         $breakdown = [
             'education' => $educationScore,
             'experience' => $experienceScore,
-            'skills' => $skillsScore,
             'profile' => $profileScore,
             'cover_letter' => $coverLetterScore,
         ];
@@ -69,31 +67,6 @@ class ScoringService
         $ratio = min($years / $minimum, 1);
 
         return (int) round($ratio * $weight);
-    }
-
-    private function scoreSkills(Candidate $candidate, JobCriteria $criteria): int
-    {
-        $weight = $criteria->weight_skills;
-        $requiredSkills = $criteria->required_skills ?? [];
-
-        if ($requiredSkills === []) {
-            return $weight;
-        }
-
-        $candidateSkills = $candidate->skills
-            ->pluck('name')
-            ->map(fn (string $skill) => strtolower(trim($skill)))
-            ->filter()
-            ->values();
-
-        $matches = 0;
-        foreach ($requiredSkills as $skill) {
-            if ($candidateSkills->contains(strtolower(trim((string) $skill)))) {
-                $matches++;
-            }
-        }
-
-        return (int) round(($matches / count($requiredSkills)) * $weight);
     }
 
     private function scoreProfileCompleteness($profile, JobCriteria $criteria): int
