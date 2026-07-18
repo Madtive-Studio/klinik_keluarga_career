@@ -34,14 +34,16 @@
 							<div class="mb-3">
 								<label class="form-label">Start Date</label>
 								<div class="input-group input-group-merge">
-									<input type="datetime-local" class="form-control dt-full-name" name="start_date" placeholder="start_date" value="{{ isset($batch) ? $batch->start_date : '' }}" required />
+									<input type="text" class="form-control flatpickr-datetime" name="start_date" placeholder="dd-mm-yyyy HH:mm:ss" required value="{{ old('start_date', isset($batch) ? formatFlatpickrDatetime($batch->start_date) : '') }}" />
 								</div>
+								@error('start_date') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="mb-3">
 								<label class="form-label">End Date</label>
 								<div class="input-group input-group-merge">
-									<input type="datetime-local" class="form-control dt-full-name" name="end_date" placeholder="end_date" value="{{ isset($batch) ? $batch->end_date : '' }}" required />
+									<input type="text" class="form-control flatpickr-datetime" name="end_date" placeholder="dd-mm-yyyy HH:mm:ss" required value="{{ old('end_date', isset($batch) ? formatFlatpickrDatetime($batch->end_date) : '') }}" />
 								</div>
+								@error('end_date') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="mb-3">
 								<button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">Submit</button>

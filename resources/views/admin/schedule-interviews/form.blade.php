@@ -62,16 +62,18 @@
 								<div class="mb-3">
 									<label class="form-label">Start Datetime</label>
 									<div class="input-group input-group-merge">
-										<input type="datetime-local" class="form-control dt-full-name" name="start_datetime" placeholder="..." value="{{ isset($scheduleInterview) ? $scheduleInterview->start_datetime : '' }}" required />
+										<input type="text" class="form-control flatpickr-datetime" name="start_datetime" placeholder="dd-mm-yyyy HH:mm:ss" required value="{{ old('start_datetime', isset($scheduleInterview) ? formatFlatpickrDatetime($scheduleInterview->start_datetime) : '') }}" />
 									</div>
+									@error('start_datetime') <small class="text-danger">{{ $message }}</small> @enderror
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="mb-3">
 									<label class="form-label">End Datetime</label>
 									<div class="input-group input-group-merge">
-										<input type="datetime-local" class="form-control dt-full-name" name="end_datetime" placeholder="..." value="{{ isset($scheduleInterview) ? $scheduleInterview->end_datetime : '' }}" required />
+										<input type="text" class="form-control flatpickr-datetime" name="end_datetime" placeholder="dd-mm-yyyy HH:mm:ss" required value="{{ old('end_datetime', isset($scheduleInterview) ? formatFlatpickrDatetime($scheduleInterview->end_datetime) : '') }}" />
 									</div>
+									@error('end_datetime') <small class="text-danger">{{ $message }}</small> @enderror
 								</div>
 							</div>
 							<div class="col-md-12" id="form_link">

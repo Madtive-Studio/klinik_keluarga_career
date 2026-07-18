@@ -31,3 +31,21 @@ function formatSalaryShort(?string $salary): string
         return (string) $digits;
     }, $salary);
 }
+
+function formatFlatpickrDatetime(mixed $value): string
+{
+    if ($value === null || $value === '') {
+        return '';
+    }
+
+    return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+}
+
+function parseFlatpickrDatetime(?string $value): ?string
+{
+    if ($value === null || trim($value) === '') {
+        return null;
+    }
+
+    return \Carbon\Carbon::createFromFormat('d-m-Y H:i:s', trim($value))->format('Y-m-d H:i:s');
+}

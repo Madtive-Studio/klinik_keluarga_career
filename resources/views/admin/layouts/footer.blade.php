@@ -27,7 +27,56 @@
 <script src="{{ asset('assets/admin/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/vendor/libs/swiper/swiper.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+<script src="{{ asset('assets/admin/assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
 <script src="{{ asset('assets/admin/assets/js/main.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const flatpickrOptions = {
+    enableTime: true,
+    enableSeconds: true,
+    time_24hr: true,
+    dateFormat: 'd-m-Y H:i:S',
+    allowInput: true,
+  };
+
+  const linkedPairs = [
+    ['start_date', 'end_date'],
+    ['start_datetime', 'end_datetime'],
+  ];
+  const linkedNames = new Set(linkedPairs.flat());
+
+  function initFlatpickr(element, options = {}) {
+    return flatpickr(element, { ...flatpickrOptions, ...options });
+  }
+
+  linkedPairs.forEach(function ([startName, endName]) {
+    const startEl = document.querySelector('[name="' + startName + '"]');
+    const endEl = document.querySelector('[name="' + endName + '"]');
+    if (!startEl || !endEl) return;
+
+    const endPicker = initFlatpickr(endEl);
+    const startPicker = initFlatpickr(startEl, {
+      onChange: function (selectedDates) {
+        const minDate = selectedDates[0] || null;
+        endPicker.set('minDate', minDate);
+
+        if (endPicker.selectedDates[0] && minDate && endPicker.selectedDates[0] <= minDate) {
+          endPicker.clear();
+        }
+      },
+    });
+
+    if (startPicker.selectedDates[0]) {
+      endPicker.set('minDate', startPicker.selectedDates[0]);
+    }
+  });
+
+  document.querySelectorAll('.flatpickr-datetime').forEach(function (element) {
+    if (linkedNames.has(element.name)) return;
+    initFlatpickr(element);
+  });
+});
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const input = document.getElementById('admin-global-search');
