@@ -49,3 +49,38 @@ function parseFlatpickrDatetime(?string $value): ?string
 
     return \Carbon\Carbon::createFromFormat('d-m-Y H:i:s', trim($value))->format('Y-m-d H:i:s');
 }
+
+function parseJobExperienceYears(?string $experience): int
+{
+    if ($experience === null || trim($experience) === '') {
+        return 0;
+    }
+
+    $normalized = strtolower(trim($experience));
+
+    if (
+        str_contains($normalized, 'fresh graduate')
+        || str_contains($normalized, 'tanpa pengalaman')
+        || str_contains($normalized, 'belum berpengalaman')
+    ) {
+        return 0;
+    }
+
+    if (preg_match('/(\d+)\s*\+/', $normalized, $matches)) {
+        return (int) $matches[1];
+    }
+
+    if (preg_match('/(\d+)\s*(?:-\s*\d+)?\s*(?:tahun|thn|years?|year)/', $normalized, $matches)) {
+        return (int) $matches[1];
+    }
+
+    if (preg_match('/(\d+)\s*[-–]\s*(\d+)/', $normalized, $matches)) {
+        return (int) $matches[1];
+    }
+
+    if (preg_match('/(\d+)/', $normalized, $matches)) {
+        return (int) $matches[1];
+    }
+
+    return 0;
+}

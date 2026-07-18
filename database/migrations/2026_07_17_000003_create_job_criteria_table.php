@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('job_criteria', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_id')->unique()->constrained()->cascadeOnDelete();
-            $table->enum('min_education', ['SMA', 'D3', 'S1', 'S2', 'S3'])->nullable();
+            $table->enum('min_education', ['SMA', 'D3', 'D4', 'S1', 'S2', 'S3'])->nullable();
             $table->unsignedTinyInteger('min_experience_years')->default(0);
             $table->json('required_skills')->nullable();
             $table->unsignedTinyInteger('weight_education')->default(25);

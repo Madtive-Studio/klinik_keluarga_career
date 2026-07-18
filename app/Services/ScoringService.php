@@ -19,7 +19,7 @@ class ScoringService
         $profile = $candidate->profile;
 
         $educationScore = $this->scoreEducation($profile?->education_level, $criteria);
-        $experienceScore = $this->scoreExperience($profile?->years_of_experience ?? 0, $criteria);
+        $experienceScore = $this->scoreExperience($profile?->years_of_experience ?? 0, $criteria, $job->experience);
         $skillsScore = $this->scoreSkills($candidate, $criteria);
         $profileScore = $this->scoreProfileCompleteness($profile, $criteria);
         $coverLetterScore = $this->scoreCoverLetter($coverLetter, $criteria);
@@ -57,10 +57,10 @@ class ScoringService
         return 0;
     }
 
-    private function scoreExperience(int $years, JobCriteria $criteria): int
+    private function scoreExperience(int $years, JobCriteria $criteria, ?string $jobExperience): int
     {
         $weight = $criteria->weight_experience;
-        $minimum = $criteria->min_experience_years ?? 0;
+        $minimum = parseJobExperienceYears($jobExperience);
 
         if ($minimum === 0) {
             return $weight;

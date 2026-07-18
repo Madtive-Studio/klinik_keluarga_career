@@ -32,7 +32,7 @@
 										<select name="education_level" class="form-control" required>
 											<option value="">-- Pilih --</option>
 											@foreach ($educationLevels as $level)
-												<option value="{{ $level }}" @selected(old('education_level', $candidate->profile?->education_level) === $level)>{{ $level }}</option>
+												<option value="{{ $level->value }}" @selected(old('education_level', $candidate->profile?->education_level) === $level->value)>{{ $level->label() }}</option>
 											@endforeach
 										</select>
 										@error('education_level') <small class="text-danger">{{ $message }}</small> @enderror

@@ -39,10 +39,9 @@ class ScoringServiceTest extends TestCase
         CandidateSkill::create(['candidate_id' => $candidate->id, 'name' => 'Komunikasi', 'level' => 'advanced']);
         CandidateSkill::create(['candidate_id' => $candidate->id, 'name' => 'Microsoft Office', 'level' => 'intermediate']);
 
-        $job = Job::factory()->create();
+        $job = Job::factory()->create(['experience' => '2 Tahun']);
         JobCriteria::factory()->for($job)->create([
             'min_education' => 'S1',
-            'min_experience_years' => 2,
             'required_skills' => ['Komunikasi', 'Microsoft Office'],
         ]);
 
@@ -61,10 +60,9 @@ class ScoringServiceTest extends TestCase
             'years_of_experience' => 0,
         ]);
 
-        $job = Job::factory()->create();
+        $job = Job::factory()->create(['experience' => '3 tahun']);
         JobCriteria::factory()->for($job)->create([
             'min_education' => 'S1',
-            'min_experience_years' => 3,
             'required_skills' => ['Keperawatan', 'ICU'],
         ]);
 
@@ -72,5 +70,61 @@ class ScoringServiceTest extends TestCase
 
         $this->assertLessThan(40, $result['score']);
         $this->assertSame(ScoreRecommendation::REJECT->value, $result['recommendation']);
+        $this->assertSame(0, $result['breakdown']['education']);
+    }
+
+    #[Test]
+    public function itAcceptsD4CandidateForD3MinimumEducation(): void
+    {
+        $candidate = Candidate::factory()->create();
+        CandidateProfile::factory()->for($candidate)->create([
+            'education_level' => 'D4',
+            'major' => 'Keperawatan',
+            'years_of_experience' => 2,
+            'city' => 'Bandung',
+            'province' => 'Jawa Barat',
+        ]);
+
+        $job = Job::factory()->create(['experience' => 'Fresh Graduate']);
+        JobCriteria::factory()->for($job)->create([
+            'min_education' => 'D3',
+            'weight_education' => 25,
+            'weight_experience' => 25,
+            'weight_skills' => 30,
+            'weight_profile' => 10,
+            'weight_cover_letter' => 10,
+            'required_skills' => [],
+        ]);
+
+        $result = $this->service->calculate($candidate, $job, str_repeat('Saya sangat tertarik dengan posisi ini. ', 4));
+
+        $this->assertSame(25, $result['breakdown']['education']);
+    }
+
+    #[Test]
+    public function itUsesJobExperienceFieldWhenScoringExperience(): void
+    {
+        $candidate = Candidate::factory()->create();
+        CandidateProfile::factory()->for($candidate)->create([
+            'education_level' => 'S1',
+            'years_of_experience' => 1,
+            'city' => 'Jakarta',
+            'province' => 'DKI Jakarta',
+        ]);
+
+        $job = Job::factory()->create(['experience' => '2 Tahun']);
+        JobCriteria::factory()->for($job)->create([
+            'min_education' => null,
+            'weight_education' => 0,
+            'weight_experience' => 20,
+            'weight_skills' => 0,
+            'weight_profile' => 0,
+            'weight_cover_letter' => 0,
+            'required_skills' => [],
+        ]);
+
+        $result = $this->service->calculate($candidate, $job, '');
+
+        $this->assertSame(10, $result['breakdown']['experience']);
     }
 }

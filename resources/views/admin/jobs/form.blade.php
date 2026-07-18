@@ -131,11 +131,12 @@
 								</div>
 							</div>
 							<div class="mb-3">
-								<label class="form-label">Experience</label>
+								<label class="form-label">Pengalaman</label>
 								<div class="input-group input-group-merge">
-									<input type="text" name="experience" class="form-control @error('experience') is-invalid @enderror" value="{{ old('experience', $job->experience ?? '') }}" required placeholder="1-2 years of experience">
+									<input type="text" name="experience" class="form-control @error('experience') is-invalid @enderror" value="{{ old('experience', $job->experience ?? '') }}" required placeholder="Contoh: 1-2 tahun, Fresh Graduate">
 								</div>
-								@error('experience') <small class="text-danger">{{ $message }}</small> @enderror
+								<small class="text-muted">Digunakan untuk tampilan lowongan dan penilaian otomatis pengalaman kandidat.</small>
+								@error('experience') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 						</div>
 					</div>
@@ -178,21 +179,19 @@
 								<label class="form-label">Min. Pendidikan</label>
 								<select name="min_education" class="form-control @error('min_education') is-invalid @enderror">
 									<option value="">-- Tidak ada syarat --</option>
-									@foreach (['SMA', 'D3', 'S1', 'S2', 'S3'] as $level)
-										<option value="{{ $level }}" @selected(old('min_education', $criteria?->min_education) === $level)>{{ $level }}</option>
+									@foreach (\App\Enums\EducationLevel::cases() as $level)
+										<option value="{{ $level->value }}" @selected(old('min_education', $criteria?->min_education) === $level->value)>{{ $level->label() }}</option>
 									@endforeach
 								</select>
 								@error('min_education') <small class="text-danger">{{ $message }}</small> @enderror
-							</div>
-							<div class="col-md-4 mb-3">
-								<label class="form-label">Min. Pengalaman (tahun)</label>
-								<input type="number" min="0" max="50" name="min_experience_years" class="form-control @error('min_experience_years') is-invalid @enderror" value="{{ old('min_experience_years', $criteria?->min_experience_years ?? 0) }}">
-								@error('min_experience_years') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-12 mb-3">
 								<label class="form-label">Skill Wajib (pisahkan dengan koma)</label>
 								<textarea name="required_skills" class="form-control @error('required_skills') is-invalid @enderror" rows="2" placeholder="Contoh: Komunikasi, Microsoft Office, Keperawatan">{{ $requiredSkills }}</textarea>
 								@error('required_skills') <small class="text-danger">{{ $message }}</small> @enderror
+							</div>
+							<div class="col-md-12 mb-3">
+								<small class="text-muted">Minimum pengalaman untuk penilaian otomatis diambil dari field <strong>Pengalaman</strong> pada tab Informasi Utama.</small>
 							</div>
 							<div class="col-md-12"><hr><p class="mb-2"><strong>Bobot Penilaian</strong></p></div>
 							<div class="col-12 mb-3">
@@ -231,9 +230,9 @@
 							</div>
 							<div class="col-md-12"><hr><p class="mb-2"><strong>Batas Skor Rekomendasi (skala 0–100)</strong></p></div>
 							<div class="col-md-6 mb-3">
-								<label class="form-label">Batas Skor Shortlist</label>
+								<label class="form-label">Batas Skor Direkomendasi</label>
 								<input type="number" min="0" max="100" name="threshold_shortlist" class="form-control @error('threshold_shortlist') is-invalid @enderror" value="{{ old('threshold_shortlist', $criteria?->threshold_shortlist ?? 70) }}">
-								<small class="text-muted">Skor ≥ nilai ini → direkomendasikan shortlist</small>
+								<small class="text-muted">Skor ≥ nilai ini → kandidat direkomendasikan</small>
 								@error('threshold_shortlist') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 							<div class="col-md-6 mb-3">
@@ -261,7 +260,7 @@
 				'tab-basic': ['batch_id', 'category_id', 'title', 'type', 'quota', 'salary', 'experience'],
 				'tab-content': ['qualification', 'description'],
 				'tab-scoring': [
-					'min_education', 'min_experience_years', 'required_skills',
+					'min_education', 'required_skills',
 					'weight_education', 'weight_experience', 'weight_skills',
 					'weight_profile', 'weight_cover_letter', 'threshold_shortlist', 'threshold_reject'
 				],

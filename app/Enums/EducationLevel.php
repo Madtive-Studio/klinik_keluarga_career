@@ -6,18 +6,32 @@ enum EducationLevel: string
 {
     case SMA = 'SMA';
     case D3 = 'D3';
+    case D4 = 'D4';
     case S1 = 'S1';
     case S2 = 'S2';
     case S3 = 'S3';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::SMA => 'SMA/SMK Sederajat',
+            self::D3 => 'D3',
+            self::D4 => 'D4',
+            self::S1 => 'S1',
+            self::S2 => 'S2',
+            self::S3 => 'S3',
+        };
+    }
 
     public function rank(): int
     {
         return match ($this) {
             self::SMA => 1,
             self::D3 => 2,
-            self::S1 => 3,
-            self::S2 => 4,
-            self::S3 => 5,
+            self::D4 => 3,
+            self::S1 => 4,
+            self::S2 => 5,
+            self::S3 => 6,
         };
     }
 
@@ -33,5 +47,14 @@ enum EducationLevel: string
         }
 
         return self::tryFrom($level)?->rank() ?? 0;
+    }
+
+    public static function labelOf(?string $level): string
+    {
+        if ($level === null) {
+            return '-';
+        }
+
+        return self::tryFrom($level)?->label() ?? $level;
     }
 }

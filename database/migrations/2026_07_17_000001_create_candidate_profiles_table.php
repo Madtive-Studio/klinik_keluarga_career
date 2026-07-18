@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('candidate_profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('candidate_id')->unique()->constrained()->cascadeOnDelete();
-            $table->enum('education_level', ['SMA', 'D3', 'S1', 'S2', 'S3'])->nullable();
+            $table->enum('education_level', ['SMA', 'D3', 'D4', 'S1', 'S2', 'S3'])->nullable();
             $table->string('major')->nullable();
             $table->string('university')->nullable();
             $table->decimal('gpa', 3, 2)->nullable();

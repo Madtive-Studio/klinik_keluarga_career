@@ -11,8 +11,8 @@ enum ScoreRecommendation: string
     public function label(): string
     {
         return match ($this) {
-            self::SHORTLIST => 'Rekomendasi Shortlist',
-            self::REVIEW => 'Perlu Review',
+            self::SHORTLIST => 'Direkomendasikan',
+            self::REVIEW => 'Perlu Ditinjau',
             self::REJECT => 'Kurang Sesuai',
         };
     }

@@ -22,7 +22,7 @@ class ProfileController extends Controller
 
         return view('candidate.profile.edit', [
             'candidate' => $candidate,
-            'educationLevels' => EducationLevel::values(),
+            'educationLevels' => EducationLevel::cases(),
             'skillLevels' => SkillLevel::values(),
         ]);
     }

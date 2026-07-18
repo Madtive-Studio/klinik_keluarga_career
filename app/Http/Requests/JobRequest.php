@@ -29,7 +29,6 @@ class JobRequest extends FormRequest
             'qualification' => ['required', 'string'],
             'description' => ['required', 'string'],
             'min_education' => ['nullable', Rule::in(EducationLevel::values())],
-            'min_experience_years' => ['nullable', 'integer', 'min:0', 'max:50'],
             'required_skills' => ['nullable', 'string'],
             'weight_education' => ['nullable', 'integer', 'min:0', 'max:100'],
             'weight_experience' => ['nullable', 'integer', 'min:0', 'max:100'],
@@ -54,14 +53,13 @@ class JobRequest extends FormRequest
             'qualification' => 'kualifikasi',
             'description' => 'deskripsi',
             'min_education' => 'minimum pendidikan',
-            'min_experience_years' => 'minimum pengalaman',
             'required_skills' => 'skill wajib',
             'weight_education' => 'bobot pendidikan',
             'weight_experience' => 'bobot pengalaman',
             'weight_skills' => 'bobot skill',
             'weight_profile' => 'bobot kelengkapan profil',
             'weight_cover_letter' => 'bobot cover letter',
-            'threshold_shortlist' => 'batas skor shortlist',
+            'threshold_shortlist' => 'batas skor direkomendasi',
             'threshold_reject' => 'batas skor review',
         ];
     }
@@ -97,7 +95,7 @@ class JobRequest extends FormRequest
             $reject = (int) $this->input('threshold_reject', 40);
 
             if ($shortlist <= $reject) {
-                $validator->errors()->add('threshold_shortlist', 'Batas skor shortlist harus lebih besar dari batas skor review.');
+                $validator->errors()->add('threshold_shortlist', 'Batas skor direkomendasi harus lebih besar dari batas skor review.');
             }
         });
     }
@@ -112,7 +110,7 @@ class JobRequest extends FormRequest
 
         return [
             'min_education' => $this->input('min_education') ?: null,
-            'min_experience_years' => (int) $this->input('min_experience_years', 0),
+            'min_experience_years' => parseJobExperienceYears($this->input('experience')),
             'required_skills' => $skills,
             'weight_education' => (int) $this->input('weight_education', 25),
             'weight_experience' => (int) $this->input('weight_experience', 25),
