@@ -25,6 +25,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/flatpickr.min.css') }}" />
     <!-- Custom  Css -->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/cursor-interactions.css') }}" />
 </head>
 
 <body>

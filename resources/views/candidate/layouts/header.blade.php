@@ -23,6 +23,7 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/selectize.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/flatpickr.min.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/sweetalert2.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/css/cursor-interactions.css') }}" />
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <style>

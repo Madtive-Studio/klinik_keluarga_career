@@ -1,0 +1,60 @@
+/*
+ * Cursor hints for form controls and dropdowns.
+ * - Dropdown / select controls: pointer
+ * - Text / search inputs: text
+ */
+
+/* Text-based inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+input[type="number"],
+textarea,
+.dataTables_filter input,
+.selectize-input.input-active,
+.selectize-input.input-active input {
+  cursor: text;
+}
+
+input.form-control[type="text"],
+input.form-control[type="email"],
+input.form-control[type="password"],
+input.form-control[type="search"],
+input.form-control[type="url"],
+input.form-control[type="tel"],
+input.form-control[type="number"],
+input.form-control:not([type]),
+textarea.form-control {
+  cursor: text;
+}
+
+/* Dropdown / selection controls */
+select,
+.form-select,
+select.form-control,
+.nice-select,
+.nice-select .option:not(.disabled),
+.selectize-control.single .selectize-input,
+.selectize-dropdown .option,
+.dropdown-toggle,
+[data-bs-toggle="dropdown"],
+.btn[data-bs-toggle="dropdown"],
+.nav-link[data-bs-toggle="dropdown"],
+.dropdown-item,
+.flatpickr-input[readonly],
+input.flatpickr-input[readonly] {
+  cursor: pointer;
+}
+
+.selectize-control.single .selectize-input:not(.input-active) input {
+  cursor: pointer;
+}
+
+/* Readonly display fields are not editable */
+input.form-control[readonly]:not(.flatpickr-input),
+textarea.form-control[readonly] {
+  cursor: default;
+}

@@ -1814,8 +1814,9 @@ p {
 }
 
 @media (max-width: 375px) {
-	#topnav .buy-button {
-		display: none;
+	#topnav .buy-button .btn {
+		padding-left: 0.55rem;
+		padding-right: 0.55rem;
 	}
 	#topnav .navbar-toggle .lines {
 		margin-right: 0 !important;

@@ -7,7 +7,9 @@
 				</a>
 			</div>
 			<div class="d-flex align-items-center buy-button gap-2">
-				@include('layouts.locale-switcher', ['class' => 'me-2'])
+				<div class="d-none d-lg-block">
+					@include('layouts.locale-switcher')
+				</div>
 				@if (!Auth::guard('candidate')->check())
 					<a href="{{ route('candidate.login.form') }}" class="btn btn-primary"><i class="mdi mdi-login-variant"></i> {{ __('candidate.nav.login') }}</a>
 				@endif
@@ -25,6 +27,12 @@
 			</div>
 			<div id="navigation">
 				<ul class="navigation-menu justify-content-end">
+					<li class="d-lg-none locale-menu-item">
+						<div class="locale-menu-item__inner">
+							<span class="locale-menu-item__label">{{ __('common.language') }}</span>
+							@include('layouts.locale-switcher')
+						</div>
+					</li>
 					<li><a class="text-dark" href="{{ route('candidate.home') }}">{{ __('candidate.nav.home') }}</a></li>
 					<li><a class="text-dark" href="{{ route('candidate.jobs.vacancies.index') }}">{{ __('candidate.nav.jobs') }}</a></li>
 					@if (Auth::guard('candidate')->check())
@@ -74,7 +82,9 @@
 				</a>
 			</div>
 			<div class="d-flex align-items-center buy-button gap-2">
-				@include('layouts.locale-switcher', ['class' => 'me-2'])
+				<div class="d-none d-lg-block">
+					@include('layouts.locale-switcher')
+				</div>
 				@if (!Auth::guard('candidate')->check())
 					<a href="{{ route('candidate.login.form') }}" class="btn btn-primary"><i class="mdi mdi-login-variant"></i> {{ __('candidate.nav.login') }}</a>
 				@endif
@@ -92,6 +102,12 @@
 			</div>
 			<div id="navigation">
 				<ul class="navigation-menu justify-content-end">
+					<li class="d-lg-none locale-menu-item">
+						<div class="locale-menu-item__inner">
+							<span class="locale-menu-item__label">{{ __('common.language') }}</span>
+							@include('layouts.locale-switcher')
+						</div>
+					</li>
 					<li><a href="{{ route('candidate.home') }}">{{ __('candidate.nav.home') }}</a></li>
 					<li><a href="{{ route('candidate.jobs.vacancies.index') }}">{{ __('candidate.nav.jobs') }}</a></li>
 					@if (Auth::guard('candidate')->check())

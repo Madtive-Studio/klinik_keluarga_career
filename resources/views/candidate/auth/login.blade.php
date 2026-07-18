@@ -20,6 +20,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/selectize.css') }}" />
 	<link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/nice-select.css') }}" />
 	<link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/style.css') }}" />
+	<link rel="stylesheet" href="{{ asset('assets/css/cursor-interactions.css') }}" />
 </head>
 
 <body>
