@@ -187,6 +187,8 @@ return [
         'type' => 'job type',
         'quota' => 'quota',
         'salary' => 'salary',
+        'salary_min' => 'minimum salary',
+        'salary_max' => 'maximum salary',
         'experience' => 'experience',
         'qualification' => 'qualification',
         'description' => 'description',

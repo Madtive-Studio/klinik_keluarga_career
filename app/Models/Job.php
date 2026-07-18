@@ -12,7 +12,21 @@ class Job extends Model
 {
     use HasFactory;
     protected $table = 'jobs';
-    protected $fillable = ['uuid', 'title', 'qualification', 'quota', 'user_id', 'description', 'type', 'code', 'salary', 'is_show_salary', 'experience', 'batch_id', 'category_id', 'user_id'];
+    protected $fillable = [
+        'uuid', 'title', 'qualification', 'quota', 'user_id', 'description', 'type', 'code',
+        'salary_min', 'salary_max', 'is_show_salary', 'experience', 'batch_id', 'category_id',
+    ];
+
+    protected $casts = [
+        'salary_min' => 'integer',
+        'salary_max' => 'integer',
+        'is_show_salary' => 'boolean',
+    ];
+
+    public function getSalaryDisplayAttribute(): string
+    {
+        return formatSalaryRange($this->salary_min, $this->salary_max);
+    }
 
     /**
      * Get the user that owns the Job

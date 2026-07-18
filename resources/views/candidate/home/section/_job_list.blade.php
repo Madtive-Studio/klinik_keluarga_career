@@ -22,7 +22,7 @@
 					@if ($job->is_show_salary)
 						<div class="col-md-2">
 							<div>
-								<p class="text-muted mb-0 mo-mb-2">{{ $job->salary }}</p>
+								<p class="text-muted mb-0 mo-mb-2">{{ $job->salary_display }}</p>
 							</div>
 						</div>
 					@endif

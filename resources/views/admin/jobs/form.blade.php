@@ -109,11 +109,23 @@
 							</div>
 							<div class="col-md-4">
 								<div class="mb-3">
-									<label class="form-label">{{ __('admin.jobs.salary') }}</label>
+									<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
 									<div class="input-group input-group-merge">
-										<input type="text" name="salary" class="form-control @error('salary') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_placeholder') }}" required value="{{ old('salary', $job->salary ?? '') }}">
+										<span class="input-group-text">Rp</span>
+										<input type="number" min="1" step="1" name="salary_min" class="form-control @error('salary_min') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_min_placeholder') }}" required value="{{ old('salary_min', $job->salary_min ?? '') }}">
 									</div>
-									@error('salary') <small class="text-danger">{{ $message }}</small> @enderror
+									@error('salary_min') <small class="text-danger">{{ $message }}</small> @enderror
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="mb-3">
+									<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
+									<div class="input-group input-group-merge">
+										<span class="input-group-text">Rp</span>
+										<input type="number" min="1" step="1" name="salary_max" class="form-control @error('salary_max') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_max_placeholder') }}" required value="{{ old('salary_max', $job->salary_max ?? '') }}">
+									</div>
+									<small class="text-muted">{{ __('admin.jobs.salary_range_hint') }}</small>
+									@error('salary_max') <small class="text-danger d-block">{{ $message }}</small> @enderror
 								</div>
 							</div>
 							@php
@@ -257,7 +269,7 @@
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
 			const tabFieldMap = {
-				'tab-basic': ['batch_id', 'category_id', 'title', 'type', 'quota', 'salary', 'experience'],
+				'tab-basic': ['batch_id', 'category_id', 'title', 'type', 'quota', 'salary_min', 'salary_max', 'experience'],
 				'tab-content': ['qualification', 'description'],
 				'tab-scoring': [
 					'min_education', 'required_skills',

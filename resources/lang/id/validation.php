@@ -9,6 +9,9 @@ return [
         'numeric' => ':attribute minimal :min.',
         'string' => ':attribute minimal :min karakter.',
     ],
+    'gte' => [
+        'numeric' => ':attribute harus lebih besar atau sama dengan :value.',
+    ],
     'max' => [
         'numeric' => ':attribute maksimal :max.',
         'string' => ':attribute maksimal :max karakter.',
@@ -30,6 +33,8 @@ return [
         'type' => 'tipe pekerjaan',
         'quota' => 'kuota',
         'salary' => 'gaji',
+        'salary_min' => 'gaji minimum',
+        'salary_max' => 'gaji maksimum',
         'experience' => 'pengalaman',
         'qualification' => 'kualifikasi',
         'description' => 'deskripsi',

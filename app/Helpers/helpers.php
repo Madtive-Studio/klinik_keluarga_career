@@ -7,29 +7,55 @@ function getRouteMiddlewares()
     return request()->route()?->middleware() ?? [];
 }
 
-function formatSalaryShort(?string $salary): string
+function formatSalaryAmountShort(?int $amount): string
 {
-    if ($salary === null || trim($salary) === '') {
+    if ($amount === null || $amount <= 0) {
         return '-';
     }
 
-    return preg_replace_callback('/\d[\d.]*/', function (array $matches): string {
-        $digits = (int) preg_replace('/\D/', '', $matches[0]);
+    if ($amount >= 1_000_000) {
+        $value = $amount / 1_000_000;
 
-        if ($digits >= 1_000_000) {
-            $value = $digits / 1_000_000;
+        return rtrim(rtrim(number_format($value, 1, '.', ''), '0'), '.') . 'jt';
+    }
 
-            return rtrim(rtrim(number_format($value, 1, '.', ''), '0'), '.') . 'jt';
+    if ($amount >= 1_000) {
+        $value = $amount / 1_000;
+
+        return rtrim(rtrim(number_format($value, 1, '.', ''), '0'), '.') . 'k';
+    }
+
+    return (string) $amount;
+}
+
+function formatSalaryAmount(?int $amount): string
+{
+    if ($amount === null || $amount <= 0) {
+        return '-';
+    }
+
+    return 'Rp ' . number_format($amount, 0, ',', '.');
+}
+
+function formatSalaryRange(?int $min, ?int $max, bool $short = false): string
+{
+    if (($min === null || $min <= 0) && ($max === null || $max <= 0)) {
+        return '-';
+    }
+
+    $format = $short ? 'formatSalaryAmountShort' : 'formatSalaryAmount';
+
+    if ($min !== null && $min > 0 && $max !== null && $max > 0) {
+        if ($min === $max) {
+            return $format($min);
         }
 
-        if ($digits >= 1_000) {
-            $value = $digits / 1_000;
+        return $format($min) . ' - ' . $format($max);
+    }
 
-            return rtrim(rtrim(number_format($value, 1, '.', ''), '0'), '.') . 'k';
-        }
+    $amount = ($min !== null && $min > 0) ? $min : $max;
 
-        return (string) $digits;
-    }, $salary);
+    return $format($amount);
 }
 
 function formatFlatpickrDatetime(mixed $value): string

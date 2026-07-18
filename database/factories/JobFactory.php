@@ -43,13 +43,17 @@ class JobFactory extends Factory
         $code  = strtoupper(Str::substr(preg_replace('/[^A-Za-z]/', '', $title), 0, 3))
                  . '-' . $this->faker->numberBetween(100, 999);
 
+        $salaryMin = $this->faker->numberBetween(3, 8) * 1_000_000;
+        $salaryMax = max($salaryMin, $this->faker->numberBetween(9, 15) * 1_000_000);
+
         return [
             'uuid'           => (string) Str::uuid(),
             'title'          => $title,
             'code'           => $code,
             'type'           => $this->faker->randomElement(JobType::getValues()),
             'quota'          => $this->faker->numberBetween(1, 5),
-            'salary'         => 'Rp ' . number_format($this->faker->numberBetween(3, 8) * 1000000, 0, ',', '.') . ' - Rp ' . number_format($this->faker->numberBetween(9, 15) * 1000000, 0, ',', '.'),
+            'salary_min'     => $salaryMin,
+            'salary_max'     => $salaryMax,
             'experience'     => $this->faker->randomElement(self::$experiences),
             'is_show_salary' => $this->faker->boolean(),
             'qualification'  => implode("\n", [

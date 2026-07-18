@@ -41,8 +41,8 @@ class JobManagementController extends Controller
                     . '</span>'
                     . '</label>';
             })
-            ->editColumn('salary', function ($row) {
-                return formatSalaryShort($row->salary);
+            ->addColumn('salary', function ($row) {
+                return formatSalaryRange($row->salary_min, $row->salary_max, true);
             })
             ->editColumn('type', function ($row) {
                 return JobType::tryBadge($row->type);
@@ -90,7 +90,7 @@ class JobManagementController extends Controller
     {
         $job = Job::create($request->safe()->only([
             'uuid', 'code', 'batch_id', 'category_id', 'title', 'type', 'quota',
-            'salary', 'experience', 'qualification', 'description',
+            'salary_min', 'salary_max', 'experience', 'qualification', 'description',
         ]) + [
             'user_id' => auth()->user()->id,
             'is_show_salary' => $request->input('is_show_salary') === '1',
@@ -134,7 +134,7 @@ class JobManagementController extends Controller
 
         $job->update($request->safe()->only([
             'uuid', 'code', 'batch_id', 'category_id', 'title', 'type', 'quota',
-            'salary', 'experience', 'qualification', 'description',
+            'salary_min', 'salary_max', 'experience', 'qualification', 'description',
         ]) + [
             'user_id' => auth()->user()->id,
             'is_show_salary' => $request->input('is_show_salary') === '1',

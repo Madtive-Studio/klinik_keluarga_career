@@ -99,7 +99,7 @@
 								<div class="float-left mr-2">
 									<i class="mdi mdi-currency-usd text-muted"></i>
 								</div>
-								<p class="text-muted mb-2">: {{ $job->is_show_salary ? $job->salary : __('candidate.apply.salary_not_stated') }}</p>
+								<p class="text-muted mb-2">: {{ $job->is_show_salary ? $job->salary_display : __('candidate.apply.salary_not_stated') }}</p>
 							</div>
 							<div class="job-details-desc-item">
 								<div class="float-left mr-2">
