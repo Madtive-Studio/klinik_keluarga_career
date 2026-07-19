@@ -53,7 +53,10 @@ class VacancyController extends Controller
      */
     public function show(string $uuid)
     {
-        $data = $this->repository->findVacancyForDisplay($uuid);
+        $data = $this->repository->findVacancyForDisplay(
+            $uuid,
+            Auth::guard('candidate')->id()
+        );
 
         return view('candidate.jobs.vacancies.detail', $data);
     }
@@ -68,6 +71,17 @@ class VacancyController extends Controller
         if (isset($resultData['already_applied'])) {
             return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', __('messages.application.already_applied_html', [
                 'url' => route('candidate.my.applications.index'),
+            ]));
+        }
+
+        if (isset($resultData['profile_incomplete'])) {
+            return redirect()->route('candidate.my.profile.edit')->with('warning', __('messages.application.complete_profile_first'));
+        }
+
+        if (isset($resultData['education_not_met'])) {
+            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', __('messages.application.education_not_met', [
+                'required' => $resultData['min_education_label'],
+                'current' => $resultData['candidate_education_label'],
             ]));
         }
 

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Enums\DocumentType;
+use App\Enums\EducationLevel;
 use App\Models\Apply;
 use App\Models\Candidate;
 use App\Models\Job;
@@ -92,6 +93,16 @@ class ApplicationRepository
         if (!$candidate?->profile?->education_level) {
             return [
                 'error' => 'Lengkapi profil kamu terlebih dahulu di halaman <a href="' . route('candidate.my.profile.edit') . '">Profil Saya</a> sebelum melamar.',
+            ];
+        }
+
+        if (!$job->candidateMeetsEducation($candidate->profile->education_level)) {
+            return [
+                'education_not_met' => true,
+                'error' => __('messages.application.education_not_met', [
+                    'required' => EducationLevel::labelOf($job->criteria?->min_education),
+                    'current' => EducationLevel::labelOf($candidate->profile->education_level),
+                ]),
             ];
         }
 

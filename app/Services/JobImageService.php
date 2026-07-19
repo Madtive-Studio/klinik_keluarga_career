@@ -14,7 +14,7 @@ class JobImageService
 
     public const MAX_SIZE_KB = 5120;
 
-    public const ALLOWED_MIMES = ['jpg', 'jpeg', 'png', 'webp'];
+    public const ALLOWED_MIMES = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
     public function storeUpload(UploadedFile $file, string $jobUuid): string
     {

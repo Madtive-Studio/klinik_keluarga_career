@@ -58,6 +58,10 @@ class ApplicationController extends Controller
             return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', __('messages.application.already_applied'));
         }
 
+        if (isset($resultData['education_not_met'])) {
+            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', $resultData['error']);
+        }
+
         return redirect()->route('candidate.jobs.applications.success', $uuid)->with($resultData);
     }
 

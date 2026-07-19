@@ -46,6 +46,7 @@ return [
         'applicants_count' => ':count orang melamar pekerjaan ini',
         'apply_now' => 'Lamar Sekarang',
         'already_applied' => 'Sudah Melamar',
+        'complete_profile_to_apply' => 'Lengkapi Profil untuk Melamar',
         'login_to_apply' => 'Login untuk Melamar',
         'salary' => 'Gaji',
         'location' => 'Lokasi',

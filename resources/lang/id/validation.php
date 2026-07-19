@@ -96,7 +96,7 @@ return [
         ],
         'image' => [
             'image' => 'Gambar harus berupa file gambar yang valid.',
-            'mimes' => 'Format gambar harus JPG, PNG, atau WEBP.',
+            'mimes' => 'Format gambar harus JPG, JPEG, PNG, GIF, atau WEBP.',
             'max' => 'Ukuran gambar maksimal 5MB.',
             'uploaded' => 'Gambar gagal diunggah. Pastikan ukuran maksimal 5MB.',
         ],
@@ -112,6 +112,9 @@ return [
         'weight_education' => [
             'weight_total' => 'Total bobot penilaian harus 100. Saat ini totalnya :total.',
             'threshold_order' => 'Batas skor direkomendasi harus lebih besar dari batas skor review.',
+        ],
+        'quota' => [
+            'exceeds_batch' => 'Kuota lowongan melebihi sisa kuota batch. Kuota batch: :batch_quota, terpakai: :allocated, sisa: :remaining.',
         ],
     ],
 ];

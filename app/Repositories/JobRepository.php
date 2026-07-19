@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use App\Enums\EducationLevel;
 use App\Models\Job;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -70,17 +71,64 @@ class JobRepository
     /**
      * Business Logic: Get vacancy detail untuk display
      */
-    public function findVacancyForDisplay(string $uuid): array
+    public function findVacancyForDisplay(string $uuid, ?int $candidateId = null): array
     {
         $job = $this->findByUuid($uuid);
         abort_if(!$job, 404);
+        $job->loadMissing('criteria');
         $appliesTotal = $job->applies()->count();
 
         return [
             'job'                  => $job,
             'activeBatch'          => $this->batchRepo->getActiveBatch(),
             'formattedAppliesTotal' => $appliesTotal < 10 ? '0' . $appliesTotal : $appliesTotal,
+            'applyEligibility'     => $this->getApplyEligibility($job, $candidateId),
         ];
+    }
+
+    public function getApplyEligibility(Job $job, ?int $candidateId): array
+    {
+        $job->loadMissing('criteria');
+
+        $eligibility = [
+            'can_apply' => true,
+            'already_applied' => false,
+            'education_not_met' => false,
+            'profile_incomplete' => false,
+            'min_education_label' => EducationLevel::labelOf($job->criteria?->min_education),
+            'candidate_education_label' => null,
+        ];
+
+        if ($candidateId === null) {
+            return $eligibility;
+        }
+
+        if ($this->applicationRepo->candidateHasApplied($candidateId, $job)) {
+            $eligibility['can_apply'] = false;
+            $eligibility['already_applied'] = true;
+
+            return $eligibility;
+        }
+
+        $candidate = $this->candidateRepo->find($candidateId);
+        $candidate?->load('profile');
+        $candidateLevel = $candidate?->profile?->education_level;
+
+        if (!$candidateLevel) {
+            $eligibility['can_apply'] = false;
+            $eligibility['profile_incomplete'] = true;
+
+            return $eligibility;
+        }
+
+        $eligibility['candidate_education_label'] = EducationLevel::labelOf($candidateLevel);
+
+        if (!$job->candidateMeetsEducation($candidateLevel)) {
+            $eligibility['can_apply'] = false;
+            $eligibility['education_not_met'] = true;
+        }
+
+        return $eligibility;
     }
 
     /**
@@ -95,6 +143,20 @@ class JobRepository
         $existingApply = $this->applicationRepo->findByJobBatchAndCandidate($job->id, $job->batch->id, $candidateId);
         if ($existingApply) {
             return ['already_applied' => true];
+        }
+
+        $eligibility = $this->getApplyEligibility($job, $candidateId);
+
+        if ($eligibility['profile_incomplete']) {
+            return ['profile_incomplete' => true];
+        }
+
+        if ($eligibility['education_not_met']) {
+            return [
+                'education_not_met' => true,
+                'min_education_label' => $eligibility['min_education_label'],
+                'candidate_education_label' => $eligibility['candidate_education_label'],
+            ];
         }
 
         return [

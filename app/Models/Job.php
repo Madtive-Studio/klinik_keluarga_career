@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EducationLevel;
 use App\Services\JobImageService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -80,5 +81,21 @@ class Job extends Model
     public function criteria(): HasOne
     {
         return $this->hasOne(JobCriteria::class);
+    }
+
+    public function candidateMeetsEducation(?string $candidateEducationLevel): bool
+    {
+        $this->loadMissing('criteria');
+        $minEducation = $this->criteria?->min_education;
+
+        if (!$minEducation) {
+            return true;
+        }
+
+        if (!$candidateEducationLevel) {
+            return false;
+        }
+
+        return EducationLevel::rankOf($candidateEducationLevel) >= EducationLevel::rankOf($minEducation);
     }
 }

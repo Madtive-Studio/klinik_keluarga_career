@@ -15,7 +15,7 @@ class JobImageUploadRequest extends FormRequest
     {
         return [
             'job_uuid' => ['required', 'uuid'],
-            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
         ];
     }
 

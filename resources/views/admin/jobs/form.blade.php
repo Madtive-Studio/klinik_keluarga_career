@@ -54,8 +54,17 @@
 										<select name="batch_id" id="batch_id" class="form-control @error('batch_id') is-invalid @enderror" required>
 											<option value="">{{ __('admin.jobs.select_batch') }}</option>
 											@foreach ($batches as $batch)
-												<option value="{{ $batch->id }}" @selected(old('batch_id', $job->batch_id ?? '') == $batch->id)>
-													{{ $batch->code }} - {{ $batch->name }} | {{ $batch->start_date }} - {{ $batch->end_date }}
+												@php
+													$excludeJobId = (isset($job) && (int) $job->batch_id === (int) $batch->id) ? $job->id : null;
+													$batchStart = \Illuminate\Support\Carbon::parse($batch->start_date)->format('d/m/Y');
+													$batchEnd = \Illuminate\Support\Carbon::parse($batch->end_date)->format('d/m/Y');
+												@endphp
+												<option value="{{ $batch->id }}"
+													@selected(old('batch_id', $job->batch_id ?? '') == $batch->id)
+													data-batch-quota="{{ (int) $batch->quota }}"
+													data-allocated-quota="{{ $batch->allocatedQuota($excludeJobId) }}"
+													data-remaining-quota="{{ $batch->remainingQuota($excludeJobId) }}">
+													{{ $batch->code }} - {{ $batch->name }} | {{ $batchStart }} - {{ $batchEnd }}
 												</option>
 											@endforeach
 										</select>
@@ -104,7 +113,7 @@
 							@endphp
 							<div class="col-md-12 mb-3">
 								<label class="form-label d-block">{{ __('admin.jobs.images') }}</label>
-								<input type="file" id="job-image-input" class="d-none" accept="image/jpeg,image/png,image/webp" multiple>
+								<input type="file" id="job-image-input" class="d-none" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" multiple>
 								<div id="job-image-dropzone" class="job-image-dropzone @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror">
 									<div id="job-image-gallery" class="job-image-gallery"></div>
 									<div id="job-image-placeholder" class="job-image-placeholder">
@@ -135,7 +144,7 @@
 								</div>
 								@error('type') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
-							<div class="row align-items-end">
+							<div class="row g-3 align-items-end">
 								@php
 									$salaryMinValue = old('salary_min', $job->salary_min ?? '');
 									$salaryMaxValue = old('salary_max', $job->salary_max ?? '');
@@ -147,48 +156,52 @@
 										: '';
 									$showSalary = old('is_show_salary', isset($job) ? ($job->is_show_salary ? '1' : '0') : '1');
 								@endphp
-								<div class="col-md-2">
+								<div class="col-lg-3 col-md-4">
 									<div class="mb-3">
 										<label class="form-label">{{ __('admin.jobs.quota') }}</label>
-										<div class="input-group input-group-merge">
-											<input type="number" name="quota" class="form-control @error('quota') is-invalid @enderror" required value="{{ old('quota', $job->quota ?? 0) }}">
-										</div>
-										@error('quota') <small class="text-danger">{{ $message }}</small> @enderror
+										<input type="number" name="quota" id="job_quota" min="1" class="form-control @error('quota') is-invalid @enderror" required value="{{ old('quota', $job->quota ?? 0) }}">
+										<small class="text-muted d-block mt-1" id="batch-quota-info">{{ __('admin.jobs.batch_quota_info', ['quota' => '-', 'allocated' => '-', 'remaining' => '-']) }}</small>
+										<div id="batch-quota-warning" class="alert alert-warning py-2 px-3 mt-2 mb-0 d-none small" role="alert"></div>
+										@error('quota') <small class="text-danger d-block">{{ $message }}</small> @enderror
 									</div>
 								</div>
-								<div class="col-md-4">
-									<div class="mb-3">
-										<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
-										<div class="input-group input-group-merge">
-											<span class="input-group-text">Rp</span>
-											<input type="text" inputmode="numeric" id="salary_min_display" class="form-control salary-amount-input @error('salary_min') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_min_placeholder') }}" required value="{{ $salaryMinDisplay }}" autocomplete="off">
-											<input type="hidden" name="salary_min" id="salary_min" value="{{ $salaryMinValue }}">
+								<div class="col-lg-9 col-md-8">
+									<div class="row g-3 align-items-end">
+										<div class="col-md-5">
+											<div class="mb-3">
+												<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
+												<div class="input-group">
+													<span class="input-group-text">Rp</span>
+													<input type="text" inputmode="numeric" id="salary_min_display" class="form-control salary-amount-input @error('salary_min') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_min_placeholder') }}" required value="{{ $salaryMinDisplay }}" autocomplete="off">
+													<input type="hidden" name="salary_min" id="salary_min" value="{{ $salaryMinValue }}">
+												</div>
+												@error('salary_min') <small class="text-danger">{{ $message }}</small> @enderror
+											</div>
 										</div>
-										@error('salary_min') <small class="text-danger">{{ $message }}</small> @enderror
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="mb-3">
-										<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
-										<div class="input-group input-group-merge">
-											<span class="input-group-text">Rp</span>
-											<input type="text" inputmode="numeric" id="salary_max_display" class="form-control salary-amount-input @error('salary_max') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_max_placeholder') }}" required value="{{ $salaryMaxDisplay }}" autocomplete="off">
-											<input type="hidden" name="salary_max" id="salary_max" value="{{ $salaryMaxValue }}">
+										<div class="col-md-5">
+											<div class="mb-3">
+												<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
+												<div class="input-group">
+													<span class="input-group-text">Rp</span>
+													<input type="text" inputmode="numeric" id="salary_max_display" class="form-control salary-amount-input @error('salary_max') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_max_placeholder') }}" required value="{{ $salaryMaxDisplay }}" autocomplete="off">
+													<input type="hidden" name="salary_max" id="salary_max" value="{{ $salaryMaxValue }}">
+												</div>
+												<small class="text-muted">{{ __('admin.jobs.salary_range_hint') }}</small>
+												@error('salary_max') <small class="text-danger d-block">{{ $message }}</small> @enderror
+											</div>
 										</div>
-										<small class="text-muted">{{ __('admin.jobs.salary_range_hint') }}</small>
-										@error('salary_max') <small class="text-danger d-block">{{ $message }}</small> @enderror
-									</div>
-								</div>
-								<div class="col-md-2">
-									<div class="mb-3">
-										<label class="form-label d-block">{{ __('admin.jobs.show_salary') }}</label>
-										<input type="hidden" name="is_show_salary" value="0">
-										<label class="switch switch-primary switch-sm mt-1">
-											<input type="checkbox" class="switch-input" name="is_show_salary" id="show_salary_switch" value="1" @checked((string) $showSalary === '1')>
-											<span class="switch-toggle-slider">
-												<span class="{{ (string) $showSalary === '1' ? 'switch-on' : 'switch-off' }}"></span>
-											</span>
-										</label>
+										<div class="col-md-2">
+											<div class="mb-3">
+												<label class="form-label d-block">{{ __('admin.jobs.show_salary') }}</label>
+												<input type="hidden" name="is_show_salary" value="0">
+												<label class="switch switch-primary switch-show-salary mt-1">
+													<input type="checkbox" class="switch-input" name="is_show_salary" id="show_salary_switch" value="1" @checked((string) $showSalary === '1')>
+													<span class="switch-toggle-slider">
+														<span class="{{ (string) $showSalary === '1' ? 'switch-on' : 'switch-off' }}"></span>
+													</span>
+												</label>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -340,12 +353,42 @@
 			width: 120px;
 		}
 
-		.job-image-item img {
+		.job-image-item img,
+		.job-image-item__preview {
 			width: 120px;
 			height: 120px;
 			object-fit: cover;
 			border-radius: 0.5rem;
 			border: 1px solid rgba(67, 89, 113, 0.15);
+			display: block;
+		}
+
+		.job-image-item__preview {
+			background: rgba(67, 89, 113, 0.08);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #6c757d;
+		}
+
+		.job-image-item__progress {
+			margin-top: 0.35rem;
+		}
+
+		.job-image-item__progress .progress {
+			height: 0.45rem;
+			border-radius: 999px;
+			background: rgba(67, 89, 113, 0.12);
+		}
+
+		.job-image-item__progress .progress-bar {
+			font-size: 0.65rem;
+			line-height: 0.45rem;
+		}
+
+		.switch-show-salary {
+			transform: scale(1.2);
+			transform-origin: left center;
 		}
 
 		.job-image-item__remove {
@@ -506,16 +549,27 @@
 					'uploading' => __('admin.js.image_uploading'),
 					'counter' => __('admin.jobs.image_counter'),
 				];
+				$batchQuotaI18n = [
+					'info' => __('admin.jobs.batch_quota_info'),
+					'warning' => __('admin.jobs.quota_exceeds_batch_warning'),
+				];
 			@endphp
 			const jobImageI18n = @json($jobImageI18n);
+			const batchQuotaI18n = @json($batchQuotaI18n);
 			const jobUuid = @json(old('uuid', $job->uuid ?? $uuid ?? ''));
 			const maxJobImages = 3;
 			const maxImageSize = 5 * 1024 * 1024;
-			const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
+			const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 			const uploadUrl = @json(route('admin.jobs.upload-image'));
 			const deleteUrl = @json(route('admin.jobs.destroy-image'));
 			const csrfToken = @json(csrf_token());
 			let jobImages = @json($initialJobImages);
+			let pendingUploads = [];
+
+			const batchSelect = document.getElementById('batch_id');
+			const jobQuotaInput = document.getElementById('job_quota');
+			const batchQuotaInfo = document.getElementById('batch-quota-info');
+			const batchQuotaWarning = document.getElementById('batch-quota-warning');
 
 			const imageInput = document.getElementById('job-image-input');
 			const imageDropzone = document.getElementById('job-image-dropzone');
@@ -543,7 +597,7 @@
 			function updateImageCounter() {
 				if (!imageCounter) return;
 				imageCounter.textContent = jobImageI18n.counter
-					.replace(':count', jobImages.length)
+					.replace(':count', jobImages.length + pendingUploads.length)
 					.replace(':max', maxJobImages);
 			}
 
@@ -557,7 +611,7 @@
 			function renderJobImages() {
 				if (!imageGallery) return;
 
-				imageGallery.innerHTML = jobImages.map(function(image, index) {
+				const uploadedHtml = jobImages.map(function(image, index) {
 					return ''
 						+ '<div class="job-image-item" data-index="' + index + '">'
 						+ '<img src="' + image.url + '" alt="">'
@@ -567,12 +621,78 @@
 						+ '</div>';
 				}).join('');
 
+				const pendingHtml = pendingUploads.map(function(item) {
+					const preview = item.previewUrl
+						? '<img src="' + item.previewUrl + '" alt="">'
+						: '<div class="job-image-item__preview"><i class="ti ti-photo"></i></div>';
+
+					return ''
+						+ '<div class="job-image-item job-image-item--uploading" data-upload-id="' + item.id + '">'
+						+ preview
+						+ '<div class="job-image-item__progress">'
+						+ '<div class="progress">'
+						+ '<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:' + item.progress + '%" aria-valuenow="' + item.progress + '" aria-valuemin="0" aria-valuemax="100">' + item.progress + '%</div>'
+						+ '</div>'
+						+ '</div>'
+						+ '</div>';
+				}).join('');
+
+				imageGallery.innerHTML = uploadedHtml + pendingHtml;
+
 				if (imagePlaceholder) {
-					imagePlaceholder.style.display = jobImages.length ? 'none' : 'block';
+					imagePlaceholder.style.display = (jobImages.length + pendingUploads.length) ? 'none' : 'block';
 				}
 
 				updateImageCounter();
 				syncHiddenInputs();
+			}
+
+			function updatePendingUploadProgress(uploadId, progress) {
+				const bar = imageGallery?.querySelector('[data-upload-id="' + uploadId + '"] .progress-bar');
+				if (!bar) return;
+				bar.style.width = progress + '%';
+				bar.setAttribute('aria-valuenow', String(progress));
+				bar.textContent = progress + '%';
+			}
+
+			function getSelectedBatchOption() {
+				if (!batchSelect) return null;
+				const option = batchSelect.options[batchSelect.selectedIndex];
+				return option && option.value ? option : null;
+			}
+
+			function updateBatchQuotaDisplay() {
+				const option = getSelectedBatchOption();
+
+				if (!batchQuotaInfo) return;
+
+				if (!option) {
+					batchQuotaInfo.textContent = batchQuotaI18n.info
+						.replace(':quota', '-')
+						.replace(':allocated', '-')
+						.replace(':remaining', '-');
+					batchQuotaWarning?.classList.add('d-none');
+					return;
+				}
+
+				const batchQuota = parseInt(option.dataset.batchQuota || '0', 10);
+				const allocated = parseInt(option.dataset.allocatedQuota || '0', 10);
+				const remaining = parseInt(option.dataset.remainingQuota || '0', 10);
+				const requestedQuota = parseInt(jobQuotaInput?.value || '0', 10);
+
+				batchQuotaInfo.textContent = batchQuotaI18n.info
+					.replace(':quota', batchQuota)
+					.replace(':allocated', allocated)
+					.replace(':remaining', remaining);
+
+				if (!batchQuotaWarning) return;
+
+				if (requestedQuota > remaining) {
+					batchQuotaWarning.textContent = batchQuotaI18n.warning.replace(':remaining', remaining);
+					batchQuotaWarning.classList.remove('d-none');
+				} else {
+					batchQuotaWarning.classList.add('d-none');
+				}
 			}
 
 			function validateImageFile(file) {
@@ -590,32 +710,48 @@
 				return true;
 			}
 
-			async function uploadJobImage(file) {
-				const formData = new FormData();
-				formData.append('image', file);
-				formData.append('job_uuid', jobUuid);
-				formData.append('_token', csrfToken);
+			function uploadJobImage(file, onProgress) {
+				return new Promise(function(resolve, reject) {
+					const xhr = new XMLHttpRequest();
+					const formData = new FormData();
+					formData.append('image', file);
+					formData.append('job_uuid', jobUuid);
+					formData.append('_token', csrfToken);
 
-				const response = await fetch(uploadUrl, {
-					method: 'POST',
-					body: formData,
-					headers: {
-						'X-Requested-With': 'XMLHttpRequest',
-						'Accept': 'application/json',
-					},
-				});
-
-				if (!response.ok) {
-					const payload = await response.json().catch(function() {
-						return {};
+					xhr.upload.addEventListener('progress', function(event) {
+						if (!event.lengthComputable || typeof onProgress !== 'function') return;
+						onProgress(Math.min(100, Math.round((event.loaded / event.total) * 100)));
 					});
-					const message = payload.errors?.image?.[0]
-						|| payload.message
-						|| jobImageI18n.uploadFailed;
-					throw new Error(message);
-				}
 
-				return response.json();
+					xhr.addEventListener('load', function() {
+						let payload = {};
+
+						try {
+							payload = JSON.parse(xhr.responseText || '{}');
+						} catch (error) {
+							payload = {};
+						}
+
+						if (xhr.status >= 200 && xhr.status < 300) {
+							resolve(payload);
+							return;
+						}
+
+						const message = payload.errors?.image?.[0]
+							|| payload.message
+							|| jobImageI18n.uploadFailed;
+						reject(new Error(message));
+					});
+
+					xhr.addEventListener('error', function() {
+						reject(new Error(jobImageI18n.uploadFailed));
+					});
+
+					xhr.open('POST', uploadUrl);
+					xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+					xhr.setRequestHeader('Accept', 'application/json');
+					xhr.send(formData);
+				});
 			}
 
 			async function removeJobImage(index) {
@@ -645,7 +781,7 @@
 				const files = Array.from(fileList || []);
 				if (!files.length) return;
 
-				if (jobImages.length >= maxJobImages) {
+				if ((jobImages.length + pendingUploads.length) >= maxJobImages) {
 					showImageError(jobImageI18n.maxReached);
 					return;
 				}
@@ -654,7 +790,7 @@
 
 				try {
 					for (const file of files) {
-						if (jobImages.length >= maxJobImages) {
+						if ((jobImages.length + pendingUploads.length) >= maxJobImages) {
 							showImageError(jobImageI18n.maxReached);
 							break;
 						}
@@ -663,14 +799,41 @@
 							continue;
 						}
 
-						const uploaded = await uploadJobImage(file);
-						jobImages.push({
-							path: uploaded.path,
-							url: uploaded.url,
-						});
+						const pending = {
+							id: 'upload-' + Date.now() + '-' + Math.random().toString(16).slice(2),
+							progress: 0,
+							previewUrl: URL.createObjectURL(file),
+						};
+						pendingUploads.push(pending);
+						renderJobImages();
+
+						try {
+							const uploaded = await uploadJobImage(file, function(progress) {
+								pending.progress = progress;
+								updatePendingUploadProgress(pending.id, progress);
+							});
+
+							pendingUploads = pendingUploads.filter(function(item) {
+								return item.id !== pending.id;
+							});
+							URL.revokeObjectURL(pending.previewUrl);
+
+							jobImages.push({
+								path: uploaded.path,
+								url: uploaded.url,
+							});
+							renderJobImages();
+						} catch (uploadError) {
+							pendingUploads = pendingUploads.filter(function(item) {
+								return item.id !== pending.id;
+							});
+							URL.revokeObjectURL(pending.previewUrl);
+							renderJobImages();
+							throw uploadError;
+						}
 					}
 
-					renderJobImages();
+					clearImageError();
 				} catch (error) {
 					showImageError(error.message || jobImageI18n.uploadFailed);
 				} finally {
@@ -691,7 +854,7 @@
 				if (event.target.closest('.job-image-item__remove, #job-image-browse')) {
 					return;
 				}
-				if (jobImages.length >= maxJobImages) {
+				if ((jobImages.length + pendingUploads.length) >= maxJobImages) {
 					showImageError(jobImageI18n.maxReached);
 					return;
 				}
@@ -730,6 +893,10 @@
 			});
 
 			renderJobImages();
+			updateBatchQuotaDisplay();
+
+			batchSelect?.addEventListener('change', updateBatchQuotaDisplay);
+			jobQuotaInput?.addEventListener('input', updateBatchQuotaDisplay);
 
 			if (document.getElementById('quill-editor-qualification-area')) {
 				const toolbarOptions = [

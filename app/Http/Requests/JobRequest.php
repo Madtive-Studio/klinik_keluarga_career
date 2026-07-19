@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\EducationLevel;
+use App\Models\Batch;
 use App\Services\JobImageService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -92,6 +93,31 @@ class JobRequest extends FormRequest
                     'threshold_shortlist',
                     __('validation.custom.weight_education.threshold_order')
                 );
+            }
+
+            $batchId = (int) $this->input('batch_id');
+            $requestedQuota = (int) $this->input('quota');
+            $batch = Batch::find($batchId);
+
+            if ($batch) {
+                $excludeJobId = null;
+
+                if ($this->isMethod('put') || $this->isMethod('patch')) {
+                    $excludeJobId = (int) $this->route('job');
+                }
+
+                $allocatedQuota = $batch->allocatedQuota($excludeJobId);
+
+                if (($allocatedQuota + $requestedQuota) > (int) $batch->quota) {
+                    $validator->errors()->add(
+                        'quota',
+                        __('validation.custom.quota.exceeds_batch', [
+                            'batch_quota' => (int) $batch->quota,
+                            'allocated' => $allocatedQuota,
+                            'remaining' => $batch->remainingQuota($excludeJobId),
+                        ])
+                    );
+                }
             }
 
             if ($validator->errors()->isNotEmpty()) {

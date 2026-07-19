@@ -117,10 +117,45 @@
 							</div>
 						</div>
 					</div>
-					<div class="job-detail border rounded mt-4">
-						<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#exampleModal">
-							{{ __('candidate.jobs.apply_now') }}
-						</a>
+					@php
+						$eligibility = $applyEligibility ?? [
+							'can_apply' => true,
+							'already_applied' => false,
+							'education_not_met' => false,
+							'profile_incomplete' => false,
+							'min_education_label' => null,
+							'candidate_education_label' => null,
+						];
+						$isLoggedIn = auth('candidate')->check();
+					@endphp
+					<div class="job-detail border rounded mt-4 p-3">
+						@if (!$isLoggedIn)
+							<a href="{{ route('candidate.login.form') }}" class="btn btn-primary btn-block">
+								{{ __('candidate.jobs.login_to_apply') }}
+							</a>
+						@elseif ($eligibility['already_applied'])
+							<button type="button" class="btn btn-secondary btn-block" disabled>
+								{{ __('candidate.jobs.already_applied') }}
+							</button>
+							<small class="text-muted d-block mt-2 text-center">{!! __('messages.application.already_applied_html', ['url' => route('candidate.my.applications.index')]) !!}</small>
+						@elseif ($eligibility['profile_incomplete'])
+							<a href="{{ route('candidate.my.profile.edit') }}" class="btn btn-warning btn-block">
+								{{ __('candidate.jobs.complete_profile_to_apply') }}
+							</a>
+							<small class="text-muted d-block mt-2 text-center">{{ __('messages.application.complete_profile_first') }}</small>
+						@elseif ($eligibility['education_not_met'])
+							<button type="button" class="btn btn-secondary btn-block" disabled>
+								{{ __('candidate.jobs.apply_now') }}
+							</button>
+							<small class="text-danger d-block mt-2 text-center">{{ __('messages.application.education_not_met', [
+								'required' => $eligibility['min_education_label'],
+								'current' => $eligibility['candidate_education_label'],
+							]) }}</small>
+						@else
+							<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary btn-block">
+								{{ __('candidate.jobs.apply_now') }}
+							</a>
+						@endif
 					</div>
 				</div>
 			</div>

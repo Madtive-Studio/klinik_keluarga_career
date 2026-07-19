@@ -6,6 +6,7 @@ use App\Enums\JobType;
 use App\Models\Apply;
 use App\Models\Batch;
 use App\Models\Candidate;
+use App\Models\CandidateProfile;
 use App\Models\Category;
 use App\Models\Document;
 use App\Models\Job;
@@ -128,6 +129,7 @@ class JobRepositoryTest extends TestCase
         $this->assertArrayHasKey('job', $result);
         $this->assertArrayHasKey('activeBatch', $result);
         $this->assertArrayHasKey('formattedAppliesTotal', $result);
+        $this->assertArrayHasKey('applyEligibility', $result);
         $this->assertSame('01', $result['formattedAppliesTotal']);
     }
 
@@ -136,6 +138,7 @@ class JobRepositoryTest extends TestCase
     {
         $job = Job::factory()->create();
         $candidate = Candidate::factory()->create(['email_verified_at' => now()]);
+        CandidateProfile::factory()->for($candidate)->create();
 
         $result = $this->repository->findVacancyApplyFormData($job->uuid, $candidate->id);
 

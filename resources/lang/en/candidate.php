@@ -46,6 +46,7 @@ return [
         'applicants_count' => ':count people applied for this job',
         'apply_now' => 'Apply Now',
         'already_applied' => 'Already Applied',
+        'complete_profile_to_apply' => 'Complete Profile to Apply',
         'login_to_apply' => 'Login to Apply',
         'salary' => 'Salary',
         'location' => 'Location',

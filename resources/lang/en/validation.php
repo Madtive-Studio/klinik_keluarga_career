@@ -161,7 +161,7 @@ return [
         ],
         'image' => [
             'image' => 'Image must be a valid image file.',
-            'mimes' => 'Image format must be JPG, PNG, or WEBP.',
+            'mimes' => 'Image format must be JPG, JPEG, PNG, GIF, or WEBP.',
             'max' => 'Maximum image size is 5MB.',
             'uploaded' => 'Image failed to upload. Maximum size is 5MB.',
         ],
@@ -177,6 +177,9 @@ return [
         'weight_education' => [
             'weight_total' => 'Total scoring weight must be 100. Current total is :total.',
             'threshold_order' => 'Recommended score threshold must be greater than review score threshold.',
+        ],
+        'quota' => [
+            'exceeds_batch' => 'Job quota exceeds remaining batch quota. Batch quota: :batch_quota, allocated: :allocated, remaining: :remaining.',
         ],
     ],
 
