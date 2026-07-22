@@ -34,13 +34,21 @@ class BatchController extends Controller
                 return Carbon::parse($row->end_date)->diffForHumans();
             })
             ->editColumn('status', function ($row) {
-                $bg = $row->status == 'ACTIVE' ? 'success' : 'danger';
-                $badge = '<span class="badge bg-'.$bg.'">'.strtoupper($row->status).'</span>';
-                return $badge;
+                $isActive = $row->status === 'ACTIVE';
+                $route = route('admin.batches.status', $row->id);
+                $activeChecked = $isActive ? 'checked' : '';
+                $inactiveChecked = $isActive ? '' : 'checked';
+                return <<<HTML
+                <div class="btn-group btn-group-sm" data-bs-toggle="buttons">
+                    <input type="radio" class="btn-check batch-status-radio" name="batch_status_{$row->id}" id="batch_active_{$row->id}" value="ACTIVE" data-route="{$route}" {$activeChecked} autocomplete="off">
+                    <label class="btn btn-outline-success {$activeChecked}" for="batch_active_{$row->id}">Aktif</label>
+                    <input type="radio" class="btn-check batch-status-radio" name="batch_status_{$row->id}" id="batch_inactive_{$row->id}" value="INACTIVE" data-route="{$route}" {$inactiveChecked} autocomplete="off">
+                    <label class="btn btn-outline-danger {$inactiveChecked}" for="batch_inactive_{$row->id}">Nonaktif</label>
+                </div>
+                HTML;
             })
             ->addColumn('action', function ($row) {
                 $btn = '<div class="btn-group" role="group" aria-label="Basic example">';
-                $btn .= '<button type="button" class="btn btn-sm btn-success update" data-route="'.route('admin.batches.status', $row->id).'"><i class="ti ti-power"></i></button>';
                 $btn .= '<button type="button" class="btn btn-sm btn-warning edit" data-id="'.$row->id.'" data-code="'.$row->code.'"
                     data-name="'.$row->name.'" data-start_date="'.$row->start_date.'" data-end_date="'.$row->end_date.'" data-quota="'.$row->quota.'"
                     data-status="'.$row->status.'" data-route="'.route('admin.batches.edit', $row->id).'"><i class="ti ti-pencil"></i></button>';
@@ -140,12 +148,18 @@ class BatchController extends Controller
         return redirect()->route('admin.batches.index')->with('success', __('messages.admin.batch.deleted'));
     }
 
-    public function status(string $id)
+    public function status(Request $request, string $id)
     {
         $batch = Batch::findOrFail($id);
-        $batch->update(['status' => 'ACTIVE']);
-        $other = Batch::whereNotIn('id', [$batch->id])->update(['status' => 'INACTIVE']);
+        $targetStatus = $request->get('status', 'ACTIVE');
 
-        return redirect()->route('admin.batches.index')->with('success', __('messages.admin.batch.status_updated'));
+        if ($targetStatus === 'ACTIVE') {
+            $batch->update(['status' => 'ACTIVE']);
+            Batch::whereNotIn('id', [$batch->id])->update(['status' => 'INACTIVE']);
+        } else {
+            $batch->update(['status' => 'INACTIVE']);
+        }
+
+        return response()->json(['success' => true]);
     }
 }

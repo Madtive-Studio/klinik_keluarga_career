@@ -129,9 +129,20 @@
 				}
 			})
 
-			$(document).on('click', '.update', function() {
-				let route = getAttrValue(this, 'route')
-				window.location.href = route
+			$(document).on('change', '.batch-status-radio', function() {
+				let route = $(this).data('route');
+				let status = $(this).val();
+				$.ajax({
+					url: route,
+					method: 'GET',
+					data: { status: status },
+					success: function() {
+						dt_basic.ajax.reload(null, false);
+					},
+					error: function() {
+						dt_basic.ajax.reload(null, false);
+					}
+				});
 			})
 		});
 	</script>
