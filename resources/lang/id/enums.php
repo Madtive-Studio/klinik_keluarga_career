@@ -16,9 +16,9 @@ return [
     ],
     'job_type' => [
         'WFH/Remote' => 'WFH / Remote',
-        'Partime/Freelancer' => 'Part-time / Freelance',
-        'Fulltime/Onsite' => 'Full-time / Onsite',
-        'Internship' => 'Internship',
+        'Partime/Freelancer' => 'Paruh Waktu / Freelance',
+        'Fulltime/Onsite' => 'Penuh Waktu / Onsite',
+        'Internship' => 'Magang',
     ],
     'document_type' => [
         'CV' => 'Curriculum Vitae',
