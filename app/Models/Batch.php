@@ -13,6 +13,19 @@ class Batch extends Model
     protected $table = 'batches';
     protected $fillable = ['code', 'name', 'quota', 'start_date', 'end_date', 'status'];
 
+    public function scopeAvailable($query)
+    {
+        return $query->where(function ($q) {
+            $q->whereDate('end_date', '>=', now())
+              ->orWhereNull('end_date');
+        });
+    }
+
+    public function scopeExpired($query)
+    {
+        return $query->whereDate('end_date', '<', now());
+    }
+
     public function jobs(): HasMany
     {
         return $this->hasMany(Job::class);

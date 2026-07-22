@@ -8,6 +8,6 @@ class BatchRepository
 {
     public function getActiveBatch()
     {
-        return Batch::where('status', 'ACTIVE')->first();
+        return Batch::where('status', 'ACTIVE')->available()->first();
     }
 }

@@ -124,7 +124,7 @@ class JobManagementController extends Controller
     public function create()
     {
         $code = '#'.strtoupper(substr(uniqid(), 0, 10));
-        $batches = Batch::orderBy('created_at', 'DESC')->get();
+        $batches = Batch::available()->orderBy('created_at', 'DESC')->get();
         $categories = Category::orderBy('created_at', 'DESC')->get();
 
         return view('admin.jobs.form', [
@@ -179,7 +179,11 @@ class JobManagementController extends Controller
     public function edit(string $id)
     {
         $job = Job::with('criteria')->findOrFail($id);
-        $batches = Batch::orderBy('created_at', 'DESC')->get();
+        $batches = Batch::available()->orderBy('created_at', 'DESC')->get();
+        $currentBatch = $job->batch;
+        if ($currentBatch && $currentBatch->end_date < now()) {
+            $batches->push($currentBatch);
+        }
         $categories = Category::orderBy('created_at', 'DESC')->get();
 
         return view('admin.jobs.form', [

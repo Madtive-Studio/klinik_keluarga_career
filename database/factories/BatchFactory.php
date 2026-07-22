@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Batch;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BatchFactory extends Factory
@@ -11,14 +12,13 @@ class BatchFactory extends Factory
 
     public function definition(): array
     {
-        $year      = $this->faker->numberBetween(2023, 2025);
         $batchNum  = $this->faker->numberBetween(1, 2);
-        $startDate = "$year-0{$batchNum}-01 00:00:00";
-        $endDate   = $batchNum === 1 ? "$year-06-30 23:59:59" : "$year-12-31 23:59:59";
+        $startDate = now()->subMonths(6)->startOfMonth();
+        $endDate   = now()->addMonths(6)->endOfMonth()->endOfDay();
 
         return [
-            'code'       => "BATCH-{$year}-0{$batchNum}",
-            'name'       => "Rekrutmen Batch {$batchNum} {$year}",
+            'code'       => 'BATCH-' . now()->format('Y') . '-0' . $batchNum,
+            'name'       => 'Rekrutmen Batch ' . $batchNum . ' ' . now()->format('Y'),
             'start_date' => $startDate,
             'end_date'   => $endDate,
             'quota'      => $this->faker->numberBetween(20, 60),
@@ -28,11 +28,13 @@ class BatchFactory extends Factory
         ];
     }
 
-    // State untuk batch yang sedang aktif
+    // State untuk batch yang sedang aktif (dengan end_date di masa depan)
     public function active(): static
     {
         return $this->state(fn (array $attributes) => [
             'status' => 'ACTIVE',
+            'start_date' => now()->subMonth()->startOfMonth(),
+            'end_date' => now()->addMonths(5)->endOfMonth()->endOfDay(),
         ]);
     }
 
@@ -41,6 +43,16 @@ class BatchFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'status' => 'INACTIVE',
+            'end_date' => now()->addMonths(5)->endOfMonth()->endOfDay(),
+        ]);
+    }
+
+    // State untuk batch yang sudah expired
+    public function expired(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'INACTIVE',
+            'end_date' => now()->subDay()->startOfDay(),
         ]);
     }
 }
