@@ -90,6 +90,12 @@
   display: block !important;
 }
 
+/* Logo light/dark mode */
+.app-brand .logo-light { display: inline; }
+.app-brand .logo-dark { display: none; }
+.dark-style .app-brand .logo-light { display: none; }
+.dark-style .app-brand .logo-dark { display: inline; }
+
 /* Dropdown buttons going out of small screens */
 @media (max-width: 576px) {
   #dropdown-variation-demo .btn-group .text-truncate {

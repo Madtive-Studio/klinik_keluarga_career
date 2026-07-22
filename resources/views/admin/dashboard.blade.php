@@ -59,6 +59,9 @@
 				return;
 			}
 
+			const isDark = document.documentElement.classList.contains('dark-style');
+			const labelColor = isDark ? '#B2B2C2' : '#677788';
+
 			const options = {
 				chart: {
 					height: 360,
@@ -87,15 +90,23 @@
 					}
 				},
 				xaxis: {
-					categories: @json($chartLabels)
+					categories: @json($chartLabels),
+					labels: { style: { colors: labelColor } },
+					axisBorder: { show: false },
+					axisTicks: { show: false }
 				},
 				yaxis: {
 					labels: {
+						style: { colors: labelColor },
 						formatter: value => Math.round(value)
 					}
 				},
 				legend: {
-					position: 'top'
+					position: 'top',
+					labels: { colors: labelColor }
+				},
+				grid: {
+					borderColor: isDark ? '#3B3B5C' : '#E7E7EF'
 				}
 			};
 

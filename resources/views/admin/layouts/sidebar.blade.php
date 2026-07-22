@@ -1,7 +1,8 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
   <div class="app-brand demo">
     <a href="{{ route('admin.dashboard') }}" class="app-brand-link">
-      <img src="{{ asset('assets/logo/letter-logo.png') }}" width="200" alt="">
+      <img src="{{ asset('assets/logo/letter-logo.png') }}" class="logo-light" width="200" alt="">
+      <img src="{{ asset('assets/logo/letter-logo-white.png') }}" class="logo-dark" width="200" alt="">
     </a>
   </div>
   <div class="menu-inner-shadow"></div>
