@@ -216,6 +216,13 @@ return [
         'select' => '-- Pilih --',
         'datetime_placeholder' => 'dd-mm-yyyy HH:mm:ss',
     ],
+    'search' => [
+        'job' => 'Lowongan',
+        'candidate' => 'Kandidat',
+        'apply' => 'Lamaran',
+        'batch' => 'Batch',
+        'category' => 'Kategori',
+    ],
     'js' => [
         'confirm_delete' => 'Konfirmasi hapus?',
         'toggle_salary_failed' => 'Gagal mengubah tampilan gaji',

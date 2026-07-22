@@ -216,6 +216,13 @@ return [
         'select' => '-- Select --',
         'datetime_placeholder' => 'dd-mm-yyyy HH:mm:ss',
     ],
+    'search' => [
+        'job' => 'Job',
+        'candidate' => 'Candidate',
+        'apply' => 'Apply',
+        'batch' => 'Batch',
+        'category' => 'Category',
+    ],
     'js' => [
         'confirm_delete' => 'Confirm delete?',
         'toggle_salary_failed' => 'Failed to update salary visibility',

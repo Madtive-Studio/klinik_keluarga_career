@@ -33,7 +33,7 @@ class GlobalSearchController extends Controller
             ->get(['id', 'title', 'code'])
             ->each(function (Job $job) use (&$results) {
                 $results[] = [
-                    'type' => 'Job',
+                    'type' => __('admin.search.job'),
                     'label' => $job->code . ' - ' . $job->title,
                     'url' => route('admin.jobs.edit', $job->id),
                 ];
@@ -48,7 +48,7 @@ class GlobalSearchController extends Controller
             ->get(['id', 'name', 'email'])
             ->each(function (Candidate $candidate) use (&$results) {
                 $results[] = [
-                    'type' => 'Candidate',
+                    'type' => __('admin.search.candidate'),
                     'label' => $candidate->name . ' (' . $candidate->email . ')',
                     'url' => route('admin.candidates.index') . '?q=' . urlencode($candidate->email),
                 ];
@@ -64,7 +64,7 @@ class GlobalSearchController extends Controller
             ->get()
             ->each(function (Apply $apply) use (&$results) {
                 $results[] = [
-                    'type' => 'Apply',
+                    'type' => __('admin.search.apply'),
                     'label' => ($apply->candidate->name ?? '-') . ' → ' . ($apply->job->title ?? '-'),
                     'url' => route('admin.applies.show', $apply->id),
                 ];
@@ -79,7 +79,7 @@ class GlobalSearchController extends Controller
             ->get(['id', 'name', 'code'])
             ->each(function (Batch $batch) use (&$results) {
                 $results[] = [
-                    'type' => 'Batch',
+                    'type' => __('admin.search.batch'),
                     'label' => $batch->code . ' - ' . $batch->name,
                     'url' => route('admin.batches.index') . '?q=' . urlencode($batch->code),
                 ];
@@ -91,7 +91,7 @@ class GlobalSearchController extends Controller
             ->get(['id', 'name'])
             ->each(function (Category $category) use (&$results) {
                 $results[] = [
-                    'type' => 'Category',
+                    'type' => __('admin.search.category'),
                     'label' => $category->name,
                     'url' => route('admin.categories.index') . '?q=' . urlencode($category->name),
                 ];
