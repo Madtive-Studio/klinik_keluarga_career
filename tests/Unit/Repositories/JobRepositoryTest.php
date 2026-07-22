@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Repositories;
 
+use App\Enums\EducationLevel;
 use App\Enums\JobType;
 use App\Models\Apply;
 use App\Models\Batch;
@@ -10,8 +11,10 @@ use App\Models\CandidateProfile;
 use App\Models\Category;
 use App\Models\Document;
 use App\Models\Job;
+use App\Models\JobCriteria;
 use App\Repositories\JobRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -159,5 +162,129 @@ class JobRepositoryTest extends TestCase
 
         $this->assertArrayHasKey('already_applied', $result);
         $this->assertTrue($result['already_applied']);
+    }
+
+    #[Test]
+    public function getByFiltersAndPaginatedFiltersBySalaryMin(): void
+    {
+        $batch = Batch::factory()->create();
+        $batchId = $batch->id;
+
+        $match = Job::factory()->create([
+            'batch_id' => $batchId,
+            'salary_max' => 5_000_000,
+        ]);
+        Job::factory()->create([
+            'batch_id' => $batchId,
+            'salary_max' => 2_000_000,
+        ]);
+
+        $filters = [
+            'searchQuery' => null,
+            'categoryId' => null,
+            'jobType' => null,
+            'batchId' => $batchId,
+            'salaryMin' => '3000000',
+            'salaryMax' => null,
+            'minEducation' => null,
+        ];
+
+        $paginator = $this->repository->getByFiltersAndPaginated($filters, 10);
+
+        $this->assertSame(1, $paginator->total());
+        $this->assertSame($match->id, $paginator->first()->id);
+    }
+
+    #[Test]
+    public function getByFiltersAndPaginatedFiltersBySalaryMax(): void
+    {
+        $batch = Batch::factory()->create();
+        $batchId = $batch->id;
+
+        $match = Job::factory()->create([
+            'batch_id' => $batchId,
+            'salary_min' => 2_000_000,
+        ]);
+        Job::factory()->create([
+            'batch_id' => $batchId,
+            'salary_min' => 8_000_000,
+        ]);
+
+        $filters = [
+            'searchQuery' => null,
+            'categoryId' => null,
+            'jobType' => null,
+            'batchId' => $batchId,
+            'salaryMin' => null,
+            'salaryMax' => '5000000',
+            'minEducation' => null,
+        ];
+
+        $paginator = $this->repository->getByFiltersAndPaginated($filters, 10);
+
+        $this->assertSame(1, $paginator->total());
+        $this->assertSame($match->id, $paginator->first()->id);
+    }
+
+    #[Test]
+    public function getByFiltersAndPaginatedFiltersByMinEducation(): void
+    {
+        $batch = Batch::factory()->create();
+        $batchId = $batch->id;
+
+        $match = Job::factory()->create(['batch_id' => $batchId]);
+        JobCriteria::factory()->for($match)->create(['min_education' => 'S3']);
+
+        $mismatch = Job::factory()->create(['batch_id' => $batchId]);
+        JobCriteria::factory()->for($mismatch)->create(['min_education' => 'SMA']);
+
+        $filters = [
+            'searchQuery' => null,
+            'categoryId' => null,
+            'jobType' => null,
+            'batchId' => $batchId,
+            'salaryMin' => null,
+            'salaryMax' => null,
+            'minEducation' => 'D3',
+        ];
+
+        $paginator = $this->repository->getByFiltersAndPaginated($filters, 10);
+
+        $this->assertSame(1, $paginator->total());
+        $this->assertSame($match->id, $paginator->first()->id);
+    }
+
+    #[Test]
+    public function getVacanciesPaginatedAcceptsSalaryAndEducationFilters(): void
+    {
+        $batch = Batch::factory()->active()->create();
+        $category = Category::factory()->create();
+
+        $high = Job::factory()->create([
+            'batch_id' => $batch->id,
+            'category_id' => $category->id,
+            'salary_max' => 10_000_000,
+        ]);
+        JobCriteria::factory()->for($high)->create(['min_education' => 'S1']);
+
+        $low = Job::factory()->create([
+            'batch_id' => $batch->id,
+            'category_id' => $category->id,
+            'salary_max' => 2_000_000,
+        ]);
+        JobCriteria::factory()->for($low)->create(['min_education' => 'SMA']);
+
+        $result = $this->repository->getVacanciesPaginated(
+            searchQuery: null,
+            categoryId: null,
+            jobType: null,
+            perPage: 10,
+            salaryMin: '5000000',
+            salaryMax: null,
+            minEducation: 'SMA',
+        );
+
+        $this->assertSame(1, $result['jobs']->total());
+        $this->assertSame($high->id, $result['jobs']->first()->id);
     }
 }
