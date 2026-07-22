@@ -24,7 +24,10 @@ class VacancyController extends Controller
             $request->get('q'),
             $request->get('category') == 'SEMUA' ? '' : $request->get('category'),
             $request->get('job_type') == 'SEMUA' ? '' : $request->get('job_type'),
-            $request->get('per_page', 10)
+            $request->get('per_page', 10),
+            $request->get('salary_min'),
+            $request->get('salary_max'),
+            $request->get('min_education'),
         );
 
         if ($request->ajax()) {

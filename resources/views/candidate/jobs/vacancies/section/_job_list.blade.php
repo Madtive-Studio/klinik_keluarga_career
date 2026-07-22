@@ -1,4 +1,10 @@
 @forelse ($jobs as $key => $job)
+    @php
+        $salaryDisplay = $job->is_show_salary ? $job->salary_display : '-';
+        $minEducation = $job->relationLoaded('criteria') && $job->criteria
+            ? \App\Enums\EducationLevel::labelOf($job->criteria->min_education)
+            : '-';
+    @endphp
     <div class="col-lg-12 mt-4 pt-2">
         <div class="job-list-box border rounded">
             <div class="p-3">
@@ -12,15 +18,17 @@
                         <div class="job-list-desc">
                             <h6 class="mb-2"><a href="{{ route('candidate.jobs.vacancies.show' , $job->uuid) }}" class="text-dark">{{ $job->code }} - {{ $job->title }}</a></h6>
                             <p class="text-muted mb-0">{{ $job->category->name }}</p>
-                            <ul class="list-inline mb-0">
-                                <li class="list-inline-item mr-3">
-                                    <p class="text-muted mb-0"><i class="mdi mdi-map-marker mr-2"></i>Cianjur, Jawa Barat</p>
-                                </li>
-                            </ul>
+                            <div class="d-flex flex-wrap gap-2 mt-1">
+                                @if ($job->is_show_salary)
+                                    <small class="text-muted"><i class="mdi mdi-currency-usd me-1"></i>{{ $salaryDisplay }}</small>
+                                @endif
+                                <small class="text-muted"><i class="mdi mdi-school me-1"></i>Min. {{ $minEducation }}</small>
+                                <small class="text-muted"><i class="mdi mdi-map-marker me-1"></i>Cianjur, Jawa Barat</small>
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3">
-                        <div class="job-list-button-sm text-right">
+                        <div class="job-list-button-sm text-end">
                             <span class="badge badge-success">{{ $job->type }}</span>
                             <div class="mt-3">
                                 <a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-sm btn-primary">

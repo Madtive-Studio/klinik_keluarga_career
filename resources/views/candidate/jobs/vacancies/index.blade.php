@@ -64,30 +64,74 @@
 					<div class="left-sidebar">
 						<div class="accordion" id="accordionExample">
 							<div class="card rounded mt-4">
-								<a data-toggle="collapse" href="#collapsetwo" class="job-list" aria-expanded="true"
-									aria-controls="collapsetwo">
-									<div class="card-header" id="headingtwo">
-										<h6 class="mb-0 text-dark f-18">Filter berdasarkan <br> kategori</h6>
+								<a data-bs-toggle="collapse" href="#collapseCategory" class="job-list" aria-expanded="true"
+									aria-controls="collapseCategory">
+									<div class="card-header" id="headingCategory">
+										<h6 class="mb-0 text-dark f-18">Kategori</h6>
 									</div>
 								</a>
-								<div id="collapsetwo" class="collapse show" aria-labelledby="headingtwo">
+								<div id="collapseCategory" class="collapse show" aria-labelledby="headingCategory">
 									<div class="card-body p-0">
-										<div class="custom-control custom-radio">
-											<input type="radio" id="category_0" name="category_id" value="SEMUA" class="custom-control-input category-filter" {{ !request('category') ? 'checked' : '' }}>
-											<label class="custom-control-label ml-1 text-muted f-15" for="category_0">
+										<div class="form-check">
+											<input type="radio" id="category_0" name="category_id" value="SEMUA" class="form-check-input category-filter" {{ !request('category') ? 'checked' : '' }}>
+											<label class="form-check-label ms-1 text-muted f-15" for="category_0">
 												Semua
 											</label>
 										</div>
 										@forelse ($categories as $key => $category)
-											<div class="custom-control custom-radio">
-												<input type="radio" id="category_{{ $category->id }}" name="category_id" value="{{ $category->id }}" class="custom-control-input category-filter" {{ request('category') == $category->id ? 'checked' : '' }}>
-												<label class="custom-control-label ml-1 text-muted f-15" for="category_{{ $category->id }}">
+											<div class="form-check">
+												<input type="radio" id="category_{{ $category->id }}" name="category_id" value="{{ $category->id }}" class="form-check-input category-filter" {{ request('category') == $category->id ? 'checked' : '' }}>
+												<label class="form-check-label ms-1 text-muted f-15" for="category_{{ $category->id }}">
 													{{ $category->name }}
 												</label>
 											</div>
 										@empty
 											<p class="text-center mx-auto">Tidak ada data</p>
 										@endforelse
+									</div>
+								</div>
+							</div>
+
+							<div class="card rounded mt-4">
+								<a data-bs-toggle="collapse" href="#collapseSalary" class="job-list" aria-expanded="false"
+									aria-controls="collapseSalary">
+									<div class="card-header" id="headingSalary">
+										<h6 class="mb-0 text-dark f-18">Range Gaji</h6>
+									</div>
+								</a>
+								<div id="collapseSalary" class="collapse" aria-labelledby="headingSalary">
+									<div class="card-body">
+										<div class="mb-2">
+											<label class="text-muted small">Gaji Minimum</label>
+											<input type="text" inputmode="numeric" id="filter_salary_min" class="form-control form-control-sm" placeholder="Rp" value="{{ request('salary_min') }}">
+										</div>
+										<div class="mb-2">
+											<label class="text-muted small">Gaji Maksimum</label>
+											<input type="text" inputmode="numeric" id="filter_salary_max" class="form-control form-control-sm" placeholder="Rp" value="{{ request('salary_max') }}">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="card rounded mt-4">
+								<a data-bs-toggle="collapse" href="#collapseEducation" class="job-list" aria-expanded="false"
+									aria-controls="collapseEducation">
+									<div class="card-header" id="headingEducation">
+										<h6 class="mb-0 text-dark f-18">Min. Pendidikan</h6>
+									</div>
+								</a>
+								<div id="collapseEducation" class="collapse" aria-labelledby="headingEducation">
+									<div class="card-body p-0">
+										<div class="form-check">
+											<input type="radio" id="education_0" name="min_education" value="" class="form-check-input education-filter" {{ !request('min_education') ? 'checked' : '' }}>
+											<label class="form-check-label ms-1 text-muted f-15" for="education_0">Semua</label>
+										</div>
+										@foreach ($educationLevels as $level)
+											<div class="form-check">
+												<input type="radio" id="education_{{ $level->value }}" name="min_education" value="{{ $level->value }}" class="form-check-input education-filter" {{ request('min_education') === $level->value ? 'checked' : '' }}>
+												<label class="form-check-label ms-1 text-muted f-15" for="education_{{ $level->value }}">{{ $level->label() }}</label>
+											</div>
+										@endforeach
 									</div>
 								</div>
 							</div>
@@ -138,11 +182,18 @@
 @endsection
 @section('js')
 	<script>
+		function parseRupiah(value) {
+			return value.replace(/\./g, '').replace(/[^0-9]/g, '');
+		}
+
 		function getParams() {
 			let params = new URLSearchParams(window.location.search);
 			params.set('q', $('input[name="q"]').val());
 			params.set('job_type', $('select[name="job_type"]').val());  
 			params.set('category', $('input[name="category_id"]:checked').val() ?? '');
+			params.set('salary_min', parseRupiah($('#filter_salary_min').val()));
+			params.set('salary_max', parseRupiah($('#filter_salary_max').val()));
+			params.set('min_education', $('input[name="min_education"]:checked').val() ?? '');
 			params.set('per_page', $('#perPage').val());
 			return params;
 		}
@@ -183,6 +234,20 @@
 		// Category filter
 		$('.category-filter').change(function() {
 			fetchJobs();
+		});
+
+		// Education filter
+		$('.education-filter').change(function() {
+			fetchJobs();
+		});
+
+		// Salary range filter (with debounce)
+		let salaryTimer;
+		$('#filter_salary_min, #filter_salary_max').on('input', function() {
+			var val = this.value.replace(/\D/g, '');
+			if (val) this.value = new Intl.NumberFormat('id-ID').format(val);
+			clearTimeout(salaryTimer);
+			salaryTimer = setTimeout(fetchJobs, 500);
 		});
 
 		// Per page

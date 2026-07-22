@@ -24,8 +24,13 @@ class JobRepository
         $categoryId = $filters['categoryId'] ?? null;
         $jobType = $filters['jobType'] ?? null;
         $batchId = $filters['batchId'] ?? null;
+        $salaryMin = $filters['salaryMin'] ?? null;
+        $salaryMax = $filters['salaryMax'] ?? null;
+        $minEducation = $filters['minEducation'] ?? null;
 
-        $query = Job::with(['category', 'batch'])->where('batch_id', $batchId)->orderBy('created_at', 'desc');
+        $query = Job::with(['category', 'batch', 'criteria'])
+            ->where('batch_id', $batchId)
+            ->orderBy('created_at', 'desc');
 
         if (!empty($searchQuery)) {
             $keyword = '%' . $searchQuery . '%';
@@ -42,14 +47,46 @@ class JobRepository
         if (!empty($jobType)) {
             $query->where('type', $jobType);
         }
+
+        if (!empty($salaryMin)) {
+            $query->where('salary_max', '>=', (int) $salaryMin);
+        }
+
+        if (!empty($salaryMax)) {
+            $query->where('salary_min', '<=', (int) $salaryMax);
+        }
+
+        if (!empty($minEducation)) {
+            $educationRank = EducationLevel::rankOf($minEducation);
+            $query->whereHas('criteria', function ($q) use ($educationRank) {
+                $q->whereRaw(
+                    'CASE '
+                    . "WHEN min_education = 'SMA' THEN 1 "
+                    . "WHEN min_education = 'D3' THEN 2 "
+                    . "WHEN min_education = 'D4' THEN 3 "
+                    . "WHEN min_education = 'S1' THEN 4 "
+                    . "WHEN min_education = 'S2' THEN 5 "
+                    . "WHEN min_education = 'S3' THEN 6 "
+                    . 'ELSE 0 END >= ?', [$educationRank]
+                );
+            });
+        }
+
         return $query->paginate($perPage);
     }
 
     /**
      * Business Logic: Get vacancies paginated dengan categories
      */
-    public function getVacanciesPaginated(?string $searchQuery, ?string $categoryId, ?string $jobType, ?int $perPage): array
-    {
+    public function getVacanciesPaginated(
+        ?string $searchQuery,
+        ?string $categoryId,
+        ?string $jobType,
+        ?int $perPage,
+        ?string $salaryMin = null,
+        ?string $salaryMax = null,
+        ?string $minEducation = null,
+    ): array {
         $activeBatch = $this->batchRepo->getActiveBatch();
         $activeBatchId = $activeBatch?->id ?? 0;
 
@@ -58,6 +95,9 @@ class JobRepository
             'categoryId' => $categoryId,
             'jobType' => $jobType,
             'batchId' => $activeBatchId,
+            'salaryMin' => $salaryMin,
+            'salaryMax' => $salaryMax,
+            'minEducation' => $minEducation,
         ];
 
         $jobs = $this->getByFiltersAndPaginated($filters, $perPage);
@@ -65,6 +105,7 @@ class JobRepository
         return [
             'jobs'       => $jobs,
             'categories' => $this->categoryRepo->getAll(),
+            'educationLevels' => EducationLevel::cases(),
         ];
     }
 
