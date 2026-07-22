@@ -18,6 +18,11 @@
 	@endphp
 	<section class="section pt-5 profile-page">
 		<div class="container">
+			@if ($message = Session::get('warning'))
+				<div class="alert alert-warning" role="alert">
+					<p class="mb-0">{!! $message !!}</p>
+				</div>
+			@endif
 			@if ($message = Session::get('error'))
 				<div class="alert alert-danger" role="alert">
 					<p class="mb-0">{!! $message !!}</p>
