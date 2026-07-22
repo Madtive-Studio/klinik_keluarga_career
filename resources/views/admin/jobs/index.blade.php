@@ -9,48 +9,57 @@
 
 		<div class="card mb-4">
 			<div class="card-body">
-				<form id="filter-form" class="row g-3 align-items-end">
-					<div class="col-md-3">
-						<label class="form-label">{{ __('admin.jobs.category') }}</label>
-						<select name="category" class="form-control filter-select">
-							<option value="">{{ __('admin.datatable.all') }}</option>
-							@foreach ($categories as $category)
-								<option value="{{ $category->id }}">{{ $category->name }}</option>
-							@endforeach
-						</select>
-					</div>
-					<div class="col-md-2">
-						<label class="form-label">{{ __('admin.jobs.type') }}</label>
-						<select name="type" class="form-control filter-select">
-							<option value="">{{ __('admin.datatable.all') }}</option>
-							@foreach (\App\Enums\JobType::getWithLabels() as $value => $label)
-								<option value="{{ $value }}">{{ $label }}</option>
-							@endforeach
-						</select>
-					</div>
-					<div class="col-md-2">
-						<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
-						<input type="text" inputmode="numeric" name="salary_min" class="form-control filter-input filter-salary" placeholder="Min" autocomplete="off">
-					</div>
-					<div class="col-md-2">
-						<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
-						<input type="text" inputmode="numeric" name="salary_max" class="form-control filter-input filter-salary" placeholder="Max" autocomplete="off">
-					</div>
-					<div class="col-md-2">
-						<label class="form-label">{{ __('admin.jobs.min_education') }}</label>
-						<select name="min_education" class="form-control filter-select">
-							<option value="">{{ __('admin.datatable.all') }}</option>
-							@foreach (\App\Enums\EducationLevel::cases() as $level)
-								<option value="{{ $level->value }}">{{ $level->label() }}</option>
-							@endforeach
-						</select>
-					</div>
-					<div class="col-md-1 d-flex gap-2">
-						<button type="submit" class="btn btn-primary w-100">
-							<i class="ti ti-filter"></i>
-						</button>
-					</div>
-				</form>
+			<form id="filter-form" class="row g-3 align-items-end">
+				<div class="col-md-2">
+					<label class="form-label">{{ __('admin.jobs.batch') }}</label>
+					<select name="batch_id" class="form-control filter-select">
+						<option value="">{{ __('admin.datatable.all') }}</option>
+						@foreach ($batches as $batch)
+							<option value="{{ $batch->id }}">{{ $batch->code }} - {{ $batch->name }}</option>
+						@endforeach
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label class="form-label">{{ __('admin.jobs.category') }}</label>
+					<select name="category" class="form-control filter-select">
+						<option value="">{{ __('admin.datatable.all') }}</option>
+						@foreach ($categories as $category)
+							<option value="{{ $category->id }}">{{ $category->name }}</option>
+						@endforeach
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label class="form-label">{{ __('admin.jobs.type') }}</label>
+					<select name="type" class="form-control filter-select">
+						<option value="">{{ __('admin.datatable.all') }}</option>
+						@foreach (\App\Enums\JobType::getWithLabels() as $value => $label)
+							<option value="{{ $value }}">{{ $label }}</option>
+						@endforeach
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
+					<input type="text" inputmode="numeric" name="salary_min" class="form-control filter-input filter-salary" placeholder="Min" autocomplete="off">
+				</div>
+				<div class="col-md-2">
+					<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
+					<input type="text" inputmode="numeric" name="salary_max" class="form-control filter-input filter-salary" placeholder="Max" autocomplete="off">
+				</div>
+				<div class="col-md-2">
+					<label class="form-label">{{ __('admin.jobs.min_education') }}</label>
+					<select name="min_education" class="form-control filter-select">
+						<option value="">{{ __('admin.datatable.all') }}</option>
+						@foreach (\App\Enums\EducationLevel::cases() as $level)
+							<option value="{{ $level->value }}">{{ $level->label() }}</option>
+						@endforeach
+					</select>
+				</div>
+				<div class="col-12 d-flex justify-content-end">
+					<button type="submit" class="btn btn-primary">
+						<i class="ti ti-filter me-1"></i>{{ __('admin.datatable.filter') }}
+					</button>
+				</div>
+			</form>
 			</div>
 		</div>
 

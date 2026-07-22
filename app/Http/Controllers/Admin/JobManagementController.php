@@ -30,9 +30,11 @@ class JobManagementController extends Controller
     public function index()
     {
         $categories = Category::orderBy('name', 'ASC')->get();
+        $batches = Batch::available()->orderBy('created_at', 'DESC')->get();
 
         return view('admin.jobs.index', [
             'categories' => $categories,
+            'batches' => $batches,
         ]);
     }
 
@@ -40,6 +42,10 @@ class JobManagementController extends Controller
     {
         $query = Job::with(['batch', 'category', 'criteria'])
             ->orderBy('id', 'ASC');
+
+        if ($batchId = $request->get('batch_id')) {
+            $query->where('batch_id', $batchId);
+        }
 
         if ($categoryId = $request->get('category')) {
             $query->where('category_id', $categoryId);
