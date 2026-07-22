@@ -116,7 +116,7 @@
 								<div class="float-left mr-2">
 									<i class="mdi mdi-clock-outline text-muted"></i>
 								</div>
-								<p class="text-muted mb-2">: {{ $activeBatch->name }} | {{ date('d M Y', strtotime($activeBatch->start_date)) }} - {{ date('d M Y', strtotime($activeBatch->end_date)) }}</p>
+								<p class="text-muted mb-2">: {{ $activeBatch?->name ?? '-' }} | {{ $activeBatch ? date('d M Y', strtotime($activeBatch->start_date)) . ' - ' . date('d M Y', strtotime($activeBatch->end_date)) : '-' }}</p>
 							</div>
 							<div class="job-details-desc-item">
 								<div class="float-left mr-2">
