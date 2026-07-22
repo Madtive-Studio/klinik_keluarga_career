@@ -109,6 +109,17 @@
   }
 }
 
+/* Filter form dark mode — ensure text visibility */
+.dark-style .card .form-label {
+  color: var(--bs-body-color);
+}
+
+.dark-style .card .form-control,
+.dark-style .card .form-select {
+  color: var(--bs-body-color);
+  background-color: var(--bs-card-bg);
+}
+
 /*
 * Layout demo
 ******************************************************************************/
