@@ -144,7 +144,7 @@
 								</div>
 								@error('type') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
-							<div class="row g-3 align-items-end">
+							<div class="row g-3">
 								@php
 									$salaryMinValue = old('salary_min', $job->salary_min ?? '');
 									$salaryMaxValue = old('salary_max', $job->salary_max ?? '');
@@ -156,52 +156,48 @@
 										: '';
 									$showSalary = old('is_show_salary', isset($job) ? ($job->is_show_salary ? '1' : '0') : '1');
 								@endphp
-								<div class="col-lg-3 col-md-4">
+								<div class="col-lg-4 col-md-6">
 									<div class="mb-3">
 										<label class="form-label">{{ __('admin.jobs.quota') }}</label>
 										<input type="number" name="quota" id="job_quota" min="1" class="form-control @error('quota') is-invalid @enderror" required value="{{ old('quota', $job->quota ?? 0) }}">
 										<small class="text-muted d-block mt-1" id="batch-quota-info">{{ __('admin.jobs.batch_quota_info', ['quota' => '-', 'allocated' => '-', 'remaining' => '-']) }}</small>
-										<div id="batch-quota-warning" class="alert alert-warning py-2 px-3 mt-2 mb-0 d-none small" role="alert"></div>
 										@error('quota') <small class="text-danger d-block">{{ $message }}</small> @enderror
+										<div id="batch-quota-warning" class="alert alert-warning py-2 px-3 mt-2 mb-0 d-none small" role="alert"></div>
 									</div>
 								</div>
-								<div class="col-lg-9 col-md-8">
-									<div class="row g-3 align-items-end">
-										<div class="col-md-5">
-											<div class="mb-3">
-												<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
-												<div class="input-group">
-													<span class="input-group-text">Rp</span>
-													<input type="text" inputmode="numeric" id="salary_min_display" class="form-control salary-amount-input @error('salary_min') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_min_placeholder') }}" required value="{{ $salaryMinDisplay }}" autocomplete="off">
-													<input type="hidden" name="salary_min" id="salary_min" value="{{ $salaryMinValue }}">
-												</div>
-												@error('salary_min') <small class="text-danger">{{ $message }}</small> @enderror
-											</div>
+								<div class="col-lg-4 col-md-6">
+									<div class="mb-3">
+										<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
+										<div class="input-group">
+											<span class="input-group-text">Rp</span>
+											<input type="text" inputmode="numeric" id="salary_min_display" class="form-control salary-amount-input @error('salary_min') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_min_placeholder') }}" required value="{{ $salaryMinDisplay }}" autocomplete="off">
+											<input type="hidden" name="salary_min" id="salary_min" value="{{ $salaryMinValue }}">
 										</div>
-										<div class="col-md-5">
-											<div class="mb-3">
-												<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
-												<div class="input-group">
-													<span class="input-group-text">Rp</span>
-													<input type="text" inputmode="numeric" id="salary_max_display" class="form-control salary-amount-input @error('salary_max') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_max_placeholder') }}" required value="{{ $salaryMaxDisplay }}" autocomplete="off">
-													<input type="hidden" name="salary_max" id="salary_max" value="{{ $salaryMaxValue }}">
-												</div>
-												<small class="text-muted">{{ __('admin.jobs.salary_range_hint') }}</small>
-												@error('salary_max') <small class="text-danger d-block">{{ $message }}</small> @enderror
-											</div>
+										@error('salary_min') <small class="text-danger">{{ $message }}</small> @enderror
+									</div>
+								</div>
+								<div class="col-lg-4 col-md-6">
+									<div class="mb-3">
+										<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
+										<div class="input-group">
+											<span class="input-group-text">Rp</span>
+											<input type="text" inputmode="numeric" id="salary_max_display" class="form-control salary-amount-input @error('salary_max') is-invalid @enderror" placeholder="{{ __('admin.jobs.salary_max_placeholder') }}" required value="{{ $salaryMaxDisplay }}" autocomplete="off">
+											<input type="hidden" name="salary_max" id="salary_max" value="{{ $salaryMaxValue }}">
 										</div>
-										<div class="col-md-2">
-											<div class="mb-3">
-												<label class="form-label d-block">{{ __('admin.jobs.show_salary') }}</label>
-												<input type="hidden" name="is_show_salary" value="0">
-												<label class="switch switch-primary switch-show-salary mt-1">
-													<input type="checkbox" class="switch-input" name="is_show_salary" id="show_salary_switch" value="1" @checked((string) $showSalary === '1')>
-													<span class="switch-toggle-slider">
-														<span class="{{ (string) $showSalary === '1' ? 'switch-on' : 'switch-off' }}"></span>
-													</span>
-												</label>
-											</div>
-										</div>
+										<small class="text-muted">{{ __('admin.jobs.salary_range_hint') }}</small>
+										@error('salary_max') <small class="text-danger d-block">{{ $message }}</small> @enderror
+									</div>
+								</div>
+								<div class="col-lg-4 col-md-6">
+									<div class="mb-3">
+										<label class="form-label d-block">{{ __('admin.jobs.show_salary') }}</label>
+										<input type="hidden" name="is_show_salary" value="0">
+										<label class="switch switch-primary switch-show-salary mt-1">
+											<input type="checkbox" class="switch-input" name="is_show_salary" id="show_salary_switch" value="1" @checked((string) $showSalary === '1')>
+											<span class="switch-toggle-slider">
+												<span class="{{ (string) $showSalary === '1' ? 'switch-on' : 'switch-off' }}"></span>
+											</span>
+										</label>
 									</div>
 								</div>
 							</div>
