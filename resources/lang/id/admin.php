@@ -69,6 +69,7 @@ return [
         'salary_max_placeholder' => '5.000.000',
         'salary_range_hint' => 'Isi nilai yang sama jika gaji tetap.',
         'type' => 'Tipe',
+        'min_education' => 'Min. Pendidikan',
         'applicants_quota' => 'Pendaftar / Kuota',
         'create' => 'Buat Lowongan',
         'edit' => 'Edit Lowongan',

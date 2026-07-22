@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JobImageUploadRequest;
 use App\Http\Requests\JobRequest;
+use App\Enums\EducationLevel;
 use App\Enums\JobType;
 use App\Models\Apply;
 use App\Models\Job;
@@ -28,14 +29,50 @@ class JobManagementController extends Controller
      */
     public function index()
     {
-        return view('admin.jobs.index', [
+        $categories = Category::orderBy('name', 'ASC')->get();
 
+        return view('admin.jobs.index', [
+            'categories' => $categories,
         ]);
     }
 
-    public function datatables()
+    public function datatables(Request $request)
     {
-        $query = Job::with(['batch', 'category'])->orderBy('id', 'ASC');
+        $query = Job::with(['batch', 'category', 'criteria'])
+            ->orderBy('id', 'ASC');
+
+        if ($categoryId = $request->get('category')) {
+            $query->where('category_id', $categoryId);
+        }
+
+        if ($type = $request->get('type')) {
+            $query->where('type', $type);
+        }
+
+        if ($salaryMin = $request->get('salary_min')) {
+            $query->where('salary_max', '>=', (int) $salaryMin);
+        }
+
+        if ($salaryMax = $request->get('salary_max')) {
+            $query->where('salary_min', '<=', (int) $salaryMax);
+        }
+
+        if ($minEducation = $request->get('min_education')) {
+            $educationRank = EducationLevel::rankOf($minEducation);
+            $query->whereHas('criteria', function ($q) use ($educationRank) {
+                $q->whereRaw(
+                    'CASE '
+                    . "WHEN min_education = 'SMA' THEN 1 "
+                    . "WHEN min_education = 'D3' THEN 2 "
+                    . "WHEN min_education = 'D4' THEN 3 "
+                    . "WHEN min_education = 'S1' THEN 4 "
+                    . "WHEN min_education = 'S2' THEN 5 "
+                    . "WHEN min_education = 'S3' THEN 6 "
+                    . 'ELSE 0 END >= ?', [$educationRank]
+                );
+            });
+        }
+
         return DataTables::of($query)
             ->addIndexColumn()
             ->editColumn('is_show_salary', function ($row) {
@@ -55,6 +92,13 @@ class JobManagementController extends Controller
             ->editColumn('type', function ($row) {
                 return JobType::tryBadge($row->type);
             })
+            ->addColumn('min_education', function ($row) {
+                $level = $row->relationLoaded('criteria') && $row->criteria
+                    ? $row->criteria->min_education
+                    : null;
+
+                return $level ? EducationLevel::labelOf($level) : '-';
+            })
             ->editColumn('quota', function ($row) {
                 $applicants = Apply::where('job_id', $row->id)
                     ->where('batch_id', $row->batch_id)
@@ -70,7 +114,7 @@ class JobManagementController extends Controller
 
                 return $btn;
             })
-            ->rawColumns(['action', 'is_show_salary', 'type'])
+            ->rawColumns(['action', 'is_show_salary', 'type', 'min_education'])
             ->make(true);
     }
 

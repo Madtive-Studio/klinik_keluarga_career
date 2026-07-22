@@ -69,6 +69,7 @@ return [
         'salary_max_placeholder' => '5,000,000',
         'salary_range_hint' => 'Use the same value for a fixed salary.',
         'type' => 'Type',
+        'min_education' => 'Min. Education',
         'applicants_quota' => 'Applicants / Quota',
         'create' => 'Create Job',
         'edit' => 'Edit Job',

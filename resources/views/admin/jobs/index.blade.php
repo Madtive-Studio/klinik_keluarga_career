@@ -6,6 +6,54 @@
 				<strong>{{ $message }}</strong>
 			</div>
 		@endif
+
+		<div class="card mb-4">
+			<div class="card-body">
+				<form id="filter-form" class="row g-3 align-items-end">
+					<div class="col-md-3">
+						<label class="form-label">{{ __('admin.jobs.category') }}</label>
+						<select name="category" class="form-control filter-select">
+							<option value="">{{ __('admin.datatable.all') }}</option>
+							@foreach ($categories as $category)
+								<option value="{{ $category->id }}">{{ $category->name }}</option>
+							@endforeach
+						</select>
+					</div>
+					<div class="col-md-2">
+						<label class="form-label">{{ __('admin.jobs.type') }}</label>
+						<select name="type" class="form-control filter-select">
+							<option value="">{{ __('admin.datatable.all') }}</option>
+							@foreach (\App\Enums\JobType::getWithLabels() as $value => $label)
+								<option value="{{ $value }}">{{ $label }}</option>
+							@endforeach
+						</select>
+					</div>
+					<div class="col-md-2">
+						<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
+						<input type="number" name="salary_min" class="form-control filter-input" placeholder="Min">
+					</div>
+					<div class="col-md-2">
+						<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
+						<input type="number" name="salary_max" class="form-control filter-input" placeholder="Max">
+					</div>
+					<div class="col-md-2">
+						<label class="form-label">{{ __('admin.jobs.min_education') }}</label>
+						<select name="min_education" class="form-control filter-select">
+							<option value="">{{ __('admin.datatable.all') }}</option>
+							@foreach (\App\Enums\EducationLevel::cases() as $level)
+								<option value="{{ $level->value }}">{{ $level->label() }}</option>
+							@endforeach
+						</select>
+					</div>
+					<div class="col-md-1 d-flex gap-2">
+						<button type="submit" class="btn btn-primary w-100">
+							<i class="ti ti-filter"></i>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
 		<div class="card">
 			<div class="card-datatable table-responsive pt-0">
 				<table class="datatables-basic table">
@@ -18,6 +66,7 @@
 							<th>{{ __('admin.jobs.show_salary') }}</th>
 							<th>{{ __('admin.jobs.salary') }}</th>
 							<th>{{ __('admin.jobs.type') }}</th>
+							<th>{{ __('admin.jobs.min_education') }}</th>
 							<th>{{ __('admin.jobs.applicants_quota') }}</th>
 							<th>{{ __('admin.datatable.action') }}</th>
 						</tr>
@@ -47,9 +96,23 @@
 				dt_multilingual_table = $('.dt-multilingual'),
 				dt_basic;
 
+			function getFilterParams() {
+				var params = {};
+				$('#filter-form').find('select, input').each(function() {
+					var val = $(this).val();
+					if (val) params[$(this).attr('name')] = val;
+				});
+				return params;
+			}
+
 			if (dt_basic_table.length) {
 				dt_basic = dt_basic_table.DataTable({
-					ajax: "{{ route('admin.jobs.datatables') }}",
+					ajax: {
+						url: "{{ route('admin.jobs.datatables') }}",
+						data: function(d) {
+							$.extend(d, getFilterParams());
+						}
+					},
 					columns: [{
 							data: null,
 							searchable: false,
@@ -77,6 +140,9 @@
 						},
 						{
 							data: 'type'
+						},
+						{
+							data: 'min_education'
 						},
 						{
 							data: 'quota'
@@ -132,6 +198,15 @@
 					window.location.href = route
 				}
 			})
+
+			$('#filter-form').on('submit', function(e) {
+				e.preventDefault();
+				dt_basic.ajax.reload();
+			});
+
+			$('.filter-select, .filter-input').on('change', function() {
+				dt_basic.ajax.reload();
+			});
 
 			$(document).on('change', '.toggle-show-salary', function() {
 				const checkbox = $(this)
