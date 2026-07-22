@@ -30,11 +30,11 @@
 					</div>
 					<div class="col-md-2">
 						<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
-						<input type="number" name="salary_min" class="form-control filter-input" placeholder="Min">
+						<input type="text" inputmode="numeric" name="salary_min" class="form-control filter-input filter-salary" placeholder="Min" autocomplete="off">
 					</div>
 					<div class="col-md-2">
 						<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
-						<input type="number" name="salary_max" class="form-control filter-input" placeholder="Max">
+						<input type="text" inputmode="numeric" name="salary_max" class="form-control filter-input filter-salary" placeholder="Max" autocomplete="off">
 					</div>
 					<div class="col-md-2">
 						<label class="form-label">{{ __('admin.jobs.min_education') }}</label>
@@ -99,8 +99,11 @@
 			function getFilterParams() {
 				var params = {};
 				$('#filter-form').find('select, input').each(function() {
+					if ($(this).hasClass('filter-salary')) return;
+					var name = $(this).attr('name');
+					if (!name) return;
 					var val = $(this).val();
-					if (val) params[$(this).attr('name')] = val;
+					if (val) params[name] = val;
 				});
 				return params;
 			}
@@ -198,6 +201,32 @@
 					window.location.href = route
 				}
 			})
+
+			$('.filter-salary').each(function() {
+				var input = this;
+				var hidden = document.createElement('input');
+				hidden.type = 'hidden';
+				hidden.name = input.name;
+				hidden.className = 'filter-salary-hidden';
+				input.name = input.name + '_display';
+				input.parentNode.appendChild(hidden);
+
+				input.addEventListener('input', function() {
+					var digits = this.value.replace(/\D/g, '');
+					hidden.value = digits;
+					this.value = digits ? new Intl.NumberFormat('id-ID').format(digits) : '';
+				});
+
+				input.addEventListener('blur', function() {
+					if (!this.value) hidden.value = '';
+				});
+
+				if (this.value) {
+					var digits = this.value.replace(/\D/g, '');
+					hidden.value = digits;
+					this.value = digits ? new Intl.NumberFormat('id-ID').format(digits) : '';
+				}
+			});
 
 			$('#filter-form').on('submit', function(e) {
 				e.preventDefault();

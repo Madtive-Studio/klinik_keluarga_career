@@ -53,6 +53,8 @@ return [
         'create' => 'Create',
         'confirm_delete' => 'Confirm delete?',
         'toggle_salary_failed' => 'Failed to update salary visibility',
+        'all' => 'All',
+        'filter' => 'Filter',
     ],
     'jobs' => [
         'title' => 'Job List',

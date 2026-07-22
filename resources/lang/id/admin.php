@@ -53,6 +53,8 @@ return [
         'create' => 'Tambah',
         'confirm_delete' => 'Konfirmasi hapus?',
         'toggle_salary_failed' => 'Gagal mengubah tampilan gaji',
+        'all' => 'Semua',
+        'filter' => 'Filter',
     ],
     'jobs' => [
         'title' => 'Daftar Lowongan',
