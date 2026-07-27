@@ -42,7 +42,7 @@
 					</div>
 					<div class="col-md-2">
 						<div>
-							<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="text-primary"><strong>Lamar Sekarang</strong> <i class="mdi mdi-chevron-double-right"></i></a>
+							<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="text-primary"><strong>{{ __('candidate.jobs.apply_now') }}</strong> <i class="mdi mdi-chevron-double-right"></i></a>
 						</div>
 					</div>
 				</div>

@@ -46,12 +46,22 @@ class ApplicantController extends Controller
             });
         }
 
-        $query = $query->with(['candidate', 'job', 'batch', 'document'])->orderByDesc('auto_score')->orderBy('created_at', 'ASC');
+        $query = $query->with(['candidate', 'job', 'batch', 'applyDocuments.document'])->orderByDesc('auto_score')->orderBy('created_at', 'ASC');
 
         return DataTables::of($query)
             ->addIndexColumn()
             ->editColumn('job.title', function ($row) {
                 return $row->job->code . ' - ' . $row->job->title;
+            })
+            ->editColumn('document.name', function ($row) {
+                $docs = $row->applyDocuments;
+                if ($docs->isEmpty()) {
+                    return '-';
+                }
+                if ($docs->count() === 1) {
+                    return $docs->first()->document?->name ?? '-';
+                }
+                return __('admin.applies.documents_count', ['count' => $docs->count()]);
             })
             ->editColumn('auto_score', function ($row) {
                 return $row->auto_score !== null ? $row->auto_score . '/100' : '-';
@@ -67,7 +77,6 @@ class ApplicantController extends Controller
             })
             ->addColumn('action', function ($row) {
                 $btn = '<div class="btn-group" role="group" aria-label="Basic example">';
-                $btn .= '<a href="'.Storage::url($row->document->file).'" download class="btn btn-sm btn-info download"><i class="ti ti-download"></i></a>';
                 $btn .= '<a href="'.route('admin.applies.show', $row->id).'" class="btn btn-sm btn-primary detail"><i class="ti ti-eye"></i></a>';
                 $btn .= '</div>';
 
@@ -79,7 +88,7 @@ class ApplicantController extends Controller
 
     public function show($id)
     {
-        $apply = Apply::with(['candidate.profile', 'candidate.skills', 'job.criteria', 'document'])->findOrFail($id);
+        $apply = Apply::with(['candidate.profile', 'candidate.skills', 'job.criteria', 'document', 'applyDocuments.document'])->findOrFail($id);
         return view('admin.applies.detail', [
             'uuid' => (string)Str::uuid(),
             'apply' => $apply,

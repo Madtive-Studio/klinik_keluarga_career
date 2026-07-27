@@ -9,12 +9,12 @@
 					<div class="text-center text-white">
 						<h4 class="text-uppercase title mb-4">{{ $job->code }} - {{ $job->title }}</h4>
 						<ul class="page-next d-inline-block mb-0">
-							<li><a href="#" class="text-uppercase font-weight-bold">{{ __('candidate.nav.home') }}</a></li>
+							<li><a href="#" class="text-uppercase fw-bold">{{ __('candidate.nav.home') }}</a></li>
 							<li>
 								<span class="text-uppercase text-white">{{ __('candidate.nav.jobs') }}</span>
 							</li>
 							<li>
-								<span class="text-uppercase text-white font-weight-bold">{{ $job->code }} - {{ $job->title }}</span>
+								<span class="text-uppercase text-white fw-bold">{{ $job->code }} - {{ $job->title }}</span>
 							</li>
 						</ul>
 					</div>
@@ -29,12 +29,35 @@
 					@include('layouts.alert-section')
 					<div class="job-detail border rounded p-4">
 						<div class="job-detail-content">
-							<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid float-left mr-md-3 mr-2 mx-auto d-block">
+							@if (count($job->image_urls) > 0)
+								<div id="applyCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
+									<ol class="carousel-indicators">
+										@foreach ($job->image_urls as $index => $imageUrl)
+											<li data-bs-target="#applyCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}"></li>
+										@endforeach
+									</ol>
+									<div class="carousel-inner rounded">
+										@foreach ($job->image_urls as $index => $imageUrl)
+											<div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+												<img src="{{ $imageUrl }}" alt="{{ $job->title }}" class="d-block w-100" style="max-height: 300px; object-fit: cover; cursor: zoom-in;" data-slide="{{ $index }}">
+											</div>
+										@endforeach
+									</div>
+									<a class="carousel-control-prev" href="#applyCarousel" role="button" data-bs-slide="prev">
+										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+										<span class="visually-hidden">Previous</span>
+									</a>
+									<a class="carousel-control-next" href="#applyCarousel" role="button" data-bs-slide="next">
+										<span class="carousel-control-next-icon" aria-hidden="true"></span>
+										<span class="visually-hidden">Next</span>
+									</a>
+								</div>
+							@endif
 							<div class="job-detail-com-desc overflow-hidden d-block">
 								<h4 class="mb-2"><a href="#" class="text-dark">{{ __('candidate.apply.application_label') }} | {{ $job->code }} - {{ $job->title }}</a></h4>
-								<p class="text-muted mb-0"><i class="mdi mdi-link-variant mr-2"></i>{{ $job->category->name }}</p>
-								<p class="text-muted mb-0"><i class="mdi mdi-laptop mr-2"></i>{{ \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type }} | {{ $job->experience }}</p>
-								<p class="text-muted mb-0"><i class="mdi mdi-account mr-2"></i>{{ __('candidate.jobs.applicants_count', ['count' => $formattedAppliesTotal]) }}</p>
+								<p class="text-muted mb-0"><i class="mdi mdi-link-variant me-2"></i>{{ $job->category->name }}</p>
+								<p class="text-muted mb-0"><i class="mdi mdi-laptop me-2"></i>{{ \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type }} | {{ $job->experience }}</p>
+								<p class="text-muted mb-0"><i class="mdi mdi-account me-2"></i>{{ __('candidate.jobs.applicants_count', ['count' => $formattedAppliesTotal]) }}</p>
 							</div>
 						</div>
 					</div>
@@ -45,62 +68,57 @@
 							<div class="col-lg-12">
 								<div class="job-detail border rounded p-4">
 									<div class="job-detail-content">
-										<div class="form-group">
-											<label for="">{{ __('candidate.apply.cv_resume') }} : </label>
-											<div class="row">
-												<div class="col-md-2">
-													<label for="upload_cv">
-														<input type="radio" name="type_of_document" class="type_of_document" id="upload_cv" value="upload" 
-															{{ old('type_of_document') === 'upload' ? 'checked' : 'checked' }}> {{ __('candidate.apply.upload') }}
-													</label>
-												</div>
-												<div class="col-md-2">
-													<label for="select_cv">
-														<input type="radio" name="type_of_document" class="type_of_document" id="select_cv" value="select"
-															{{ old('type_of_document') === 'select' ? 'checked' : '' }}> {{ __('candidate.apply.select') }}
-													</label>
+										<div class="mb-3">
+											<label>{{ __('candidate.apply.supporting_documents') }} :</label>
+											<div id="documents-container">
+												<div class="document-row d-flex align-items-start gap-2 mb-2">
+													<div class="flex-grow-1">
+														<input type="file" name="documents[0][file]" class="form-control" accept=".pdf,.doc,.docx">
+														@error('documents.0.file')
+															<span class="text-danger fw-bold small">{{ $message }}</span>
+														@enderror
+													</div>
+													<div style="min-width: 160px;">
+														<select name="documents[0][type]" class="form-control">
+															<option value="">{{ __('candidate.apply.select_type') }}</option>
+															@foreach (\App\Enums\DocumentType::getWithLabels() as $value => $label)
+																<option value="{{ $value }}">{{ $label }}</option>
+															@endforeach
+														</select>
+														@error('documents.0.type')
+															<span class="text-danger fw-bold small">{{ $message }}</span>
+														@enderror
+													</div>
+													<button type="button" class="btn btn-danger btn-sm remove-document" style="display:none;" title="{{ __('common.delete') }}">
+														<i class="mdi mdi-close"></i>
+													</button>
 												</div>
 											</div>
-											@error('type_of_document')
-												<span class="text-danger font-weight-bold">{{ $message }}</span>
+											<button type="button" id="add-document" class="btn btn-outline-primary btn-sm mt-1">
+												<i class="mdi mdi-plus"></i> {{ __('candidate.apply.add_document') }}
+											</button>
+											@error('documents')
+												<span class="text-danger fw-bold d-block mt-1">{{ $message }}</span>
 											@enderror
 										</div>
-										<div class="form-group" id="form_new_document">
-											<input type="file" name="new_document" class="form-control" id="new_document">
-											@error('new_document')
-												<span class="text-danger font-weight-bold">{{ $message }}</span>
-											@enderror
-										</div>
-										<div class="form-group" id="form_document_id">
-											<select name="document_id" id="document_id" class="form-control">
-												@foreach ($candidate->documents as $key => $value)
-													<option value="{{ $value->id }}" {{ old('document_id') == $value->id ? 'selected' : '' }}>
-														{{ $value->name }}
-													</option>
-												@endforeach
-											</select>
-											@error('document_id')
-												<span class="text-danger font-weight-bold">{{ $message }}</span>
-											@enderror
-										</div>
-										<div class="form-group">
+										<div class="mb-3">
 											<label for="">{{ __('candidate.apply.cover_letter') }} : </label>
 											<div id="quill-editor-cover_letter" class="mb-3" style="height: 100px;"></div>
 											<textarea class="mb-3 d-none" name="cover_letter" id="quill-editor-cover_letter-area"></textarea>
 											@error('cover_letter')
-												<span class="text-danger font-weight-bold">{{ $message }}</span>
+												<span class="text-danger fw-bold">{{ $message }}</span>
 											@enderror
 										</div>
-										<div class="form-group">
+										<div class="mb-3">
 											<label for="">{{ __('candidate.apply.why_apply') }} : </label>
 											<div id="quill-editor-description" class="mb-3" style="height: 150px;"></div>
 											<textarea class="mb-3 d-none" name="description" id="quill-editor-description-area"></textarea>
 											@error('description')
-												<span class="text-danger font-weight-bold">{{ $message }}</span>
+												<span class="text-danger fw-bold">{{ $message }}</span>
 											@enderror
 										</div>
 									</div>
-									<button type="submit" class="btn btn-primary btn-block">
+									<button type="submit" class="btn btn-primary w-100">
 										{{ __('candidate.jobs.apply_now') }}
 									</button>
 								</div>
@@ -110,40 +128,40 @@
 				</div>
 				<div class="col-lg-4 col-md-5 mt-4 mt-sm-0">
 					<div class="job-detail border rounded p-4">
-						<h5 class="text-muted text-center pb-2"><i class="mdi mdi-info mr-2"></i>{{ __('candidate.jobs.information') }}</h5>
+						<h5 class="text-muted text-center pb-2"><i class="mdi mdi-info me-2"></i>{{ __('candidate.jobs.information') }}</h5>
 						<div class="job-detail-location pt-4 border-top">
 							<div class="job-details-desc-item">
-								<div class="float-left mr-2">
+								<div class="float-start me-2">
 									<i class="mdi mdi-clock-outline text-muted"></i>
 								</div>
 								<p class="text-muted mb-2">: {{ $activeBatch?->name ?? '-' }} | {{ $activeBatch ? date('d M Y', strtotime($activeBatch->start_date)) . ' - ' . date('d M Y', strtotime($activeBatch->end_date)) : '-' }}</p>
 							</div>
 							<div class="job-details-desc-item">
-								<div class="float-left mr-2">
+								<div class="float-start me-2">
 									<i class="mdi mdi-laptop text-muted"></i>
 								</div>
 								<p class="text-muted mb-2">{{ \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type }}</p>
 							</div>
 							<div class="job-details-desc-item">
-								<div class="float-left mr-2">
+								<div class="float-start me-2">
 									<i class="mdi mdi-information-outline text-muted"></i>
 								</div>
 								<p class="text-muted mb-2">{{ $job->experience }}</p>
 							</div>
 							<div class="job-details-desc-item">
-								<div class="float-left mr-2">
+								<div class="float-start me-2">
 									<i class="mdi mdi-account text-muted"></i>
 								</div>
 								<p class="text-muted mb-2">{{ __('candidate.apply.quota_people', ['count' => $job->quota]) }}</p>
 							</div>
 							<div class="job-details-desc-item">
-								<div class="float-left mr-2">
+								<div class="float-start me-2">
 									<i class="mdi mdi-currency-usd text-muted"></i>
 								</div>
 								<p class="text-muted mb-2">: {{ $job->is_show_salary ? $job->salary_display : __('candidate.apply.salary_not_stated') }}</p>
 							</div>
 							<div class="job-details-desc-item">
-								<div class="float-left mr-2">
+								<div class="float-start me-2">
 									<i class="mdi mdi-clock-outline text-muted"></i>
 								</div>
 								<p class="text-muted mb-2">: {{ __('candidate.apply.weekdays') }}</p>
@@ -155,6 +173,33 @@
 		</div>
 	</section>
 @endsection
+<div class="modal fade" id="imageZoomModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered m-0 p-0" style="max-width: 100vw; min-height: 100vh;" role="document">
+			<div class="modal-content" style="background: rgba(0,0,0,0.92); border: none; border-radius: 0; min-height: 100vh;">
+				<button type="button" class="btn-close btn-close-white position-fixed" data-bs-dismiss="modal" aria-label="Close" style="top: 20px; right: 25px; z-index: 1050; font-size: 1.5rem;">
+				</button>
+				<div class="modal-body d-flex align-items-center justify-content-center p-0" style="min-height: 100vh;">
+					<div id="zoomCarousel" class="carousel slide w-100" data-bs-ride="carousel" data-interval="false">
+						<div class="carousel-inner">
+							@foreach ($job->image_urls as $index => $imageUrl)
+								<div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+									<img src="{{ $imageUrl }}" alt="{{ $job->title }}" class="d-block mx-auto" style="max-width: 90vw; max-height: 90vh; object-fit: contain;">
+								</div>
+							@endforeach
+						</div>
+						<a class="carousel-control-prev" href="#zoomCarousel" role="button" data-bs-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Previous</span>
+						</a>
+						<a class="carousel-control-next" href="#zoomCarousel" role="button" data-bs-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Next</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 @section('js')
 	<script>
 		$(document).ready(function() {
@@ -199,30 +244,33 @@
 
 			initQuill('quill-editor-description', 'quill-editor-description-area', `{!! old('description') !!}`);
 			initQuill('quill-editor-cover_letter', 'quill-editor-cover_letter-area', `{!! old('cover_letter') !!}`);
+
+			$('#applyCarousel .carousel-item img').on('click', function() {
+				var slideIndex = $(this).data('slide');
+				$('#zoomCarousel').carousel(slideIndex);
+				$('#imageZoomModal').modal('show');
+			});
+
+			$('#imageZoomModal').on('hidden.bs.modal', function () {
+				$('#zoomCarousel').carousel(0);
+			});
 		});
 
-		$(function() {
-			@if (old('type_of_document') === 'upload')
-				$('#form_new_document').show()
-				$('#form_document_id').hide()
-			@elseif (old('type_of_document') === 'select')
-				$('#form_new_document').hide()
-				$('#form_document_id').show()
-			@else
-				$('#form_new_document').show()
-				$('#form_document_id').hide()
-			@endif
+		let docIndex = 0;
+		$(document).on('click', '#add-document', function() {
+			docIndex = $('#documents-container .document-row').length;
+			let clone = $('#documents-container .document-row').first().clone();
+			clone.find('input, select').each(function() {
+				let name = $(this).attr('name').replace(/\[\d+\]/, '[' + docIndex + ']');
+				$(this).attr('name', name).val('');
+			});
+			clone.find('.remove-document').show();
+			clone.find('.text-danger').remove();
+			$('#documents-container').append(clone);
+		});
 
-			$(document).on('change', '.type_of_document', function() {
-				let checkedValue = $(this).val()
-				if (checkedValue === 'upload') {
-					$('#form_new_document').show()
-					$('#form_document_id').hide()
-				} else if (checkedValue === 'select') {
-					$('#form_new_document').hide()
-					$('#form_document_id').show()
-				}
-			})
-		})
+		$(document).on('click', '.remove-document', function() {
+			$(this).closest('.document-row').remove();
+		});
 	</script>
 @endsection

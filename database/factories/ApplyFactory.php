@@ -44,6 +44,15 @@ class ApplyFactory extends Factory
                 $candidate = Candidate::query()->findOrFail($apply->candidate_id);
                 $apply->document_id = Document::factory()->for($candidate)->cv()->create()->id;
             }
+        })->afterCreating(function (Apply $apply) {
+            if ($apply->applyDocuments()->count() === 0) {
+                $candidate = Candidate::query()->findOrFail($apply->candidate_id);
+                $document = Document::factory()->for($candidate)->cv()->create();
+                $apply->applyDocuments()->create([
+                    'document_id' => $document->id,
+                    'type' => 'CV',
+                ]);
+            }
         });
     }
 

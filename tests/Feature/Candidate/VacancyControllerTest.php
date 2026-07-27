@@ -3,6 +3,7 @@
 namespace Tests\Feature\Candidate;
 
 use App\Models\Candidate;
+use App\Models\CandidateProfile;
 use App\Models\Job;
 use App\Models\Apply;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -60,6 +61,9 @@ class VacancyControllerTest extends TestCase
     {
         $candidate = Candidate::factory()->create([
             'email_verified_at' => now(),
+        ]);
+        CandidateProfile::factory()->for($candidate)->create([
+            'education_level' => 'SMA',
         ]);
         $job = Job::factory()->create();
 

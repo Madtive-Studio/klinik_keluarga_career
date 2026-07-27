@@ -8,7 +8,7 @@
 	@endif
 	@if (!empty($actionUrl) && !empty($actionLabel))
 		<a href="{{ $actionUrl }}" class="btn btn-primary btn-sm mt-3">
-			<i class="mdi mdi-upload mr-1"></i>{{ $actionLabel }}
+			<i class="mdi mdi-upload me-1"></i>{{ $actionLabel }}
 		</a>
 	@endif
 </div>

@@ -20,31 +20,29 @@ class HomeRepository
 
     // ==================== DB Operations ====================
 
-    public function getLatestJobsByBatch(?int $batchId, int $limit = 5): Collection
+    public function getLatestJobs(?int $batchId = null, int $limit = 5): Collection
     {
-        if (!$batchId) {
-            return collect();
+        $query = Job::with(['category', 'batch'])->latest()->limit($limit);
+
+        if ($batchId) {
+            $query->where('batch_id', $batchId);
         }
 
-        return Job::with(['category', 'batch'])
-            ->where('batch_id', $batchId)
-            ->latest()
-            ->limit($limit)
-            ->get();
+        return $query->get();
     }
 
-    public function getLatestJobsByBatchAndType(?int $batchId, string $jobType, int $limit = 5): Collection
+    public function getLatestJobsByType(string $jobType, ?int $batchId = null, int $limit = 5): Collection
     {
-        if (!$batchId) {
-            return collect();
-        }
-
-        return Job::with(['category', 'batch'])
-            ->where('batch_id', $batchId)
+        $query = Job::with(['category', 'batch'])
             ->where('type', $jobType)
             ->latest()
-            ->limit($limit)
-            ->get();
+            ->limit($limit);
+
+        if ($batchId) {
+            $query->where('batch_id', $batchId);
+        }
+
+        return $query->get();
     }
 
     // ==================== Business Logic ====================
@@ -56,13 +54,12 @@ class HomeRepository
     public function getHomeDisplayData(array $jobTypes): array
     {
         $activeBatch = $this->batchRepo->getActiveBatch();
-        $activeBatchId = $activeBatch?->id;
         $jobsByType = [
-            'All' => $this->getLatestJobsByBatch($activeBatchId),
+            'All' => $this->getLatestJobs(),
         ];
 
         foreach (array_keys($jobTypes) as $jobType) {
-            $jobsByType[$jobType] = $this->getLatestJobsByBatchAndType($activeBatchId, $jobType);
+            $jobsByType[$jobType] = $this->getLatestJobsByType($jobType);
         }
 
         return [
@@ -79,14 +76,13 @@ class HomeRepository
      */
     public function getJobsByTypeForHome(?string $jobType): Collection
     {
-        $activeBatchId = $this->batchRepo->getActiveBatch()?->id;
         $normalizedType = trim((string) $jobType);
 
         if ($normalizedType === '' || strtoupper($normalizedType) === 'ALL') {
-            return $this->getLatestJobsByBatch($activeBatchId);
+            return $this->getLatestJobs();
         }
 
-        return $this->getLatestJobsByBatchAndType($activeBatchId, $normalizedType);
+        return $this->getLatestJobsByType($normalizedType);
     }
 
     /**

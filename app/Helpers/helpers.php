@@ -34,7 +34,7 @@ function formatSalaryAmount(?int $amount): string
         return '-';
     }
 
-    return 'Rp ' . number_format($amount, 0, ',', '.');
+    return 'IDR ' . number_format($amount, 0, ',', '.');
 }
 
 function formatSalaryRange(?int $min, ?int $max, bool $short = false): string

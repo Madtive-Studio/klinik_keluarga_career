@@ -29,8 +29,11 @@ class JobRepository
         $minEducation = $filters['minEducation'] ?? null;
 
         $query = Job::with(['category', 'batch', 'criteria'])
-            ->where('batch_id', $batchId)
             ->orderBy('created_at', 'desc');
+
+        if ($batchId) {
+            $query->where('batch_id', $batchId);
+        }
 
         if (!empty($searchQuery)) {
             $keyword = '%' . $searchQuery . '%';
@@ -87,14 +90,11 @@ class JobRepository
         ?string $salaryMax = null,
         ?string $minEducation = null,
     ): array {
-        $activeBatch = $this->batchRepo->getActiveBatch();
-        $activeBatchId = $activeBatch?->id ?? 0;
-
         $filters = [
             'searchQuery' => strtolower($searchQuery),
             'categoryId' => $categoryId,
             'jobType' => $jobType,
-            'batchId' => $activeBatchId,
+            'batchId' => null,
             'salaryMin' => $salaryMin,
             'salaryMax' => $salaryMax,
             'minEducation' => $minEducation,
@@ -121,7 +121,7 @@ class JobRepository
 
         return [
             'job'                  => $job,
-            'activeBatch'          => $this->batchRepo->getActiveBatch(),
+            'activeBatch'          => $job->batch,
             'formattedAppliesTotal' => $appliesTotal < 10 ? '0' . $appliesTotal : $appliesTotal,
             'applyEligibility'     => $this->getApplyEligibility($job, $candidateId),
         ];
@@ -134,11 +134,20 @@ class JobRepository
         $eligibility = [
             'can_apply' => true,
             'already_applied' => false,
+            'batch_expired' => false,
             'education_not_met' => false,
             'profile_incomplete' => false,
             'min_education_label' => EducationLevel::labelOf($job->criteria?->min_education),
             'candidate_education_label' => null,
         ];
+
+        $job->loadMissing('batch');
+        if ($job->batch && $job->batch->end_date < now()) {
+            $eligibility['can_apply'] = false;
+            $eligibility['batch_expired'] = true;
+
+            return $eligibility;
+        }
 
         if ($candidateId === null) {
             return $eligibility;
@@ -202,7 +211,7 @@ class JobRepository
 
         return [
             'job'                   => $job,
-            'activeBatch'           => $this->batchRepo->getActiveBatch(),
+            'activeBatch'           => $job->batch,
             'formattedAppliesTotal' => $appliesTotal < 10 ? '0' . $appliesTotal : $appliesTotal,
             'candidate'             => $this->candidateRepo->findWithDocuments($candidateId),
         ];

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\DocumentType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ApplicationRequest extends FormRequest
 {
@@ -13,33 +15,38 @@ class ApplicationRequest extends FormRequest
 
     public function rules(): array
     {
-        $rules = [
+        return [
             'job_uuid' => 'required|exists:jobs,uuid',
-            'type_of_document' => 'required',
+            'documents' => 'required|array|min:1|max:10',
+            'documents.*.file' => 'required|file|mimes:pdf,doc,docx|max:20480',
+            'documents.*.type' => ['required', 'string', Rule::enum(DocumentType::class)],
             'cover_letter' => 'required',
             'description' => 'required',
         ];
-
-        $type = strtolower((string) $this->input('type_of_document'));
-
-        if ($type === 'upload') {
-            $rules['new_document'] = 'required|file|mimes:pdf,doc,docx|max:20480';
-        } else {
-            $rules['document_id'] = 'required';
-        }
-
-        return $rules;
     }
 
     public function attributes(): array
     {
         return [
-            'new_document' => __('validation.attributes.new_document'),
-            'document_id' => __('validation.attributes.document_id'),
+            'documents' => __('validation.attributes.documents'),
+            'documents.*.file' => __('validation.attributes.document_file'),
+            'documents.*.type' => __('validation.attributes.document_type'),
             'job_uuid' => __('validation.attributes.job_uuid'),
-            'type_of_document' => __('validation.attributes.type_of_document'),
             'cover_letter' => __('validation.attributes.cover_letter'),
             'description' => __('validation.attributes.description'),
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'documents.required' => __('validation.documents_required'),
+            'documents.min' => __('validation.documents_min', ['min' => 1]),
+            'documents.max' => __('validation.documents_max', ['max' => 10]),
+            'documents.*.file.required' => __('validation.document_file_required'),
+            'documents.*.file.mimes' => __('validation.document_file_mimes'),
+            'documents.*.type.required' => __('validation.document_type_required'),
+            'documents.*.type.Illuminate\Validation\Rules\Enum' => __('validation.document_type_invalid'),
         ];
     }
 }

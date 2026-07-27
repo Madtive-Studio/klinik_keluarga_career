@@ -47,8 +47,8 @@
 						<div class="card-body">
 							<p class="text-muted small mb-2">{{ __('candidate.profile.subtitle') }}</p>
 							<div class="d-flex justify-content-between align-items-center mb-2">
-								<span class="small font-weight-bold">{{ __('candidate.profile.completion') }}</span>
-								<span id="profile-completion-percent" class="small text-primary font-weight-bold">{{ $completionPercent }}%</span>
+								<span class="small fw-bold">{{ __('candidate.profile.completion') }}</span>
+								<span id="profile-completion-percent" class="small text-primary fw-bold">{{ $completionPercent }}%</span>
 							</div>
 							<div class="progress profile-progress mb-3" style="height: 8px;">
 								<div id="profile-completion-bar" class="progress-bar bg-primary" role="progressbar" style="width: {{ $completionPercent }}%;"></div>
@@ -182,7 +182,7 @@
 
 						<div class="profile-form-actions d-flex justify-content-end">
 							<button type="submit" class="btn btn-primary px-4">
-								<i class="mdi mdi-content-save-outline mr-1"></i>{{ __('candidate.profile.save_profile') }}
+								<i class="mdi mdi-content-save-outline me-1"></i>{{ __('candidate.profile.save_profile') }}
 							</button>
 						</div>
 					</form>

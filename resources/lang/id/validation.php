@@ -25,6 +25,13 @@ return [
     'uploaded' => ':attribute gagal diunggah. Pastikan ukuran file sesuai dan coba lagi.',
     'string' => ':attribute harus berupa teks.',
     'current_password' => 'Password saat ini tidak sesuai.',
+    'documents_required' => 'Minimal 1 dokumen harus dilampirkan.',
+    'documents_min' => 'Minimal :min dokumen harus dilampirkan.',
+    'documents_max' => 'Maksimal :max dokumen yang dapat dilampirkan.',
+    'document_file_required' => 'File dokumen wajib diupload.',
+    'document_file_mimes' => 'Format file dokumen harus PDF, DOC, atau DOCX.',
+    'document_type_required' => 'Pilih jenis dokumen.',
+    'document_type_invalid' => 'Jenis dokumen tidak valid.',
 
     'attributes' => [
         'batch_id' => 'batch',
@@ -48,10 +55,10 @@ return [
         'threshold_shortlist' => 'batas skor direkomendasi',
         'threshold_reject' => 'batas skor review',
         'job_uuid' => 'lowongan',
-        'type_of_document' => 'jenis dokumen',
+        'documents' => 'dokumen lamaran',
         'cover_letter' => 'surat lamaran',
-        'new_document' => 'berkas CV',
-        'document_id' => 'dokumen CV',
+        'document_file' => 'berkas dokumen',
+        'document_type' => 'jenis dokumen',
         'file' => 'file',
         'image' => 'gambar lowongan',
         'images' => 'gambar lowongan',
@@ -69,8 +76,10 @@ return [
             'required' => 'Lowongan tidak valid.',
             'exists' => 'Lowongan pekerjaan tidak ditemukan.',
         ],
-        'type_of_document' => [
-            'required' => 'Pilih jenis dokumen terlebih dahulu.',
+        'documents' => [
+            'required' => 'Minimal 1 dokumen harus dilampirkan.',
+            'min' => 'Minimal :min dokumen harus dilampirkan.',
+            'max' => 'Maksimal :max dokumen yang dapat dilampirkan.',
         ],
         'cover_letter' => [
             'required' => 'Surat lamaran wajib diisi.',
@@ -78,15 +87,15 @@ return [
         'description' => [
             'required' => 'Deskripsi wajib diisi.',
         ],
-        'new_document' => [
+        'documents.*.file' => [
             'required' => 'File dokumen wajib diupload.',
-            'file' => 'Berkas CV harus berupa file yang valid.',
+            'file' => 'Berkas harus berupa file yang valid.',
             'uploaded' => 'File tidak berhasil diunggah ke server. Pastikan ukuran maksimal 20MB dan coba lagi.',
             'mimes' => 'Format file harus PDF, DOC, atau DOCX.',
             'max' => 'Ukuran file maksimal 20MB.',
         ],
-        'document_id' => [
-            'required' => 'Pilih dokumen CV/Resume terlebih dahulu.',
+        'documents.*.type' => [
+            'required' => 'Pilih jenis dokumen.',
         ],
         'file' => [
             'required' => 'File wajib diisi.',

@@ -3,15 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Karir | Madtive Studio - Register</title>
+    <title>{{ config('app.name') }} - {{ __('candidate.auth.register_title') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta property="og:locale" content="{{ app()->getLocale() === 'id' ? 'id_ID' : 'en_US' }}" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Madtive Studio" />
-    <meta property="og:description" content="Madtive Studio adalah studio atau software house yang bergerak di bidang Teknologi Informasi, Sistem dan juga Branding yang berdiri sejak tahun 2015" />
-    <meta property="og:url" content="https://madtive.com/" />
-    <meta property="og:site_name" content="Madtive Studio" />
-    <meta name="description" content="Madtive Studio adalah studio atau software house yang bergerak di bidang Teknologi Informasi, Sistem dan juga Branding yang berdiri sejak tahun 2015">
+    <meta property="og:title" content="{{ config('app.name') }}" />
+    <meta property="og:description" content="{{ config('app.name') }} - {{ __('candidate.footer.about') }}" />
+    <meta property="og:url" content="{{ config('app.url') }}" />
+    <meta property="og:site_name" content="{{ config('app.name') }}" />
+    <meta name="description" content="{{ config('app.name') }} - {{ __('candidate.footer.about') }}">
     <meta name="keywords" content="Madtive Studio">
     <!-- Favicon -->
    	@include('layouts.app-icon')
@@ -69,7 +69,7 @@
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>{{ __('candidate.auth.full_name') }} <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="..." name="name" value="{{ old('name') }}">
                                                 @error('name') 
@@ -78,7 +78,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>{{ __('candidate.auth.phone') }} <span class="text-danger">*</span></label>
                                                 <input type="number" class="form-control" placeholder="..." name="phone" value="{{ old('phone') }}">
                                                 @error('phone') 
@@ -87,7 +87,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>{{ __('candidate.auth.birth_date') }} <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control flatpickr" readonly placeholder="..." name="birth_date" value="{{ old('birth_date') }}">
                                                 @error('birth_date') <span
@@ -96,7 +96,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>{{ __('common.email') }} <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="..." name="email" value="{{ old('email') }}">
                                                 @error('email') 
@@ -105,7 +105,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>{{ __('candidate.auth.address') }} <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="..." name="address" value="{{ old('address') }}">
                                                 @error('address') 
@@ -114,7 +114,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>{{ __('common.password') }} <span class="text-danger">*</span></label>
                                                 <input type="password" class="form-control" placeholder="..." name="password">
                                                 @error('password') 
@@ -123,7 +123,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <div class="form-group position-relative">
+                                            <div class="mb-3 position-relative">
                                                 <label>{{ __('candidate.auth.password_confirmation') }} <span class="text-danger">*</span></label>
                                                 <input type="password" class="form-control" placeholder="..." name="password_confirmation">
                                                 @error('password_confirmation') 
@@ -135,8 +135,8 @@
                                             <button class="btn btn-primary w-100">{{ __('common.register') }}</button>
                                         </div>
                                         <div class="mx-auto">
-                                            <p class="mb-0 mt-3"><small class="text-dark mr-2">{{ __('candidate.auth.has_account') }}</small>
-                                                <a href="{{ route('candidate.login.form') }}" class="text-dark font-weight-bold">{{ __('common.login') }}</a>
+                                            <p class="mb-0 mt-3"><small class="text-dark me-2">{{ __('candidate.auth.has_account') }}</small>
+                                                <a href="{{ route('candidate.login.form') }}" class="text-dark fw-bold">{{ __('common.login') }}</a>
                                             </p>
                                         </div>
                                     </div>

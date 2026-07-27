@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Apply extends Model
 {
@@ -61,5 +62,15 @@ class Apply extends Model
     public function candidate(): BelongsTo
     {
         return $this->belongsTo(Candidate::class, 'candidate_id', 'id');
+    }
+
+    public function applyDocuments(): HasMany
+    {
+        return $this->hasMany(ApplyDocument::class);
+    }
+
+    public function documents(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Document::class, ApplyDocument::class, 'apply_id', 'id', 'id', 'document_id');
     }
 }

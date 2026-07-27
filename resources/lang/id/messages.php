@@ -22,6 +22,7 @@ return [
         'already_applied_html' => 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href=":url"><u>Lamaran Saya</u></a> untuk melihat status lamaran kamu.',
         'already_applied' => 'Kamu sudah melamar lowongan pekerjaan ini',
         'complete_profile_first' => 'Lengkapi profil pendidikan terlebih dahulu sebelum melamar.',
+        'batch_expired' => 'Maaf, periode pendaftaran untuk lowongan ini sudah berakhir.',
         'education_not_met' => 'Pendidikan terakhir kamu (:current) belum memenuhi syarat minimum (:required) untuk lowongan ini.',
         'not_found' => 'Data lamaran tidak ditemukan.',
     ],

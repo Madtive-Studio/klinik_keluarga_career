@@ -47,7 +47,6 @@ class ApplicationController extends Controller
             $uuid,
             Auth::guard('candidate')->id(),
             $request->validated(),
-            $request->file('new_document'), 
         );
 
         if (isset($resultData['error'])) {

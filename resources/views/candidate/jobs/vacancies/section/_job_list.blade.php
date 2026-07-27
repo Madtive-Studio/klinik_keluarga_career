@@ -11,7 +11,9 @@
                 <div class="row align-items-center">
                     <div class="col-lg-2">
                         <div class="company-logo-img">
-                            <img src="{{ $job->image_url }}" width="100" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded">
+                            <a href="{{ route('candidate.jobs.vacancies.show' , $job->uuid) }}">
+                                <img src="{{ $job->image_url }}" width="100" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded">
+                            </a>
                         </div>
                     </div>
                     <div class="col-lg-7 col-md-9">
@@ -22,17 +24,20 @@
                                 @if ($job->is_show_salary)
                                     <small class="text-muted"><i class="mdi mdi-currency-usd me-1"></i>{{ $salaryDisplay }}</small>
                                 @endif
-                                <small class="text-muted"><i class="mdi mdi-school me-1"></i>Min. {{ $minEducation }}</small>
+                                <small class="text-muted"><i class="mdi mdi-school me-1"></i>{{ __('candidate.jobs.min_education') }} {{ $minEducation }}</small>
                                 <small class="text-muted"><i class="mdi mdi-map-marker me-1"></i>Cianjur, Jawa Barat</small>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3">
                         <div class="job-list-button-sm text-end">
-                            <span class="badge badge-success">{{ $job->type }}</span>
+                            @php
+                                $jobTypeLabel = \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type;
+                            @endphp
+                            <span class="badge bg-success">{{ $jobTypeLabel }}</span>
                             <div class="mt-3">
                                 <a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-sm btn-primary">
-                                    Lamar Sekarang
+                                    {{ __('candidate.jobs.apply_now') }}
                                 </a>
                             </div>
                         </div>
@@ -42,5 +47,5 @@
         </div>
     </div>
 @empty
-    <p class="text-center mx-auto mt-3">Tidak ada data</p>
+    <p class="text-center mx-auto mt-3">{{ __('common.no_data') }}</p>
 @endforelse

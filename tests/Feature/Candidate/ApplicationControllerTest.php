@@ -77,10 +77,11 @@ class ApplicationControllerTest extends TestCase
 
         $response = $this->post(route('candidate.jobs.applications.store'), [
             'job_uuid'         => $job->uuid,
-            'type_of_document' => 'upload',
+            'documents'        => [
+                ['file' => $file, 'type' => 'CV'],
+            ],
             'cover_letter'     => 'Saya tertarik dengan posisi ini.',
             'description'      => 'Pengalaman saya sesuai kebutuhan.',
-            'new_document'     => $file,
         ]);
 
         $response->assertRedirect(route('candidate.jobs.applications.success', $job->uuid));
@@ -94,33 +95,49 @@ class ApplicationControllerTest extends TestCase
         $apply = Apply::where('candidate_id', $this->candidate->id)->where('job_id', $job->id)->first();
         $this->assertNotNull($apply->auto_score);
         $this->assertNotNull($apply->score_recommendation);
+
+        $this->assertDatabaseHas('apply_documents', [
+            'apply_id' => $apply->id,
+            'type'     => 'CV',
+        ]);
     }
 
     #[Test]
-    public function storeCreatesApplicationWithExistingDocument(): void
+    public function storeCreatesApplicationWithMultipleDocuments(): void
     {
         Notification::fake();
+        Storage::fake('public');
 
         $this->actingAs($this->candidate, 'candidate');
 
         $job = Job::factory()->create();
-        $document = Document::factory()->for($this->candidate)->cv()->create();
+        $cvFile = UploadedFile::fake()->create('cv.pdf', 500, 'application/pdf');
+        $strFile = UploadedFile::fake()->create('str.pdf', 500, 'application/pdf');
 
         $response = $this->post(route('candidate.jobs.applications.store'), [
             'job_uuid'         => $job->uuid,
-            'type_of_document' => 'select',
-            'document_id'      => (string) $document->id,
+            'documents'        => [
+                ['file' => $cvFile, 'type' => 'CV'],
+                ['file' => $strFile, 'type' => 'STR'],
+            ],
             'cover_letter'     => 'Cover letter.',
             'description'      => 'Deskripsi.',
         ]);
 
         $response->assertRedirect(route('candidate.jobs.applications.success', $job->uuid));
 
-        $this->assertDatabaseHas('applies', [
-            'candidate_id' => $this->candidate->id,
-            'document_id'  => $document->id,
-            'job_id'       => $job->id,
+        $apply = Apply::where('candidate_id', $this->candidate->id)->where('job_id', $job->id)->first();
+        $this->assertNotNull($apply);
+
+        $this->assertDatabaseHas('apply_documents', [
+            'apply_id' => $apply->id,
+            'type'     => 'CV',
         ]);
+        $this->assertDatabaseHas('apply_documents', [
+            'apply_id' => $apply->id,
+            'type'     => 'STR',
+        ]);
+        $this->assertEquals(2, $apply->applyDocuments()->count());
     }
 
     #[Test]

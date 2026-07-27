@@ -10,13 +10,13 @@ class FormatSalaryRangeTest extends TestCase
     #[Test]
     public function itFormatsFullSalaryRange(): void
     {
-        $this->assertSame('Rp 2.000.000 - Rp 5.000.000', formatSalaryRange(2_000_000, 5_000_000));
+        $this->assertSame('IDR 2.000.000 - IDR 5.000.000', formatSalaryRange(2_000_000, 5_000_000));
     }
 
     #[Test]
     public function itFormatsFixedSalaryWithoutRangeSeparator(): void
     {
-        $this->assertSame('Rp 3.000.000', formatSalaryRange(3_000_000, 3_000_000));
+        $this->assertSame('IDR 3.000.000', formatSalaryRange(3_000_000, 3_000_000));
     }
 
     #[Test]

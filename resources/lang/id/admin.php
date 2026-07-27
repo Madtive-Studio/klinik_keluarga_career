@@ -183,6 +183,9 @@ return [
         'breakdown_cover_letter' => 'Surat Lamaran',
         'scored_at' => 'Dihitung',
         'view_cv' => 'Lihat & Unduh CV / Resume',
+        'documents' => 'Dokumen Lamaran',
+        'no_documents' => 'Tidak ada dokumen.',
+        'documents_count' => ':count dokumen',
         'change_status' => 'Ubah status',
     ],
     'apply_status' => [

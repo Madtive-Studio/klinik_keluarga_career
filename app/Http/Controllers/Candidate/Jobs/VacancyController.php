@@ -77,6 +77,10 @@ class VacancyController extends Controller
             ]));
         }
 
+        if (isset($resultData['batch_expired'])) {
+            return redirect()->route('candidate.jobs.vacancies.show', $uuid)->with('warning', __('messages.application.batch_expired'));
+        }
+
         if (isset($resultData['profile_incomplete'])) {
             return redirect()->route('candidate.my.profile.edit')->with('warning', __('messages.application.complete_profile_first'));
         }

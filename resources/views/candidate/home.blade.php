@@ -9,7 +9,7 @@
 					<div class="row justify-content-center">
 						<div class="col-lg-10">
 							<div class="title-heading text-center text-white">
-								<h1 class="heading font-weight-bold mb-3">{{ __('candidate.home.heading') }}</h1>
+								<h1 class="heading fw-bold mb-3">{{ __('candidate.home.heading') }}</h1>
 								<h6 class="small-title text-light mb-3 px-5">{{ __('candidate.home.subtitle') }}</h6>
 								<p class="mb-5">{{ __('candidate.home.active_batch', ['batch' => $formattedBatch]) }}</p>
 							</div>
@@ -30,7 +30,7 @@
 											<div class="col-md-3">
 												<div class="registration-form-box">
 													<i class="fa fa-list-alt"></i>
-													<select id="select-category" name="category" class="demo-default">
+													<select id="select-category" name="category" class="form-control">
 														<option value="">{{ __('candidate.home.category') }}</option>
 														@foreach ($categories as $category)
 															<option value="{{ $category->id }}"
@@ -44,7 +44,7 @@
 											<div class="col-md-2">
 												<div class="registration-form-box">
 													<i class="fa fa-list-alt"></i>
-													<select id="select-category" name="job_type" class="demo-default">
+													<select id="select-category" name="job_type" class="form-control">
 														<option value="">{{ __('candidate.home.type') }}</option>
 														<option value="SEMUA">{{ __('common.all') }}</option>
 														@foreach ($jobTypes as $value => $label)
@@ -55,7 +55,7 @@
 											</div>
 											<div class="col-md-2">
 												<div class="registration-form-box">
-													<button type="submit" id="submit" class="submitBtn btn btn-primary btn-block">
+													<button type="submit" id="submit" class="submitBtn btn btn-primary w-100">
 														<i class="mdi mdi-filter text-white"></i>&nbsp;&nbsp;&nbsp;{{ __('common.search') }}
 													</button>
 												</div>
@@ -83,12 +83,12 @@
 				<div class="col-lg-9 text-center mt-4 pt-2">
 					<ul class="nav nav-pills nav nav-pills bg-white rounded nav-justified flex-column flex-sm-row" id="pills-tab" role="tablist">
 						<li class="nav-item">
-							<a class="nav-link rounded active" id="all-tab" data-toggle="pill" href="#all" role="tab" aria-controls="all" aria-selected="true" data-job-type="All">{{ __('common.all') }}</a>
+							<a class="nav-link rounded active" id="all-tab" data-bs-toggle="pill" href="#all" role="tab" aria-controls="all" aria-selected="true" data-job-type="All">{{ __('common.all') }}</a>
 						</li>
 						@foreach ($jobTypes as $value => $label)
 							@php $tabId = \Illuminate\Support\Str::slug($value, '-'); @endphp
 							<li class="nav-item">
-								<a class="nav-link rounded" id="{{ $tabId }}-tab" data-toggle="pill" href="#{{ $tabId }}" role="tab" aria-controls="{{ $tabId }}" aria-selected="false" data-job-type="{{ $value }}">{{ $label }}</a>
+								<a class="nav-link rounded" id="{{ $tabId }}-tab" data-bs-toggle="pill" href="#{{ $tabId }}" role="tab" aria-controls="{{ $tabId }}" aria-selected="false" data-job-type="{{ $value }}">{{ $label }}</a>
 							</li>
 						@endforeach
 					</ul>
@@ -149,7 +149,7 @@
 		}
 
 		$(function() {
-			$('a[data-toggle="pill"]').on('shown.bs.tab', function(e) {
+			$('a[data-bs-toggle="pill"]').on('shown.bs.tab', function(e) {
 				const tab = $(e.target);
 				const tabId = tab.attr('href').replace('#', '');
 				const jobType = tab.data('job-type');

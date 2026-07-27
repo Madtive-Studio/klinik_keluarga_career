@@ -47,13 +47,13 @@ enum DocumentType: string
     public function getBadgeClass(): string
     {
         return match($this) {
-            self::CV => 'badge-primary',
-            self::IJAZAH => 'badge-info',
-            self::STR => 'badge-success',
-            self::SIP => 'badge-success',
-            self::CERTIFICATE => 'badge-warning',
-            self::MCU => 'badge-danger',
-            self::OTHERS => 'badge-secondary',
+            self::CV => 'bg-primary',
+            self::IJAZAH => 'bg-info',
+            self::STR => 'bg-success',
+            self::SIP => 'bg-success',
+            self::CERTIFICATE => 'bg-warning',
+            self::MCU => 'bg-danger',
+            self::OTHERS => 'bg-secondary',
         };
     }
 }

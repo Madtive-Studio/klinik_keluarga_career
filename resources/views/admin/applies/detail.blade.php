@@ -102,9 +102,33 @@
 								</div>
 							@endif
 							<div class="mb-3">
-								<a href="{{ Illuminate\Support\Facades\Storage::url($apply->document->file) }}" target="_blank" class="btn btn-info btn-sm">
-									<i class="ti ti-download"></i> {{ __('admin.applies.view_cv') }}
-								</a>
+								<label class="form-label fw-bold">{{ __('admin.applies.documents') }}</label>
+								@php
+									$applyDocuments = $apply->applyDocuments()->with('document')->get();
+								@endphp
+								@if ($applyDocuments->isNotEmpty())
+									<div class="list-group list-group-flush">
+										@foreach ($applyDocuments as $applyDoc)
+											<a href="{{ Illuminate\Support\Facades\Storage::url($applyDoc->document->file) }}" target="_blank"
+												class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
+												<div>
+													<i class="ti ti-file-text me-1"></i>
+													<span>{{ $applyDoc->document->name }}</span>
+												</div>
+												<div>
+													<span class="badge {{ $applyDoc->type?->getBadgeClass() ?? 'badge-secondary' }} me-2">{{ $applyDoc->type?->getLabel() ?? $applyDoc->type }}</span>
+													<i class="ti ti-download text-muted"></i>
+												</div>
+											</a>
+										@endforeach
+									</div>
+								@elseif ($apply->document)
+									<a href="{{ Illuminate\Support\Facades\Storage::url($apply->document->file) }}" target="_blank" class="btn btn-info btn-sm">
+										<i class="ti ti-download"></i> {{ __('admin.applies.view_cv') }}
+									</a>
+								@else
+									<p class="text-muted small mb-0">{{ __('admin.applies.no_documents') }}</p>
+								@endif
 							</div>
 							<div class="mb-3">
 								<select name="status" id="status" class="form-control">

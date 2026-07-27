@@ -35,35 +35,48 @@ class HomeRepositoryTest extends TestCase
     // =========================================================
 
     #[Test]
-    public function getLatestJobsByBatchReturnsEmptyCollectionWhenBatchIsNull(): void
+    public function getLatestJobsReturnsAllJobsWhenBatchIsNull(): void
     {
-        $result = $this->repository->getLatestJobsByBatch(null);
+        Job::factory()->count(3)->create();
 
-        $this->assertTrue($result->isEmpty());
+        $result = $this->repository->getLatestJobs();
+
+        $this->assertCount(3, $result);
     }
 
     #[Test]
-    public function getLatestJobsByBatchReturnsLatestJobsWithLimit(): void
+    public function getLatestJobsFiltersByBatchWhenProvided(): void
     {
         $job = Job::factory()->create();
-        Job::factory()->count(6)->create(['batch_id' => $job->batch_id]);
+        Job::factory()->count(3)->create(); // other batch
 
-        $result = $this->repository->getLatestJobsByBatch($job->batch_id, 5);
+        $result = $this->repository->getLatestJobs($job->batch_id, 10);
+
+        $this->assertCount(1, $result);
+    }
+
+    #[Test]
+    public function getLatestJobsRespectsLimit(): void
+    {
+        $batch = Batch::factory()->create();
+        Job::factory()->count(6)->create(['batch_id' => $batch->id]);
+
+        $result = $this->repository->getLatestJobs($batch->id, 5);
 
         $this->assertCount(5, $result);
         $this->assertTrue($result->first()->created_at->gte($result->last()->created_at));
     }
 
     #[Test]
-    public function getLatestJobsByBatchAndTypeFiltersByType(): void
+    public function getLatestJobsByTypeFiltersByType(): void
     {
-        $job = Job::factory()->create();
-        Job::factory()->wfhRemote()->create(['batch_id' => $job->batch_id]);
-        Job::factory()->internship()->create(['batch_id' => $job->batch_id]);
+        $batch = Batch::factory()->create();
+        Job::factory()->count(2)->wfhRemote()->create(['batch_id' => $batch->id]);
+        Job::factory()->internship()->create(['batch_id' => $batch->id]);
 
-        $result = $this->repository->getLatestJobsByBatchAndType($job->batch_id, JobType::WFH_REMOTE->value, 10);
+        $result = $this->repository->getLatestJobsByType(JobType::WFH_REMOTE->value, $batch->id, 10);
 
-        $this->assertGreaterThanOrEqual(1, $result->count());
+        $this->assertCount(2, $result);
         $this->assertTrue($result->every(fn ($item) => $item->type === JobType::WFH_REMOTE->value));
     }
 

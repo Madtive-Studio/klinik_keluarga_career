@@ -113,6 +113,13 @@ return [
     'starts_with' => 'The :attribute must start with one of the following: :values.',
     'string' => 'The :attribute must be a string.',
     'timezone' => 'The :attribute must be a valid zone.',
+    'documents_required' => 'At least 1 document must be attached.',
+    'documents_min' => 'At least :min documents must be attached.',
+    'documents_max' => 'Maximum :max documents can be attached.',
+    'document_file_required' => 'Document file is required.',
+    'document_file_mimes' => 'Document file format must be PDF, DOC, or DOCX.',
+    'document_type_required' => 'Please select a document type.',
+    'document_type_invalid' => 'Invalid document type.',
     'unique' => 'The :attribute has already been taken.',
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute format is invalid.',
@@ -134,8 +141,10 @@ return [
             'required' => 'Invalid job vacancy.',
             'exists' => 'Job vacancy not found.',
         ],
-        'type_of_document' => [
-            'required' => 'Please select a document type first.',
+        'documents' => [
+            'required' => 'At least 1 document must be attached.',
+            'min' => 'At least :min documents must be attached.',
+            'max' => 'Maximum :max documents can be attached.',
         ],
         'cover_letter' => [
             'required' => 'Cover letter is required.',
@@ -143,15 +152,15 @@ return [
         'description' => [
             'required' => 'Description is required.',
         ],
-        'new_document' => [
+        'documents.*.file' => [
             'required' => 'Document file is required.',
-            'file' => 'CV file must be a valid file.',
+            'file' => 'File must be a valid file.',
             'uploaded' => 'File failed to upload. Maximum size is 20MB. Please try again.',
             'mimes' => 'File format must be PDF, DOC, or DOCX.',
             'max' => 'Maximum file size is 20MB.',
         ],
-        'document_id' => [
-            'required' => 'Please select a CV/Resume document first.',
+        'documents.*.type' => [
+            'required' => 'Please select a document type.',
         ],
         'file' => [
             'required' => 'File is required.',
@@ -216,10 +225,10 @@ return [
         'threshold_shortlist' => 'recommended score threshold',
         'threshold_reject' => 'review score threshold',
         'job_uuid' => 'job vacancy',
-        'type_of_document' => 'document type',
+        'documents' => 'application documents',
         'cover_letter' => 'cover letter',
-        'new_document' => 'CV file',
-        'document_id' => 'CV document',
+        'document_file' => 'document file',
+        'document_type' => 'document type',
         'file' => 'file',
         'image' => 'job image',
         'images' => 'job images',

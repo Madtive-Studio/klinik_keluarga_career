@@ -22,6 +22,7 @@ return [
         'already_applied_html' => 'You have already applied for this job. Please check <a href=":url"><u>My Applications</u></a> to view your application status.',
         'already_applied' => 'You have already applied for this job',
         'complete_profile_first' => 'Please complete your education profile before applying.',
+        'batch_expired' => 'Sorry, the application period for this vacancy has ended.',
         'education_not_met' => 'Your latest education (:current) does not meet the minimum requirement (:required) for this job.',
         'not_found' => 'Application data not found.',
     ],

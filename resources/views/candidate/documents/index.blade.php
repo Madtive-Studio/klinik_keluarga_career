@@ -32,7 +32,7 @@
 							data-label="{{ $activeType->getLabel() }}">
 							<div class="document-dropzone__content text-center py-4 px-3">
 								<i class="mdi mdi-cloud-upload-outline document-dropzone__icon d-block mb-2"></i>
-								<p class="mb-1 font-weight-bold text-dark">{{ __('candidate.documents.dropzone_title', ['type' => $activeType->getLabel()]) }}</p>
+								<p class="mb-1 fw-bold text-dark">{{ __('candidate.documents.dropzone_title', ['type' => $activeType->getLabel()]) }}</p>
 								<p class="mb-0 text-muted small">{{ __('candidate.documents.dropzone_hint') }}</p>
 								<p class="mb-0 text-muted small mt-1">{{ __('candidate.documents.accepted_formats') }}</p>
 							</div>
@@ -50,8 +50,8 @@
 					<div class="d-flex justify-content-between align-items-center mb-3">
 						<h5 class="mb-0">{{ __('common.total') }} : {{ __('candidate.applications.total_documents', ['count' => $candidate->documents_count]) }}</h5>
 
-						<div class="form-inline">
-							<label class="mr-2">{{ __('common.show') }}:</label>
+						<div class="d-flex align-items-center">
+							<label class="me-2">{{ __('common.show') }}:</label>
 							<select id="perPage" class="form-control form-control-sm" style="width: auto;">
 								<option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
 								<option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
@@ -83,7 +83,7 @@
 												<ul class="list-inline mb-0">
 													<li class="list-inline-item mr-3">
 														<p class="text-muted mb-0">
-															<i class="mdi mdi-calendar mr-2"></i>
+															<i class="mdi mdi-calendar me-2"></i>
 															{{ __('common.uploaded') }} {{ $document->created_at->diffForHumans() }}
 														</p>
 													</li>
@@ -91,7 +91,7 @@
 											</div>
 										</div>
 										<div class="col-lg-3 col-md-3">
-											<div class="job-list-button-sm text-right d-flex justify-content-end gap-1">
+											<div class="job-list-button-sm text-end d-flex justify-content-end gap-1">
 												<form action="{{ route('candidate.my.documents.destroy', $document->id) }}" method="POST">
 													@csrf
 													@method('DELETE')
@@ -124,7 +124,7 @@
 
 					@if ($candidate->documents->total() > 0)
 						<div class="mt-4 d-flex justify-content-center">
-							{{ $candidate->documents->appends(request()->query())->links('pagination::bootstrap-4') }}
+							{{ $candidate->documents->appends(request()->query())->links('pagination::bootstrap-5') }}
 						</div>
 
 						<div class="mt-2 text-center text-muted small">

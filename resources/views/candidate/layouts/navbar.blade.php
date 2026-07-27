@@ -53,7 +53,7 @@
 	<header id="topnav" class="defaultscroll scroll-active">
 		<div class="tagline">
 			<div class="container">
-				<div class="float-left">
+				<div class="float-start">
 					<div class="schedule-open">
 						<i class="mdi mdi-calendar-blank"></i> {{ __('candidate.nav.schedule_open') }}
 					</div>
@@ -61,7 +61,7 @@
 						<i class="mdi mdi-clock-outline"></i> {{ __('candidate.nav.schedule_time') }}
 					</div>
 				</div>
-				<div class="float-right">
+				<div class="float-end">
 					<div class="phone">
 						<i class="mdi mdi-phone-classic"></i>0263 513513
 					</div>

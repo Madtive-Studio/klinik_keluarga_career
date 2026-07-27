@@ -8,7 +8,7 @@
 				<div class="col-lg-8 col-md-5 mt-4 mt-sm-0">
 					<h5 class="mb-2">{{ __('common.total') }} : {{ __('candidate.applications.total_documents', ['count' => $applies->apply_count]) }}</h5>
 					<div class="show-results">
-						<div class="sort-button float-left">
+						<div class="sort-button float-start">
 							<select class="nice-select rounded" id="sortedBy">
 								<option value="">{{ __('candidate.applications.sort_by') }}</option>
 								<option value="Newest" {{ request('sortedBy') === 'Newest' ? 'selected' : '' }}>{{ __('candidate.applications.newest') }}</option>
@@ -18,7 +18,7 @@
 					</div>
 
 					<div class="show-results">
-						<div class="sort-button float-right">
+						<div class="sort-button float-end">
 							<select id="perPage" class="nice-select rounded" style="width: auto;">
 								<option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
 								<option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
@@ -44,16 +44,16 @@
 												<p class="text-muted mb-0">{{ $apply->job->category->name ?? '-' }}
 												</p>
 												<ul class="list-inline mb-0">
-													<li class="list-inline-item mr-3">
-														<p class="text-muted mb-0"><i class="mdi mdi-calendar mr-2"></i>{{ __('common.sent_at') }} {{ date('d M Y H:i:s', strtotime($apply->created_at)) }}</p>
+													<li class="list-inline-item me-3">
+														<p class="text-muted mb-0"><i class="mdi mdi-calendar me-2"></i>{{ __('common.sent_at') }} {{ date('d M Y H:i:s', strtotime($apply->created_at)) }}</p>
 													</li>
 												</ul>
-												<span class="badge badge-primary mt-2">{{ __('common.applied') }}</span>
+												<span class="badge bg-primary mt-2">{{ __('common.applied') }}</span>
 											</div>
 										</div>
 										<div class="col-lg-3 col-md-3">
-											<div class="job-list-button-sm text-right">
-												<span class="badge badge-success">{{ strtoupper($apply->status) }}</span>
+											<div class="job-list-button-sm text-end">
+												<span class="badge bg-success">{{ strtoupper($apply->status) }}</span>
 											</div>
 										</div>
 									</div>
@@ -65,7 +65,7 @@
 
 						{{-- Pagination Links --}}
 						<div class="mt-4 d-flex justify-content-center">
-							{{ $applies->appends(request()->query())->links('pagination::bootstrap-4') }}
+							{{ $applies->appends(request()->query())->links('pagination::bootstrap-5') }}
 						</div>
 						
 						{{-- Info Pagination --}}

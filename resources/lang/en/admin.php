@@ -183,6 +183,9 @@ return [
         'breakdown_cover_letter' => 'Cover Letter',
         'scored_at' => 'Calculated',
         'view_cv' => 'View & Download CV / Resume',
+        'documents' => 'Application Documents',
+        'no_documents' => 'No documents.',
+        'documents_count' => ':count documents',
         'change_status' => 'Change status',
     ],
     'apply_status' => [

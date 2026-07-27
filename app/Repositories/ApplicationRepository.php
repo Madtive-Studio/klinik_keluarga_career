@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Enums\DocumentType;
 use App\Enums\EducationLevel;
 use App\Models\Apply;
+use App\Models\ApplyDocument;
 use App\Models\Candidate;
 use App\Models\Job;
 use App\Notifications\ApplicationSubmittedNotification;
@@ -75,7 +76,7 @@ class ApplicationRepository
     /**
      * Business Logic: Submit application
      */
-    public function submitApplication(string $uuid, int $candidateId, array $requestData, ?UploadedFile $documentFile): array
+    public function submitApplication(string $uuid, int $candidateId, array $requestData): array
     {
         $job = app(JobRepository::class)->findByUuid($uuid);
 
@@ -118,17 +119,6 @@ class ApplicationRepository
             'updated_at'   => now(),
         ];
 
-        if (strtolower((string) $requestData['type_of_document']) === 'upload') {
-            $documentId = $this->handleDocumentUpload($documentFile, $candidateId);
-            if (!$documentId) {
-                return ['error' => 'Gagal mengupload dokumen CV kamu'];
-            }
-
-            $applyData['document_id'] = $documentId;
-        } else {
-            $applyData['document_id'] = $requestData['document_id'];
-        }
-
         $scoreResult = $this->scoringService->calculate(
             $candidate,
             $job,
@@ -142,6 +132,8 @@ class ApplicationRepository
 
         $apply = $this->create($applyData);
 
+        $this->handleDocuments($requestData['documents'] ?? [], $candidateId, $apply->id);
+
         $candidate->notify(new ApplicationSubmittedNotification($candidate, $job));
 
         return ['success' => $apply, 'candidate' => $candidate];
@@ -153,27 +145,40 @@ class ApplicationRepository
     }
 
     /**
-     * Business Logic: Handle document upload untuk application
+     * Handle multiple document uploads for an application
      */
-    private function handleDocumentUpload(?UploadedFile $file, int $candidateId): ?int
+    private function handleDocuments(array $documents, int $candidateId, int $applyId): void
     {
-        if (!$file || !$file->isValid()) {
-            return null;
+        foreach ($documents as $doc) {
+            $file = $doc['file'] ?? null;
+            $type = $doc['type'] ?? null;
+
+            if (!$file || !$file instanceof UploadedFile || !$file->isValid() || !$type) {
+                continue;
+            }
+
+            $documentType = DocumentType::tryFrom($type);
+            if (!$documentType) {
+                continue;
+            }
+
+            $fileName = generateFileName($documentType->value, $file->extension());
+            $filePath = $file->storeAs($documentType->getPath(), $fileName, 'public');
+
+            $document = $this->documentRepo->createFromUpload([
+                'name'         => $file->getClientOriginalName(),
+                'file'         => $filePath,
+                'type'         => $documentType->value,
+                'candidate_id' => $candidateId,
+                'created_at'   => now(),
+                'updated_at'   => now(),
+            ]);
+
+            ApplyDocument::create([
+                'apply_id'    => $applyId,
+                'document_id' => $document->id,
+                'type'        => $documentType->value,
+            ]);
         }
-
-        $type = DocumentType::CV;
-        $fileName = generateFileName($type->value, $file->extension());
-        $filePath = $file->storeAs($type->getPath(), $fileName, 'public');
-
-        $document = $this->documentRepo->createFromUpload([
-            'name'         => $file->getClientOriginalName(),
-            'file'         => $filePath,
-            'type'         => $type->value,
-            'candidate_id' => $candidateId,
-            'created_at'   => now(),
-            'updated_at'   => now(),
-        ]);
-
-        return $document->id ?? null;
     }
 }
