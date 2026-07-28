@@ -45,6 +45,7 @@
 								</div>
 								<div class="col-md-2">
 									<div class="registration-form-box">
+										<i class="fa fa-list-alt"></i>
 										<select id="select-category" name="category" class="form-control">
 											<option value="SEMUA">{{ __('candidate.applications.tab_all') }}</option>
 											@foreach ($categories as $category)
@@ -55,7 +56,7 @@
 								</div>
 								<div class="col-md-2">
 									<div class="registration-form-box">
-										<button type="submit" id="submit" class="submitBtn btn btn-primary btn-block">
+										<button type="submit" id="submit" class="submitBtn btn btn-primary w-100">
 											<i class="mdi mdi-filter text-white"></i>&nbsp;&nbsp;{{ __('common.search') }}
 										</button>
 									</div>
@@ -74,7 +75,7 @@
 					<div class="left-sidebar">
 						<div class="accordion" id="accordionExample">
 							<div class="card rounded mt-4">
-								<a data-toggle="collapse" href="#collapseSalary" class="job-list" aria-expanded="false">
+								<a data-bs-toggle="collapse" href="#collapseSalary" class="job-list" aria-expanded="false">
 									<div class="card-header" id="headingSalary">
 										<h6 class="mb-0 text-dark f-18"><i class="mdi mdi-currency-usd me-1"></i>{{ __('candidate.jobs.salary_range') }}</h6>
 									</div>
@@ -96,7 +97,7 @@
 							</div>
 
 							<div class="card rounded mt-4">
-								<a data-toggle="collapse" href="#collapseEducation" class="job-list" aria-expanded="false">
+								<a data-bs-toggle="collapse" href="#collapseEducation" class="job-list" aria-expanded="false">
 									<div class="card-header" id="headingEducation">
 										<h6 class="mb-0 text-dark f-18"><i class="mdi mdi-school me-1"></i>{{ __('candidate.jobs.min_education') }}</h6>
 									</div>
@@ -132,7 +133,7 @@
 
 								<div class="float-end">
 									<div class="d-flex align-items-center">
-										<label class="mr-2">{{ __('candidate.jobs.show') }}:</label>
+										<label class="me-2">{{ __('candidate.jobs.show') }}:</label>
 										<select id="perPage" name="per_page" class="form-control form-control-sm" style="width: auto;">
 											<option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
 											<option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>

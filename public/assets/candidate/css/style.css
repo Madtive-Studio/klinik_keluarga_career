@@ -579,31 +579,44 @@ button:not(:disabled) {
 .badge.badge-danger,
 .badge.badge-info,
 .badge.badge-warning,
-.badge.badge-dark {
+.badge.badge-dark,
+.badge.bg-primary,
+.badge.bg-secondary,
+.badge.bg-success,
+.badge.bg-danger,
+.badge.bg-info,
+.badge.bg-warning,
+.badge.bg-dark {
 	color: #ffffff !important;
 }
 
-.badge.badge-primary {
+.badge.badge-primary,
+.badge.bg-primary {
 	background-color: #2f55d4 !important;
 }
 
-.badge.badge-secondary {
+.badge.badge-secondary,
+.badge.bg-secondary {
 	background-color: #5a6d90 !important;
 }
 
-.badge.badge-success {
+.badge.badge-success,
+.badge.bg-success {
 	background-color: #2eca8b !important;
 }
 
-.badge.badge-danger {
+.badge.badge-danger,
+.badge.bg-danger {
 	background-color: #e43f52 !important;
 }
 
-.badge.badge-warning {
+.badge.badge-warning,
+.badge.bg-warning {
 	background-color: #f17425 !important;
 }
 
-.badge.badge-info {
+.badge.badge-info,
+.badge.bg-info {
 	background-color: #9084e2 !important;
 }
 
@@ -612,7 +625,8 @@ button:not(:disabled) {
 	background-color: var(--foreground-color) !important;
 }
 
-.badge.badge-dark {
+.badge.badge-dark,
+.badge.bg-dark {
 	background-color: #3c4858 !important;
 }
 
@@ -1875,6 +1889,19 @@ p {
 	box-shadow: none;
 }
 
+.registration-form-box .form-control {
+	height: 45px;
+	font-size: 13px;
+}
+
+.registration-form-box:has(i) .form-control {
+	padding-left: 45px;
+}
+
+select.form-control:not([size]):not([multiple]) {
+	padding-right: 30px;
+}
+
 .registration-form-box i {
 	position: absolute;
 	top: 50%;
@@ -2196,7 +2223,7 @@ a.job-list[data-toggle='collapse'].collapsed:before {
 		text-align: center;
 		margin-bottom: 18px !important;
 	}
-	.show-results .float-left {
+	.show-results .float-start {
 		float: none !important;
 	}
 	.job-detail-com-desc {
