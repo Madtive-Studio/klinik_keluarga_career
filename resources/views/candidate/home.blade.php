@@ -127,6 +127,27 @@
 			</div>
 		</div>
 	</section>
+
+	<div class="modal fade" id="imageZoomModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered m-0 p-0" style="max-width: 100vw; min-height: 100vh;">
+			<div class="modal-content" style="background: rgba(0,0,0,0.92); border: none; border-radius: 0; min-height: 100vh;">
+				<button type="button" class="btn-close btn-close-white position-fixed" data-bs-dismiss="modal" aria-label="Close" style="top: 20px; right: 25px; z-index: 1050; font-size: 1.5rem;"></button>
+				<div class="modal-body d-flex align-items-center justify-content-center p-0" style="min-height: 100vh;">
+					<div id="zoomCarousel" class="carousel slide w-100" data-bs-ride="carousel" data-bs-interval="false">
+						<div class="carousel-inner" id="zoomCarouselInner"></div>
+						<a class="carousel-control-prev" href="#zoomCarousel" role="button" data-bs-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Previous</span>
+						</a>
+						<a class="carousel-control-next" href="#zoomCarousel" role="button" data-bs-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Next</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 @endsection
 @section('js')
 	<script>
@@ -164,6 +185,24 @@
 				const jobType = $(this).val();
 				const tabId = jobType === 'All' ? 'all' : String(jobType).toLowerCase().replace(/\s+/g, '-');
 				$('#' + tabId + '-tab').tab('show');
+			});
+
+			$(document).on('click', '.job-zoom-trigger', function() {
+				var images = $(this).data('images');
+				var title = $(this).data('title');
+				var inner = $('#zoomCarouselInner');
+				inner.empty();
+				if (images && images.length) {
+					$.each(images, function(i, src) {
+						inner.append('<div class="carousel-item' + (i === 0 ? ' active' : '') + '"><img src="' + src + '" alt="' + title + '" class="d-block mx-auto" style="max-width: 90vw; max-height: 90vh; object-fit: contain;"></div>');
+					});
+				}
+				$('#zoomCarousel').carousel(0);
+				$('#imageZoomModal').modal('show');
+			});
+
+			$('#imageZoomModal').on('hidden.bs.modal', function () {
+				$('#zoomCarouselInner').empty();
 			});
 		});
 	</script>

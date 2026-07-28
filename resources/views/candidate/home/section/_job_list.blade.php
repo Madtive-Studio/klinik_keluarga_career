@@ -7,7 +7,7 @@
 			<div class="p-4">
 				<div class="row">
 					<div class="col-4 col-md-2">
-						<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
+						<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded job-zoom-trigger" style="max-width: 100px; cursor: zoom-in;" data-images="{{ json_encode($job->image_urls) }}" data-title="{{ $job->title }}">
 					</div>
 					<div class="col-8 col-md-10">
 						<h5 class="f-18 mb-1"><a href="{{ route('candidate.jobs.vacancies.show', $job->uuid) }}" class="text-dark">{{ $job->title ?? '-' }}</a></h5>
