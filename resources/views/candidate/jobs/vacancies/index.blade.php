@@ -124,14 +124,14 @@
 				<div class="col-lg-9 mt-4 pt-2">
 					<div class="row align-items-center">
 						<div class="col-lg-12">
-							<div class="show-results">
-								<div class="float-start">
-									<h5 class="text-dark mb-0 pt-2 f-18 info-showing">
+							<div class="show-results d-flex align-items-center justify-content-between flex-wrap gap-2">
+								<div>
+									<h5 class="text-dark mb-0 f-18 info-showing">
 										{{ __('common.showing_range', ['count' => request()->get('per_page', 10)]) }}
 									</h5>
 								</div>
 
-								<div class="float-end">
+								<div>
 									<div class="d-flex align-items-center">
 										<label class="me-2">{{ __('candidate.jobs.show') }}:</label>
 										<select id="perPage" name="per_page" class="form-control form-control-sm" style="width: auto;">

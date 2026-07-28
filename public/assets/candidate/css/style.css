@@ -2862,4 +2862,69 @@ hr {
 	border: 0;
 	border-top: 1px solid #333744;
 }
+
+/* ========== Mobile Responsive ========== */
+.job-carousel-img {
+	max-height: 400px;
+	object-fit: cover;
+	cursor: zoom-in;
+}
+
+@media (max-width: 576px) {
+	.job-carousel-img {
+		max-height: 220px;
+	}
+
+	.home-registration-form .row .col-md-5,
+	.home-registration-form .row .col-md-3,
+	.home-registration-form .row .col-md-2 {
+		margin-bottom: 8px;
+	}
+
+	.home-registration-form .row .col-md-5:last-child,
+	.home-registration-form .row .col-md-3:last-child,
+	.home-registration-form .row .col-md-2:last-child {
+		margin-bottom: 0;
+	}
+
+	.job-list-box .company-logo-img {
+		text-align: center;
+		margin-bottom: 10px;
+	}
+
+	.show-results .float-start,
+	.show-results .float-end {
+		float: none !important;
+		text-align: center;
+		margin-bottom: 8px;
+	}
+
+	.show-results .float-end:last-child {
+		margin-bottom: 0;
+	}
+
+	.document-row .w-sm-auto {
+		min-width: 100%;
+	}
+
+	.job-details-desc-item.d-flex {
+		flex-wrap: wrap;
+	}
+}
+
+@media (max-width: 768px) {
+	.title-heading .px-5 {
+		padding-left: 1rem !important;
+		padding-right: 1rem !important;
+	}
+
+	.job-list-box .row .col-lg-2,
+	.job-list-box .row .col-lg-3 {
+		text-align: center;
+	}
+
+	.job-list-button-sm {
+		margin-top: 10px;
+	}
+}
 /*# sourceMappingURL=style.css.map */

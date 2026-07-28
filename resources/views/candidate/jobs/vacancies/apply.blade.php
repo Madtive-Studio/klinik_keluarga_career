@@ -39,7 +39,7 @@
 									<div class="carousel-inner rounded">
 										@foreach ($job->image_urls as $index => $imageUrl)
 											<div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-												<img src="{{ $imageUrl }}" alt="{{ $job->title }}" class="d-block w-100" style="max-height: 300px; object-fit: cover; cursor: zoom-in;" data-slide="{{ $index }}">
+												<img src="{{ $imageUrl }}" alt="{{ $job->title }}" class="d-block w-100 job-carousel-img" data-slide="{{ $index }}">
 											</div>
 										@endforeach
 									</div>
@@ -71,14 +71,14 @@
 										<div class="mb-3">
 											<label>{{ __('candidate.apply.supporting_documents') }} :</label>
 											<div id="documents-container">
-												<div class="document-row d-flex align-items-start gap-2 mb-2">
-													<div class="flex-grow-1">
+												<div class="document-row d-flex flex-column flex-sm-row align-items-start gap-2 mb-2">
+													<div class="flex-fill">
 														<input type="file" name="documents[0][file]" class="form-control" accept=".pdf,.doc,.docx">
 														@error('documents.0.file')
 															<span class="text-danger fw-bold small">{{ $message }}</span>
 														@enderror
 													</div>
-													<div style="min-width: 160px;">
+													<div class="flex-fill" style="min-width: 160px;">
 														<select name="documents[0][type]" class="form-control">
 															<option value="">{{ __('candidate.apply.select_type') }}</option>
 															@foreach (\App\Enums\DocumentType::getWithLabels() as $value => $label)
@@ -89,7 +89,7 @@
 															<span class="text-danger fw-bold small">{{ $message }}</span>
 														@enderror
 													</div>
-													<button type="button" class="btn btn-danger btn-sm remove-document" style="display:none;" title="{{ __('common.delete') }}">
+													<button type="button" class="btn btn-danger btn-sm remove-document flex-shrink-0" style="display:none;" title="{{ __('common.delete') }}">
 														<i class="mdi mdi-close"></i>
 													</button>
 												</div>
@@ -130,41 +130,29 @@
 					<div class="job-detail border rounded p-4">
 						<h5 class="text-muted text-center pb-2"><i class="mdi mdi-info me-2"></i>{{ __('candidate.jobs.information') }}</h5>
 						<div class="job-detail-location pt-4 border-top">
-							<div class="job-details-desc-item">
-								<div class="float-start me-2">
-									<i class="mdi mdi-clock-outline text-muted"></i>
-								</div>
-								<p class="text-muted mb-2">: {{ $activeBatch?->name ?? '-' }} | {{ $activeBatch ? date('d M Y', strtotime($activeBatch->start_date)) . ' - ' . date('d M Y', strtotime($activeBatch->end_date)) : '-' }}</p>
+							<div class="job-details-desc-item d-flex gap-2 mb-2">
+								<i class="mdi mdi-clock-outline text-muted flex-shrink-0 mt-1"></i>
+								<p class="text-muted mb-0">{{ __('candidate.jobs.information') }}: {{ $activeBatch?->name ?? '-' }} | {{ $activeBatch ? date('d M Y', strtotime($activeBatch->start_date)) . ' - ' . date('d M Y', strtotime($activeBatch->end_date)) : '-' }}</p>
 							</div>
-							<div class="job-details-desc-item">
-								<div class="float-start me-2">
-									<i class="mdi mdi-laptop text-muted"></i>
-								</div>
-								<p class="text-muted mb-2">{{ \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type }}</p>
+							<div class="job-details-desc-item d-flex gap-2 mb-2">
+								<i class="mdi mdi-laptop text-muted flex-shrink-0 mt-1"></i>
+								<p class="text-muted mb-0">{{ \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type }}</p>
 							</div>
-							<div class="job-details-desc-item">
-								<div class="float-start me-2">
-									<i class="mdi mdi-information-outline text-muted"></i>
-								</div>
-								<p class="text-muted mb-2">{{ $job->experience }}</p>
+							<div class="job-details-desc-item d-flex gap-2 mb-2">
+								<i class="mdi mdi-information-outline text-muted flex-shrink-0 mt-1"></i>
+								<p class="text-muted mb-0">{{ $job->experience }}</p>
 							</div>
-							<div class="job-details-desc-item">
-								<div class="float-start me-2">
-									<i class="mdi mdi-account text-muted"></i>
-								</div>
-								<p class="text-muted mb-2">{{ __('candidate.apply.quota_people', ['count' => $job->quota]) }}</p>
+							<div class="job-details-desc-item d-flex gap-2 mb-2">
+								<i class="mdi mdi-account text-muted flex-shrink-0 mt-1"></i>
+								<p class="text-muted mb-0">{{ __('candidate.apply.quota_people', ['count' => $job->quota]) }}</p>
 							</div>
-							<div class="job-details-desc-item">
-								<div class="float-start me-2">
-									<i class="mdi mdi-currency-usd text-muted"></i>
-								</div>
-								<p class="text-muted mb-2">: {{ $job->is_show_salary ? $job->salary_display : __('candidate.apply.salary_not_stated') }}</p>
+							<div class="job-details-desc-item d-flex gap-2 mb-2">
+								<i class="mdi mdi-currency-usd text-muted flex-shrink-0 mt-1"></i>
+								<p class="text-muted mb-0">: {{ $job->is_show_salary ? $job->salary_display : __('candidate.apply.salary_not_stated') }}</p>
 							</div>
-							<div class="job-details-desc-item">
-								<div class="float-start me-2">
-									<i class="mdi mdi-clock-outline text-muted"></i>
-								</div>
-								<p class="text-muted mb-2">: {{ __('candidate.apply.weekdays') }}</p>
+							<div class="job-details-desc-item d-flex gap-2 mb-2">
+								<i class="mdi mdi-clock-outline text-muted flex-shrink-0 mt-1"></i>
+								<p class="text-muted mb-0">: {{ __('candidate.apply.weekdays') }}</p>
 							</div>
 						</div>
 					</div>

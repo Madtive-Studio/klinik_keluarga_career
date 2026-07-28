@@ -67,7 +67,7 @@
 									<div class="row align-items-center">
 										<div class="col-lg-2">
 											<div class="company-logo-img">
-												<img src="{{ asset(getPlaceholderFilePath($document->file)) }}" width="100" alt="" class="img-fluid mx-auto d-block rounded">
+												<img src="{{ asset(getPlaceholderFilePath($document->file)) }}" alt="" class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
 											</div>
 										</div>
 										<div class="col-lg-7 col-md-9">

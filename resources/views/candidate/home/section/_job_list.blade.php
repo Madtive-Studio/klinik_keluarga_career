@@ -5,7 +5,7 @@
 				<div class="row align-items-center">
 					<div class="col-md-2">
 						<div class="mo-mb-2">
-							<img src="{{ $job->image_url }}" width="100" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded">
+							<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
 						</div>
 					</div>
 					<div class="col-md-3">

@@ -7,18 +7,15 @@
 				@include('candidate.jobs.applications.tab_menu')
 				<div class="col-lg-8 col-md-5 mt-4 mt-sm-0">
 					<h5 class="mb-2">{{ __('common.total') }} : {{ __('candidate.applications.total_documents', ['count' => $applies->apply_count]) }}</h5>
-					<div class="show-results">
-						<div class="sort-button float-start">
+					<div class="show-results d-flex align-items-center justify-content-between flex-wrap gap-2">
+						<div class="sort-button">
 							<select class="nice-select rounded" id="sortedBy">
 								<option value="">{{ __('candidate.applications.sort_by') }}</option>
 								<option value="Newest" {{ request('sortedBy') === 'Newest' ? 'selected' : '' }}>{{ __('candidate.applications.newest') }}</option>
 								<option value="Oldest" {{ request('sortedBy') === 'Oldest' ? 'selected' : '' }}>{{ __('candidate.applications.oldest') }}</option>
 							</select>
 						</div>
-					</div>
-
-					<div class="show-results">
-						<div class="sort-button float-end">
+						<div class="sort-button">
 							<select id="perPage" class="nice-select rounded" style="width: auto;">
 								<option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
 								<option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
@@ -26,8 +23,6 @@
 							</select>
 						</div>
 					</div>
-
-					<div class="clearfix"></div>
 					<div class="jobs-list">
 						@forelse ($applies as $key => $apply)
 							<div class="job-list-box mt-3 border rounded">
@@ -35,7 +30,7 @@
 									<div class="row align-items-center">
 										<div class="col-lg-2">
 											<div class="company-logo-img">
-												<img src="{{ $job->image_url }}" width="100" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded">
+												<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
 											</div>
 										</div>
 										<div class="col-lg-7 col-md-9">

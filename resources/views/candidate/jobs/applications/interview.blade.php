@@ -7,8 +7,8 @@
 				@include('candidate.jobs.applications.tab_menu')
 				<div class="col-lg-8 col-md-5 mt-4 mt-sm-0">
 					<h5>{{ __('candidate.applications.interview_count', ['count' => $interviewsCount]) }}</h5>
-					<div class="show-results">
-						<div class="sort-button float-start">
+					<div class="show-results d-flex align-items-center justify-content-between flex-wrap gap-2">
+						<div class="sort-button">
 							<select class="nice-select rounded" name="urutkan" id="urutkan">
 								<option value="">{{ __('candidate.applications.sort_by') }}</option>
 								<option value="Terbaru" {{ !empty(request('urutkan')) && request('urutkan') === 'Terbaru' ? 'selected' : '' }}>{{ __('candidate.applications.newest') }}</option>
@@ -16,7 +16,6 @@
 							</select>
 						</div>
 					</div>
-					<div class="clearfix"></div>
 					<div class="jobs-list">
 						@forelse ($interviews as $key => $interview)
 							<div class="job-list-box mt-3 border rounded">
@@ -24,8 +23,8 @@
 									<div class="row align-items-center">
 										<div class="col-lg-2">
 											<div class="company-logo-img">
-												<img src="{{ asset('client/images/job-placeholder.png') }}" width="100" alt=""
-													class="img-fluid mx-auto d-block rounded">
+												<img src="{{ asset('client/images/job-placeholder.png') }}" alt=""
+													class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
 											</div>
 										</div>
 										<div class="col-lg-10 col-md-9">
