@@ -164,13 +164,13 @@
 			</div>
 		</div>
 	</section>
-<div class="modal fade" id="imageZoomModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="imageZoomModal" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="false">
 		<div class="modal-dialog modal-dialog-centered m-0 p-0" style="max-width: 100vw; min-height: 100vh;" role="document">
-			<div class="modal-content" style="background: rgba(0,0,0,0.92); border: none; border-radius: 0; min-height: 100vh;">
+			<div class="modal-content" style="background: rgba(0,0,0,0.15); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: none; border-radius: 0; min-height: 100vh;">
 				<button type="button" class="btn-close btn-close-white position-fixed" data-bs-dismiss="modal" aria-label="Close" style="top: 20px; right: 25px; z-index: 1050; font-size: 1.5rem;">
 				</button>
 				<div class="modal-body d-flex align-items-center justify-content-center p-0" style="min-height: 100vh;">
-					<div id="zoomCarousel" class="carousel slide w-100" data-bs-ride="carousel" data-interval="false">
+					<div id="zoomCarousel" class="carousel slide w-100" data-bs-interval="false">
 						<div class="carousel-inner">
 							@foreach ($job->image_urls as $index => $imageUrl)
 								<div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
