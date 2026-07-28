@@ -17,6 +17,7 @@ return [
         'heading' => 'Bergabunglah Bersama Kami!',
         'subtitle' => 'Kami memiliki komitmen ingin membuat Kota Cianjur sebagai ekosistem IT terbesar, kamu bisa wujudkan impian kamu bersama Madtive Studio!',
         'active_batch' => 'Aktif Batch : :batch',
+        'no_active_batch' => 'Tidak ada batch aktif',
         'search_placeholder' => 'Cari loker...',
         'category' => 'Kategori...',
         'type' => 'Jenis...',

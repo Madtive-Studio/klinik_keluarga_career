@@ -92,11 +92,11 @@ class HomeRepository
     private function formatBatchLabel(object|null $activeBatch): string
     {
         if (!$activeBatch) {
-            return 'No active batch available';
+            return __('candidate.home.no_active_batch');
         }
 
         return sprintf(
-            '%s - %s - | %s - %s',
+            '%s - %s — %s - %s',
             $activeBatch->code,
             $activeBatch->name,
             Carbon::parse($activeBatch->start_date)->translatedFormat('d F Y'),

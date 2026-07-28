@@ -17,6 +17,7 @@ return [
         'heading' => 'Join Us!',
         'subtitle' => 'We are committed to making Cianjur the largest IT ecosystem—you can achieve your dreams with Madtive Studio!',
         'active_batch' => 'Active Batch: :batch',
+        'no_active_batch' => 'No active batch',
         'search_placeholder' => 'Search jobs...',
         'category' => 'Category...',
         'type' => 'Type...',
