@@ -1892,9 +1892,6 @@ p {
 .registration-form-box .form-control {
 	height: 45px;
 	font-size: 13px;
-}
-
-.registration-form-box:has(i) .form-control {
 	padding-left: 45px;
 }
 
