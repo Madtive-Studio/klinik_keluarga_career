@@ -25,17 +25,21 @@
 				<div class="col-lg-10">
 					<div class="home-registration-form job-list-reg-form bg-light shadow p-4 mb-0">
 						<form id="filter-form" class="registration-form">
-							<div class="row">
-								<div class="col-md-5">
-									<div class="registration-form-box">
-										<i class="fa fa-briefcase"></i>
-										<input type="text" name="q" value="{{ request()->get('q') }}" class="form-control rounded registration-input-box" placeholder="{{ __('candidate.home.search_placeholder') }}">
+							<div class="row g-2">
+								<div class="col-12 col-md-5">
+									<div class="d-flex align-items-center bg-white rounded shadow-sm overflow-hidden">
+										<div class="px-3 text-muted flex-shrink-0">
+											<i class="fa fa-briefcase"></i>
+										</div>
+										<input type="text" name="q" value="{{ request()->get('q') }}" class="form-control border-0 shadow-none ps-1" placeholder="{{ __('candidate.home.search_placeholder') }}">
 									</div>
 								</div>
-								<div class="col-md-3">
-									<div class="registration-form-box">
-										<i class="fa fa-list-alt"></i>
-										<select id="select-job-type" name="job_type" class="form-control">
+								<div class="col-12 col-md-3">
+									<div class="d-flex align-items-center bg-white rounded shadow-sm overflow-hidden">
+										<div class="px-3 text-muted flex-shrink-0">
+											<i class="fa fa-list-alt"></i>
+										</div>
+										<select id="select-job-type" name="job_type" class="form-select border-0 shadow-none ps-1 bg-transparent">
 											<option value="SEMUA">{{ __('candidate.applications.tab_all') }}</option>
 											@foreach ($jobTypes as $value => $label)
 												<option value="{{ $value }}" {{ request()->get('job_type') == $value ? 'selected' : '' }}>{{ $label }}</option>
@@ -43,10 +47,12 @@
 										</select>
 									</div>
 								</div>
-								<div class="col-md-2">
-									<div class="registration-form-box">
-										<i class="fa fa-list-alt"></i>
-										<select id="select-category" name="category" class="form-control">
+								<div class="col-12 col-md-2">
+									<div class="d-flex align-items-center bg-white rounded shadow-sm overflow-hidden">
+										<div class="px-3 text-muted flex-shrink-0">
+											<i class="fa fa-list-alt"></i>
+										</div>
+										<select id="select-category" name="category" class="form-select border-0 shadow-none ps-1 bg-transparent">
 											<option value="SEMUA">{{ __('candidate.applications.tab_all') }}</option>
 											@foreach ($categories as $category)
 												<option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
@@ -54,12 +60,10 @@
 										</select>
 									</div>
 								</div>
-								<div class="col-md-2">
-									<div class="registration-form-box">
-										<button type="submit" id="submit" class="submitBtn btn btn-primary w-100">
-											<i class="mdi mdi-filter text-white"></i>&nbsp;&nbsp;{{ __('common.search') }}
-										</button>
-									</div>
+								<div class="col-12 col-md-2">
+									<button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-1">
+										<i class="mdi mdi-filter"></i> {{ __('common.search') }}
+									</button>
 								</div>
 							</div>
 						</form>

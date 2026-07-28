@@ -1878,46 +1878,7 @@ p {
 	border-radius: 10px;
 }
 
-.registration-form-box {
-	position: relative;
-}
 
-.registration-form-box .selectize-input {
-	line-height: 2.4;
-	padding: 6px 6px 6px 45px;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-}
-
-.registration-form-box .form-control {
-	height: 45px;
-	font-size: 13px;
-	padding-left: 45px;
-}
-
-select.form-control:not([size]):not([multiple]) {
-	padding-right: 30px;
-}
-
-.registration-form-box i {
-	position: absolute;
-	top: 50%;
-	-webkit-transform: translateY(-50%);
-	transform: translateY(-50%);
-	left: 12px;
-	z-index: 2;
-	color: #8492a6;
-}
-
-.registration-input-box {
-	border: none;
-	-webkit-box-shadow: none !important;
-	box-shadow: none !important;
-	font-size: 13px;
-	height: 45px !important;
-	padding: 6px 6px 6px 45px;
-	border: 1px solid #e6eaf4;
-}
 
 .selectize-control.single .selectize-input,
 .selectize-control.single .selectize-input input {
@@ -2870,18 +2831,6 @@ hr {
 @media (max-width: 576px) {
 	.job-carousel-img {
 		max-height: 220px;
-	}
-
-	.home-registration-form .row .col-md-5,
-	.home-registration-form .row .col-md-3,
-	.home-registration-form .row .col-md-2 {
-		margin-bottom: 8px;
-	}
-
-	.home-registration-form .row .col-md-5:last-child,
-	.home-registration-form .row .col-md-3:last-child,
-	.home-registration-form .row .col-md-2:last-child {
-		margin-bottom: 0;
 	}
 
 	.job-list-box .company-logo-img {
