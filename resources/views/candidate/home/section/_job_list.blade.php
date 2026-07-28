@@ -1,51 +1,32 @@
 @forelse ($jobs as $job)
+	@php
+		$jobTypeLabel = \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type;
+	@endphp
 	<div class="col-lg-12">
 		<div class="job-box bg-white overflow-hidden border rounded mt-4 position-relative overflow-hidden">
 			<div class="p-4">
-				<div class="row align-items-center">
+				<div class="row">
 					<div class="col-4 col-md-2">
-						<div class="mo-mb-2">
-							<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
-						</div>
+						<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
 					</div>
-					<div class="col-8 col-md-3">
-						<div>
-							<h5 class="f-18"><a href="{{ route('candidate.jobs.vacancies.show', $job->uuid) }}" class="text-dark">{{ $job->title ?? '-' }}</a></h5>
-							<p class="text-muted mb-0">{{ $job->category->name ?? '-' }}</p>
-						</div>
+					<div class="col-8 col-md-10">
+						<h5 class="f-18 mb-1"><a href="{{ route('candidate.jobs.vacancies.show', $job->uuid) }}" class="text-dark">{{ $job->title ?? '-' }}</a></h5>
+						<p class="text-muted mb-0 small">{{ $job->category->name ?? '-' }}</p>
 					</div>
-					<div class="col-12 col-md-3 mt-2 mt-md-0">
-						<div>
-							<p class="text-muted mb-0"><i class="mdi mdi-map-marker text-primary me-2"></i>Cianjur, Jawa Barat</p>
-						</div>
-					</div>
+				</div>
+				<div class="mt-3 border-top pt-3">
+					<p class="text-muted mb-2 small"><i class="mdi mdi-map-marker text-primary me-1"></i>Cianjur, Jawa Barat</p>
 					@if ($job->is_show_salary)
-						<div class="col-6 col-md-2 mt-2 mt-md-0">
-							<div>
-								<p class="text-muted mb-0 mo-mb-2">{{ $job->salary_display }}</p>
-							</div>
-						</div>
+						<p class="text-muted mb-2 small"><i class="mdi mdi-currency-usd text-primary me-1"></i>{{ $job->salary_display }}</p>
 					@endif
-					<div class="col-6 col-md-2 mt-2 mt-md-0">
-						<div>
-							<p class="text-muted mb-0">{{ $job->type ?? '-' }}</p>
-						</div>
-					</div>
+					<p class="text-muted mb-0 small"><i class="mdi mdi-briefcase text-primary me-1"></i>{{ $jobTypeLabel }}</p>
 				</div>
 			</div>
 			<div class="p-3 bg-light">
-				<div class="row">
-					<div class="col-md-10">
-						<div>
-							<p class="text-muted mb-0 mo-mb-2">{{ $job->experience ?? '-' }}</p>
-						</div>
-					</div>
-					<div class="col-md-2">
-						<div>
-							<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="text-primary"><strong>{{ __('candidate.jobs.apply_now') }}</strong> <i class="mdi mdi-chevron-double-right"></i></a>
-						</div>
-					</div>
-				</div>
+				<p class="text-muted mb-2 small"><i class="mdi mdi-school text-primary me-1"></i>{{ $job->experience ?? '-' }}</p>
+				<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary w-100 btn-sm">
+					{{ __('candidate.jobs.apply_now') }}
+				</a>
 			</div>
 		</div>
 	</div>
