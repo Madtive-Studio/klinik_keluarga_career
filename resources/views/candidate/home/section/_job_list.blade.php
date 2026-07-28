@@ -3,30 +3,30 @@
 		<div class="job-box bg-white overflow-hidden border rounded mt-4 position-relative overflow-hidden">
 			<div class="p-4">
 				<div class="row align-items-center">
-					<div class="col-md-2">
+					<div class="col-4 col-md-2">
 						<div class="mo-mb-2">
 							<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
 						</div>
 					</div>
-					<div class="col-md-3">
+					<div class="col-8 col-md-3">
 						<div>
 							<h5 class="f-18"><a href="{{ route('candidate.jobs.vacancies.show', $job->uuid) }}" class="text-dark">{{ $job->title ?? '-' }}</a></h5>
 							<p class="text-muted mb-0">{{ $job->category->name ?? '-' }}</p>
 						</div>
 					</div>
-					<div class="col-md-3">
+					<div class="col-12 col-md-3 mt-2 mt-md-0">
 						<div>
-							<p class="text-muted mb-0"><i class="mdi mdi-map-marker text-primary mr-2"></i>Cianjur, Jawa Barat</p>
+							<p class="text-muted mb-0"><i class="mdi mdi-map-marker text-primary me-2"></i>Cianjur, Jawa Barat</p>
 						</div>
 					</div>
 					@if ($job->is_show_salary)
-						<div class="col-md-2">
+						<div class="col-6 col-md-2 mt-2 mt-md-0">
 							<div>
 								<p class="text-muted mb-0 mo-mb-2">{{ $job->salary_display }}</p>
 							</div>
 						</div>
 					@endif
-					<div class="col-md-2">
+					<div class="col-6 col-md-2 mt-2 mt-md-0">
 						<div>
 							<p class="text-muted mb-0">{{ $job->type ?? '-' }}</p>
 						</div>

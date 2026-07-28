@@ -28,12 +28,12 @@
 							<div class="job-list-box mt-3 border rounded">
 								<div class="p-3">
 									<div class="row align-items-center">
-										<div class="col-lg-2">
+										<div class="col-4 col-md-2">
 											<div class="company-logo-img">
 												<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
 											</div>
 										</div>
-										<div class="col-lg-7 col-md-9">
+										<div class="col-8 col-md-7">
 											<div class="job-list-desc">
 												<h6 class="mb-0"><a href="#" class="text-dark">{{ $apply->job->code ?? '#' }} - {{ $apply->job->title ?? '-' }}</a></h6>
 												<p class="text-muted mb-0">{{ $apply->job->category->name ?? '-' }}
@@ -46,8 +46,8 @@
 												<span class="badge bg-primary mt-2">{{ __('common.applied') }}</span>
 											</div>
 										</div>
-										<div class="col-lg-3 col-md-3">
-											<div class="job-list-button-sm text-end">
+										<div class="col-12 col-md-3 mt-2 mt-md-0">
+											<div class="d-flex align-items-center justify-content-between justify-content-md-end gap-2">
 												<span class="badge bg-success">{{ strtoupper($apply->status) }}</span>
 											</div>
 										</div>
