@@ -79,7 +79,7 @@
 			</div>
 			<div class="row justify-content-center">
 				<div class="col-lg-9 text-center mt-4 pt-2">
-					<ul class="nav nav-pills bg-white rounded nav-justified flex-column flex-sm-row" id="pills-tab" role="tablist">
+					<ul class="nav nav-pills bg-white rounded nav-justified flex-sm-row d-none d-sm-flex" id="pills-tab" role="tablist">
 						<li class="nav-item">
 							<a class="nav-link rounded active" id="all-tab" data-bs-toggle="pill" href="#all" role="tab" aria-controls="all" aria-selected="true" data-job-type="All">{{ __('common.all') }}</a>
 						</li>
@@ -90,6 +90,12 @@
 							</li>
 						@endforeach
 					</ul>
+					<select class="form-select d-sm-none" id="mobile-job-type">
+						<option value="All">{{ __('common.all') }}</option>
+						@foreach ($jobTypes as $value => $label)
+							<option value="{{ $value }}">{{ $label }}</option>
+						@endforeach
+					</select>
 				</div>
 			</div>
 			<div class="row">
@@ -152,6 +158,12 @@
 				const tabId = tab.attr('href').replace('#', '');
 				const jobType = tab.data('job-type');
 				fetchHomeJobs(jobType, tabId);
+			});
+
+			$('#mobile-job-type').change(function() {
+				const jobType = $(this).val();
+				const tabId = jobType === 'All' ? 'all' : String(jobType).toLowerCase().replace(/\s+/g, '-');
+				$('#' + tabId + '-tab').tab('show');
 			});
 		});
 	</script>
