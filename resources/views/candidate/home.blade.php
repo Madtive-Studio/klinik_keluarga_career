@@ -20,7 +20,7 @@
 							<div class="col-lg-12">
 								<div class="home-registration-form p-4 mb-3">
 									<form class="registration-form" method="GET" action="{{ route('candidate.jobs.vacancies.index') }}">
-										<div class="row g-2">
+										<div class="row g-2 px-3">
 											<div class="col-12 col-md-5">
 												<div class="input-group">
 													<span class="input-group-text bg-white"><i class="fa fa-briefcase text-muted"></i></span>

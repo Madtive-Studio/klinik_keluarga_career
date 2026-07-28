@@ -1838,22 +1838,19 @@ p {
 }
 
 .bg-home {
-	/* padding: 300px 0px 175px 0px; */
-	background-size: cover;
+	padding: 300px 0px 175px 0px;
 	position: relative;
-	background-position: center center;
-	background: url('../../images/hero.png') no-repeat center center;
-	background-size: 100% auto;
-	object-fit: cover;
-	height: 80vh;
 	overflow: hidden;
+	background-image: url('../../images/hero.png');
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
 }
 
 .home-center {
 	display: table;
 	width: 100%;
 	height: 100%;
-	transform: scale(1.2);
 }
 
 .home-desc-center {
@@ -1864,13 +1861,11 @@ p {
 .bg-half {
 	padding: 280px 0px 180px 0px;
 	position: relative;
-	background-position: center center;
-
-	background-size: cover;
-	background: url('../../images/hero.png') no-repeat center center;
-	background-size: 100% auto;
-	object-fit: cover;
 	overflow: hidden;
+	background-image: url('../../images/hero.png');
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
 }
 
 .home-registration-form {
@@ -1937,13 +1932,12 @@ p {
 	background: #2f55d4;
 }
 
-@media (min-width: 200px) and (max-width: 768px) {
-	.registration-form-box {
-		margin-bottom: 10px;
+@media (max-width: 768px) {
+	.bg-home {
+		padding: 160px 0px 100px;
 	}
-	.bg-home,
 	.bg-half {
-		padding: 190px 0px 120px;
+		padding: 160px 0px 100px;
 	}
 }
 
