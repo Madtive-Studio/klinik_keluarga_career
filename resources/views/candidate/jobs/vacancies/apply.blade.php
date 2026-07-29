@@ -81,6 +81,9 @@
 														</select>
 														<button type="button" class="btn btn-danger btn-sm remove-document flex-shrink-0 d-none">&times;</button>
 													</div>
+													<button type="button" id="add-document" class="btn btn-outline-primary btn-sm mt-1">
+														<i class="mdi mdi-plus"></i> {{ __('candidate.apply.add_document') }}
+													</button>
 												</div>
 												@error('existing_documents')
 													<span class="text-danger fw-bold d-block mt-1">{{ $message }}</span>
@@ -257,26 +260,24 @@
 				});
 				sel.value = val;
 			});
+			document.querySelectorAll('.remove-document').forEach(function(btn) {
+				btn.classList.toggle('d-none', document.querySelectorAll('.document-row').length <= 1);
+			});
 		}
 
-		function addDocumentRow() {
+		document.getElementById('add-document').addEventListener('click', function() {
 			var container = document.getElementById('document-selector');
 			var rows = container.querySelectorAll('.document-row');
-			var template = rows[0].cloneNode(true);
-			template.querySelector('select').value = '';
-			template.querySelector('.remove-document').classList.remove('d-none');
-			container.appendChild(template);
-			rebuildDocumentOptions();
-		}
+			if (rows.length > 0) {
+				var clone = rows[0].cloneNode(true);
+				clone.querySelector('select').value = '';
+				container.insertBefore(clone, this);
+				rebuildDocumentOptions();
+			}
+		});
 
 		document.getElementById('document-selector').addEventListener('change', function(e) {
 			if (e.target.classList.contains('document-select')) {
-				var rows = document.querySelectorAll('.document-select');
-				var last = rows[rows.length - 1];
-				if (last.value && !last.dataset.appended) {
-					last.dataset.appended = '1';
-					addDocumentRow();
-				}
 				rebuildDocumentOptions();
 			}
 		});
