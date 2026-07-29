@@ -987,10 +987,18 @@ p {
 	bottom: 0;
 	width: 100%;
 	height: 100%;
+	z-index: 1;
 }
 
 .bg-overlay-gradient {
 	background-color: rgba(94, 119, 204, 0.75);
+	z-index: 1;
+}
+
+.bg-half .container,
+.bg-home .container {
+	position: relative;
+	z-index: 2;
 }
 
 .title-heading {
