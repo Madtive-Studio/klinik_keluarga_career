@@ -78,14 +78,14 @@
 										<h6 class="mb-0 text-dark f-18"><i class="mdi mdi-currency-usd me-1"></i>{{ __('candidate.jobs.salary_range') }}</h6>
 									</div>
 								</a>
-								<div id="collapseSalary" class="collapse" aria-labelledby="headingSalary">
+								<div id="collapseSalary" class="" aria-labelledby="headingSalary">
 									<div class="card-body">
-										<div class="mb-2">
+										<div class="mb-2 px-2">
 											<label class="text-muted small">{{ __('candidate.jobs.salary_min') }}: <span id="salary_min_display" class="fw-bold">{{ request('salary_min') ? 'IDR '.number_format((int) request('salary_min'), 0, ',', '.') : 'IDR 0' }}</span></label>
 											<input type="range" id="filter_salary_min" class="form-range" min="0" max="50000000" step="500000" value="{{ request('salary_min') ?: 0 }}">
 											<input type="hidden" id="salary_min_raw" name="salary_min" value="{{ request('salary_min') }}">
 										</div>
-										<div class="mb-2">
+										<div class="mb-2 px-2">
 											<label class="text-muted small">{{ __('candidate.jobs.salary_max') }}: <span id="salary_max_display" class="fw-bold">{{ request('salary_max') ? 'IDR '.number_format((int) request('salary_max'), 0, ',', '.') : 'IDR 50.000.000' }}</span></label>
 											<input type="range" id="filter_salary_max" class="form-range" min="0" max="50000000" step="500000" value="{{ request('salary_max') ?: 50000000 }}">
 											<input type="hidden" id="salary_max_raw" name="salary_max" value="{{ request('salary_max') }}">
@@ -100,14 +100,14 @@
 										<h6 class="mb-0 text-dark f-18"><i class="mdi mdi-school me-1"></i>{{ __('candidate.jobs.min_education') }}</h6>
 									</div>
 								</a>
-								<div id="collapseEducation" class="collapse" aria-labelledby="headingEducation">
-									<div class="card-body p-0">
-										<div class="form-check">
+								<div id="collapseEducation" class="" aria-labelledby="headingEducation">
+									<div class="card-body">
+										<div class="form-check px-3">
 											<input type="radio" id="education_0" name="min_education" value="" class="form-check-input education-filter" {{ !request('min_education') ? 'checked' : '' }}>
 											<label class="form-check-label ms-2 text-muted f-15" for="education_0">{{ __('candidate.applications.tab_all') }}</label>
 										</div>
 										@foreach ($educationLevels as $level)
-											<div class="form-check">
+											<div class="form-check px-3">
 												<input type="radio" id="education_{{ $level->value }}" name="min_education" value="{{ $level->value }}" class="form-check-input education-filter" {{ request('min_education') === $level->value ? 'checked' : '' }}>
 												<label class="form-check-label ms-2 text-muted f-15" for="education_{{ $level->value }}">{{ $level->label() }}</label>
 											</div>
