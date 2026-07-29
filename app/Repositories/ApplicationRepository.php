@@ -2,18 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Enums\DocumentType;
 use App\Enums\EducationLevel;
 use App\Models\Apply;
 use App\Models\ApplyDocument;
 use App\Models\Candidate;
+use App\Models\Document;
 use App\Models\Job;
 use App\Notifications\ApplicationSubmittedNotification;
 use App\Repositories\CandidateRepository;
 use App\Repositories\DocumentRepository;
 use App\Services\ScoringService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -132,7 +131,7 @@ class ApplicationRepository
 
         $apply = $this->create($applyData);
 
-        $this->handleDocuments($requestData['documents'] ?? [], $candidateId, $apply->id);
+        $this->handleDocuments($requestData['existing_documents'] ?? [], $apply->id);
 
         $candidate->notify(new ApplicationSubmittedNotification($candidate, $job));
 
@@ -147,37 +146,23 @@ class ApplicationRepository
     /**
      * Handle multiple document uploads for an application
      */
-    private function handleDocuments(array $documents, int $candidateId, int $applyId): void
+    private function handleDocuments(array $documentIds, int $applyId): void
     {
-        foreach ($documents as $doc) {
-            $file = $doc['file'] ?? null;
-            $type = $doc['type'] ?? null;
-
-            if (!$file || !$file instanceof UploadedFile || !$file->isValid() || !$type) {
+        foreach ($documentIds as $documentId) {
+            $documentId = (int) $documentId;
+            if (!$documentId) {
                 continue;
             }
 
-            $documentType = DocumentType::tryFrom($type);
-            if (!$documentType) {
+            $document = Document::find($documentId);
+            if (!$document) {
                 continue;
             }
-
-            $fileName = generateFileName($documentType->value, $file->extension());
-            $filePath = $file->storeAs($documentType->getPath(), $fileName, 'public');
-
-            $document = $this->documentRepo->createFromUpload([
-                'name'         => $file->getClientOriginalName(),
-                'file'         => $filePath,
-                'type'         => $documentType->value,
-                'candidate_id' => $candidateId,
-                'created_at'   => now(),
-                'updated_at'   => now(),
-            ]);
 
             ApplyDocument::create([
                 'apply_id'    => $applyId,
                 'document_id' => $document->id,
-                'type'        => $documentType->value,
+                'type'        => $document->type,
             ]);
         }
     }

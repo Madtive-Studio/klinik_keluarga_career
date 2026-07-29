@@ -8,9 +8,7 @@ use App\Models\CandidateProfile;
 use App\Models\Document;
 use App\Models\Job;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -68,20 +66,20 @@ class ApplicationControllerTest extends TestCase
     public function storeCreatesApplicationWithDocumentUpload(): void
     {
         Notification::fake();
-        Storage::fake('public');
 
         $this->actingAs($this->candidate, 'candidate');
 
         $job = Job::factory()->create();
-        $file = UploadedFile::fake()->create('cv.pdf', 500, 'application/pdf');
+        $document = \App\Models\Document::factory()->create([
+            'candidate_id' => $this->candidate->id,
+            'type' => 'CV',
+        ]);
 
         $response = $this->post(route('candidate.jobs.applications.store'), [
-            'job_uuid'         => $job->uuid,
-            'documents'        => [
-                ['file' => $file, 'type' => 'CV'],
-            ],
-            'cover_letter'     => 'Saya tertarik dengan posisi ini.',
-            'description'      => 'Pengalaman saya sesuai kebutuhan.',
+            'job_uuid'          => $job->uuid,
+            'existing_documents' => [$document->id],
+            'cover_letter'      => 'Saya tertarik dengan posisi ini.',
+            'description'       => 'Pengalaman saya sesuai kebutuhan.',
         ]);
 
         $response->assertRedirect(route('candidate.jobs.applications.success', $job->uuid));
@@ -97,8 +95,9 @@ class ApplicationControllerTest extends TestCase
         $this->assertNotNull($apply->score_recommendation);
 
         $this->assertDatabaseHas('apply_documents', [
-            'apply_id' => $apply->id,
-            'type'     => 'CV',
+            'apply_id'    => $apply->id,
+            'document_id' => $document->id,
+            'type'        => 'CV',
         ]);
     }
 
@@ -106,22 +105,24 @@ class ApplicationControllerTest extends TestCase
     public function storeCreatesApplicationWithMultipleDocuments(): void
     {
         Notification::fake();
-        Storage::fake('public');
 
         $this->actingAs($this->candidate, 'candidate');
 
         $job = Job::factory()->create();
-        $cvFile = UploadedFile::fake()->create('cv.pdf', 500, 'application/pdf');
-        $strFile = UploadedFile::fake()->create('str.pdf', 500, 'application/pdf');
+        $cvDoc = \App\Models\Document::factory()->create([
+            'candidate_id' => $this->candidate->id,
+            'type' => 'CV',
+        ]);
+        $strDoc = \App\Models\Document::factory()->create([
+            'candidate_id' => $this->candidate->id,
+            'type' => 'STR',
+        ]);
 
         $response = $this->post(route('candidate.jobs.applications.store'), [
-            'job_uuid'         => $job->uuid,
-            'documents'        => [
-                ['file' => $cvFile, 'type' => 'CV'],
-                ['file' => $strFile, 'type' => 'STR'],
-            ],
-            'cover_letter'     => 'Cover letter.',
-            'description'      => 'Deskripsi.',
+            'job_uuid'          => $job->uuid,
+            'existing_documents' => [$cvDoc->id, $strDoc->id],
+            'cover_letter'      => 'Cover letter.',
+            'description'       => 'Deskripsi.',
         ]);
 
         $response->assertRedirect(route('candidate.jobs.applications.success', $job->uuid));
@@ -130,12 +131,14 @@ class ApplicationControllerTest extends TestCase
         $this->assertNotNull($apply);
 
         $this->assertDatabaseHas('apply_documents', [
-            'apply_id' => $apply->id,
-            'type'     => 'CV',
+            'apply_id'    => $apply->id,
+            'document_id' => $cvDoc->id,
+            'type'        => 'CV',
         ]);
         $this->assertDatabaseHas('apply_documents', [
-            'apply_id' => $apply->id,
-            'type'     => 'STR',
+            'apply_id'    => $apply->id,
+            'document_id' => $strDoc->id,
+            'type'        => 'STR',
         ]);
         $this->assertEquals(2, $apply->applyDocuments()->count());
     }

@@ -151,6 +151,8 @@ return [
         'application_label' => 'Application',
         'cv_resume' => 'CV / Resume',
         'supporting_documents' => 'Supporting Documents',
+        'no_documents_yet' => 'You have no documents yet.',
+        'add_documents_now' => 'Add documents first',
         'select_type' => 'Select document type',
         'add_document' => 'Add Document',
         'upload' => 'Upload',

@@ -27,11 +27,13 @@ return [
     'current_password' => 'Password saat ini tidak sesuai.',
     'documents_required' => 'Minimal 1 dokumen harus dilampirkan.',
     'documents_min' => 'Minimal :min dokumen harus dilampirkan.',
-    'documents_max' => 'Maksimal :max dokumen yang dapat dilampirkan.',
+    'documents_max' => 'Maksimal :max dokumen dapat dilampirkan.',
     'document_file_required' => 'File dokumen wajib diupload.',
     'document_file_mimes' => 'Format file dokumen harus PDF, DOC, atau DOCX.',
     'document_type_required' => 'Pilih jenis dokumen.',
     'document_type_invalid' => 'Jenis dokumen tidak valid.',
+    'existing_documents_required' => 'Pilih minimal 1 dokumen.',
+    'existing_documents_invalid' => 'Dokumen yang dipilih tidak valid.',
 
     'attributes' => [
         'batch_id' => 'batch',
@@ -56,6 +58,7 @@ return [
         'threshold_reject' => 'batas skor review',
         'job_uuid' => 'lowongan',
         'documents' => 'dokumen lamaran',
+        'existing_documents' => 'dokumen terlampir',
         'cover_letter' => 'surat lamaran',
         'document_file' => 'berkas dokumen',
         'document_type' => 'jenis dokumen',

@@ -151,6 +151,8 @@ return [
         'application_label' => 'Lamaran',
         'cv_resume' => 'CV / Resume',
         'supporting_documents' => 'Dokumen Pendukung',
+        'no_documents_yet' => 'Kamu belum memiliki dokumen.',
+        'add_documents_now' => 'Tambahkan dokumen terlebih dahulu',
         'select_type' => 'Pilih jenis dokumen',
         'add_document' => 'Tambah Dokumen',
         'upload' => 'Upload',

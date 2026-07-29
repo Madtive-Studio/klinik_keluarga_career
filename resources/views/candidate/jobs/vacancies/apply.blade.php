@@ -61,7 +61,7 @@
 							</div>
 						</div>
 					</div>
-					<form action="{{ route('candidate.jobs.applications.store') }}" method="POST" enctype="multipart/form-data">
+					<form action="{{ route('candidate.jobs.applications.store') }}" method="POST">
 						@csrf
 						<input type="hidden" name="job_uuid" value="{{ $job->uuid }}">
 						<div class="row mt-4">
@@ -70,36 +70,25 @@
 									<div class="job-detail-content">
 										<div class="mb-3">
 											<label>{{ __('candidate.apply.supporting_documents') }} :</label>
-											<div id="documents-container">
-												<div class="document-row d-flex flex-column flex-sm-row align-items-start gap-2 mb-2">
-													<div class="flex-fill">
-														<input type="file" name="documents[0][file]" class="form-control" accept=".pdf,.doc,.docx">
-														@error('documents.0.file')
-															<span class="text-danger fw-bold small">{{ $message }}</span>
-														@enderror
+											@if (isset($candidate) && $candidate->documents && $candidate->documents->count() > 0)
+												@foreach ($candidate->documents as $doc)
+													<div class="form-check mt-2">
+														<input type="checkbox" name="existing_documents[]" value="{{ $doc->id }}" class="form-check-input" id="doc_{{ $doc->id }}" {{ in_array($doc->id, old('existing_documents', [])) ? 'checked' : '' }}>
+														<label class="form-check-label" for="doc_{{ $doc->id }}">
+															{{ $doc->name }} <span class="badge bg-info">{{ $doc->type_label }}</span>
+														</label>
 													</div>
-													<div class="flex-fill" style="min-width: 160px;">
-														<select name="documents[0][type]" class="form-control">
-															<option value="">{{ __('candidate.apply.select_type') }}</option>
-															@foreach (\App\Enums\DocumentType::getWithLabels() as $value => $label)
-																<option value="{{ $value }}">{{ $label }}</option>
-															@endforeach
-														</select>
-														@error('documents.0.type')
-															<span class="text-danger fw-bold small">{{ $message }}</span>
-														@enderror
-													</div>
-													<button type="button" class="btn btn-danger btn-sm remove-document flex-shrink-0" style="display:none;" title="{{ __('common.delete') }}">
-														<i class="mdi mdi-close"></i>
-													</button>
+												@endforeach
+												@error('existing_documents')
+													<span class="text-danger fw-bold d-block mt-1">{{ $message }}</span>
+												@enderror
+											@else
+												<div class="alert alert-warning mb-0 mt-2">
+													<i class="mdi mdi-alert me-1"></i>
+													{{ __('candidate.apply.no_documents_yet') }}
+													<a href="{{ route('candidate.my.documents.index') }}" class="alert-link">{{ __('candidate.apply.add_documents_now') }}</a>
 												</div>
-											</div>
-											<button type="button" id="add-document" class="btn btn-outline-primary btn-sm mt-1">
-												<i class="mdi mdi-plus"></i> {{ __('candidate.apply.add_document') }}
-											</button>
-											@error('documents')
-												<span class="text-danger fw-bold d-block mt-1">{{ $message }}</span>
-											@enderror
+											@endif
 										</div>
 										<div class="mb-3">
 											<label for="">{{ __('candidate.apply.cover_letter') }} : </label>
@@ -242,23 +231,6 @@
 			$('#imageZoomModal').on('hidden.bs.modal', function () {
 				$('#zoomCarousel').carousel(0);
 			});
-		});
-
-		let docIndex = 0;
-		$(document).on('click', '#add-document', function() {
-			docIndex = $('#documents-container .document-row').length;
-			let clone = $('#documents-container .document-row').first().clone();
-			clone.find('input, select').each(function() {
-				let name = $(this).attr('name').replace(/\[\d+\]/, '[' + docIndex + ']');
-				$(this).attr('name', name).val('');
-			});
-			clone.find('.remove-document').show();
-			clone.find('.text-danger').remove();
-			$('#documents-container').append(clone);
-		});
-
-		$(document).on('click', '.remove-document', function() {
-			$(this).closest('.document-row').remove();
 		});
 	</script>
 @endsection
