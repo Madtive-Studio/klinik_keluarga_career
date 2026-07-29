@@ -71,14 +71,17 @@
 										<div class="mb-3">
 											<label>{{ __('candidate.apply.supporting_documents') }} :</label>
 											@if (isset($candidate) && $candidate->documents && $candidate->documents->count() > 0)
-												@foreach ($candidate->documents as $doc)
-													<div class="form-check mt-2">
-														<input type="checkbox" name="existing_documents[]" value="{{ $doc->id }}" class="form-check-input" id="doc_{{ $doc->id }}" {{ in_array($doc->id, old('existing_documents', [])) ? 'checked' : '' }}>
-														<label class="form-check-label" for="doc_{{ $doc->id }}">
-															{{ $doc->name }} <span class="badge bg-info">{{ $doc->type_label }}</span>
-														</label>
+												<div id="document-selector">
+													<div class="document-row d-flex align-items-center gap-2 mb-2">
+														<select name="existing_documents[]" class="form-select document-select">
+															<option value="">{{ __('candidate.apply.select_document') }}</option>
+															@foreach ($candidate->documents as $doc)
+																<option value="{{ $doc->id }}">{{ $doc->name }} ({{ $doc->type_label }})</option>
+															@endforeach
+														</select>
+														<button type="button" class="btn btn-danger btn-sm remove-document flex-shrink-0 d-none">&times;</button>
 													</div>
-												@endforeach
+												</div>
 												@error('existing_documents')
 													<span class="text-danger fw-bold d-block mt-1">{{ $message }}</span>
 												@enderror
@@ -231,6 +234,62 @@
 			$('#imageZoomModal').on('hidden.bs.modal', function () {
 				$('#zoomCarousel').carousel(0);
 			});
+		});
+
+		{{-- Dynamic document multi-select --}}
+		var allDocs = @json($candidate->documents ?? []);
+
+		function rebuildDocumentOptions() {
+			var selected = [];
+			document.querySelectorAll('.document-select').forEach(function(sel) {
+				if (sel.value) selected.push(sel.value);
+			});
+			document.querySelectorAll('.document-select').forEach(function(sel) {
+				var val = sel.value;
+				sel.innerHTML = '<option value="">' + '{{ __("candidate.apply.select_document") }}' + '</option>';
+				allDocs.forEach(function(doc) {
+					if (!selected.includes(String(doc.id)) || String(doc.id) === val) {
+						var opt = document.createElement('option');
+						opt.value = doc.id;
+						opt.textContent = doc.name + ' (' + doc.type_label + ')';
+						sel.appendChild(opt);
+					}
+				});
+				sel.value = val;
+			});
+		}
+
+		function addDocumentRow() {
+			var container = document.getElementById('document-selector');
+			var rows = container.querySelectorAll('.document-row');
+			var template = rows[0].cloneNode(true);
+			template.querySelector('select').value = '';
+			template.querySelector('.remove-document').classList.remove('d-none');
+			container.appendChild(template);
+			rebuildDocumentOptions();
+		}
+
+		document.getElementById('document-selector').addEventListener('change', function(e) {
+			if (e.target.classList.contains('document-select')) {
+				var rows = document.querySelectorAll('.document-select');
+				var last = rows[rows.length - 1];
+				if (last.value && !last.dataset.appended) {
+					last.dataset.appended = '1';
+					addDocumentRow();
+				}
+				rebuildDocumentOptions();
+			}
+		});
+
+		document.getElementById('document-selector').addEventListener('click', function(e) {
+			if (e.target.classList.contains('remove-document')) {
+				var row = e.target.closest('.document-row');
+				var container = document.getElementById('document-selector');
+				if (container.querySelectorAll('.document-row').length > 1) {
+					row.remove();
+					rebuildDocumentOptions();
+				}
+			}
 		});
 	</script>
 @endsection
