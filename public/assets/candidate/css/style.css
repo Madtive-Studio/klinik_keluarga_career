@@ -1240,6 +1240,27 @@ p {
 	display: inline-block;
 }
 
+@media (max-width: 991px) {
+	#topnav {
+		background-color: #ffffff;
+		-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+		box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+		min-height: 74px;
+	}
+	#topnav .tagline {
+		display: none;
+	}
+	#topnav .tagline-dark {
+		display: none;
+	}
+	#topnav .container {
+		width: auto;
+	}
+	#topnav .logo {
+		float: none;
+		display: inline-block;
+	}
+
 #topnav .has-submenu.active a {
 	color: #ffffff;
 }
