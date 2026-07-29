@@ -1248,11 +1248,6 @@ p {
 	display: inline-block;
 }
 
-#topnav .logo a,
-#topnav .logo {
-	display: block;
-}
-
 @media (max-width: 991px) {
 	#topnav {
 		background-color: #ffffff;
@@ -1274,13 +1269,12 @@ p {
 		display: inline-block;
 	}
 	#topnav .logo .logo-light {
-		display: none !important;
+		display: none;
 	}
 	#topnav .logo .logo-dark {
-		display: inline-block !important;
+		display: inline-block;
 	}
-
-#topnav .has-submenu.active a {
+	#topnav .has-submenu.active a {
 	color: #ffffff;
 }
 
@@ -1728,11 +1722,15 @@ p {
 	#topnav .container {
 		width: auto;
 	}
+	#topnav .logo {
+		float: none;
+		display: inline-block;
+	}
 	#topnav .logo .logo-light {
-		display: none !important;
+		display: none;
 	}
 	#topnav .logo .logo-dark {
-		display: inline-block !important;
+		display: inline-block;
 	}
 	#topnav .navigation-menu {
 		float: none;
