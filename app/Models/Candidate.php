@@ -41,16 +41,6 @@ class Candidate extends Authenticatable
     }
 
     /**
-     * Get all of the comments for the Candidate
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function CVs()
-    {
-        return $this->hasMany(CV::class);
-    }
-
-    /**
      * Get all of the applies for the Candidate
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
