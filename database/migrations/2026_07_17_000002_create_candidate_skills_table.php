@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('candidate_skills', function (Blueprint $table) {
             $table->id();
             $table->foreignId('candidate_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
+            $table->string('name', 100);
             $table->enum('level', ['basic', 'intermediate', 'advanced'])->default('basic');
             $table->timestamps();
 

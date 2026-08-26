@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->unique();
-            $table->string('title');
+            $table->string('uuid', 36)->unique();
+            $table->string('title', 150);
             $table->longText('qualification');
             $table->longText('description');
             $table->enum('type', ['WFH/Remote', 'Partime/Freelancer', 'Fulltime/Onsite', 'Internship']);
             $table->double('quota');
-            $table->string('code');
-            $table->string('salary');
-            $table->string('experience');
+            $table->string('code', 50);
+            $table->string('salary', 100);
+            $table->string('experience', 100);
             $table->boolean('is_show_salary');
             $table->foreignId('batch_id')->constrained()->cascadeOnDelete();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();

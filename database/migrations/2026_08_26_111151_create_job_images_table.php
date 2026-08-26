@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('job_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->string('job_uuid');
-            $table->string('original_name');
-            $table->string('hash_name');
+            $table->string('job_uuid', 36);
+            $table->string('original_name', 255);
+            $table->string('hash_name', 255);
             $table->decimal('size', 8, 2); // Size in MB
             $table->string('extension', 10);
             $table->string('mime_type', 100);

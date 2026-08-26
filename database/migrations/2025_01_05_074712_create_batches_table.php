@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('batches', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->string('name');
+            $table->string('code', 50);
+            $table->string('name', 100);
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->double('quota');

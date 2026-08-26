@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('schedule_interviews', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->nullable();
-            $table->string('code')->nullable();
-            $table->string('title');
-            $table->string('link')->nullable();
+            $table->string('uuid', 36)->nullable();
+            $table->string('code', 50)->nullable();
+            $table->string('title', 150);
+            $table->string('link', 255)->nullable();
             $table->dateTime('start_datetime');
             $table->dateTime('end_datetime');
-            $table->string('description')->nullable();
+            $table->string('description', 255)->nullable();
             
             $table->foreignId('candidate_id')->constrained()->cascadeOnDelete();
             $table->foreignId('job_id')->constrained()->cascadeOnDelete();

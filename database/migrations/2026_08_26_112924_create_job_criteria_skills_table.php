@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('job_criteria_skills', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_criteria_id')->constrained('job_criteria')->cascadeOnDelete();
-            $table->string('skill_name');
+            $table->string('skill_name', 100);
             $table->timestamps();
         });
 

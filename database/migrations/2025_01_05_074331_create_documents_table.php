@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('file');
-            $table->string('type');
+            $table->string('name', 150);
+            $table->string('file', 255);
+            $table->string('type', 50);
             $table->foreignId('candidate_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

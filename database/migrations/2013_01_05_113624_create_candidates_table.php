@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('candidates', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->string('name', 150);
+            $table->string('email', 100)->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('verification_token')->nullable();
-            $table->string('password');
-            $table->string('phone');
+            $table->string('verification_token', 100)->nullable();
+            $table->string('password', 100);
+            $table->string('phone', 20);
             $table->date('birth_date');
             $table->longText('address')->nullable();
             $table->rememberToken();
