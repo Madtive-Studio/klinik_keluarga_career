@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('document_id')->constrained()->cascadeOnDelete();
             $table->text('cover_letter');
             $table->enum('status', ['IN REVIEW', 'NOT SUITABLE', 'SHORTLISTED', 'HIRED']);
-            $table->longText('description');
+            $table->text('description');
             $table->timestamps();
         });
     }
