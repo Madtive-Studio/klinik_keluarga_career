@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('job_id')->constrained()->cascadeOnDelete();
             $table->foreignId('batch_id')->constrained()->cascadeOnDelete();
             $table->foreignId('document_id')->constrained()->cascadeOnDelete();
-            $table->string('cover_letter', 1000);
+            $table->text('cover_letter');
             $table->enum('status', ['IN REVIEW', 'NOT SUITABLE', 'SHORTLISTED', 'HIRED']);
             $table->longText('description');
             $table->timestamps();
