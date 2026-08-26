@@ -16,7 +16,6 @@ class JobCriteriaFactory extends Factory
             'job_id' => Job::factory(),
             'min_education' => 'S1',
             'min_experience_years' => 1,
-            'required_skills' => [],
             'weight_education' => 30,
             'weight_experience' => 30,
             'weight_skills' => 0,

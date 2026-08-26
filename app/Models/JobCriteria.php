@@ -16,7 +16,6 @@ class JobCriteria extends Model
         'job_id',
         'min_education',
         'min_experience_years',
-        'required_skills',
         'weight_education',
         'weight_experience',
         'weight_skills',
@@ -26,13 +25,14 @@ class JobCriteria extends Model
         'threshold_reject',
     ];
 
-    protected $casts = [
-        'required_skills' => 'array',
-    ];
-
     public function job(): BelongsTo
     {
         return $this->belongsTo(Job::class);
+    }
+
+    public function skills(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(JobCriteriaSkill::class, 'job_criteria_id');
     }
 
     public static function defaultsForJob(int $jobId): array
@@ -41,7 +41,6 @@ class JobCriteria extends Model
             'job_id' => $jobId,
             'min_education' => null,
             'min_experience_years' => 0,
-            'required_skills' => [],
             'weight_education' => 30,
             'weight_experience' => 30,
             'weight_skills' => 0,

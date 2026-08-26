@@ -145,7 +145,6 @@ class JobRequest extends FormRequest
         return [
             'min_education' => $this->input('min_education') ?: null,
             'min_experience_years' => parseJobExperienceYears($this->input('experience')),
-            'required_skills' => [],
             'weight_education' => (int) $this->input('weight_education', 30),
             'weight_experience' => (int) $this->input('weight_experience', 30),
             'weight_skills' => 0,
