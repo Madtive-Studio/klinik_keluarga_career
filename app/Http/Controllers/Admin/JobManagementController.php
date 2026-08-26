@@ -154,13 +154,15 @@ class JobManagementController extends Controller
         ]) + [
             'user_id' => auth()->user()->id,
             'is_show_salary' => $request->input('is_show_salary') === '1',
-            'images' => $imagePaths,
         ];
 
         try {
             DB::transaction(function () use ($request, $attributes) {
                 $job = Job::create($attributes);
                 $job->criteria()->create($request->criteriaAttributes());
+
+                $this->jobImageService->associateImagesToJob($job->uuid, $job->id);
+                $this->jobImageService->ensurePrimaryImageExists($job->uuid);
             });
         } catch (\Throwable $exception) {
             $this->jobImageService->deletePaths($imagePaths);
@@ -205,7 +207,7 @@ class JobManagementController extends Controller
     public function update(JobRequest $request, string $id)
     {
         $job = Job::findOrFail($id);
-        $previousImages = $job->images ?? [];
+        $previousImages = $job->images->pluck('hash_name')->toArray();
         $requestedPaths = $request->resolvedImagePaths();
         $removedPaths = $this->jobImageService->removedJobImages($previousImages, $requestedPaths);
         $newPaths = $this->jobImageService->newlyAddedJobImages($previousImages, $requestedPaths);
@@ -216,7 +218,6 @@ class JobManagementController extends Controller
         ]) + [
             'user_id' => auth()->user()->id,
             'is_show_salary' => $request->input('is_show_salary') === '1',
-            'images' => $this->jobImageService->finalizeJobImages($previousImages, $requestedPaths),
         ];
 
         try {
@@ -226,6 +227,9 @@ class JobManagementController extends Controller
                     ['job_id' => $job->id],
                     $request->criteriaAttributes()
                 );
+
+                $this->jobImageService->associateImagesToJob($job->uuid, $job->id);
+                $this->jobImageService->ensurePrimaryImageExists($job->uuid);
             });
 
             $this->jobImageService->deletePaths($removedPaths);

@@ -15,7 +15,7 @@ class Job extends Model
     use HasFactory;
     protected $table = 'jobs';
     protected $fillable = [
-        'uuid', 'title', 'qualification', 'quota', 'user_id', 'description', 'type', 'code', 'images',
+        'uuid', 'title', 'qualification', 'quota', 'user_id', 'description', 'type', 'code',
         'salary_min', 'salary_max', 'is_show_salary', 'experience', 'batch_id', 'category_id',
     ];
 
@@ -23,7 +23,6 @@ class Job extends Model
         'salary_min' => 'integer',
         'salary_max' => 'integer',
         'is_show_salary' => 'boolean',
-        'images' => 'array',
     ];
 
     public function getSalaryDisplayAttribute(): string
@@ -31,20 +30,29 @@ class Job extends Model
         return formatSalaryRange($this->salary_min, $this->salary_max);
     }
 
+    public function images(): HasMany
+    {
+        return $this->hasMany(JobImage::class);
+    }
+
     public function getImageUrlsAttribute(): array
     {
-        return app(JobImageService::class)->resolveUrls($this->images);
+        return $this->images->map(fn($img) => $img->url)->toArray();
     }
 
     public function getImageUrlAttribute(): string
     {
-        return $this->image_urls[0] ?? asset('assets/candidate/images/job-placeholder.png');
+        $primary = $this->images->firstWhere('is_primary', true);
+        if ($primary) {
+            return $primary->url;
+        }
+        return $this->images->first()?->url ?? asset('assets/candidate/images/job-placeholder.png');
     }
 
     protected static function booted(): void
     {
         static::deleting(function (Job $job) {
-            app(JobImageService::class)->deletePaths($job->images ?? []);
+            app(JobImageService::class)->deleteDirectoryForJob($job->uuid);
         });
     }
 

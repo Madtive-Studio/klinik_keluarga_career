@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Job;
+use App\Models\JobImage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -23,7 +24,23 @@ class JobImageService
         $directory = $this->directoryForJob($jobUuid);
         $fileName = generateFileName('job-' . Str::slug($jobUuid), $file->extension());
 
-        return $file->storeAs($directory, $fileName, 'public');
+        $path = $file->storeAs($directory, $fileName, 'public');
+
+        $hasExisting = JobImage::where('job_uuid', $jobUuid)->exists();
+        $job = Job::where('uuid', $jobUuid)->first();
+
+        JobImage::create([
+            'job_id' => $job?->id,
+            'job_uuid' => $jobUuid,
+            'original_name' => $file->getClientOriginalName(),
+            'hash_name' => $path,
+            'size' => round($file->getSize() / (1024 * 1024), 2),
+            'extension' => $file->extension(),
+            'mime_type' => $file->getMimeType(),
+            'is_primary' => !$hasExisting,
+        ]);
+
+        return $path;
     }
 
     public function assertValidUpload(UploadedFile $file): void
@@ -61,7 +78,7 @@ class JobImageService
                 throw new InvalidArgumentException(__('validation.custom.images.invalid_path'));
             }
 
-            if (!Storage::disk('public')->exists($path)) {
+            if (!Storage::disk('public')->exists($path) || !JobImage::where('job_uuid', $jobUuid)->where('hash_name', $path)->exists()) {
                 throw new InvalidArgumentException(__('validation.custom.images.missing_file'));
             }
         }
@@ -105,6 +122,7 @@ class JobImageService
             if (Storage::disk('public')->exists($path)) {
                 Storage::disk('public')->delete($path);
             }
+            JobImage::where('hash_name', $path)->delete();
         }
     }
 
@@ -124,6 +142,8 @@ class JobImageService
         if (Storage::disk('public')->exists($directory)) {
             Storage::disk('public')->deleteDirectory($directory);
         }
+
+        JobImage::where('job_uuid', $jobUuid)->delete();
     }
 
     public function cleanupOrphanedUploads(string $jobUuid, ?int $exceptJobId = null): void
@@ -144,5 +164,24 @@ class JobImageService
     public function directoryForJob(string $jobUuid): string
     {
         return 'jobs/images/' . $jobUuid;
+    }
+
+    public function associateImagesToJob(string $jobUuid, int $jobId): void
+    {
+        JobImage::where('job_uuid', $jobUuid)->update(['job_id' => $jobId]);
+    }
+
+    public function ensurePrimaryImageExists(string $jobUuid): void
+    {
+        $images = JobImage::where('job_uuid', $jobUuid)->orderBy('id', 'asc')->get();
+        if ($images->isEmpty()) {
+            return;
+        }
+
+        $hasPrimary = $images->contains('is_primary', true);
+        if (!$hasPrimary) {
+            $first = $images->first();
+            $first->update(['is_primary' => true]);
+        }
     }
 }

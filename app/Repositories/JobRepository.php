@@ -15,7 +15,7 @@ class JobRepository
     ) {}
 
     public function findByUuid($uuid) {
-        return Job::with(['category', 'batch', 'applies'])->where('uuid', $uuid)->first();
+        return Job::with(['category', 'batch', 'applies', 'images'])->where('uuid', $uuid)->first();
     }
 
     public function getByFiltersAndPaginated(array $filters, int $perPage) 
@@ -28,7 +28,7 @@ class JobRepository
         $salaryMax = $filters['salaryMax'] ?? null;
         $minEducation = $filters['minEducation'] ?? null;
 
-        $query = Job::with(['category', 'batch', 'criteria'])
+        $query = Job::with(['category', 'batch', 'criteria', 'images'])
             ->orderBy('created_at', 'desc');
 
         if ($batchId) {

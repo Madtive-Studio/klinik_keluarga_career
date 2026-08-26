@@ -22,7 +22,7 @@ class HomeRepository
 
     public function getLatestJobs(?int $batchId = null, int $limit = 5): Collection
     {
-        $query = Job::with(['category', 'batch'])->latest()->limit($limit);
+        $query = Job::with(['category', 'batch', 'images'])->latest()->limit($limit);
 
         if ($batchId) {
             $query->where('batch_id', $batchId);
@@ -33,7 +33,7 @@ class HomeRepository
 
     public function getLatestJobsByType(string $jobType, ?int $batchId = null, int $limit = 5): Collection
     {
-        $query = Job::with(['category', 'batch'])
+        $query = Job::with(['category', 'batch', 'images'])
             ->where('type', $jobType)
             ->latest()
             ->limit($limit);
