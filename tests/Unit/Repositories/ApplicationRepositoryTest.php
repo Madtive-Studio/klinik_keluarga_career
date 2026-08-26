@@ -76,7 +76,6 @@ class ApplicationRepositoryTest extends TestCase
             'candidate_id' => $candidate->id,
             'job_id' => $job->id,
             'batch_id' => $job->batch_id,
-            'document_id' => $document->id,
             'cover_letter' => 'Test',
             'status' => 'IN REVIEW',
             'description' => 'Test desc',

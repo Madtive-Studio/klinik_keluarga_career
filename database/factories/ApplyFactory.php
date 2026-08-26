@@ -40,10 +40,6 @@ class ApplyFactory extends Factory
                     'email_verified_at' => now(),
                 ])->id;
             }
-            if (!$apply->document_id) {
-                $candidate = Candidate::query()->findOrFail($apply->candidate_id);
-                $apply->document_id = Document::factory()->for($candidate)->cv()->create()->id;
-            }
         })->afterCreating(function (Apply $apply) {
             if ($apply->applyDocuments()->count() === 0) {
                 $candidate = Candidate::query()->findOrFail($apply->candidate_id);
@@ -62,7 +58,6 @@ class ApplyFactory extends Factory
             'job_id'       => $job->id,
             'batch_id'     => $job->batch_id,
             'candidate_id' => $candidate->id,
-            'document_id'  => $document->id,
         ]);
     }
 }

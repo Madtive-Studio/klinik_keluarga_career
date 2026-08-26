@@ -15,7 +15,6 @@ class Apply extends Model
     protected $fillable = [
         'uuid',
         'candidate_id',
-        'document_id',
         'job_id',
         'batch_id',
         'cover_letter',
@@ -47,16 +46,6 @@ class Apply extends Model
     public function batch(): BelongsTo
     {
         return $this->belongsTo(Batch::class, 'batch_id');
-    }
-
-    public function document(): BelongsTo
-    {
-        return $this->belongsTo(Document::class, 'document_id', 'id');
-    }
-
-    public function cv(): BelongsTo
-    {
-        return $this->document();
     }
 
     public function candidate(): BelongsTo

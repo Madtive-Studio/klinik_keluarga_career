@@ -122,10 +122,6 @@
 											</a>
 										@endforeach
 									</div>
-								@elseif ($apply->document)
-									<a href="{{ Illuminate\Support\Facades\Storage::url($apply->document->file) }}" target="_blank" class="btn btn-info btn-sm">
-										<i class="ti ti-download"></i> {{ __('admin.applies.view_cv') }}
-									</a>
 								@else
 									<p class="text-muted small mb-0">{{ __('admin.applies.no_documents') }}</p>
 								@endif
