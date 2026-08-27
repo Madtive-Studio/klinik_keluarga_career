@@ -61,7 +61,7 @@
 							</div>
 						</div>
 					</div>
-					<form action="{{ route('candidate.jobs.applications.store') }}" method="POST">
+					<form id="apply-form" action="{{ route('candidate.jobs.applications.store') }}" method="POST">
 						@csrf
 						<input type="hidden" name="job_uuid" value="{{ $job->uuid }}">
 						<div class="row mt-4">
@@ -291,6 +291,14 @@
 					rebuildDocumentOptions();
 				}
 			}
+		});
+
+		document.getElementById('apply-form')?.addEventListener('submit', function() {
+			this.querySelectorAll('.document-select').forEach(function(sel) {
+				if (!sel.value) {
+					sel.disabled = true;
+				}
+			});
 		});
 	</script>
 @endsection

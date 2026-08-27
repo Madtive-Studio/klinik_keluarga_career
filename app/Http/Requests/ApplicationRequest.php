@@ -13,11 +13,23 @@ class ApplicationRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('existing_documents') && is_array($this->existing_documents)) {
+            $filtered = array_values(array_unique(array_filter($this->existing_documents, function ($id) {
+                return !is_null($id) && $id !== '';
+            })));
+            $this->merge([
+                'existing_documents' => $filtered,
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'job_uuid' => 'required|exists:jobs,uuid',
-            'existing_documents' => 'nullable|array',
+            'existing_documents' => 'required|array|min:1',
             'existing_documents.*' => 'integer|exists:documents,id',
             'cover_letter' => 'required',
             'description' => 'required',
@@ -38,6 +50,8 @@ class ApplicationRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'existing_documents.required' => __('validation.existing_documents_required'),
+            'existing_documents.min' => __('validation.existing_documents_required'),
             'existing_documents.*.exists' => __('validation.existing_documents_invalid'),
         ];
     }
@@ -46,11 +60,23 @@ class ApplicationRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $documentIds = $this->input('existing_documents', []);
+            if (!is_array($documentIds)) {
+                $documentIds = [];
+            }
+            $documentIds = array_values(array_unique(array_filter($documentIds, function ($id) {
+                return !is_null($id) && $id !== '';
+            })));
+
             if (empty($documentIds)) {
                 $validator->errors()->add('existing_documents', __('validation.existing_documents_required'));
                 return;
             }
+
             $candidate = auth('candidate')->user();
+            if (!$candidate) {
+                return;
+            }
+
             $validCount = $candidate->documents()->whereIn('id', $documentIds)->count();
             if ($validCount !== count($documentIds)) {
                 $validator->errors()->add('existing_documents', __('validation.existing_documents_invalid'));
