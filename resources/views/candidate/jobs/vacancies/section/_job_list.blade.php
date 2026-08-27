@@ -5,6 +5,8 @@
             ? \App\Enums\EducationLevel::labelOf($job->criteria->min_education)
             : '-';
         $jobTypeLabel = \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type;
+        $appliedJobIds = $appliedJobIds ?? [];
+        $hasApplied = in_array($job->id, $appliedJobIds);
     @endphp
     <div class="col-lg-12 mt-4 pt-2">
         <div class="job-list-box border rounded">
@@ -37,9 +39,15 @@
                 </div>
                 <div class="p-3 bg-light">
                     <p class="text-muted mb-2 small"><i class="mdi mdi-school text-primary me-1"></i>{{ $minEducation }}</p>
-                    <a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary w-100 btn-sm">
-                        {{ __('candidate.jobs.apply_now') }}
-                    </a>
+                    @if ($hasApplied)
+                        <a href="{{ route('candidate.my.applications.index') }}" class="btn btn-outline-success w-100 btn-sm">
+                            <i class="mdi mdi-check-circle me-1"></i> {{ __('candidate.jobs.already_applied') }}
+                        </a>
+                    @else
+                        <a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary w-100 btn-sm">
+                            {{ __('candidate.jobs.apply_now') }}
+                        </a>
+                    @endif
                 </div>
             </div>
 
@@ -70,9 +78,15 @@
                         <div class="text-end">
                             <span class="badge bg-success">{{ $jobTypeLabel }}</span>
                             <div class="mt-2">
-                                <a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-sm btn-primary">
-                                    {{ __('candidate.jobs.apply_now') }}
-                                </a>
+                                @if ($hasApplied)
+                                    <a href="{{ route('candidate.my.applications.index') }}" class="btn btn-sm btn-outline-success">
+                                        <i class="mdi mdi-check-circle me-1"></i> {{ __('candidate.jobs.already_applied') }}
+                                    </a>
+                                @else
+                                    <a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-sm btn-primary">
+                                        {{ __('candidate.jobs.apply_now') }}
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>

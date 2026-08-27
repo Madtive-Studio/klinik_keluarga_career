@@ -137,9 +137,9 @@
 								{{ __('candidate.jobs.login_to_apply') }}
 							</a>
 						@elseif ($eligibility['already_applied'])
-							<button type="button" class="btn btn-secondary w-100" disabled>
-								{{ __('candidate.jobs.already_applied') }}
-							</button>
+							<a href="{{ route('candidate.my.applications.index') }}" class="btn btn-success w-100">
+								<i class="mdi mdi-check-circle me-1"></i> {{ __('candidate.nav.my_applications') }}
+							</a>
 							<small class="text-muted d-block mt-2 text-center">{!! __('messages.application.already_applied_html', ['url' => route('candidate.my.applications.index')]) !!}</small>
 						@elseif ($eligibility['profile_incomplete'])
 							<a href="{{ route('candidate.my.profile.edit') }}" class="btn btn-warning w-100">

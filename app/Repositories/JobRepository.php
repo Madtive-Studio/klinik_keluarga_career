@@ -102,10 +102,16 @@ class JobRepository
 
         $jobs = $this->getByFiltersAndPaginated($filters, $perPage);
 
+        $candidateId = auth('candidate')->id();
+        $appliedJobIds = $candidateId
+            ? \App\Models\Apply::where('candidate_id', $candidateId)->pluck('job_id')->toArray()
+            : [];
+
         return [
             'jobs'       => $jobs,
             'categories' => $this->categoryRepo->getAll(),
             'educationLevels' => EducationLevel::cases(),
+            'appliedJobIds' => $appliedJobIds,
         ];
     }
 

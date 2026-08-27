@@ -1,6 +1,8 @@
 @forelse ($jobs as $job)
 	@php
 		$jobTypeLabel = \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type;
+		$appliedJobIds = $appliedJobIds ?? [];
+		$hasApplied = in_array($job->id, $appliedJobIds);
 	@endphp
 	<div class="col-lg-12">
 		<div class="job-box bg-white overflow-hidden border rounded mt-4 position-relative overflow-hidden">
@@ -26,9 +28,15 @@
 			</div>
 			<div class="p-3 bg-light d-md-none">
 				<p class="text-muted mb-2 small"><i class="mdi mdi-school text-primary me-1"></i>{{ $job->experience ?? '-' }}</p>
-				<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary w-100 btn-sm">
-					{{ __('candidate.jobs.apply_now') }}
-				</a>
+				@if ($hasApplied)
+					<a href="{{ route('candidate.my.applications.index') }}" class="btn btn-outline-success w-100 btn-sm">
+						<i class="mdi mdi-check-circle me-1"></i> {{ __('candidate.jobs.already_applied') }}
+					</a>
+				@else
+					<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary w-100 btn-sm">
+						{{ __('candidate.jobs.apply_now') }}
+					</a>
+				@endif
 			</div>
 
 			{{-- DESKTOP LAYOUT --}}
@@ -61,9 +69,15 @@
 							<p class="text-muted mb-0">{{ $job->experience ?? '-' }}</p>
 						</div>
 						<div class="col-md-2 text-end">
-							<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary btn-sm">
-								{{ __('candidate.jobs.apply_now') }}
-							</a>
+							@if ($hasApplied)
+								<a href="{{ route('candidate.my.applications.index') }}" class="btn btn-outline-success btn-sm">
+									<i class="mdi mdi-check-circle me-1"></i> {{ __('candidate.jobs.already_applied') }}
+								</a>
+							@else
+								<a href="{{ route('candidate.jobs.vacancies.apply', $job->uuid) }}" class="btn btn-primary btn-sm">
+									{{ __('candidate.jobs.apply_now') }}
+								</a>
+							@endif
 						</div>
 					</div>
 				</div>

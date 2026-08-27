@@ -62,11 +62,17 @@ class HomeRepository
             $jobsByType[$jobType] = $this->getLatestJobsByType($jobType);
         }
 
+        $candidateId = auth('candidate')->id();
+        $appliedJobIds = $candidateId
+            ? \App\Models\Apply::where('candidate_id', $candidateId)->pluck('job_id')->toArray()
+            : [];
+
         return [
             'activeBatch' => $activeBatch,
             'formattedBatch' => $this->formatBatchLabel($activeBatch),
             'categories' => $this->categoryRepo->getAll(),
             'jobsByType' => $jobsByType,
+            'appliedJobIds' => $appliedJobIds,
         ];
     }
 
