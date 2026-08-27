@@ -186,6 +186,9 @@ return [
         'documents' => 'Application Documents',
         'no_documents' => 'No documents.',
         'documents_count' => ':count documents',
+        'preview' => 'Preview',
+        'preview_title' => 'Document Preview',
+        'open_new_tab' => 'Open in New Tab',
         'change_status' => 'Change status',
     ],
     'apply_status' => [

@@ -186,6 +186,9 @@ return [
         'documents' => 'Dokumen Lamaran',
         'no_documents' => 'Tidak ada dokumen.',
         'documents_count' => ':count dokumen',
+        'preview' => 'Pratinjau',
+        'preview_title' => 'Pratinjau Dokumen',
+        'open_new_tab' => 'Buka di Jendela Baru',
         'change_status' => 'Ubah status',
     ],
     'apply_status' => [
