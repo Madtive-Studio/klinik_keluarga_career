@@ -39,11 +39,17 @@
 							<input type="file" id="document-file-input" class="d-none" accept=".pdf,.doc,.docx,image/*">
 						</div>
 					@else
-						<div class="document-dropzone document-dropzone--info mb-3">
-							<div class="document-dropzone__content text-center py-3 px-3">
-								<i class="mdi mdi-information-outline document-dropzone__icon d-block mb-2"></i>
-								<p class="mb-0 text-muted small">{{ __('candidate.documents.select_type_hint') }}</p>
+						<div id="document-dropzone"
+							class="document-dropzone mb-3"
+							data-type=""
+							data-label="">
+							<div class="document-dropzone__content text-center py-4 px-3">
+								<i class="mdi mdi-cloud-upload-outline document-dropzone__icon d-block mb-2"></i>
+								<p class="mb-1 fw-bold text-dark">{{ __('candidate.documents.dropzone_all_title') }}</p>
+								<p class="mb-0 text-muted small">{{ __('candidate.documents.dropzone_all_hint') }}</p>
+								<p class="mb-0 text-muted small mt-1">{{ __('candidate.documents.accepted_formats') }}</p>
 							</div>
+							<input type="file" id="document-file-input" class="d-none" accept=".pdf,.doc,.docx,image/*">
 						</div>
 					@endif
 
@@ -152,7 +158,11 @@
 			'upload_failed' => __('candidate.documents.upload_failed'),
 			'invalid_file_type' => __('candidate.documents.invalid_file_type'),
 			'file_too_large' => __('candidate.documents.file_too_large'),
+			'select_type_modal_title' => __('candidate.documents.select_type_modal_title'),
+			'select_type_modal_label' => __('candidate.documents.select_type_modal_label'),
+			'select_type_modal_required' => __('candidate.documents.select_type_modal_required'),
 		];
+		$documentTypesOptions = \App\Enums\DocumentType::getWithLabels();
 	@endphp
 	<style>
 		.document-dropzone {
@@ -206,6 +216,7 @@
 	</style>
 	<script>
 		const documentI18n = @json($documentI18n);
+		const documentTypesOptions = @json($documentTypesOptions);
 		const documentStoreUrl = @json(route('candidate.my.documents.store'));
 		const csrfToken = @json(csrf_token());
 		const maxDocumentSize = 20480 * 1024;
@@ -215,6 +226,12 @@
 		$(function() {
 			const dropzone = document.getElementById('document-dropzone');
 			const fileInput = document.getElementById('document-file-input');
+
+			function escapeHtml(text) {
+				const div = document.createElement('div');
+				div.textContent = text;
+				return div.innerHTML;
+			}
 
 			function getFileExtension(fileName) {
 				const parts = fileName.split('.');
@@ -252,8 +269,8 @@
 				return Swal.fire({
 					title: documentI18n.confirm_upload_title,
 					html: documentI18n.confirm_upload_text
-						.replace(':file', file.name)
-						.replace(':type', typeLabel),
+						.replace(':file', escapeHtml(file.name))
+						.replace(':type', escapeHtml(typeLabel)),
 					icon: 'question',
 					showCancelButton: true,
 					confirmButtonColor: '#2f55d4',
@@ -266,6 +283,45 @@
 					}
 
 					return uploadDocument(file, type);
+				});
+			}
+
+			function promptSelectTypeAndUpload(file) {
+				let optionsHtml = '<option value="">-- ' + documentI18n.select_type_modal_label + ' --</option>';
+				for (const [key, label] of Object.entries(documentTypesOptions)) {
+					optionsHtml += `<option value="${key}">${escapeHtml(label)}</option>`;
+				}
+
+				Swal.fire({
+					title: documentI18n.select_type_modal_title,
+					html: `
+						<p class="text-muted small mb-3">File: <strong class="text-dark">${escapeHtml(file.name)}</strong></p>
+						<div class="text-start mb-2">
+							<label class="form-label small fw-bold text-dark">${documentI18n.select_type_modal_label}:</label>
+							<select id="swal-document-type" class="form-select form-control" style="width: 100%;">
+								${optionsHtml}
+							</select>
+						</div>
+					`,
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonColor: '#2f55d4',
+					cancelButtonColor: '#6c757d',
+					confirmButtonText: documentI18n.yes_upload,
+					cancelButtonText: documentI18n.cancel,
+					preConfirm: function() {
+						const selectElem = document.getElementById('swal-document-type');
+						const selectedVal = selectElem ? selectElem.value : '';
+						if (!selectedVal) {
+							Swal.showValidationMessage(documentI18n.select_type_modal_required);
+						}
+						return selectedVal;
+					}
+				}).then(function(result) {
+					if (!result.isConfirmed || !result.value) {
+						return;
+					}
+					uploadDocument(file, result.value);
 				});
 			}
 
@@ -339,11 +395,15 @@
 					return;
 				}
 
-				confirmUpload(file, type, typeLabel);
+				if (type && typeLabel) {
+					confirmUpload(file, type, typeLabel);
+				} else {
+					promptSelectTypeAndUpload(file);
+				}
 			}
 
 			function bindDropTarget(element) {
-				if (!element || !element.dataset.type) {
+				if (!element) {
 					return;
 				}
 
@@ -369,7 +429,7 @@
 						return;
 					}
 
-					handleSelectedFile(files[0], element.dataset.type, element.dataset.label);
+					handleSelectedFile(files[0], element.dataset.type || '', element.dataset.label || '');
 				});
 			}
 
@@ -387,8 +447,8 @@
 
 					handleSelectedFile(
 						fileInput.files[0],
-						dropzone.dataset.type,
-						dropzone.dataset.label
+						dropzone.dataset.type || '',
+						dropzone.dataset.label || ''
 					);
 				});
 			}
