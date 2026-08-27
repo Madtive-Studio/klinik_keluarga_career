@@ -162,20 +162,20 @@
 
 	<!-- Document Preview Modal -->
 	<div class="modal fade" id="docPreviewModal" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog modal-xl modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title d-flex align-items-center gap-2">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content border-0 shadow-lg">
+				<div class="modal-header px-4 py-3 border-bottom bg-white">
+					<h5 class="modal-title d-flex align-items-center gap-2 mb-0">
 						<i class="ti ti-file-text text-primary fs-4"></i>
-						<span id="docPreviewTitle">{{ __('admin.applies.preview_title') }}</span>
+						<span id="docPreviewTitle" class="fw-bold fs-6 text-truncate" style="max-width: 350px;">{{ __('admin.applies.preview_title') }}</span>
 						<span id="docPreviewBadge" class="badge bg-primary"></span>
 					</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body p-0" id="docPreviewBody" style="min-height: 400px; max-height: 75vh; overflow-y: auto;">
+				<div class="modal-body p-3 p-md-4 bg-light" id="docPreviewBody" style="max-height: 68vh; overflow-y: auto;">
 					<!-- Dynamic Preview Content -->
 				</div>
-				<div class="modal-footer justify-content-between">
+				<div class="modal-footer px-4 py-3 border-top bg-white justify-content-between">
 					<a id="docPreviewExternalLink" href="#" target="_blank" class="btn btn-outline-secondary">
 						<i class="ti ti-external-link me-1"></i> {{ __('admin.applies.open_new_tab') }}
 					</a>
@@ -330,7 +330,7 @@
 			const url = $(this).data('url');
 			const title = $(this).data('title');
 			const typeLabel = $(this).data('type');
-			const ext = $(this).data('ext');
+			const ext = String($(this).data('ext')).toLowerCase();
 
 			$('#docPreviewTitle').text(title);
 			$('#docPreviewBadge').text(typeLabel);
@@ -340,43 +340,36 @@
 			const imageExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'svg'];
 			const officeExtensions = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
 
-			const absoluteUrl = window.location.origin + url;
-			const googleDocsUrl = `https://docs.google.com/gview?url=${encodeURIComponent(absoluteUrl)}&embedded=true`;
-
 			if (ext === 'pdf') {
 				$('#docPreviewBody').html(`
-					<div class="p-3 p-md-4 bg-light">
-						<div class="bg-white rounded shadow-sm overflow-hidden p-2">
-							<iframe src="${url}" style="width:100%; height:70vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
-						</div>
+					<div class="bg-white rounded-3 shadow-sm overflow-hidden p-2">
+						<iframe src="${url}" style="width:100%; height:55vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
 					</div>
 				`);
 			} else if (imageExtensions.includes(ext)) {
 				$('#docPreviewBody').html(`
-					<div class="p-4 bg-light text-center">
-						<div class="bg-white rounded shadow-sm p-3 d-inline-block mw-100">
-							<img src="${url}" class="img-fluid rounded" style="max-height: 65vh; object-fit: contain;" alt="${title}">
+					<div class="text-center py-2">
+						<div class="bg-white rounded-3 shadow-sm p-3 d-inline-block mw-100">
+							<img src="${url}" class="img-fluid rounded" style="max-height: 52vh; object-fit: contain;" alt="${title}">
 						</div>
 					</div>
 				`);
 			} else if (ext === 'csv' || ext === 'txt') {
 				$('#docPreviewBody').html(`
-					<div class="p-3 p-md-4 bg-light">
-						<div class="bg-white rounded shadow-sm p-3">
-							<div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-								<span class="fw-bold text-primary"><i class="ti ti-table me-1"></i> Data Table Preview (${ext.toUpperCase()})</span>
-								<small class="text-muted">Parsed automatically</small>
+					<div class="bg-white rounded-3 shadow-sm p-3">
+						<div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+							<span class="fw-bold text-primary"><i class="ti ti-table me-1"></i> Data Table Preview (${ext.toUpperCase()})</span>
+							<small class="text-muted">Parsed automatically</small>
+						</div>
+						<div class="table-responsive" style="max-height: 48vh;">
+							<div class="text-center py-4" id="csvLoadingState">
+								<div class="spinner-border text-primary" role="status"></div>
+								<p class="mt-2 text-muted small">Memuat isi berkas...</p>
 							</div>
-							<div class="table-responsive" style="max-height: 60vh;">
-								<div class="text-center py-4" id="csvLoadingState">
-									<div class="spinner-border text-primary" role="status"></div>
-									<p class="mt-2 text-muted small">Memuat isi berkas...</p>
-								</div>
-								<table class="table table-bordered table-striped table-hover table-sm d-none mb-0" id="csvPreviewTable">
-									<thead class="table-primary" id="csvPreviewThead"></thead>
-									<tbody id="csvPreviewTbody"></tbody>
-								</table>
-							</div>
+							<table class="table table-bordered table-striped table-hover table-sm d-none mb-0" id="csvPreviewTable">
+								<thead class="table-primary" id="csvPreviewThead"></thead>
+								<tbody id="csvPreviewTbody"></tbody>
+							</table>
 						</div>
 					</div>
 				`);
@@ -410,35 +403,74 @@
 						$('#csvLoadingState').html('<p class="text-danger small">Gagal memproses pratinjau tabel. Silakan unduh dokumen.</p>');
 					});
 			} else if (officeExtensions.includes(ext)) {
-				$('#docPreviewBody').html(`
-					<div class="p-3 p-md-4 bg-light">
-						<div class="bg-white rounded shadow-sm p-3 mb-3 text-center">
-							<div class="d-flex align-items-center justify-content-center gap-2 mb-2">
-								<i class="ti ti-file-text text-primary fs-3"></i>
-								<span class="fw-bold">${title}</span>
-								<span class="badge bg-secondary">.${ext.toUpperCase()}</span>
+				const isOfficeExcel = ['xls', 'xlsx'].includes(ext);
+				const isOfficeWord = ['doc', 'docx'].includes(ext);
+				const isOfficePpt = ['ppt', 'pptx'].includes(ext);
+
+				let officeIconClass = 'ti-file-text text-primary';
+				let officeBadgeClass = 'bg-primary';
+				let officeTypeName = 'Microsoft Word Document';
+
+				if (isOfficeExcel) {
+					officeIconClass = 'ti-file-spreadsheet text-success';
+					officeBadgeClass = 'bg-success';
+					officeTypeName = 'Microsoft Excel Spreadsheet';
+				} else if (isOfficePpt) {
+					officeIconClass = 'ti-presentation text-warning';
+					officeBadgeClass = 'bg-warning';
+					officeTypeName = 'Microsoft PowerPoint Presentation';
+				}
+
+				const isLocalhost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+				if (isLocalhost) {
+					$('#docPreviewBody').html(`
+						<div class="bg-white rounded-3 shadow-sm p-4 text-center">
+							<div class="mb-3">
+								<i class="ti ${officeIconClass} d-block mx-auto mb-2" style="font-size: 3.5rem;"></i>
+								<h5 class="fw-bold mb-1">${title}</h5>
+								<span class="badge ${officeBadgeClass} mb-2">${officeTypeName} (.${ext.toUpperCase()})</span>
 							</div>
-							<p class="text-muted small mb-0">Format Microsoft Office (${ext.toUpperCase()}) dipratinjau via Google Docs Viewer.</p>
+							<div class="alert alert-info border-0 bg-light text-start p-3 mb-4">
+								<div class="d-flex align-items-start gap-2">
+									<i class="ti ti-info-circle text-info fs-5 mt-1 flex-shrink-0"></i>
+									<div>
+										<strong>Informasi Pratinjau Server Lokal:</strong><br>
+										<small class="text-muted">Berkas format Microsoft Office (.${ext.toUpperCase()}) di lingkungan lokal (localhost/127.0.0.1) dapat diunduh atau dibuka langsung di perangkat Anda. Di server produksi (domain publik), pratinjau otomatis aktif via Google Docs Viewer.</small>
+									</div>
+								</div>
+							</div>
+							<div class="d-flex align-items-center justify-content-center gap-2">
+								<a href="${url}" target="_blank" class="btn btn-outline-primary">
+									<i class="ti ti-external-link me-1"></i> Buka Berkas
+								</a>
+								<a href="${url}" download class="btn btn-primary">
+									<i class="ti ti-download me-1"></i> Unduh Berkas
+								</a>
+							</div>
 						</div>
-						<div class="bg-white rounded shadow-sm overflow-hidden p-2">
-							<iframe src="${googleDocsUrl}" style="width:100%; height:60vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
+					`);
+				} else {
+					const absoluteUrl = window.location.origin + url;
+					const googleDocsUrl = `https://docs.google.com/gview?url=${encodeURIComponent(absoluteUrl)}&embedded=true`;
+					$('#docPreviewBody').html(`
+						<div class="bg-white rounded-3 shadow-sm overflow-hidden p-2">
+							<iframe src="${googleDocsUrl}" style="width:100%; height:55vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
 						</div>
-					</div>
-				`);
+					`);
+				}
 			} else {
 				$('#docPreviewBody').html(`
-					<div class="p-4 bg-light">
-						<div class="bg-white rounded shadow-sm text-center py-5 px-3">
-							<i class="ti ti-file-description text-primary d-block mb-3" style="font-size: 4rem;"></i>
-							<h6 class="mb-2">${title}</h6>
-							<p class="text-muted small mb-4">Format file (.${ext}) dapat diunduh atau dibuka langsung di jendela baru browser.</p>
-							<a href="${url}" target="_blank" class="btn btn-primary me-2">
-								<i class="ti ti-external-link me-1"></i> Buka di Jendela Baru
-							</a>
-							<a href="${url}" download class="btn btn-outline-secondary">
-								<i class="ti ti-download me-1"></i> Unduh Berkas
-							</a>
-						</div>
+					<div class="bg-white rounded-3 shadow-sm text-center py-5 px-3">
+						<i class="ti ti-file-description text-primary d-block mb-3" style="font-size: 4rem;"></i>
+						<h6 class="mb-2">${title}</h6>
+						<p class="text-muted small mb-4">Format file (.${ext}) dapat diunduh atau dibuka langsung di jendela baru browser.</p>
+						<a href="${url}" target="_blank" class="btn btn-primary me-2">
+							<i class="ti ti-external-link me-1"></i> Buka di Jendela Baru
+						</a>
+						<a href="${url}" download class="btn btn-outline-secondary">
+							<i class="ti ti-download me-1"></i> Unduh Berkas
+						</a>
 					</div>
 				`);
 			}
