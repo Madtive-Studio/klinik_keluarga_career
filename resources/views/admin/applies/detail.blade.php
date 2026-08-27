@@ -162,7 +162,7 @@
 
 	<!-- Document Preview Modal -->
 	<div class="modal fade" id="docPreviewModal" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog modal-lg modal-dialog-centered" id="docPreviewDialog" style="max-width: 800px;">
+		<div class="modal-dialog modal-lg modal-dialog-centered" id="docPreviewDialog" style="max-width: 900px;">
 			<div class="modal-content border-0 shadow-lg">
 				<div class="modal-header px-4 py-3 border-bottom bg-white">
 					<h5 class="modal-title d-flex align-items-center gap-2 mb-0">
@@ -328,7 +328,7 @@
 		function setModalSize(isLargePreview) {
 			const $dialog = $('#docPreviewDialog');
 			if (isLargePreview) {
-				$dialog.removeClass('modal-md').addClass('modal-lg').css('max-width', '800px');
+				$dialog.removeClass('modal-md').addClass('modal-lg').css('max-width', '900px');
 			} else {
 				$dialog.removeClass('modal-lg').addClass('modal-md').css('max-width', '540px');
 			}
