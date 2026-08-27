@@ -1230,6 +1230,8 @@ p {
 
 #topnav .logo {
 	float: left;
+	margin-top: 16px;
+	margin-bottom: 16px;
 }
 
 #topnav .logo .logo-dark {
@@ -1521,8 +1523,8 @@ p {
 }
 
 .logo {
-	padding: 3px 0;
-	line-height: 68px;
+	padding: 12px 0;
+	line-height: 1;
 }
 
 @media (min-width: 992px) {
