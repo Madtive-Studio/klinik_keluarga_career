@@ -162,12 +162,12 @@
 
 	<!-- Document Preview Modal -->
 	<div class="modal fade" id="docPreviewModal" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 88vw;">
+		<div class="modal-dialog modal-lg modal-dialog-centered" id="docPreviewDialog" style="max-width: 800px;">
 			<div class="modal-content border-0 shadow-lg">
 				<div class="modal-header px-4 py-3 border-bottom bg-white">
 					<h5 class="modal-title d-flex align-items-center gap-2 mb-0">
 						<i class="ti ti-file-text text-primary fs-4"></i>
-						<span id="docPreviewTitle" class="fw-bold fs-6 text-truncate" style="max-width: 550px;">{{ __('admin.applies.preview_title') }}</span>
+						<span id="docPreviewTitle" class="fw-bold fs-6 text-truncate" style="max-width: 450px;">{{ __('admin.applies.preview_title') }}</span>
 						<span id="docPreviewBadge" class="badge bg-primary"></span>
 					</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -325,6 +325,15 @@
 			}
 		});
 
+		function setModalSize(isLargePreview) {
+			const $dialog = $('#docPreviewDialog');
+			if (isLargePreview) {
+				$dialog.removeClass('modal-md').addClass('modal-lg').css('max-width', '800px');
+			} else {
+				$dialog.removeClass('modal-lg').addClass('modal-md').css('max-width', '540px');
+			}
+		}
+
 		$(document).on('click', '.btn-preview-doc', function(e) {
 			e.preventDefault();
 			const url = $(this).data('url');
@@ -341,27 +350,30 @@
 			const officeExtensions = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
 
 			if (ext === 'pdf') {
+				setModalSize(true);
 				$('#docPreviewBody').html(`
 					<div class="bg-white rounded-3 shadow-sm overflow-hidden p-2">
-						<iframe src="${url}" style="width:100%; height:65vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
+						<iframe src="${url}" style="width:100%; height:62vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
 					</div>
 				`);
 			} else if (imageExtensions.includes(ext)) {
+				setModalSize(true);
 				$('#docPreviewBody').html(`
 					<div class="text-center py-2">
 						<div class="bg-white rounded-3 shadow-sm p-3 d-inline-block mw-100">
-							<img src="${url}" class="img-fluid rounded" style="max-height: 60vh; object-fit: contain;" alt="${title}">
+							<img src="${url}" class="img-fluid rounded" style="max-height: 58vh; object-fit: contain;" alt="${title}">
 						</div>
 					</div>
 				`);
 			} else if (ext === 'csv' || ext === 'txt') {
+				setModalSize(true);
 				$('#docPreviewBody').html(`
 					<div class="bg-white rounded-3 shadow-sm p-3">
 						<div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
 							<span class="fw-bold text-primary"><i class="ti ti-table me-1"></i> Data Table Preview (${ext.toUpperCase()})</span>
 							<small class="text-muted">Parsed automatically</small>
 						</div>
-						<div class="table-responsive" style="max-height: 55vh;">
+						<div class="table-responsive" style="max-height: 52vh;">
 							<div class="text-center py-4" id="csvLoadingState">
 								<div class="spinner-border text-primary" role="status"></div>
 								<p class="mt-2 text-muted small">Memuat isi berkas...</p>
@@ -424,11 +436,12 @@
 				const isLocalhost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 
 				if (isLocalhost) {
+					setModalSize(false);
 					$('#docPreviewBody').html(`
 						<div class="bg-white rounded-3 shadow-sm p-4 text-center">
 							<div class="mb-3">
 								<i class="ti ${officeIconClass} d-block mx-auto mb-2" style="font-size: 3.5rem;"></i>
-								<h5 class="fw-bold mb-1">${title}</h5>
+								<h6 class="fw-bold mb-1 text-truncate">${title}</h6>
 								<span class="badge ${officeBadgeClass} mb-2">${officeTypeName} (.${ext.toUpperCase()})</span>
 							</div>
 							<div class="alert alert-info border-0 bg-light text-start p-3 mb-4">
@@ -441,34 +454,36 @@
 								</div>
 							</div>
 							<div class="d-flex align-items-center justify-content-center gap-2">
-								<a href="${url}" target="_blank" class="btn btn-outline-primary">
+								<a href="${url}" target="_blank" class="btn btn-outline-primary btn-sm">
 									<i class="ti ti-external-link me-1"></i> Buka Berkas
 								</a>
-								<a href="${url}" download class="btn btn-primary">
+								<a href="${url}" download class="btn btn-primary btn-sm">
 									<i class="ti ti-download me-1"></i> Unduh Berkas
 								</a>
 							</div>
 						</div>
 					`);
 				} else {
+					setModalSize(true);
 					const absoluteUrl = window.location.origin + url;
 					const googleDocsUrl = `https://docs.google.com/gview?url=${encodeURIComponent(absoluteUrl)}&embedded=true`;
 					$('#docPreviewBody').html(`
 						<div class="bg-white rounded-3 shadow-sm overflow-hidden p-2">
-							<iframe src="${googleDocsUrl}" style="width:100%; height:55vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
+							<iframe src="${googleDocsUrl}" style="width:100%; height:62vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
 						</div>
 					`);
 				}
 			} else {
+				setModalSize(false);
 				$('#docPreviewBody').html(`
 					<div class="bg-white rounded-3 shadow-sm text-center py-5 px-3">
-						<i class="ti ti-file-description text-primary d-block mb-3" style="font-size: 4rem;"></i>
-						<h6 class="mb-2">${title}</h6>
+						<i class="ti ti-file-description text-primary d-block mb-3" style="font-size: 3.5rem;"></i>
+						<h6 class="mb-2 text-truncate">${title}</h6>
 						<p class="text-muted small mb-4">Format file (.${ext}) dapat diunduh atau dibuka langsung di jendela baru browser.</p>
-						<a href="${url}" target="_blank" class="btn btn-primary me-2">
+						<a href="${url}" target="_blank" class="btn btn-primary btn-sm me-2">
 							<i class="ti ti-external-link me-1"></i> Buka di Jendela Baru
 						</a>
-						<a href="${url}" download class="btn btn-outline-secondary">
+						<a href="${url}" download class="btn btn-outline-secondary btn-sm">
 							<i class="ti ti-download me-1"></i> Unduh Berkas
 						</a>
 					</div>
