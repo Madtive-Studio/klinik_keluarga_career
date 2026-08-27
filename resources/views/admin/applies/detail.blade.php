@@ -162,17 +162,17 @@
 
 	<!-- Document Preview Modal -->
 	<div class="modal fade" id="docPreviewModal" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 88vw;">
 			<div class="modal-content border-0 shadow-lg">
 				<div class="modal-header px-4 py-3 border-bottom bg-white">
 					<h5 class="modal-title d-flex align-items-center gap-2 mb-0">
 						<i class="ti ti-file-text text-primary fs-4"></i>
-						<span id="docPreviewTitle" class="fw-bold fs-6 text-truncate" style="max-width: 350px;">{{ __('admin.applies.preview_title') }}</span>
+						<span id="docPreviewTitle" class="fw-bold fs-6 text-truncate" style="max-width: 550px;">{{ __('admin.applies.preview_title') }}</span>
 						<span id="docPreviewBadge" class="badge bg-primary"></span>
 					</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body p-3 p-md-4 bg-light" id="docPreviewBody" style="max-height: 68vh; overflow-y: auto;">
+				<div class="modal-body p-3 p-md-4 bg-light" id="docPreviewBody" style="max-height: 75vh; overflow-y: auto;">
 					<!-- Dynamic Preview Content -->
 				</div>
 				<div class="modal-footer px-4 py-3 border-top bg-white justify-content-between">
@@ -343,14 +343,14 @@
 			if (ext === 'pdf') {
 				$('#docPreviewBody').html(`
 					<div class="bg-white rounded-3 shadow-sm overflow-hidden p-2">
-						<iframe src="${url}" style="width:100%; height:55vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
+						<iframe src="${url}" style="width:100%; height:65vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
 					</div>
 				`);
 			} else if (imageExtensions.includes(ext)) {
 				$('#docPreviewBody').html(`
 					<div class="text-center py-2">
 						<div class="bg-white rounded-3 shadow-sm p-3 d-inline-block mw-100">
-							<img src="${url}" class="img-fluid rounded" style="max-height: 52vh; object-fit: contain;" alt="${title}">
+							<img src="${url}" class="img-fluid rounded" style="max-height: 60vh; object-fit: contain;" alt="${title}">
 						</div>
 					</div>
 				`);
@@ -361,7 +361,7 @@
 							<span class="fw-bold text-primary"><i class="ti ti-table me-1"></i> Data Table Preview (${ext.toUpperCase()})</span>
 							<small class="text-muted">Parsed automatically</small>
 						</div>
-						<div class="table-responsive" style="max-height: 48vh;">
+						<div class="table-responsive" style="max-height: 55vh;">
 							<div class="text-center py-4" id="csvLoadingState">
 								<div class="spinner-border text-primary" role="status"></div>
 								<p class="mt-2 text-muted small">Memuat isi berkas...</p>
