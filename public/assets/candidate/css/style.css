@@ -1179,9 +1179,9 @@ p {
 
 .back-to-home {
 	position: absolute;
-	top: 4%;
-	left: 2%;
-	z-index: 1;
+	top: 20px;
+	left: 20px;
+	z-index: 1000 !important;
 }
 
 .back-to-home a {

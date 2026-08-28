@@ -38,7 +38,7 @@
     <div class="position-absolute" style="top: 20px; right: 20px; z-index: 1000">
         @include('layouts.locale-switcher')
     </div>
-    <div class="back-to-home rounded d-none d-sm-block">
+    <div class="back-to-home rounded d-none d-sm-block" style="z-index: 1000 !important;">
         <a href="{{ route('candidate.home') }}" class="text-white rounded d-inline-block text-center"><i class="mdi mdi-home"></i></a>
     </div>
     <section class="min-vh-100 bg-home py-5 d-flex align-items-center justify-content-center">
