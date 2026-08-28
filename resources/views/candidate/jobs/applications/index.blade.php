@@ -1,6 +1,30 @@
 @extends('candidate.layouts.main', ['navbarType' => 'candidate'])
 @section('title', __('candidate.applications.title'))
 @section('content')
+	<style>
+		.group-hover-zoom {
+			position: relative;
+			cursor: pointer;
+		}
+		.group-hover-zoom:hover .job-thumb-img {
+			transform: scale(1.08);
+		}
+		.job-thumb-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(15, 23, 42, 0.45);
+			opacity: 0;
+			transition: opacity 0.25s ease;
+			border-radius: 0.375rem;
+		}
+		.group-hover-zoom:hover .job-thumb-overlay {
+			opacity: 1;
+		}
+	</style>
+
 	<section class="section pt-5">
 		<div class="container">
 			<div class="row">
@@ -29,8 +53,13 @@
 								<div class="p-3">
 									<div class="row align-items-center">
 										<div class="col-4 col-md-2">
-											<div class="company-logo-img text-center">
-												<img src="{{ $apply->job->image_url }}" alt="{{ $apply->job->title }}" class="img-fluid mx-auto d-block rounded" style="max-height: 80px; object-fit: contain;">
+											<div class="company-logo-img text-center position-relative overflow-hidden rounded group-hover-zoom cursor-pointer" 
+											     onclick="openJobImageModal('{{ e($apply->job->title ?? '-') }}', {{ json_encode($apply->job->image_urls) }})"
+											     title="Klik untuk memperbesar gambar">
+												<img src="{{ $apply->job->image_url }}" alt="{{ $apply->job->title }}" class="img-fluid mx-auto d-block rounded job-thumb-img" style="max-height: 80px; object-fit: contain; transition: transform 0.3s ease;">
+												<div class="job-thumb-overlay d-flex align-items-center justify-content-center">
+													<i class="mdi mdi-magnify-plus-outline text-white fs-4"></i>
+												</div>
 											</div>
 										</div>
 										<div class="col-8 col-md-7">
@@ -84,9 +113,68 @@
 			</div>
 		</div>
 	</section>
+
+	<!-- Modal Pratinjau Gambar Lowongan -->
+	<div class="modal fade" id="jobImageModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content border-0 shadow-lg" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);">
+				<div class="modal-header border-0 pb-0">
+					<h6 class="modal-title text-white fw-bold" id="jobImageModalTitle">Pratinjau Gambar</h6>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body text-center p-4">
+					<div id="jobImageCarousel" class="carousel slide" data-bs-ride="false">
+						<div class="carousel-inner" id="jobCarouselInner">
+							<!-- Dynamically populated -->
+						</div>
+						<button class="carousel-control-prev d-none" id="carouselPrevBtn" type="button" data-bs-target="#jobImageCarousel" data-bs-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Sebelumnya</span>
+						</button>
+						<button class="carousel-control-next d-none" id="carouselNextBtn" type="button" data-bs-target="#jobImageCarousel" data-bs-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Selanjutnya</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 @endsection
 @section('js')
 	<script>
+		function openJobImageModal(title, imageUrls) {
+			$('#jobImageModalTitle').text(title);
+			let carouselInner = $('#jobCarouselInner');
+			carouselInner.empty();
+
+			let urls = Array.isArray(imageUrls) && imageUrls.length > 0 ? imageUrls : [];
+
+			if (urls.length === 0) {
+				carouselInner.append('<div class="text-white py-4">Tidak ada gambar tersedia.</div>');
+				$('#carouselPrevBtn, #carouselNextBtn').addClass('d-none');
+			} else {
+				urls.forEach((url, index) => {
+					let activeClass = index === 0 ? 'active' : '';
+					carouselInner.append(`
+						<div class="carousel-item ${activeClass}">
+							<img src="${url}" class="d-block mx-auto rounded shadow" style="max-height: 70vh; max-width: 100%; object-fit: contain;">
+						</div>
+					`);
+				});
+
+				if (urls.length > 1) {
+					$('#carouselPrevBtn, #carouselNextBtn').removeClass('d-none');
+				} else {
+					$('#carouselPrevBtn, #carouselNextBtn').addClass('d-none');
+				}
+			}
+
+			let modalElement = document.getElementById('jobImageModal');
+			let modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+			modal.show();
+		}
+
 		$(function() {
 			$(document).on('change', '#sortedBy', function() {
 				let orderBy = $(this).val();

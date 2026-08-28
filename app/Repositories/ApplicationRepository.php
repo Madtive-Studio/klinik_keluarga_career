@@ -52,7 +52,7 @@ class ApplicationRepository
         $status = $filters['status'];
         $sortedBy = $filters['sortedBy'];
 
-        return Apply::with(['job.category'])
+        return Apply::with(['job.category', 'job.images'])
                     ->where('candidate_id', $candidateId)
                     ->when($status, fn ($q) => $q->where('status', $status))
                     ->whereYear('created_at', date('Y'))
