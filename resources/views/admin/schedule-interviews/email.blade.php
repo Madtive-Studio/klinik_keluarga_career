@@ -32,7 +32,7 @@
 <body style="background-color: #f9f9f9; margin: 0; padding: 20px;">
 	<div style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); overflow: hidden;">
 		<div style="background-color: #2F55D4; padding: 20px; text-align: center;">
-			<img src="{{ asset('assets/logo/letter-logo-white.png') }}" width="200" alt="Logo Klinik Keluarga" style="margin: 0 auto; display: block;">
+			<img src="{{ isset($message) ? $message->embed(public_path('assets/logo/letter-logo-white.png')) : asset('assets/logo/letter-logo-white.png') }}" width="200" alt="Logo Klinik Keluarga" style="margin: 0 auto; display: block;">
 		</div>
 		<div style="padding-left: 20px; padding-right: 20px; padding-block: 1em; color: #333333;">
 			<h2 style="font-size: 20px; text-align: center; color: #2F55D4;">{{ __('emails.interview.heading') }}</h2>
