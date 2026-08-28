@@ -70,7 +70,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="mb-3 position-relative">
-                                                <label>{{ __('candidate.auth.full_name') }} <span class="text-danger">*</span></label>
+                                                <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.full_name') }} <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="..." name="name" value="{{ old('name') }}">
                                                 @error('name') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -79,7 +79,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3 position-relative">
-                                                <label>{{ __('candidate.auth.phone') }} <span class="text-danger">*</span></label>
+                                                <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.phone') }} <span class="text-danger">*</span></label>
                                                 <input type="number" class="form-control" placeholder="..." name="phone" value="{{ old('phone') }}">
                                                 @error('phone') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -88,7 +88,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3 position-relative">
-                                                <label>{{ __('candidate.auth.birth_date') }} <span class="text-danger">*</span></label>
+                                                <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.birth_date') }} <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control flatpickr" readonly placeholder="..." name="birth_date" value="{{ old('birth_date') }}">
                                                 @error('birth_date') <span
                                                     class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -97,7 +97,7 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="mb-3 position-relative">
-                                                <label>{{ __('common.email') }} <span class="text-danger">*</span></label>
+                                                <label class="form-label text-dark fw-semibold">{{ __('common.email') }} <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="..." name="email" value="{{ old('email') }}">
                                                 @error('email') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -106,7 +106,7 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="mb-3 position-relative">
-                                                <label>{{ __('candidate.auth.address') }} <span class="text-danger">*</span></label>
+                                                <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.address') }} <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="..." name="address" value="{{ old('address') }}">
                                                 @error('address') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -115,7 +115,7 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="mb-3 position-relative">
-                                                <label>{{ __('common.password') }} <span class="text-danger">*</span></label>
+                                                <label class="form-label text-dark fw-semibold">{{ __('common.password') }} <span class="text-danger">*</span></label>
                                                 <input type="password" class="form-control" placeholder="..." name="password">
                                                 @error('password') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -124,7 +124,7 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="mb-3 position-relative">
-                                                <label>{{ __('candidate.auth.password_confirmation') }} <span class="text-danger">*</span></label>
+                                                <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.password_confirmation') }} <span class="text-danger">*</span></label>
                                                 <input type="password" class="form-control" placeholder="..." name="password_confirmation">
                                                 @error('password_confirmation') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -132,11 +132,11 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <button class="btn btn-primary w-100">{{ __('common.register') }}</button>
+                                            <button class="btn btn-primary w-100 fw-bold py-2">{{ __('common.register') }}</button>
                                         </div>
-                                        <div class="mx-auto">
-                                            <p class="mb-0 mt-3"><small class="text-dark me-2">{{ __('candidate.auth.has_account') }}</small>
-                                                <a href="{{ route('candidate.login.form') }}" class="text-dark fw-bold">{{ __('common.login') }}</a>
+                                        <div class="col-12 text-center">
+                                            <p class="mb-0 mt-3"><small class="text-secondary me-2">{{ __('candidate.auth.has_account') }}</small>
+                                                <a href="{{ route('candidate.login.form') }}" class="text-primary fw-bold">{{ __('common.login') }}</a>
                                             </p>
                                         </div>
                                     </div>

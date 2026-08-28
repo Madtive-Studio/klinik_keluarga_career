@@ -70,7 +70,7 @@
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="mb-3 position-relative">
-												<label>{{ __('common.email') }} <span class="text-danger">*</span></label>
+												<label class="form-label text-dark fw-semibold">{{ __('common.email') }} <span class="text-danger">*</span></label>
 												<input type="email" class="form-control" placeholder="{{ __('common.email') }}" name="email">
 												@error('email')
 													<span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -79,7 +79,7 @@
 										</div>
 										<div class="col-lg-12">
 											<div class="mb-3 position-relative">
-												<label>{{ __('common.password') }} <span class="text-danger">*</span></label>
+												<label class="form-label text-dark fw-semibold">{{ __('common.password') }} <span class="text-danger">*</span></label>
 												<input type="password" name="password" class="form-control" placeholder="{{ __('common.password') }}">
 												@error('password')
 													<span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -87,11 +87,11 @@
 											</div>
 										</div>
 										<div class="col-lg-12 mb-0">
-											<button class="btn btn-primary w-100">{{ __('common.login') }}</button>
+											<button class="btn btn-primary w-100 fw-bold py-2">{{ __('common.login') }}</button>
 										</div>
 										<div class="col-12 text-center">
-											<p class="mb-0 mt-3"><small class="text-dark me-2">{{ __('candidate.auth.no_account') }}</small>
-												<a href="{{ route('candidate.register.form') }}" class="text-dark fw-bold">{{ __('common.register') }}</a>
+											<p class="mb-0 mt-3"><small class="text-secondary me-2">{{ __('candidate.auth.no_account') }}</small>
+												<a href="{{ route('candidate.register.form') }}" class="text-primary fw-bold">{{ __('common.register') }}</a>
 											</p>
 										</div>
 									</div>

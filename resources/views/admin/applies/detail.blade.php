@@ -167,7 +167,7 @@
 				<div class="modal-header px-4 py-3 border-bottom bg-white">
 					<h5 class="modal-title d-flex align-items-center gap-2 mb-0">
 						<i class="ti ti-file-text text-primary fs-4"></i>
-						<span id="docPreviewTitle" class="fw-bold fs-6 text-truncate" style="max-width: 450px;">{{ __('admin.applies.preview_title') }}</span>
+						<span id="docPreviewTitle" class="fw-bold fs-6 text-truncate" style="max-width: 550px;">{{ __('admin.applies.preview_title') }}</span>
 						<span id="docPreviewBadge" class="badge bg-primary"></span>
 					</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

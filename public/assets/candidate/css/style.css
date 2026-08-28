@@ -979,7 +979,7 @@ p {
 }
 
 .bg-overlay {
-	background-color: rgba(14, 13, 13, 0.8);
+	background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.45) 100%);
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -987,6 +987,7 @@ p {
 	bottom: 0;
 	width: 100%;
 	height: 100%;
+	z-index: 1;
 }
 
 .bg-overlay-gradient {
@@ -1849,10 +1850,16 @@ p {
 	background-repeat: no-repeat;
 }
 
+section.bg-home.vh-100 {
+	padding: 0;
+}
+
 .home-center {
 	display: table;
 	width: 100%;
 	height: 100%;
+	position: relative;
+	z-index: 2;
 }
 
 .home-desc-center {
