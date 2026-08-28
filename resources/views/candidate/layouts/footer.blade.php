@@ -13,8 +13,7 @@
 
 				<ul class="list-unstyled footer-list">
 					<li><a href="#" class="text-foot"><i class="mdi mdi-phone"></i> 0263 513513</a></li>
-					<li><a href="#" class="text-foot"><i class="mdi mdi-cellphone"></i> +62 823 129 876 68</a></li>
-					<li><a href="#" class="text-foot"><i class="mdi mdi-email"></i> madtive@gmail.com</a></li>
+					<li><a href="mailto:karirklinikkeluarga@gmail.com" class="text-foot"><i class="mdi mdi-email"></i> karirklinikkeluarga@gmail.com</a></li>
 				</ul>
 			</div>
 			<div class="col-lg-3 col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">

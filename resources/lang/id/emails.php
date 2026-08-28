@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'footer' => '© :year Madtive Studio. All rights reserved.',
+    'footer' => '© :year Klinik Keluarga. All rights reserved.',
     'greeting' => 'Halo :name,',
     'regards' => 'Salam,',
-    'team' => 'Tim Madtive Studio',
+    'team' => 'Tim Rekrutmen Klinik Keluarga',
     'check_applications' => 'Jangan lupa untuk selalu mengecek status lamaran kamu di :link.',
     'my_applications_link' => 'lamaran saya',
 
@@ -41,17 +41,17 @@ return [
         'online_note' => 'Pastikan untuk menguji koneksi internetmu dan perangkat sebelum wawancara.',
         'offline_note' => 'Harap datang tepat waktu ke alamat yang tertera di atas.',
         'footer_note' => 'Harap pastikan untuk hadir tepat waktu sesuai jadwal wawancara di atas. Jika kamu memiliki pertanyaan atau kendala, silakan hubungi kami.',
-        'ignore_note' => 'Jika Kamu tidak mendaftar di Karir | Madtive Studio, abaikan email ini.',
+        'ignore_note' => 'Jika Kamu tidak mendaftar di Karir | Klinik Keluarga, abaikan email ini.',
     ],
 
     'activation' => [
         'subject' => 'Verifikasi Email Kamu',
         'title' => 'Verifikasi Email Kamu',
         'heading' => 'Verifikasi Email Kamu',
-        'thanks' => 'Terima kasih telah mendaftar di Karir | Madtive Studio',
+        'thanks' => 'Terima kasih telah mendaftar di Karir | Klinik Keluarga',
         'instruction' => 'Klik tombol di bawah ini untuk memverifikasi email Kamu:',
         'button' => 'Verifikasi Email',
         'or_link' => 'Atau gunakan link berikut :',
-        'ignore_note' => 'Jika Kamu tidak mendaftar di Karir | Madtive Studio, abaikan email ini.',
+        'ignore_note' => 'Jika Kamu tidak mendaftar di Karir | Klinik Keluarga, abaikan email ini.',
     ],
 ];

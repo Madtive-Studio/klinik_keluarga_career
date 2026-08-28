@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'footer' => '© :year Madtive Studio. All rights reserved.',
+    'footer' => '© :year Klinik Keluarga. All rights reserved.',
     'greeting' => 'Hello :name,',
     'regards' => 'Regards,',
-    'team' => 'Madtive Studio Team',
+    'team' => 'Klinik Keluarga Recruitment Team',
     'check_applications' => 'Remember to check your application status at :link.',
     'my_applications_link' => 'my applications',
 
@@ -41,17 +41,17 @@ return [
         'online_note' => 'Please test your internet connection and device before the interview.',
         'offline_note' => 'Please arrive on time at the address listed above.',
         'footer_note' => 'Please make sure to attend on time according to the schedule above. If you have any questions or issues, please contact us.',
-        'ignore_note' => 'If you did not register at Careers | Madtive Studio, please ignore this email.',
+        'ignore_note' => 'If you did not register at Careers | Klinik Keluarga, please ignore this email.',
     ],
 
     'activation' => [
         'subject' => 'Verify Your Email',
         'title' => 'Verify Your Email',
         'heading' => 'Verify Your Email',
-        'thanks' => 'Thank you for registering at Careers | Madtive Studio',
+        'thanks' => 'Thank you for registering at Careers | Klinik Keluarga',
         'instruction' => 'Click the button below to verify your email:',
         'button' => 'Verify Email',
         'or_link' => 'Or use the following link:',
-        'ignore_note' => 'If you did not register at Careers | Madtive Studio, please ignore this email.',
+        'ignore_note' => 'If you did not register at Careers | Klinik Keluarga, please ignore this email.',
     ],
 ];

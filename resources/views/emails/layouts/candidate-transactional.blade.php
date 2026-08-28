@@ -70,7 +70,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('logo-white.png') }}" alt="" width="200">
+            <img src="{{ asset('assets/logo/letter-logo-white.png') }}" alt="Klinik Keluarga" width="200" style="display: block; margin: 0 auto;">
         </div>
         <div class="content">
             @yield('content')
