@@ -1,4 +1,13 @@
 @extends('admin.layouts.main')
+@section('css')
+	<link href="https://cdn.jsdelivr.net/npm/slim-select@2.8.2/dist/slimselect.css" rel="stylesheet" />
+	<style>
+		.ss-main {
+			width: 100%;
+			border-radius: 0.375rem;
+		}
+	</style>
+@endsection
 @section('content')
 	<div class="container-fluid flex-grow-1 container-p-y">
 		<div class="row">
@@ -31,18 +40,16 @@
 							</div>
 							<div class="col-md-12">
 								<div class="mb-3">
-									<label class="form-label">{{ __('admin.schedule_interviews.select_apply') }}</label>
-									<div class="input-group input-group-merge">
-										<select name="apply_id" id="apply_id" class="form-control" required>
-											<option value="">{{ __('admin.schedule_interviews.select_apply') }}</option>
-											@foreach ($applies as $apply)
-												<option value="{{ $apply->id }}"
-													{{ isset($scheduleInterview) && isset($scheduleInterview->apply_id) && $scheduleInterview->apply_id == (isset($apply) ? $apply->id : null) ? 'selected' : '' }}>
-													{{ $apply->batch->code }} - {{ $apply->batch->name }} - {{ $apply->candidate->name }} - {{ $apply->job->title }} - {{ $apply->status }}
-												</option>
-											@endforeach
-										</select>
-									</div>
+									<label class="form-label">{{ __('admin.schedule_interviews.select_apply') }} (Shortlisted)</label>
+									<select name="apply_id" id="apply_id" required>
+										<option data-placeholder="true" value="">{{ __('admin.schedule_interviews.select_apply') }}</option>
+										@foreach ($applies as $apply)
+											<option value="{{ $apply->id }}"
+												{{ (old('apply_id', isset($scheduleInterview) ? $scheduleInterview->apply_id : '') == $apply->id) ? 'selected' : '' }}>
+												{{ $apply->candidate->name ?? '-' }} ({{ $apply->candidate->email ?? '-' }}) — {{ $apply->job->title ?? '-' }} [{{ $apply->batch->code ?? '-' }} - {{ $apply->batch->name ?? '-' }}]
+											</option>
+										@endforeach
+									</select>
 								</div>
 							</div>
 							<div class="mb-3">
@@ -259,5 +266,21 @@
 				}
 			})
 		})
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/slim-select@2.8.2/dist/slimselect.min.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			if (document.getElementById('apply_id')) {
+				new SlimSelect({
+					select: '#apply_id',
+					settings: {
+						placeholderText: 'Pilih / Cari Kandidat Shortlisted...',
+						searchPlaceholder: 'Ketik nama kandidat, email, atau posisi...',
+						searchText: 'Data kandidat tidak ditemukan',
+						searchingText: 'Mencari...',
+					}
+				});
+			}
+		});
 	</script>
 @endsection

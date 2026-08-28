@@ -70,7 +70,10 @@ class ScheduleInterviewController extends Controller
     public function create()
     {
         $code = '#'.strtoupper(substr(uniqid(), 0, 10));
-        $applies = Apply::orderBy('created_at', 'ASC')->get();
+        $applies = Apply::with(['candidate', 'job.category', 'batch'])
+            ->where('status', 'SHORTLISTED')
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
         return view('admin.schedule-interviews.form', [
             'uuid' => (string)Str::uuid(),
@@ -135,7 +138,13 @@ class ScheduleInterviewController extends Controller
     public function edit(string $id)
     {
         $scheduleInterview = ScheduleInterview::findOrFail($id);
-        $applies = Apply::orderBy('created_at', 'ASC')->get();
+        $applies = Apply::with(['candidate', 'job.category', 'batch'])
+            ->where(function ($query) use ($scheduleInterview) {
+                $query->where('status', 'SHORTLISTED')
+                      ->orWhere('id', $scheduleInterview->apply_id);
+            })
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
         return view('admin.schedule-interviews.form', [
             'scheduleInterview' => $scheduleInterview,
@@ -162,7 +171,13 @@ class ScheduleInterviewController extends Controller
         $data['apply_id'] = $applyData->id;
         $data['is_online'] = $request->has('is_online');
 
-        ScheduleInterview::findOrFail($id)->update($data);
+        $scheduleInterview = ScheduleInterview::findOrFail($id);
+        $scheduleInterview->update($data);
+
+        $company = Company::first();
+        $job = Job::with(['batch', 'category'])->where('id', $applyData->job_id)->first();
+        $candidate = Candidate::where('id', $applyData->candidate_id)->first();
+        $candidate?->notify(new InterviewInvitationNotification($candidate, $job, $scheduleInterview->fresh(), $company));
 
         return redirect()->route('admin.schedule-interviews.index')->with('success', __('messages.admin.schedule_interview.updated'));
     }
