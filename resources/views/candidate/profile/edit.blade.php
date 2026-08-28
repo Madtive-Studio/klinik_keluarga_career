@@ -79,6 +79,39 @@
 						<div class="profile-section-card card border-0 shadow-sm mb-4">
 							<div class="card-body p-4">
 								<div class="profile-section-card__title">
+									<span class="profile-section-card__icon"><i class="mdi mdi-account-cog-outline"></i></span>
+									<div>
+										<h5 class="mb-0">Informasi Akun</h5>
+										<p class="text-muted small mb-0">Kelola nama lengkap, username, dan nomor HP Anda</p>
+									</div>
+								</div>
+								<div class="row mt-4">
+									<div class="col-md-6 mb-3">
+										<label class="form-label">Nama Lengkap *</label>
+										<input type="text" name="name" class="form-control" value="{{ old('name', $candidate->name) }}" required>
+										@error('name') <small class="text-danger">{{ $message }}</small> @enderror
+									</div>
+									<div class="col-md-6 mb-3">
+										<label class="form-label">Username *</label>
+										<input type="text" name="username" class="form-control" value="{{ old('username', $candidate->username) }}" required>
+										@error('username') <small class="text-danger">{{ $message }}</small> @enderror
+									</div>
+									<div class="col-md-6 mb-3">
+										<label class="form-label">Email (Terverifikasi)</label>
+										<input type="email" class="form-control bg-light" value="{{ $candidate->email }}" readonly>
+									</div>
+									<div class="col-md-6 mb-3">
+										<label class="form-label">Nomor Telepon *</label>
+										<input type="tel" inputmode="numeric" name="phone" class="form-control" value="{{ old('phone', $candidate->phone) }}" required>
+										@error('phone') <small class="text-danger">{{ $message }}</small> @enderror
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="profile-section-card card border-0 shadow-sm mb-4">
+							<div class="card-body p-4">
+								<div class="profile-section-card__title">
 									<span class="profile-section-card__icon"><i class="mdi mdi-school"></i></span>
 									<div>
 										<h5 class="mb-0">{{ __('candidate.profile.education') }}</h5>

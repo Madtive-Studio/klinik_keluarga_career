@@ -29,6 +29,8 @@ class ProfileController extends Controller
         $candidate = Candidate::findOrFail(Auth::guard('candidate')->id());
 
         DB::transaction(function () use ($request, $candidate) {
+            $candidate->update($request->safe()->only(['name', 'username', 'phone']));
+
             $profileData = $request->safe()->only([
                 'education_level',
                 'major',

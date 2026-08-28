@@ -17,12 +17,15 @@ class LoginController extends Controller
 
   public function process(Request $request)
   {
-    $credentials = [
-        'email' => $request->email,
-        'password' => $request->password
-    ];
+    $loginInput = trim($request->input('email', $request->input('login')));
+    $password = $request->input('password');
 
-    if (Auth::guard('admin')->attempt($credentials)) {
+    $user = User::where('email', $loginInput)
+        ->orWhere('username', $loginInput)
+        ->first();
+
+    if ($user && Hash::check($password, $user->password)) {
+        Auth::guard('admin')->login($user);
         return redirect()->route('admin.dashboard');
     } else {
         return redirect()->back()->with('error', __('messages.admin.auth.invalid_credentials'));

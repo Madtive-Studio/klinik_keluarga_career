@@ -30,17 +30,21 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator);
         }
 
-        if (Auth::guard('candidate')->attempt([
-            'email' => $request->email,
-            'password' => $request->password
-        ])) {
-            $candidate = Candidate::where('email', $request->email)->whereNotNull('email_verified_at')->first();
-            if (!$candidate) {
+        $loginInput = trim($request->input('email', $request->input('login')));
+        $password = $request->password;
+
+        $candidate = Candidate::where('email', $loginInput)
+            ->orWhere('username', $loginInput)
+            ->orWhere('phone', $loginInput)
+            ->first();
+
+        if ($candidate && Hash::check($password, $candidate->password)) {
+            if (!$candidate->email_verified_at) {
                 return redirect()->back()->with('error', __('messages.auth.email_not_verified'));
             }
 
+            Auth::guard('candidate')->login($candidate);
             return redirect()->route('candidate.home');
-
         } else {
             return redirect()->back()->with('error', __('messages.auth.invalid_credentials'));
         }
@@ -58,6 +62,7 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'email' => 'required|unique:candidates,email',
+            'username' => 'required|string|alpha_dash|max:50|unique:candidates,username',
             'password' => 'required|min:8|confirmed',
             'name' => 'required',
             'phone' => 'required|numeric|digits_between:9,15',
@@ -69,7 +74,7 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator)->withInput($request->all());
         }
         
-        $candidateData = $request->only(['name', 'email', 'phone', 'birth_date', 'address']);
+        $candidateData = $request->only(['name', 'email', 'username', 'phone', 'birth_date', 'address']);
         $candidateData['password'] = bcrypt($request->password);
         $candidateData['verification_token'] = Str::random(64);
 

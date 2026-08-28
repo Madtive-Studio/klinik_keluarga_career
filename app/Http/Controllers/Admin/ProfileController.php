@@ -22,7 +22,7 @@ class ProfileController extends Controller
     {
         $user = User::findOrFail(Auth::guard('admin')->id());
 
-        $data = $request->safe()->only(['name', 'email']);
+        $data = $request->safe()->only(['name', 'email', 'username']);
 
         if ($request->filled('password')) {
             $data['password'] = $request->input('password');

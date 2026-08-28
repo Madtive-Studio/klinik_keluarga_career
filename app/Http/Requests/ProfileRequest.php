@@ -15,7 +15,18 @@ class ProfileRequest extends FormRequest
 
     public function rules(): array
     {
+        $candidateId = auth('candidate')->id();
+
         return [
+            'name' => ['required', 'string', 'max:150'],
+            'username' => [
+                'required',
+                'string',
+                'alpha_dash',
+                'max:50',
+                Rule::unique('candidates', 'username')->ignore($candidateId),
+            ],
+            'phone' => ['required', 'numeric', 'digits_between:9,15'],
             'education_level' => ['required', Rule::in(EducationLevel::values())],
             'major' => ['nullable', 'string', 'max:255'],
             'university' => ['nullable', 'string', 'max:255'],

@@ -70,8 +70,8 @@
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="mb-3 position-relative">
-												<label class="form-label text-dark fw-semibold">{{ __('common.email') }} <span class="text-danger">*</span></label>
-												<input type="email" class="form-control" placeholder="{{ __('common.email') }}" name="email">
+												<label class="form-label text-dark fw-semibold">Email / Username / No. HP <span class="text-danger">*</span></label>
+												<input type="text" class="form-control" placeholder="Email / Username / No. HP" name="email" value="{{ old('email') }}">
 												@error('email')
 													<span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
 												@enderror

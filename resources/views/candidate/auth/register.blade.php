@@ -68,11 +68,20 @@
                                 <form class="login-form" action="{{ route('candidate.register.verify') }}" method="POST">
                                     @csrf
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <div class="mb-3 position-relative">
                                                 <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.full_name') }} <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="..." name="name" value="{{ old('name') }}">
                                                 @error('name') 
+                                                    <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3 position-relative">
+                                                <label class="form-label text-dark fw-semibold">Username <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" placeholder="john_doe" name="username" value="{{ old('username') }}">
+                                                @error('username') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
                                                 @enderror
                                             </div>

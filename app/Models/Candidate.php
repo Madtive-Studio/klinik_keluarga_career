@@ -14,7 +14,7 @@ class Candidate extends Authenticatable
 {
     use HasFactory, Notifiable;
     protected $table = 'candidates';
-    protected $fillable = ['name', 'email', 'password', 'phone', 'birth_date', 'phone', 'password', 'verification_token', 'email_verified_at', 'address'];
+    protected $fillable = ['name', 'email', 'username', 'password', 'phone', 'birth_date', 'verification_token', 'email_verified_at', 'address'];
 
     protected $hidden = [
         'password',

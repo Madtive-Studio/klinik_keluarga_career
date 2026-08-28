@@ -16,6 +16,13 @@ class AdminProfileRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'username' => [
+                'required',
+                'string',
+                'alpha_dash',
+                'max:50',
+                Rule::unique('users', 'username')->ignore(auth('admin')->id()),
+            ],
             'email' => [
                 'required',
                 'email',
