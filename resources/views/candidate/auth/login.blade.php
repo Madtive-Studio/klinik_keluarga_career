@@ -41,10 +41,10 @@
 		<div class="home-center">
 			<div class="home-desc-center">
 				<div class="container">
-					<img src="{{ asset('logo-white.png') }}" width="250" style="z-index: 999 !important; position: relative;" class="mb-5 d-block mx-auto" alt="">
+					<img src="{{ asset('logo-white.png') }}" width="240" class="mb-4 d-block mx-auto auth-logo-animated" alt="">
 					<div class="row justify-content-center">
-						<div class="col-lg-4 col-md-6">
-							<div class="login-page bg-white shadow rounded p-4">
+						<div class="col-lg-5 col-md-7 col-sm-10">
+							<div class="login-page bg-white shadow-lg p-4 p-md-5">
 								<div class="text-center">
 									<h4 class="mb-4">
 										<strong>{{ __('candidate.auth.login_title') }}</strong>

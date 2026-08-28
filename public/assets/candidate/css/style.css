@@ -1192,8 +1192,50 @@ p {
 	background: #2f55d4;
 }
 
-.login-page {
+/* Auth Login / Register Box Animation & Visual Enhancements */
+@keyframes fadeInUpAuth {
+	0% {
+		opacity: 0;
+		transform: translateY(28px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes gentleFloatAuth {
+	0%, 100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-6px);
+	}
+}
+
+.login-page,
+.login_page {
 	font-size: 15px;
+	position: relative;
+	z-index: 10;
+	border-radius: 16px !important;
+	box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.9) inset !important;
+	background: #ffffff !important;
+	animation: fadeInUpAuth 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards, gentleFloatAuth 6s ease-in-out infinite 0.7s;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-page:hover,
+.login_page:hover {
+	transform: translateY(-8px) !important;
+	box-shadow: 0 30px 60px -12px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(255, 255, 255, 1) inset !important;
+}
+
+.auth-logo-animated {
+	position: relative;
+	z-index: 10;
+	animation: fadeInUpAuth 0.5s ease-out forwards;
+	filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
 }
 
 .login-page .forgot-pass {

@@ -41,15 +41,15 @@
     <div class="back-to-home rounded d-none d-sm-block">
         <a href="{{ route('candidate.home') }}" class="text-white rounded d-inline-block text-center"><i class="mdi mdi-home"></i></a>
     </div>
-    <section class="vh-100 bg-home">
+    <section class="min-vh-100 bg-home py-5">
         <div class="bg-overlay"></div>
         <div class="home-center">
             <div class="home-desc-center">
                 <div class="container">
-                    <img src="{{ asset('logo-white.png') }}" width="250" style="z-index: 999 !important; position: relative;" class="mb-5 d-block mx-auto" alt="">
+                    <img src="{{ asset('logo-white.png') }}" width="240" class="mb-4 d-block mx-auto auth-logo-animated" alt="">
                     <div class="row justify-content-center">
-                        <div class="col-md-6">
-                            <div class="login_page bg-white shadow rounded p-4">
+                        <div class="col-lg-7 col-md-9">
+                            <div class="login_page bg-white shadow-lg p-4 p-md-5">
                                 <div class="text-center">
                                     <h4 class="mb-4">
                                         <strong>{{ __('candidate.auth.register_title') }}</strong>
