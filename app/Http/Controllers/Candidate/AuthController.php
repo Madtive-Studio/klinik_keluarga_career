@@ -127,7 +127,7 @@ class AuthController extends Controller
                 'verification_token' => null
             ]);
     
-            return view('candidate.auth.success_verification');
+            return view('candidate.auth.success-verification');
         }
 
         return redirect()->route('candidate.login.form')->with('success', __('messages.auth.email_verified'));
