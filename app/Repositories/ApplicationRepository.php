@@ -24,11 +24,11 @@ class ApplicationRepository
         private ScoringService $scoringService,
     ) {}
 
-    public function findByJobBatchAndCandidate(int $jobId, int $batchId, int $candidateId): ?Apply
+    public function findByJobBatchAndCandidate(int $jobId, ?int $batchId, int $candidateId): ?Apply
     {
         return Apply::where('job_id', $jobId)
-                    ->where('batch_id', $batchId)
                     ->where('candidate_id', $candidateId)
+                    ->when($batchId, fn ($q) => $q->where('batch_id', $batchId))
                     ->first();
     }
 
@@ -140,7 +140,9 @@ class ApplicationRepository
 
     public function candidateHasApplied(int $candidateId, Job $job): bool
     {
-        return (bool) $this->findByJobBatchAndCandidate($job->id, $job->batch->id, $candidateId);
+        return Apply::where('job_id', $job->id)
+                    ->where('candidate_id', $candidateId)
+                    ->exists();
     }
 
     /**

@@ -196,7 +196,7 @@ class JobRepository
         abort_if(!$job, 404);
         $appliesTotal = $job->applies()->count();
 
-        $existingApply = $this->applicationRepo->findByJobBatchAndCandidate($job->id, $job->batch->id, $candidateId);
+        $existingApply = $this->applicationRepo->candidateHasApplied($candidateId, $job);
         if ($existingApply) {
             return ['already_applied' => true];
         }
