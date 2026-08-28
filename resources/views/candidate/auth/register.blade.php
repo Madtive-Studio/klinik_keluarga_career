@@ -80,7 +80,7 @@
                                         <div class="col-md-6">
                                             <div class="mb-3 position-relative">
                                                 <label class="form-label text-dark fw-semibold">Username <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" placeholder="john_doe" name="username" value="{{ old('username') }}">
+                                                <input type="text" class="form-control" placeholder="..." name="username" value="{{ old('username') }}">
                                                 @error('username') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
                                                 @enderror
@@ -132,7 +132,7 @@
                                                             <option value="+27" {{ old('country_code') == '+27' ? 'selected' : '' }}>🇿🇦 +27 (ZA)</option>
                                                         </optgroup>
                                                     </select>
-                                                    <input type="tel" inputmode="numeric" class="form-control" placeholder="08123456789 / 628123456789" name="phone" value="{{ old('phone') }}">
+                                                    <input type="tel" inputmode="numeric" class="form-control" placeholder="..." name="phone" value="{{ old('phone') }}">
                                                 </div>
                                                 @error('phone') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>

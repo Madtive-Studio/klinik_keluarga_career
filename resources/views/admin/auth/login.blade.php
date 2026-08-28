@@ -60,14 +60,14 @@
             <form class="mb-4" action="{{ route("admin.process") }}" method="POST">
               @csrf
               <div class="mb-6">
-                <label for="email" class="form-label">{{ __('common.email') }}</label>
-                <input type="text" class="form-control" id="email" name="email" placeholder="{{ __('admin.auth.enter_email') }}" autofocus />
+                <label for="email" class="form-label">Email / Username</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="..." autofocus />
               </div>
 
               <div class="mb-6 form-password-toggle">
                 <label class="form-label" for="password">{{ __('common.password') }}</label>
                 <div class="input-group input-group-merge">
-                  <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                  <input type="password" id="password" class="form-control" name="password" placeholder="..." aria-describedby="password" />
                   <span class="input-group-text cursor-pointer">
                     <i class="ti ti-eye-off"></i>
                   </span>

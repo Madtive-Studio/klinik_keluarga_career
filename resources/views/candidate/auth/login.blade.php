@@ -71,7 +71,7 @@
 										<div class="col-lg-12">
 											<div class="mb-3 position-relative">
 												<label class="form-label text-dark fw-semibold">Email / Username / No. HP <span class="text-danger">*</span></label>
-												<input type="text" class="form-control" placeholder="Email / Username / No. HP" name="email" value="{{ old('email') }}">
+												<input type="text" class="form-control" placeholder="..." name="email" value="{{ old('email') }}">
 												@error('email')
 													<span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
 												@enderror
@@ -80,7 +80,7 @@
 										<div class="col-lg-12">
 											<div class="mb-3 position-relative">
 												<label class="form-label text-dark fw-semibold">{{ __('common.password') }} <span class="text-danger">*</span></label>
-												<input type="password" name="password" class="form-control" placeholder="{{ __('common.password') }}">
+												<input type="password" name="password" class="form-control" placeholder="...">
 												@error('password')
 													<span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
 												@enderror
