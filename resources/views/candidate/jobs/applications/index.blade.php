@@ -30,7 +30,7 @@
 									<div class="row align-items-center">
 										<div class="col-4 col-md-2">
 											<div class="company-logo-img">
-												<img src="{{ $job->image_url }}" alt="{{ $job->title }}" class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
+												<img src="{{ $apply->job->image_url }}" alt="{{ $apply->job->title }}" class="img-fluid mx-auto d-block rounded" style="max-width: 100px;">
 											</div>
 										</div>
 										<div class="col-8 col-md-7">
