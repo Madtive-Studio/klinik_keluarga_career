@@ -979,7 +979,7 @@ p {
 }
 
 .bg-overlay {
-	background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.45) 100%);
+	background: linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(30, 41, 59, 0.68) 100%);
 	position: absolute;
 	top: 0;
 	right: 0;
