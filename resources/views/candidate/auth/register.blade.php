@@ -41,14 +41,14 @@
     <div class="back-to-home rounded d-none d-sm-block">
         <a href="{{ route('candidate.home') }}" class="text-white rounded d-inline-block text-center"><i class="mdi mdi-home"></i></a>
     </div>
-    <section class="min-vh-100 bg-home py-5">
+    <section class="min-vh-100 bg-home py-5 d-flex align-items-center justify-content-center">
         <div class="bg-overlay"></div>
-        <div class="home-center">
-            <div class="home-desc-center">
+        <div class="home-center my-auto">
+            <div class="home-desc-center py-4">
                 <div class="container">
                     <img src="{{ asset('logo-white.png') }}" width="240" class="mb-4 d-block mx-auto auth-logo-animated" alt="">
                     <div class="row justify-content-center">
-                        <div class="col-lg-7 col-md-9">
+                        <div class="col-lg-8 col-md-10">
                             <div class="login_page bg-white shadow-lg p-4 p-md-5">
                                 <div class="text-center">
                                     <h4 class="mb-4">

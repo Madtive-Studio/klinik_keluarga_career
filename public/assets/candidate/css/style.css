@@ -1892,8 +1892,12 @@ p {
 	background-repeat: no-repeat;
 }
 
-section.bg-home.vh-100 {
+section.bg-home.vh-100,
+section.bg-home.min-vh-100 {
 	padding: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .home-center {
