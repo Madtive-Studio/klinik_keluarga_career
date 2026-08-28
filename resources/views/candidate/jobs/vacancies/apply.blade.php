@@ -1,4 +1,4 @@
-@extends('candidate.layouts.main', ['navbarType' => 'default'])
+@extends('candidate.layouts.main', ['navbarType' => 'candidate'])
 @section('title', __('candidate.apply.title'))
 @section('content')
 	<section class="bg-half page-next-level">
