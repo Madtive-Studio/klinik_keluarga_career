@@ -80,7 +80,20 @@
                                         <div class="col-md-6">
                                             <div class="mb-3 position-relative">
                                                 <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.phone') }} <span class="text-danger">*</span></label>
-                                                <input type="number" class="form-control" placeholder="..." name="phone" value="{{ old('phone') }}">
+                                                <div class="input-group">
+                                                    <select class="form-select bg-light text-dark fw-medium" name="country_code" style="max-width: 100px; font-size: 0.88rem;">
+                                                        <option value="+62" {{ old('country_code', '+62') == '+62' ? 'selected' : '' }}>🇮🇩 +62</option>
+                                                        <option value="+1" {{ old('country_code') == '+1' ? 'selected' : '' }}>🇺🇸 +1</option>
+                                                        <option value="+65" {{ old('country_code') == '+65' ? 'selected' : '' }}>🇸🇬 +65</option>
+                                                        <option value="+60" {{ old('country_code') == '+60' ? 'selected' : '' }}>🇲🇾 +60</option>
+                                                        <option value="+61" {{ old('country_code') == '+61' ? 'selected' : '' }}>🇦🇺 +61</option>
+                                                        <option value="+81" {{ old('country_code') == '+81' ? 'selected' : '' }}>🇯🇵 +81</option>
+                                                        <option value="+82" {{ old('country_code') == '+82' ? 'selected' : '' }}>🇰🇷 +82</option>
+                                                        <option value="+44" {{ old('country_code') == '+44' ? 'selected' : '' }}>🇬🇧 +44</option>
+                                                        <option value="+966" {{ old('country_code') == '+966' ? 'selected' : '' }}>🇸🇦 +966</option>
+                                                    </select>
+                                                    <input type="tel" inputmode="numeric" class="form-control" placeholder="08123456789 / 628123456789" name="phone" value="{{ old('phone') }}">
+                                                </div>
                                                 @error('phone') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
                                                 @enderror

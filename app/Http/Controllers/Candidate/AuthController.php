@@ -53,11 +53,14 @@ class AuthController extends Controller
 
     public function verify(Request $request)
     {
+        $normalizedPhone = $this->normalizePhoneNumber($request->input('phone'), $request->input('country_code', '+62'));
+        $request->merge(['phone' => $normalizedPhone]);
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|unique:candidates,email',
             'password' => 'required|min:8|confirmed',
             'name' => 'required',
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric|digits_between:9,15',
             'birth_date' => 'required',
             'address' => 'required',
         ]);
@@ -66,14 +69,48 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator)->withInput($request->all());
         }
         
-        $request['password'] = bcrypt($request->password);
-        $request['verification_token'] = Str::random(64);
-        $candidate = Candidate::create($request->all());
+        $candidateData = $request->only(['name', 'email', 'phone', 'birth_date', 'address']);
+        $candidateData['password'] = bcrypt($request->password);
+        $candidateData['verification_token'] = Str::random(64);
+
+        $candidate = Candidate::create($candidateData);
 
         $verificationUrl = route('candidate.email-verification', ['token' => $candidate->verification_token]);
         $candidate->notify(new ActivationEmailNotification($candidate, $verificationUrl));
 
         return redirect()->back()->with('success', __('messages.auth.register_success'));
+    }
+
+    private function normalizePhoneNumber(?string $phone, ?string $countryCode = '+62'): ?string
+    {
+        if (empty($phone)) {
+            return null;
+        }
+
+        $cleaned = preg_replace('/[^\d+]/', '', trim($phone));
+
+        if (str_starts_with($cleaned, '+')) {
+            $cleaned = substr($cleaned, 1);
+        }
+
+        if (str_starts_with($cleaned, '0')) {
+            return $cleaned;
+        }
+
+        if (str_starts_with($cleaned, '62')) {
+            return $cleaned;
+        }
+
+        $cleanCountryCode = preg_replace('/[^\d]/', '', $countryCode ?: '62');
+        if ($cleanCountryCode === '62' && str_starts_with($cleaned, '8')) {
+            return '62' . $cleaned;
+        }
+
+        if ($cleanCountryCode && !str_starts_with($cleaned, $cleanCountryCode)) {
+            return $cleanCountryCode . $cleaned;
+        }
+
+        return $cleaned;
     }
 
     public function verification($token)
