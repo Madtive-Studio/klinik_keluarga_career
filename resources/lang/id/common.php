@@ -31,5 +31,6 @@ return [
     'uploaded' => 'Diupload',
     'sent_at' => 'Dikirim pada',
     'total' => 'Total',
+    'applies' => 'lamaran',
     'dash' => '-',
 ];

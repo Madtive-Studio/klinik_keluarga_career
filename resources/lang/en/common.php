@@ -31,5 +31,6 @@ return [
     'uploaded' => 'Uploaded',
     'sent_at' => 'Submitted on',
     'total' => 'Total',
+    'applies' => 'applications',
     'dash' => '-',
 ];
