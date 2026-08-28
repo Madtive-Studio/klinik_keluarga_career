@@ -90,16 +90,47 @@
                                             <div class="mb-3 position-relative">
                                                 <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.phone') }} <span class="text-danger">*</span></label>
                                                 <div class="input-group">
-                                                    <select class="form-select bg-light text-dark fw-medium" name="country_code" style="max-width: 100px; font-size: 0.88rem;">
-                                                        <option value="+62" {{ old('country_code', '+62') == '+62' ? 'selected' : '' }}>🇮🇩 +62</option>
-                                                        <option value="+1" {{ old('country_code') == '+1' ? 'selected' : '' }}>🇺🇸 +1</option>
-                                                        <option value="+65" {{ old('country_code') == '+65' ? 'selected' : '' }}>🇸🇬 +65</option>
-                                                        <option value="+60" {{ old('country_code') == '+60' ? 'selected' : '' }}>🇲🇾 +60</option>
-                                                        <option value="+61" {{ old('country_code') == '+61' ? 'selected' : '' }}>🇦🇺 +61</option>
-                                                        <option value="+81" {{ old('country_code') == '+81' ? 'selected' : '' }}>🇯🇵 +81</option>
-                                                        <option value="+82" {{ old('country_code') == '+82' ? 'selected' : '' }}>🇰🇷 +82</option>
-                                                        <option value="+44" {{ old('country_code') == '+44' ? 'selected' : '' }}>🇬🇧 +44</option>
-                                                        <option value="+966" {{ old('country_code') == '+966' ? 'selected' : '' }}>🇸🇦 +966</option>
+                                                    <select class="form-select bg-light text-dark fw-medium" name="country_code" style="max-width: 115px; font-size: 0.88rem;">
+                                                        <optgroup label="Asia Tenggara (ASEAN)">
+                                                            <option value="+62" {{ old('country_code', '+62') == '+62' ? 'selected' : '' }}>🇮🇩 +62 (ID)</option>
+                                                            <option value="+60" {{ old('country_code') == '+60' ? 'selected' : '' }}>🇲🇾 +60 (MY)</option>
+                                                            <option value="+65" {{ old('country_code') == '+65' ? 'selected' : '' }}>🇸🇬 +65 (SG)</option>
+                                                            <option value="+66" {{ old('country_code') == '+66' ? 'selected' : '' }}>🇹🇭 +66 (TH)</option>
+                                                            <option value="+63" {{ old('country_code') == '+63' ? 'selected' : '' }}>🇵🇭 +63 (PH)</option>
+                                                            <option value="+84" {{ old('country_code') == '+84' ? 'selected' : '' }}>🇻🇳 +84 (VN)</option>
+                                                            <option value="+95" {{ old('country_code') == '+95' ? 'selected' : '' }}>🇲🇲 +95 (MM)</option>
+                                                            <option value="+855" {{ old('country_code') == '+855' ? 'selected' : '' }}>🇰🇭 +855 (KH)</option>
+                                                            <option value="+856" {{ old('country_code') == '+856' ? 'selected' : '' }}>🇱🇦 +856 (LA)</option>
+                                                            <option value="+673" {{ old('country_code') == '+673' ? 'selected' : '' }}>🇧🇳 +673 (BN)</option>
+                                                            <option value="+670" {{ old('country_code') == '+670' ? 'selected' : '' }}>🇹🇱 +670 (TL)</option>
+                                                        </optgroup>
+                                                        <optgroup label="Asia & Timur Tengah">
+                                                            <option value="+81" {{ old('country_code') == '+81' ? 'selected' : '' }}>🇯🇵 +81 (JP)</option>
+                                                            <option value="+82" {{ old('country_code') == '+82' ? 'selected' : '' }}>🇰🇷 +82 (KR)</option>
+                                                            <option value="+86" {{ old('country_code') == '+86' ? 'selected' : '' }}>🇨🇳 +86 (CN)</option>
+                                                            <option value="+886" {{ old('country_code') == '+886' ? 'selected' : '' }}>🇹🇼 +886 (TW)</option>
+                                                            <option value="+852" {{ old('country_code') == '+852' ? 'selected' : '' }}>🇭🇰 +852 (HK)</option>
+                                                            <option value="+91" {{ old('country_code') == '+91' ? 'selected' : '' }}>🇮🇳 +91 (IN)</option>
+                                                            <option value="+966" {{ old('country_code') == '+966' ? 'selected' : '' }}>🇸🇦 +966 (SA)</option>
+                                                            <option value="+971" {{ old('country_code') == '+971' ? 'selected' : '' }}>🇦🇪 +971 (AE)</option>
+                                                            <option value="+974" {{ old('country_code') == '+974' ? 'selected' : '' }}>🇶🇦 +974 (QA)</option>
+                                                            <option value="+965" {{ old('country_code') == '+965' ? 'selected' : '' }}>🇰🇼 +965 (KW)</option>
+                                                            <option value="+90" {{ old('country_code') == '+90' ? 'selected' : '' }}>🇹🇷 +90 (TR)</option>
+                                                        </optgroup>
+                                                        <optgroup label="Global / Lainnya">
+                                                            <option value="+1" {{ old('country_code') == '+1' ? 'selected' : '' }}>🇺🇸 +1 (US/CA)</option>
+                                                            <option value="+61" {{ old('country_code') == '+61' ? 'selected' : '' }}>🇦🇺 +61 (AU)</option>
+                                                            <option value="+64" {{ old('country_code') == '+64' ? 'selected' : '' }}>🇳🇿 +64 (NZ)</option>
+                                                            <option value="+44" {{ old('country_code') == '+44' ? 'selected' : '' }}>🇬🇧 +44 (UK)</option>
+                                                            <option value="+49" {{ old('country_code') == '+49' ? 'selected' : '' }}>🇩🇪 +49 (DE)</option>
+                                                            <option value="+33" {{ old('country_code') == '+33' ? 'selected' : '' }}>🇫🇷 +33 (FR)</option>
+                                                            <option value="+31" {{ old('country_code') == '+31' ? 'selected' : '' }}>🇳🇱 +31 (NL)</option>
+                                                            <option value="+39" {{ old('country_code') == '+39' ? 'selected' : '' }}>🇮🇹 +39 (IT)</option>
+                                                            <option value="+34" {{ old('country_code') == '+34' ? 'selected' : '' }}>🇪🇸 +34 (ES)</option>
+                                                            <option value="+7" {{ old('country_code') == '+7' ? 'selected' : '' }}>🇷🇺 +7 (RU)</option>
+                                                            <option value="+55" {{ old('country_code') == '+55' ? 'selected' : '' }}>🇧🇷 +55 (BR)</option>
+                                                            <option value="+27" {{ old('country_code') == '+27' ? 'selected' : '' }}>🇿🇦 +27 (ZA)</option>
+                                                        </optgroup>
                                                     </select>
                                                     <input type="tel" inputmode="numeric" class="form-control" placeholder="08123456789 / 628123456789" name="phone" value="{{ old('phone') }}">
                                                 </div>
