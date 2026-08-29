@@ -1,6 +1,4 @@
 @startuml
-skinparam handwritten false
-skinparam monochrome false
 skinparam defaultFontName Arial
 skinparam defaultFontSize 12
 
