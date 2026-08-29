@@ -1,6 +1,6 @@
 @startuml
 skinparam defaultFontName Arial
-skinparam defaultFontSize 12
+skinparam defaultFontSize 11
 
 skinparam activity {
   BackgroundColor #F8F9FA
@@ -12,38 +12,33 @@ skinparam ArrowColor #2F55D4
 
 title Flowchart Alur Peninjauan Lamaran & Penjadwalan Wawancara (Admin HRD)
 
+|Bagian 1: Peninjauan Lamaran Masuk|
 start
 :Akses Halaman Login Admin HRD;
 :Autentikasi Kredensial Akun HRD;
-
 :Buka Dashboard Manajemen Rekrutmen;
-:Kelola Master Data (Gelombang/Batch, Kategori & Lowongan);
+:Kelola Master Data (Batch & Lowongan);
+:Buka Halaman Review Berkas Lamaran;
+:Sistem Tampilkan Pelamar Terurut Auto-Score;
+:HRD Meninjau Profil & Berkas (CV/STR);
+(B)
+detach
 
-:Buka Halaman Review Berkas Lamaran Masuk;
-:Sistem Menampilkan Pelamar Terurut Berdasarkan Skor Kelayakan (Auto-Score);
-:HRD Meninjau Rincian Profil & Berkas Dokumen (CV/STR);
-
-if (Hasil Penilaian Administrasi & Kualifikasi?) then (Memenuhi Syarat)
-  :Ubah Status Lamaran Menjadi "SHORTLISTED";
-  :Sistem Mengirim Email Notifikasi Status Shortlisted;
-  
-  :Buka Menu Penjadwalan Wawancara (Schedule Interview);
-  :Pilih Kandidat Shortlisted menggunakan SlimSelect;
-  :Tentukan Tanggal, Jam Mulai & Jam Selesai;
-  
-  if (Jenis Wawancara?) then (Online)
-    :Input Tautan Virtual (Zoom / Google Meet);
-  else (Offline)
-    :Input Lokasi Ruangan / Alamat Klinik;
-  endif
-  
-  :Input Catatan & Deskripsi Wawancara;
+|Bagian 2: Seleksi & Penjadwalan Wawancara|
+(B)
+if (Hasil Seleksi Berkas?) then (Memenuhi Syarat)
+  :Ubah Status: "SHORTLISTED";
+  :Sistem Kirim Email Notifikasi Shortlisted;
+  :Buka Menu Penjadwalan Wawancara;
+  :Pilih Kandidat Shortlisted (SlimSelect);
+  :Atur Tanggal, Jam, Tipe (Online/Offline) & Lokasi/Link;
   :Simpan Jadwal Wawancara;
-  :Sistem Otomatis Mengirim Email Undangan Wawancara Resmi ke Kandidat;
+  :Sistem Otomatis Kirim Undangan Wawancara;
 else (Tidak Memenuhi)
-  :Ubah Status Lamaran Menjadi "NOT SUITABLE / REJECTED";
-  :Sistem Mengirim Email Notifikasi Pembaruan Status;
+  :Ubah Status: "NOT SUITABLE / REJECT";
+  :Sistem Kirim Email Notifikasi Penolakan;
 endif
 
 stop
+
 @enduml

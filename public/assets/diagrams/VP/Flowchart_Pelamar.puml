@@ -1,6 +1,6 @@
 @startuml
 skinparam defaultFontName Arial
-skinparam defaultFontSize 12
+skinparam defaultFontSize 11
 
 skinparam activity {
   BackgroundColor #F8F9FA
@@ -12,39 +12,38 @@ skinparam ArrowColor #2F55D4
 
 title Flowchart Alur Pendaftaran Akun & Pengajuan Lamaran (Pelamar)
 
+|Bagian 1: Registrasi & Login Akun|
 start
-:Akses Halaman Utama Portal Karir Klinik Keluarga;
+:Akses Halaman Utama Portal Karir;
 
 if (Sudah Memiliki Akun?) then (Belum)
-  :Isi Formulir Registrasi Akun Pelamar;
-  :Sistem Mengirim Email Token Aktivasi;
-  :Buka Email & Klik Tautan Verifikasi;
+  :Isi Formulir Registrasi Akun;
+  :Sistem Kirim Email Token Aktivasi;
+  :Buka Email & Klik Verifikasi;
   :Akun Terverifikasi & Aktif;
 else (Sudah)
 endif
 
-:Login ke Portal Pelamar (Email & Password);
-:Lengkapi Profil (Biodata, Pendidikan, Pengalaman, Keahlian);
-:Unggah Dokumen Digital (CV, Ijazah, STR, Sertifikat);
+:Login ke Portal Pelamar;
+(A)
+detach
 
-:Eksplorasi Katalog Lowongan pada Gelombang (Batch) Aktif;
-:Pilih Posisi Lowongan & Buka Halaman Detail;
+|Bagian 2: Pengajuan Lamaran & Auto-Scoring|
+(A)
+:Lengkapi Profil & Unggah Berkas (CV, STR);
+:Eksplorasi Katalog Lowongan pada Batch Aktif;
+:Pilih Posisi Lowongan & Buka Detail;
 
-if (Kandidat Memenuhi Syarat Minimal?) then (Tidak)
-  :Sistem Tampilkan Peringatan Syarat Belum Terpenuhi;
-  :Lengkapi Persyaratan Dokumen / Profil;
+if (Syarat & Berkas Lengkap?) then (Tidak)
+  :Perbaiki / Lengkapi Berkas;
 else (Ya)
 endif
 
-:Isi Surat Lamaran (Cover Letter);
-:Pilih Dokumen Lampiran yang Relevan;
+:Isi Cover Letter & Pilih Lampiran;
 :Klik Tombol "Lamar Sekarang";
-
-:Sistem Menyimpan Lamaran ke Basis Data;
-:Auto-Scoring Engine Menghitung Skor Kelayakan (1-100);
-:Sistem Mengirim Notifikasi Email Konfirmasi Pengajuan Lamaran;
-:Tampil Halaman Konfirmasi Sukses;
-:Pelamar Memantau Status Lamaran pada Menu "Lamaran Saya";
-
+:Sistem Simpan Lamaran & Jalankan Auto-Scoring (1-100);
+:Sistem Kirim Email Konfirmasi Lamaran;
+:Pelamar Pantau Status di "Lamaran Saya";
 stop
+
 @enduml
