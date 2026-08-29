@@ -31,7 +31,7 @@ node "Client Device\n<<device>>\n(PC / Laptop / Smartphone)" as Client {
 
 node "Application & Web Server\n<<device>>\n(Ubuntu Linux 24.04 LTS)" as AppServer {
   node "Web Server\n<<executionEnvironment>>\n(Nginx / Apache)" as WebServer {
-    component "HTTP / Reverse Proxy Handler\n(Port 80 / 443)" as Proxy
+    component "HTTP Handler / Reverse Proxy" as Proxy
   }
   
   node "PHP 8.2 Runtime\n<<executionEnvironment>>" as PHPEnv {
@@ -41,7 +41,7 @@ node "Application & Web Server\n<<device>>\n(Ubuntu Linux 24.04 LTS)" as AppServ
     component "Eloquent ORM" as Eloquent
   }
   
-  artifact "Local File Storage\n(/storage/app/public/)\n[PDF CV, Ijazah, STR]" as Storage
+  artifact "Local Storage File System\n(/storage/app/public/)\n[PDF CV, Ijazah, STR]" as Storage
 }
 
 node "Database Server\n<<device>>\n(Linux Server)" as DBServer {
@@ -67,7 +67,7 @@ LaravelCore --> Storage : "Read / Write I/O"
 AppServer -- DBServer : "PostgreSQL Protocol (Port 5432)\nTCP/IP Connection"
 Eloquent --> Database : "PDO SQL Queries"
 
-AppServer -- MailServer : "SMTP over TLS (Port 587)\nInternet Protocol"
+AppServer -- MailServer : "SMTP over TLS (Port 587)"
 MailerSubsystem --> GmailSMTP : "Transactional Emails"
 
 @enduml
