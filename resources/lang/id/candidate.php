@@ -186,6 +186,7 @@ return [
         'hours_morning' => 'Pagi  : 06.00 - 13.00 WIB',
         'hours_afternoon' => 'Siang : 14.00 - 20.00 WIB',
         'copyright' => '© 2026 - :year Klinik Keluarga',
+        'admin_portal' => 'Portal HRD / Admin',
     ],
     'js' => [
         'loading' => 'Memuat data...',

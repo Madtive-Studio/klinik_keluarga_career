@@ -9,7 +9,7 @@ return [
         'job_list' => 'Daftar Lowongan',
         'candidate_management' => 'MANAJEMEN KANDIDAT',
         'candidates' => 'Kandidat',
-        'candidate_list' => 'Daftar Kandidat',
+        'candidate_list' => 'Daftar Pelamar',
         'apply_list' => 'Daftar Lamaran',
         'schedule_interview' => 'Jadwal Wawancara',
     ],

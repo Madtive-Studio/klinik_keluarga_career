@@ -33,8 +33,12 @@
 	<div class="container text-center">
 		<div class="row justify-content-center">
 			<div class="col-12">
-				<div class="">
+				<div class="d-flex align-items-center justify-content-center flex-wrap gap-2">
 					<p class="mb-0">{{ __('candidate.footer.copyright', ['year' => date('Y')]) }}</p>
+					<span class="text-white-50 d-none d-sm-inline">•</span>
+					<a href="{{ route('admin.login') }}" target="_blank" class="text-white-50 small hover-text-white" style="text-decoration: none; transition: color 0.2s ease;">
+						<i class="mdi mdi-shield-account me-1"></i>{{ __('candidate.footer.admin_portal') }}
+					</a>
 				</div>
 			</div>
 		</div>
