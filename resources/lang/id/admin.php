@@ -58,7 +58,7 @@ return [
     ],
     'jobs' => [
         'title' => 'Daftar Lowongan',
-        'datatable' => 'Tabel Lowongan',
+        'datatable' => 'Daftar Lowongan Pekerjaan',
         'add' => 'Tambah Lowongan',
         'batch' => 'Batch',
         'title_col' => 'Judul',
@@ -128,7 +128,7 @@ return [
         'image_counter' => ':count / :max gambar',
     ],
     'batches' => [
-        'title' => 'Tabel Batch',
+        'title' => 'Daftar Gelombang (Batch)',
         'code' => 'Kode',
         'name' => 'Nama',
         'start_date' => 'Tanggal Mulai',
@@ -139,14 +139,14 @@ return [
         'form_edit' => 'Form Edit Batch',
     ],
     'categories' => [
-        'title' => 'Tabel Kategori',
+        'title' => 'Daftar Kategori Pekerjaan',
         'name' => 'Nama',
         'created' => 'Dibuat',
         'form_create' => 'Form Buat Kategori',
         'form_edit' => 'Form Edit Kategori',
     ],
     'candidates' => [
-        'title' => 'Tabel Kandidat',
+        'title' => 'Daftar Pelamar',
         'name' => 'Nama',
         'email' => 'Email',
         'email_verified_at' => 'Email Terverifikasi',
@@ -157,7 +157,7 @@ return [
         'status' => 'Status',
     ],
     'applies' => [
-        'title' => 'Tabel Lamaran',
+        'title' => 'Daftar Pengajuan Lamaran',
         'all' => 'Semua',
         'name' => 'Nama',
         'job' => 'Lowongan',
@@ -213,7 +213,7 @@ return [
         'hired' => 'Diterima',
     ],
     'schedule_interviews' => [
-        'title' => 'Tabel Jadwal Wawancara',
+        'title' => 'Daftar Jadwal Wawancara',
         'apply_id' => 'ID Lamaran',
         'batch' => 'Batch',
         'title_col' => 'Judul',

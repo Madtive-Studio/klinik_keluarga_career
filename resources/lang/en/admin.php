@@ -58,7 +58,7 @@ return [
     ],
     'jobs' => [
         'title' => 'Job List',
-        'datatable' => 'Jobs Datatable',
+        'datatable' => 'Job Vacancy List',
         'add' => 'Add Job',
         'batch' => 'Batch',
         'title_col' => 'Title',
@@ -128,7 +128,7 @@ return [
         'image_counter' => ':count / :max images',
     ],
     'batches' => [
-        'title' => 'Batches Datatable',
+        'title' => 'Batch List',
         'code' => 'Code',
         'name' => 'Name',
         'start_date' => 'Start Date',
@@ -139,14 +139,14 @@ return [
         'form_edit' => 'Edit Batch Form',
     ],
     'categories' => [
-        'title' => 'Categories Datatable',
+        'title' => 'Category List',
         'name' => 'Name',
         'created' => 'Created',
         'form_create' => 'Create Category Form',
         'form_edit' => 'Edit Category Form',
     ],
     'candidates' => [
-        'title' => 'Candidates Datatable',
+        'title' => 'Applicant List',
         'name' => 'Name',
         'email' => 'Email',
         'email_verified_at' => 'Email Verified At',
@@ -157,7 +157,7 @@ return [
         'status' => 'Status',
     ],
     'applies' => [
-        'title' => 'Applies Datatable',
+        'title' => 'Job Application List',
         'all' => 'All',
         'name' => 'Name',
         'job' => 'Job',
@@ -213,7 +213,7 @@ return [
         'hired' => 'Hired',
     ],
     'schedule_interviews' => [
-        'title' => 'Schedule Interviews Datatable',
+        'title' => 'Interview Schedule List',
         'apply_id' => 'Apply Id',
         'batch' => 'Batch',
         'title_col' => 'Title',
