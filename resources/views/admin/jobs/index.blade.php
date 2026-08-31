@@ -88,10 +88,37 @@
 			</div>
 		</div>
 
-		<!-- Daftar Tabel Berdasarkan Jumlah Batch yang Tersedia (N Batch == N Tabel) -->
-		@forelse ($batches as $batch)
+		<!-- Batch Nav Tabs / Pills (1 Table dengan Navigasi Tab per Batch) -->
+		@if($batches->isNotEmpty())
+			<ul class="nav nav-pills flex-wrap gap-2 mb-4" id="batch-pills">
+				@foreach ($batches as $index => $b)
+					@php
+						$isActive = ($b->status === 'ACTIVE' || $b->status === '1' || $b->status === 1);
+					@endphp
+					<li class="nav-item">
+						<button type="button"
+							class="nav-link btn-batch-tab {{ $index === 0 ? 'active' : '' }}"
+							data-batch-id="{{ $b->id }}"
+							data-batch-name="{{ $b->name }}"
+							data-batch-code="{{ $b->code }}"
+							data-batch-status="{{ $isActive ? 'Aktif' : 'Nonaktif' }}"
+							data-batch-status-class="{{ $isActive ? 'bg-label-success' : 'bg-label-secondary' }}"
+							data-batch-dates="{{ \Carbon\Carbon::parse($b->start_date)->translatedFormat('d M Y') }} s/d {{ \Carbon\Carbon::parse($b->end_date)->translatedFormat('d M Y') }}"
+							data-batch-quota="{{ $b->quota ?? '-' }}"
+							data-create-url="{{ route('admin.jobs.create', ['batch_id' => $b->id]) }}">
+							<i class="ti ti-layers-intersect me-1"></i> {{ $b->name }} ({{ $b->code }})
+							@if($isActive)
+								<span class="badge badge-dot bg-success ms-1" title="Gelombang Aktif"></span>
+							@endif
+						</button>
+					</li>
+				@endforeach
+			</ul>
+
+			<!-- Single Card Table untuk Batch yang Sedang Dipilih -->
 			@php
-				$isActive = ($batch->status === 'ACTIVE' || $batch->status === '1' || $batch->status === 1);
+				$firstBatch = $batches->first();
+				$firstIsActive = ($firstBatch->status === 'ACTIVE' || $firstBatch->status === '1' || $firstBatch->status === 1);
 			@endphp
 			<div class="card mb-4">
 				<div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2 border-bottom pb-3">
@@ -101,28 +128,26 @@
 						</div>
 						<div>
 							<div class="d-flex align-items-center gap-2">
-								<h5 class="mb-0 fw-bold text-dark">{{ $batch->name }}</h5>
-								<span class="badge bg-label-primary">{{ $batch->code }}</span>
-								@if($isActive)
-									<span class="badge bg-label-success">Aktif</span>
-								@else
-									<span class="badge bg-label-secondary">Nonaktif</span>
-								@endif
+								<h5 class="mb-0 fw-bold text-dark" id="current-batch-name">{{ $firstBatch->name }}</h5>
+								<span class="badge bg-label-primary" id="current-batch-code">{{ $firstBatch->code }}</span>
+								<span class="badge {{ $firstIsActive ? 'bg-label-success' : 'bg-label-secondary' }}" id="current-batch-status">
+									{{ $firstIsActive ? 'Aktif' : 'Nonaktif' }}
+								</span>
 							</div>
-							<small class="text-muted">
-								<i class="ti ti-calendar me-1"></i>{{ \Carbon\Carbon::parse($batch->start_date)->translatedFormat('d M Y') }} s/d {{ \Carbon\Carbon::parse($batch->end_date)->translatedFormat('d M Y') }}
-								• Kuota Batch: <strong>{{ $batch->quota ?? '-' }}</strong>
+							<small class="text-muted" id="current-batch-meta">
+								<i class="ti ti-calendar me-1"></i>{{ \Carbon\Carbon::parse($firstBatch->start_date)->translatedFormat('d M Y') }} s/d {{ \Carbon\Carbon::parse($firstBatch->end_date)->translatedFormat('d M Y') }}
+								• Kuota Batch: <strong>{{ $firstBatch->quota ?? '-' }}</strong>
 							</small>
 						</div>
 					</div>
 					<div>
-						<a href="{{ route('admin.jobs.create', ['batch_id' => $batch->id]) }}" class="btn btn-sm btn-primary">
+						<a href="{{ route('admin.jobs.create', ['batch_id' => $firstBatch->id]) }}" class="btn btn-sm btn-primary" id="btn-add-job">
 							<i class="ti ti-plus me-1"></i> {{ __('admin.jobs.add') }}
 						</a>
 					</div>
 				</div>
 				<div class="card-datatable table-responsive pt-0">
-					<table class="datatables-jobs table" data-batch-id="{{ $batch->id }}">
+					<table class="datatables-jobs table">
 						<thead>
 							<tr>
 								<th>{{ __('admin.datatable.no') }}</th>
@@ -139,7 +164,7 @@
 					</table>
 				</div>
 			</div>
-		@empty
+		@else
 			<div class="card mb-4 p-5 text-center text-muted">
 				<i class="ti ti-layers-off fs-1 d-block mb-2"></i>
 				<h5 class="text-dark">Belum ada Gelombang (Batch) yang tersedia</h5>
@@ -150,7 +175,7 @@
 					</a>
 				</div>
 			</div>
-		@endforelse
+		@endif
 	</div>
 @endsection
 @section('js')
@@ -200,7 +225,7 @@
 				});
 
 				slider.noUiSlider.on('change', function () {
-					reloadAllTables();
+					if (dt_table) dt_table.ajax.reload();
 				});
 			}
 
@@ -220,30 +245,28 @@
 				return params;
 			}
 
-			var dtTables = [];
+			let currentBatchId = '{{ $batches->first()?->id ?? "" }}';
 
-			$('.datatables-jobs').each(function() {
-				var $table = $(this);
-				var batchId = $table.data('batch-id');
+			const $table = $('.datatables-jobs');
+			let dt_table = null;
 
-				var dt = $table.DataTable({
+			if ($table.length) {
+				dt_table = $table.DataTable({
 					ajax: {
 						url: "{{ route('admin.jobs.datatables') }}",
 						data: function(d) {
-							d.batch_id = batchId;
+							d.batch_id = currentBatchId;
 							$.extend(d, getFilterParams());
 						}
 					},
 					columns: [
 						{
-							data: null,
+							data: 'DT_RowIndex',
+							name: 'DT_RowIndex',
 							searchable: false,
 							orderable: false,
 							className: 'text-center',
-							width: '5%',
-							render: function (data, type, row, meta) {
-								return meta.row + meta.settings._iDisplayStart + 1;
-							}
+							width: '5%'
 						},
 						{
 							data: 'title'
@@ -284,7 +307,7 @@
 						[1, 'asc']
 					],
 					dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-					displayLength: 7,
+					displayLength: 10,
 					lengthMenu: [7, 10, 25, 50, 75, 100],
 					language: {
 						paginate: {
@@ -293,15 +316,30 @@
 						}
 					}
 				});
-
-				dtTables.push(dt);
-			});
-
-			function reloadAllTables() {
-				dtTables.forEach(function(dt) {
-					dt.ajax.reload();
-				});
 			}
+
+			// Event saat berganti tab Batch
+			$('.btn-batch-tab').on('click', function() {
+				$('.btn-batch-tab').removeClass('active');
+				$(this).addClass('active');
+
+				currentBatchId = $(this).data('batch-id');
+				$('#current-batch-name').text($(this).data('batch-name'));
+				$('#current-batch-code').text($(this).data('batch-code'));
+
+				const statusText = $(this).data('batch-status');
+				const statusClass = $(this).data('batch-status-class');
+				$('#current-batch-status').attr('class', 'badge ' + statusClass).text(statusText);
+
+				const dates = $(this).data('batch-dates');
+				const quota = $(this).data('batch-quota');
+				$('#current-batch-meta').html('<i class="ti ti-calendar me-1"></i>' + dates + ' • Kuota Batch: <strong>' + quota + '</strong>');
+
+				const createUrl = $(this).data('create-url');
+				$('#btn-add-job').attr('href', createUrl);
+
+				if (dt_table) dt_table.ajax.reload();
+			});
 
 			setTimeout(() => {
 				$('.dataTables_filter .form-control').removeClass('form-control-sm');
@@ -318,11 +356,11 @@
 
 			$('#filter-form').on('submit', function(e) {
 				e.preventDefault();
-				reloadAllTables();
+				if (dt_table) dt_table.ajax.reload();
 			});
 
 			$('.filter-select').on('change', function() {
-				reloadAllTables();
+				if (dt_table) dt_table.ajax.reload();
 			});
 
 			$('#btn-reset-filters').on('click', function() {
@@ -332,7 +370,7 @@
 				}
 				if (salaryMinInput) salaryMinInput.value = '';
 				if (salaryMaxInput) salaryMaxInput.value = '';
-				reloadAllTables();
+				if (dt_table) dt_table.ajax.reload();
 			});
 
 			$(document).on('change', '.toggle-show-salary', function() {
