@@ -34,10 +34,20 @@ class ScheduleInterviewController extends Controller
         $query = ScheduleInterview::with(['batch', 'job', 'candidate', 'apply'])->orderBy('start_datetime', 'DESC');
 
         if ($request->filled('start_date')) {
-            $query->whereDate('start_datetime', '>=', $request->start_date);
+            try {
+                $startDate = Carbon::createFromFormat('d-m-Y', $request->start_date)->startOfDay();
+            } catch (\Exception $e) {
+                $startDate = Carbon::parse($request->start_date)->startOfDay();
+            }
+            $query->where('start_datetime', '>=', $startDate);
         }
         if ($request->filled('end_date')) {
-            $query->whereDate('start_datetime', '<=', $request->end_date);
+            try {
+                $endDate = Carbon::createFromFormat('d-m-Y', $request->end_date)->endOfDay();
+            } catch (\Exception $e) {
+                $endDate = Carbon::parse($request->end_date)->endOfDay();
+            }
+            $query->where('start_datetime', '<=', $endDate);
         }
 
         return DataTables::of($query)

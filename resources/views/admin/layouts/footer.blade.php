@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   linkedPairs.forEach(function ([startName, endName]) {
-    const startEl = document.querySelector('[name="' + startName + '"]');
-    const endEl = document.querySelector('[name="' + endName + '"]');
+    const startEl = document.querySelector('.flatpickr-datetime[name="' + startName + '"]');
+    const endEl = document.querySelector('.flatpickr-datetime[name="' + endName + '"]');
     if (!startEl || !endEl) return;
 
     const endPicker = initFlatpickr(endEl);

@@ -7,8 +7,8 @@
 			</div>
 		@endif
 		@php
-			$defaultStartDate = now()->startOfMonth()->format('Y-m-d');
-			$defaultEndDate = now()->endOfMonth()->format('Y-m-d');
+			$defaultStartDate = now()->startOfMonth()->format('d-m-Y');
+			$defaultEndDate = now()->endOfMonth()->format('d-m-Y');
 		@endphp
 		<!-- Date Range Filter Card -->
 		<div class="card mb-4 border-0 shadow-sm">
@@ -18,13 +18,13 @@
 						<label class="form-label fw-semibold text-dark mb-1">
 							<i class="ti ti-calendar me-1 text-primary"></i>{{ __('admin.schedule_interviews.start_date_filter') }}
 						</label>
-						<input type="date" class="form-control" id="filter_start_date" name="start_date" value="{{ $defaultStartDate }}">
+						<input type="text" class="form-control flatpickr-filter-date" id="filter_start_date" name="start_date" value="{{ $defaultStartDate }}" placeholder="d-m-Y" autocomplete="off">
 					</div>
 					<div class="col-md-4 col-sm-6">
 						<label class="form-label fw-semibold text-dark mb-1">
 							<i class="ti ti-calendar-event me-1 text-primary"></i>{{ __('admin.schedule_interviews.end_date_filter') }}
 						</label>
-						<input type="date" class="form-control" id="filter_end_date" name="end_date" value="{{ $defaultEndDate }}">
+						<input type="text" class="form-control flatpickr-filter-date" id="filter_end_date" name="end_date" value="{{ $defaultEndDate }}" placeholder="d-m-Y" autocomplete="off">
 					</div>
 					<div class="col-md-4 col-12 d-flex gap-2">
 						<button type="button" id="btn-filter" class="btn btn-primary flex-grow-1">
@@ -68,6 +68,24 @@
 		}
 
 		$(function() {
+			const defaultStartDate = '{{ $defaultStartDate }}';
+			const defaultEndDate = '{{ $defaultEndDate }}';
+
+			const startPicker = flatpickr('#filter_start_date', {
+				dateFormat: 'd-m-Y',
+				allowInput: true,
+				onChange: function(selectedDates) {
+					if (selectedDates[0]) {
+						endPicker.set('minDate', selectedDates[0]);
+					}
+				}
+			});
+
+			const endPicker = flatpickr('#filter_end_date', {
+				dateFormat: 'd-m-Y',
+				allowInput: true
+			});
+
 			const formUI = $('#form-add-new-record')
 			$(document).on('click', '.edit', function() {
 				let route = getAttrValue(this, 'route')
@@ -145,9 +163,6 @@
 				$('div.head-label').html('<h5 class="card-title mb-0">{{ __('admin.schedule_interviews.title') }}</h5>');
 			}
 
-			const defaultStartDate = '{{ $defaultStartDate }}';
-			const defaultEndDate = '{{ $defaultEndDate }}';
-
 			$('#btn-filter').on('click', function() {
 				if (dt_basic) {
 					dt_basic.ajax.reload();
@@ -155,8 +170,8 @@
 			});
 
 			$('#btn-reset').on('click', function() {
-				$('#filter_start_date').val(defaultStartDate);
-				$('#filter_end_date').val(defaultEndDate);
+				if (startPicker) startPicker.setDate(defaultStartDate);
+				if (endPicker) endPicker.setDate(defaultEndDate);
 				if (dt_basic) {
 					dt_basic.ajax.reload();
 				}
