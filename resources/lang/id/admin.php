@@ -215,6 +215,8 @@ return [
     'schedule_interviews' => [
         'title' => 'Daftar Jadwal Wawancara',
         'apply_id' => 'ID Lamaran',
+        'start_date_filter' => 'Dari Tanggal',
+        'end_date_filter' => 'Sampai Tanggal',
         'batch' => 'Batch',
         'title_col' => 'Judul',
         'candidate' => 'Kandidat',

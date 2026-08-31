@@ -6,13 +6,40 @@
 				<strong>{{ $message }}</strong>
 			</div>
 		@endif
+		<!-- Date Range Filter Card -->
+		<div class="card mb-4 border-0 shadow-sm">
+			<div class="card-body py-3">
+				<form id="form-filter-date" class="row g-3 align-items-end">
+					<div class="col-md-4 col-sm-6">
+						<label class="form-label fw-semibold text-dark mb-1">
+							<i class="ti ti-calendar me-1 text-primary"></i>{{ __('admin.schedule_interviews.start_date_filter') }}
+						</label>
+						<input type="date" class="form-control" id="filter_start_date" name="start_date">
+					</div>
+					<div class="col-md-4 col-sm-6">
+						<label class="form-label fw-semibold text-dark mb-1">
+							<i class="ti ti-calendar-event me-1 text-primary"></i>{{ __('admin.schedule_interviews.end_date_filter') }}
+						</label>
+						<input type="date" class="form-control" id="filter_end_date" name="end_date">
+					</div>
+					<div class="col-md-4 col-12 d-flex gap-2">
+						<button type="button" id="btn-filter" class="btn btn-primary flex-grow-1">
+							<i class="ti ti-filter me-1"></i> {{ __('admin.datatable.filter') }}
+						</button>
+						<button type="button" id="btn-reset" class="btn btn-outline-secondary" title="Reset Filter">
+							<i class="ti ti-refresh me-1"></i> Reset
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
 		<div class="card">
 			<div class="card-datatable table-responsive pt-0">
 				<table class="datatables-basic table">
 					<thead>
 						<tr>
 							<th>{{ __('admin.datatable.no') }}</th>
-							<th>{{ __('admin.schedule_interviews.apply_id') }}</th>
 							<th>{{ __('admin.schedule_interviews.batch') }}</th>
 							<th>{{ __('admin.schedule_interviews.title_col') }}</th>
 							<th>{{ __('admin.schedule_interviews.candidate') }}</th>
@@ -51,7 +78,13 @@
 
 			if (dt_basic_table.length) {
 				dt_basic = dt_basic_table.DataTable({
-					ajax: "{{ route('admin.schedule-interviews.datatables') }}",
+					ajax: {
+						url: "{{ route('admin.schedule-interviews.datatables') }}",
+						data: function(d) {
+							d.start_date = $('#filter_start_date').val();
+							d.end_date = $('#filter_end_date').val();
+						}
+					},
 					columns: [{
 							data: 'DT_RowIndex',
 							name: 'DT_RowIndex',
@@ -59,9 +92,6 @@
 							sortable: false,
 							className: 'text-center',
 							width: '5%'
-						},
-						{
-							data: 'apply.uuid'
 						},
 						{
 							data: 'batch.code'
@@ -111,6 +141,19 @@
 				$('div.head-label').html('<h5 class="card-title mb-0">{{ __('admin.schedule_interviews.title') }}</h5>');
 			}
 
+			$('#btn-filter').on('click', function() {
+				if (dt_basic) {
+					dt_basic.ajax.reload();
+				}
+			});
+
+			$('#btn-reset').on('click', function() {
+				$('#filter_start_date').val('');
+				$('#filter_end_date').val('');
+				if (dt_basic) {
+					dt_basic.ajax.reload();
+				}
+			});
 
 			setTimeout(() => {
 				$('.dataTables_filter .form-control').removeClass('form-control-sm');

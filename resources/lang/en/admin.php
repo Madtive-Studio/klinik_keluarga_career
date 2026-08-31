@@ -215,6 +215,8 @@ return [
     'schedule_interviews' => [
         'title' => 'Interview Schedule List',
         'apply_id' => 'Apply Id',
+        'start_date_filter' => 'From Date',
+        'end_date_filter' => 'To Date',
         'batch' => 'Batch',
         'title_col' => 'Title',
         'candidate' => 'Candidate',

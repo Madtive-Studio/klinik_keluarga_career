@@ -29,38 +29,41 @@ class ScheduleInterviewController extends Controller
         ]);
     }
 
-    public function datatables()
+    public function datatables(Request $request)
     {
-        $query = ScheduleInterview::with(['batch', 'job', 'candidate', 'apply'])->orderBy('created_at', 'DESC');
+        $query = ScheduleInterview::with(['batch', 'job', 'candidate', 'apply'])->orderBy('start_datetime', 'DESC');
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('start_datetime', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('start_datetime', '<=', $request->end_date);
+        }
+
         return DataTables::of($query)
             ->addIndexColumn()
-            ->editColumn('apply.uuid', function ($row) {
-                return '#'.explode('-', $row->apply->uuid)[0];
-            })
             ->editColumn('start_datetime', function ($row) {
-                $formattedDate = Carbon::parse($row->start_datetime)->translatedFormat('d F Y, H:i');
-                return $formattedDate;
+                return Carbon::parse($row->start_datetime)->translatedFormat('d M Y, H:i');
             })
             ->editColumn('end_datetime', function ($row) {
-                $formattedDate = Carbon::parse($row->end_datetime)->translatedFormat('d F Y, H:i');
-                return $formattedDate;
+                return Carbon::parse($row->end_datetime)->translatedFormat('d M Y, H:i');
             })
             ->editColumn('link', function ($row) {
-                return $row->is_online ? '<a href="'.$row->link.'" target="_blank"><i class="ti ti-link"></i> Link</a>' : '';
+                return $row->is_online && $row->link ? '<a href="'.$row->link.'" target="_blank" class="btn btn-xs btn-outline-primary"><i class="ti ti-link me-1"></i>Link</a>' : '-';
             })
             ->editColumn('is_online', function ($row) {
-                return $row->is_online ? 'Online' : 'Offline';
+                return $row->is_online
+                    ? '<span class="badge bg-label-info"><i class="ti ti-video me-1"></i>Online</span>'
+                    : '<span class="badge bg-label-secondary"><i class="ti ti-building me-1"></i>Offline</span>';
             })
             ->addColumn('action', function ($row) {
-                $btn = '<div class="btn-group" role="group" aria-label="Basic example">';
-                $btn .= '<a class="btn btn-sm btn-success invitation" href="'.route('admin.schedule-interviews.invitation', $row->id).'"><i class="ti ti-refresh"></i></a>';
-                $btn .= '<button type="button" class="btn btn-sm btn-warning edit" data-route="'.route('admin.schedule-interviews.edit', $row->id).'"><i class="ti ti-pencil"></i></button>';
-                // $btn .= '<button type="button" class="btn btn-sm btn-danger delete" data-route="'.route('admin.schedule-interviews.destroy', $row->id).'"><i class="ti ti-trash"></i></button>';
+                $btn = '<div class="btn-group" role="group" aria-label="Action">';
+                $btn .= '<a class="btn btn-sm btn-success invitation" href="'.route('admin.schedule-interviews.invitation', $row->id).'" title="Kirim Ulang Undangan"><i class="ti ti-mail"></i></a>';
+                $btn .= '<button type="button" class="btn btn-sm btn-warning edit" data-route="'.route('admin.schedule-interviews.edit', $row->id).'" title="Edit Jadwal"><i class="ti ti-pencil"></i></button>';
                 $btn .= '</div>';
-
                 return $btn;
             })
-            ->rawColumns(['link', 'action'])
+            ->rawColumns(['link', 'is_online', 'action'])
             ->make(true);
     }
 
