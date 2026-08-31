@@ -178,6 +178,12 @@ return [
         'success_message' => 'Your email has been verified',
         'success_next' => 'You can now sign in using the button below.',
     ],
+    'ticker' => [
+        'badge' => 'OFFICIAL NOTICE',
+        'notice_1' => 'Fraud Alert: All Klinik Keluarga recruitment stages are completely FREE of charge & we never collaborate with travel agencies.',
+        'notice_2' => 'Please complete your profile, education history, and supporting documents (CV, license, certificates) before the batch closing deadline.',
+        'notice_3' => 'Interview schedules and application screening results can be monitored directly via your account dashboard and official email.',
+    ],
     'footer' => [
         'about' => 'Klinik Keluarga is more than a clinic—it is a home for health. We provide a comfortable, clean, and green environment with professional care and family warmth.',
         'contact_title' => 'Address & Contact',

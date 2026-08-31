@@ -178,6 +178,12 @@ return [
         'success_message' => 'Email Anda berhasil diverifikasi.',
         'success_next' => 'Selanjutnya Anda dapat login melalui tombol di bawah ini.',
     ],
+    'ticker' => [
+        'badge' => 'PENGUMUMAN RESMI',
+        'notice_1' => 'Waspada Penipuan: Seluruh tahapan seleksi rekrutmen Klinik Keluarga GRATIS (tidak dipungut biaya apapun) & tidak bekerja sama dengan agen travel.',
+        'notice_2' => 'Lengkapi data profil diri, riwayat pendidikan, serta dokumen pendukung (CV, STR, Ijazah) sebelum batas akhir gelombang pendaftaran.',
+        'notice_3' => 'Jadwal wawancara kerja dan status kelulusan seleksi berkas dapat dipantau langsung melalui dashboard akun dan email resmi Anda.',
+    ],
     'footer' => [
         'about' => 'Klinik Keluarga hadir sebagai rumah sehat, bukan sekadar klinik biasa. Kami menghadirkan suasana nyaman, bersih, dan asri dengan pelayanan profesional penuh kehangatan keluarga. Kami ingin setiap kunjungan menjadi oase yang menumbuhkan spirit untuk sehat—tempat berkumpulnya keluarga dalam kasih sayang, bukan hanya mengobati penyakit.',
         'contact_title' => 'Alamat & Kontak Kami',
