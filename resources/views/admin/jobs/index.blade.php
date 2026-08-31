@@ -64,7 +64,7 @@
 			<div class="card-body py-3">
 				<form id="filter-form" class="row g-3 align-items-end">
 					<div class="col-lg-3 col-md-6 col-sm-12">
-						<label class="form-label fw-semibold mb-1">{{ __('admin.jobs.category') }}</label>
+						<label class="form-label fw-semibold mb-1 d-flex align-items-center" style="min-height: 20px;">{{ __('admin.jobs.category') }}</label>
 						<select name="category" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
 							@foreach ($categories as $category)
@@ -73,7 +73,7 @@
 						</select>
 					</div>
 					<div class="col-lg-2 col-md-6 col-sm-12">
-						<label class="form-label fw-semibold mb-1">{{ __('admin.jobs.type') }}</label>
+						<label class="form-label fw-semibold mb-1 d-flex align-items-center" style="min-height: 20px;">{{ __('admin.jobs.type') }}</label>
 						<select name="type" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
 							@foreach (\App\Enums\JobType::getWithLabels() as $value => $label)
@@ -82,7 +82,7 @@
 						</select>
 					</div>
 					<div class="col-lg-2 col-md-6 col-sm-12">
-						<label class="form-label fw-semibold mb-1">{{ __('admin.jobs.min_education') }}</label>
+						<label class="form-label fw-semibold mb-1 d-flex align-items-center" style="min-height: 20px;">{{ __('admin.jobs.min_education') }}</label>
 						<select name="min_education" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
 							@foreach (\App\Enums\EducationLevel::cases() as $level)
@@ -91,25 +91,27 @@
 						</select>
 					</div>
 					<div class="col-lg-3 col-md-6 col-sm-12">
-						<div class="d-flex align-items-center justify-content-between mb-1">
-							<label class="form-label fw-semibold mb-0 small">
+						<div class="d-flex align-items-center justify-content-between mb-1" style="min-height: 20px;">
+							<label class="form-label fw-semibold mb-0">
 								<i class="ti ti-cash me-1 text-primary"></i>Gaji:
 							</label>
-							<span id="salary-range-label" class="badge bg-label-primary px-2 py-1 fw-bold" style="font-size: 11px;">Rp 0 - Rp 100 Jt</span>
+							<span id="salary-range-label" class="badge bg-label-primary px-2 py-0 fw-bold" style="font-size: 11px;">Rp 0 - Rp 100 Jt</span>
 						</div>
-						<div class="px-2 pt-1 pb-1">
-							<div id="salary-slider"></div>
+						<div class="d-flex align-items-center px-1" style="height: 38px;">
+							<div id="salary-slider" class="w-100"></div>
 						</div>
 						<input type="hidden" name="salary_min" id="salary_min" value="">
 						<input type="hidden" name="salary_max" id="salary_max" value="">
 					</div>
-					<div class="col-lg-2 col-md-6 col-sm-12 d-flex gap-2">
-						<button type="button" id="btn-reset-filters" class="btn btn-outline-secondary flex-grow-1" title="Reset Filter">
-							<i class="ti ti-refresh me-1"></i> Reset
-						</button>
-						<button type="submit" class="btn btn-primary flex-grow-1">
-							<i class="ti ti-filter me-1"></i>{{ __('admin.datatable.filter') }}
-						</button>
+					<div class="col-lg-2 col-md-6 col-sm-12">
+						<div class="d-flex gap-2" style="height: 38px;">
+							<button type="button" id="btn-reset-filters" class="btn btn-outline-secondary flex-grow-1" style="height: 38px;" title="Reset Filter">
+								<i class="ti ti-refresh me-1"></i> Reset
+							</button>
+							<button type="submit" class="btn btn-primary flex-grow-1" style="height: 38px;">
+								<i class="ti ti-filter me-1"></i>{{ __('admin.datatable.filter') }}
+							</button>
+						</div>
 					</div>
 				</form>
 			</div>
