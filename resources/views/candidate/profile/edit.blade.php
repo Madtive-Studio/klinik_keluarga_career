@@ -230,23 +230,38 @@
 								</div>
 								<div class="row mt-4">
 									<div class="col-12 mb-3">
-										<label class="form-label">{{ __('candidate.profile.skills_label') }}</label>
-										<input type="text" name="skills" id="skills-input" class="form-control profile-track-field" data-progress-field placeholder="{{ __('candidate.profile.skills_placeholder') }}" value="{{ old('skills', $candidate->skills->pluck('name')->implode(', ')) }}">
-										<small class="text-muted d-block mt-1"><i class="mdi mdi-information-outline me-1"></i>Ketik nama keahlian dan pisahkan dengan tanda koma ( , ).</small>
+										<label class="form-label fw-semibold">{{ __('candidate.profile.skills_label') }}</label>
+										<div class="input-group">
+											<input type="text" id="skill-text-input" class="form-control" placeholder="{{ __('candidate.profile.skills_placeholder') }}" autocomplete="off">
+											<button type="button" class="btn btn-primary" id="btn-add-skill">
+												<i class="mdi mdi-plus me-1"></i>{{ __('candidate.profile.skills_add_btn') }}
+											</button>
+										</div>
+										<small class="text-muted d-block mt-1">
+											<i class="mdi mdi-information-outline me-1"></i>Ketik 1 keahlian lalu tekan <strong>Enter</strong> atau klik tombol <strong>Tambah</strong>.
+										</small>
 										@error('skills') <small class="text-danger">{{ $message }}</small> @enderror
 									</div>
-									@if($candidate->skills->isNotEmpty())
-										<div class="col-12">
-											<small class="text-muted d-block mb-2">Keahlian tersimpan saat ini:</small>
-											<div class="d-flex flex-wrap gap-2">
-												@foreach($candidate->skills as $skill)
-													<span class="badge bg-primary text-white px-3 py-2" style="font-size: 13px;">
-														<i class="mdi mdi-check me-1"></i>{{ $skill->name }}
-													</span>
-												@endforeach
-											</div>
+
+									<div class="col-12">
+										<label class="form-label fw-semibold mb-2">Daftar Keahlian Anda:</label>
+										<div id="skills-badge-list" class="d-flex flex-wrap gap-2 p-3 rounded bg-light border" style="min-height: 55px;">
+											@php
+												$currentSkills = old('skills', $candidate->skills->pluck('name')->toArray());
+											@endphp
+											@forelse($currentSkills as $skillName)
+												@if(filled($skillName))
+													<div class="skill-tag badge bg-primary text-white d-inline-flex align-items-center gap-2 px-3 py-2" style="font-size: 13px; border-radius: 6px;">
+														<span>{{ $skillName }}</span>
+														<input type="hidden" name="skills[]" value="{{ $skillName }}">
+														<button type="button" class="btn-close btn-close-white btn-remove-skill" style="font-size: 9px;" aria-label="Remove"></button>
+													</div>
+												@endif
+											@empty
+												<span class="text-muted small italic empty-skill-msg">{{ __('candidate.profile.skills_empty_list') }}</span>
+											@endforelse
 										</div>
-									@endif
+									</div>
 								</div>
 							</div>
 						</div>
@@ -555,6 +570,102 @@
 				citySelect.dataset.selected = '';
 				loadCities(provinceMap.get(this.value), '');
 			});
+
+			// Skills Dynamic Tag List
+			const skillInput = document.getElementById('skill-text-input');
+			const btnAddSkill = document.getElementById('btn-add-skill');
+			const skillsList = document.getElementById('skills-badge-list');
+
+			function addSkillFromInput() {
+				if (!skillInput || !skillsList) return;
+				const val = skillInput.value.trim();
+				if (!val) return;
+
+				const existingInputs = Array.from(skillsList.querySelectorAll('input[name="skills[]"]'));
+				const existingNames = existingInputs.map(function(i) { return i.value.toLowerCase(); });
+				if (existingNames.includes(val.toLowerCase())) {
+					skillInput.value = '';
+					return;
+				}
+
+				const emptyMsg = skillsList.querySelector('.empty-skill-msg');
+				if (emptyMsg) emptyMsg.remove();
+
+				const badge = document.createElement('div');
+				badge.className = 'skill-tag badge bg-primary text-white d-inline-flex align-items-center gap-2 px-3 py-2';
+				badge.style.fontSize = '13px';
+				badge.style.borderRadius = '6px';
+
+				const textSpan = document.createElement('span');
+				textSpan.textContent = val;
+
+				const hiddenInput = document.createElement('input');
+				hiddenInput.type = 'hidden';
+				hiddenInput.name = 'skills[]';
+				hiddenInput.value = val;
+
+				const removeBtn = document.createElement('button');
+				removeBtn.type = 'button';
+				removeBtn.className = 'btn-close btn-close-white btn-remove-skill';
+				removeBtn.style.fontSize = '9px';
+				removeBtn.setAttribute('aria-label', 'Remove');
+
+				badge.appendChild(textSpan);
+				badge.appendChild(hiddenInput);
+				badge.appendChild(removeBtn);
+
+				skillsList.appendChild(badge);
+				skillInput.value = '';
+				skillInput.focus();
+
+				updateSkillsProgress();
+			}
+
+			if (btnAddSkill && skillInput) {
+				btnAddSkill.addEventListener('click', function(e) {
+					e.preventDefault();
+					addSkillFromInput();
+				});
+
+				skillInput.addEventListener('keydown', function(e) {
+					if (e.key === 'Enter') {
+						e.preventDefault();
+						addSkillFromInput();
+					}
+				});
+			}
+
+			if (skillsList) {
+				skillsList.addEventListener('click', function(e) {
+					if (e.target.classList.contains('btn-remove-skill') || e.target.closest('.btn-remove-skill')) {
+						const tag = e.target.closest('.skill-tag');
+						if (tag) {
+							tag.remove();
+							const remaining = skillsList.querySelectorAll('.skill-tag');
+							if (remaining.length === 0) {
+								skillsList.innerHTML = '<span class="text-muted small italic empty-skill-msg">' + @json(__('candidate.profile.skills_empty_list')) + '</span>';
+							}
+							updateSkillsProgress();
+						}
+					}
+				});
+			}
+
+			function updateSkillsProgress() {
+				const skillTags = skillsList ? skillsList.querySelectorAll('.skill-tag') : [];
+				const checklist = document.getElementById('checklist-skills');
+				if (checklist) {
+					const isComplete = skillTags.length > 0;
+					checklist.classList.toggle('is-complete', isComplete);
+					const icon = checklist.querySelector('i');
+					if (icon) {
+						icon.className = isComplete ? 'mdi mdi-check-circle' : 'mdi mdi-circle-outline';
+					}
+				}
+				if (typeof updateLiveProgress === 'function') {
+					updateLiveProgress();
+				}
+			}
 
 			loadProvinces();
 			updateLiveProgress();
