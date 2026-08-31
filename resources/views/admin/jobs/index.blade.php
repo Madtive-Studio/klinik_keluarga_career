@@ -1,4 +1,29 @@
 @extends('admin.layouts.main')
+@section('css')
+	<link rel="stylesheet" href="{{ asset('assets/admin/assets/vendor/libs/nouislider/nouislider.css') }}" />
+	<style>
+		.noUi-connect {
+			background: #7367f0 !important;
+		}
+		.noUi-horizontal {
+			height: 8px !important;
+		}
+		.noUi-handle {
+			width: 18px !important;
+			height: 18px !important;
+			right: -9px !important;
+			top: -6px !important;
+			border-radius: 50% !important;
+			background: #ffffff !important;
+			border: 3px solid #7367f0 !important;
+			box-shadow: 0 2px 6px rgba(115, 103, 240, 0.4) !important;
+			cursor: grab !important;
+		}
+		.noUi-handle:before, .noUi-handle:after {
+			display: none !important;
+		}
+	</style>
+@endsection
 @section('content')
 	<div class="container-xxl flex-grow-1 container-p-y">
 		@if ($message = Session::get('success'))
@@ -7,12 +32,12 @@
 			</div>
 		@endif
 
-		<!-- Global Filter Card (Tanpa Filter Batch karena sudah dikelompokkan per Batch) -->
+		<!-- Global Filter Card (Rentang Gaji Slider 0 - 100 Juta, Step 1 Juta) -->
 		<div class="card mb-4">
 			<div class="card-body">
 				<form id="filter-form" class="row g-3 align-items-end">
-					<div class="col-md-3 col-sm-6">
-						<label class="form-label">{{ __('admin.jobs.category') }}</label>
+					<div class="col-md-4 col-sm-6">
+						<label class="form-label fw-semibold">{{ __('admin.jobs.category') }}</label>
 						<select name="category" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
 							@foreach ($categories as $category)
@@ -20,8 +45,8 @@
 							@endforeach
 						</select>
 					</div>
-					<div class="col-md-2 col-sm-6">
-						<label class="form-label">{{ __('admin.jobs.type') }}</label>
+					<div class="col-md-4 col-sm-6">
+						<label class="form-label fw-semibold">{{ __('admin.jobs.type') }}</label>
 						<select name="type" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
 							@foreach (\App\Enums\JobType::getWithLabels() as $value => $label)
@@ -29,16 +54,8 @@
 							@endforeach
 						</select>
 					</div>
-					<div class="col-md-2 col-sm-6">
-						<label class="form-label">{{ __('admin.jobs.salary_min') }}</label>
-						<input type="text" inputmode="numeric" name="salary_min" class="form-control filter-input filter-salary" placeholder="Min" autocomplete="off">
-					</div>
-					<div class="col-md-2 col-sm-6">
-						<label class="form-label">{{ __('admin.jobs.salary_max') }}</label>
-						<input type="text" inputmode="numeric" name="salary_max" class="form-control filter-input filter-salary" placeholder="Max" autocomplete="off">
-					</div>
-					<div class="col-md-3 col-sm-6">
-						<label class="form-label">{{ __('admin.jobs.min_education') }}</label>
+					<div class="col-md-4 col-sm-6">
+						<label class="form-label fw-semibold">{{ __('admin.jobs.min_education') }}</label>
 						<select name="min_education" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
 							@foreach (\App\Enums\EducationLevel::cases() as $level)
@@ -46,7 +63,20 @@
 							@endforeach
 						</select>
 					</div>
-					<div class="col-12 d-flex justify-content-end gap-2">
+					<div class="col-md-8 col-12">
+						<div class="d-flex align-items-center justify-content-between mb-2">
+							<label class="form-label fw-semibold mb-0">
+								<i class="ti ti-cash me-1 text-primary"></i>Rentang Gaji:
+							</label>
+							<span id="salary-range-label" class="badge bg-label-primary fs-6 px-3 py-1 fw-bold">Rp 0 - Rp 100.000.000</span>
+						</div>
+						<div class="px-2 pt-2 pb-1">
+							<div id="salary-slider"></div>
+						</div>
+						<input type="hidden" name="salary_min" id="salary_min" value="">
+						<input type="hidden" name="salary_max" id="salary_max" value="">
+					</div>
+					<div class="col-md-4 col-12 d-flex justify-content-end gap-2 align-items-center">
 						<button type="button" id="btn-reset-filters" class="btn btn-outline-secondary">
 							<i class="ti ti-refresh me-1"></i> Reset
 						</button>
@@ -124,6 +154,7 @@
 	</div>
 @endsection
 @section('js')
+	<script src="{{ asset('assets/admin/assets/vendor/libs/nouislider/nouislider.js') }}"></script>
 	<script>
 		function getAttrValue(el, val) {
 			if (!val) return '-'
@@ -131,6 +162,48 @@
 		}
 
 		$(function() {
+			// Inisialisasi Slider Rentang Gaji (0 - 100jt, step 1jt)
+			const slider = document.getElementById('salary-slider');
+			const salaryMinInput = document.getElementById('salary_min');
+			const salaryMaxInput = document.getElementById('salary_max');
+			const salaryLabel = document.getElementById('salary-range-label');
+
+			if (slider && typeof noUiSlider !== 'undefined') {
+				noUiSlider.create(slider, {
+					start: [0, 100000000],
+					connect: true,
+					step: 1000000,
+					range: {
+						'min': 0,
+						'max': 100000000
+					},
+					format: {
+						to: function (value) {
+							return Math.round(value);
+						},
+						from: function (value) {
+							return Number(value);
+						}
+					}
+				});
+
+				slider.noUiSlider.on('update', function (values, handle) {
+					const minVal = parseInt(values[0]);
+					const maxVal = parseInt(values[1]);
+
+					salaryMinInput.value = minVal > 0 ? minVal : '';
+					salaryMaxInput.value = maxVal < 100000000 ? maxVal : '';
+
+					const formattedMin = 'Rp ' + new Intl.NumberFormat('id-ID').format(minVal);
+					const formattedMax = 'Rp ' + new Intl.NumberFormat('id-ID').format(maxVal);
+					salaryLabel.innerText = formattedMin + ' - ' + formattedMax;
+				});
+
+				slider.noUiSlider.on('change', function () {
+					reloadAllTables();
+				});
+			}
+
 			$(document).on('click', '.edit', function() {
 				let route = getAttrValue(this, 'route')
 				window.location.href = route
@@ -139,7 +212,6 @@
 			function getFilterParams() {
 				var params = {};
 				$('#filter-form').find('select, input').each(function() {
-					if ($(this).hasClass('filter-salary')) return;
 					var name = $(this).attr('name');
 					if (!name) return;
 					var val = $(this).val();
@@ -244,44 +316,22 @@
 				}
 			})
 
-			$('.filter-salary').each(function() {
-				var input = this;
-				var hidden = document.createElement('input');
-				hidden.type = 'hidden';
-				hidden.name = input.name;
-				hidden.className = 'filter-salary-hidden';
-				input.name = input.name + '_display';
-				input.parentNode.appendChild(hidden);
-
-				input.addEventListener('input', function() {
-					var digits = this.value.replace(/\D/g, '');
-					hidden.value = digits;
-					this.value = digits ? new Intl.NumberFormat('id-ID').format(digits) : '';
-				});
-
-				input.addEventListener('blur', function() {
-					if (!this.value) hidden.value = '';
-				});
-
-				if (this.value) {
-					var digits = this.value.replace(/\D/g, '');
-					hidden.value = digits;
-					this.value = digits ? new Intl.NumberFormat('id-ID').format(digits) : '';
-				}
-			});
-
 			$('#filter-form').on('submit', function(e) {
 				e.preventDefault();
 				reloadAllTables();
 			});
 
-			$('.filter-select, .filter-input').on('change', function() {
+			$('.filter-select').on('change', function() {
 				reloadAllTables();
 			});
 
 			$('#btn-reset-filters').on('click', function() {
 				$('#filter-form')[0].reset();
-				$('.filter-salary-hidden').val('');
+				if (slider && slider.noUiSlider) {
+					slider.noUiSlider.set([0, 100000000]);
+				}
+				if (salaryMinInput) salaryMinInput.value = '';
+				if (salaryMaxInput) salaryMaxInput.value = '';
 				reloadAllTables();
 			});
 
