@@ -25,6 +25,8 @@ return [
     ],
     'dashboard' => [
         'active_batch' => 'Batch Aktif',
+        'no_active_batch' => 'Tidak Ada Batch Aktif',
+        'no_active_batch_desc' => 'Semua gelombang rekrutmen sedang nonaktif.',
         'until' => 's/d',
         'job_list' => 'Daftar Lowongan',
         'applicants' => 'Pelamar',
@@ -33,6 +35,10 @@ return [
         'chart_subtitle' => '12 bulan terakhir',
         'series_candidates' => 'Kandidat Daftar',
         'series_hired' => 'Diterima (Hired)',
+        'upcoming_interviews' => 'Pengingat Wawancara Terdekat',
+        'upcoming_interviews_sub' => 'Sesi wawancara kerja yang akan berlangsung',
+        'no_upcoming_interviews' => 'Belum ada jadwal wawancara mendatang.',
+        'view_all' => 'Lihat Semua',
     ],
     'profile' => [
         'title' => 'Profil Saya',

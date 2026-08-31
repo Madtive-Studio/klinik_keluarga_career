@@ -8,6 +8,7 @@ use App\Models\Batch;
 use App\Models\Candidate;
 use App\Models\Category;
 use App\Models\Job;
+use App\Models\ScheduleInterview;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
@@ -20,6 +21,19 @@ class DashboardController extends Controller
         $applicants = Apply::whereNotNull('batch_id')->count();
         $hired = Apply::whereNotNull('batch_id')->where('status', 'HIRED')->count();
 
+        $upcomingInterviews = ScheduleInterview::with(['candidate', 'job', 'batch'])
+            ->where('start_datetime', '>=', now())
+            ->orderBy('start_datetime', 'ASC')
+            ->limit(5)
+            ->get();
+
+        if ($upcomingInterviews->isEmpty()) {
+            $upcomingInterviews = ScheduleInterview::with(['candidate', 'job', 'batch'])
+                ->orderBy('start_datetime', 'DESC')
+                ->limit(5)
+                ->get();
+        }
+
         $chart = $this->buildMonthlyChartData();
 
         return view('admin.dashboard', [
@@ -27,6 +41,7 @@ class DashboardController extends Controller
             'jobList' => $jobList,
             'applicants' => $applicants,
             'hired' => $hired,
+            'upcomingInterviews' => $upcomingInterviews,
             'chartLabels' => $chart['labels'],
             'candidateSeries' => $chart['candidates'],
             'hiredSeries' => $chart['hired'],
