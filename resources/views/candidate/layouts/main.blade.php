@@ -13,7 +13,6 @@
 		</div>
 	</div>
 
-	@include('candidate.layouts.announcement-ticker')
 	@include('candidate.layouts.navbar')
 
 	@yield('content')

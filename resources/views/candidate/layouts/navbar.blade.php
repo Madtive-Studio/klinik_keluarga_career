@@ -1,5 +1,6 @@
 @if ($navbarType == 'candidate')
 	<header id="topnav" class="position-relative shadow-sm">
+		@include('candidate.layouts.announcement-ticker')
 		<div class="container">
 			<div class="">
 				<a href="{{ route('candidate.home') }}" class="logo">
@@ -51,6 +52,7 @@
 	</header>
 @else
 	<header id="topnav" class="defaultscroll scroll-active">
+		@include('candidate.layouts.announcement-ticker')
 		<div class="tagline">
 			<div class="container">
 				<div class="float-start">
