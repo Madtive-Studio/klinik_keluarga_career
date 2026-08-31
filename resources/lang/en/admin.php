@@ -61,7 +61,7 @@ return [
         'datatable' => 'Job Vacancy List',
         'add' => 'Add Job',
         'batch' => 'Batch',
-        'title_col' => 'Title',
+        'title_col' => 'Job Vacancy',
         'category' => 'Category',
         'show_salary' => 'Show Salary',
         'salary' => 'Salary',

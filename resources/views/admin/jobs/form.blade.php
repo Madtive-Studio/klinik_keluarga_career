@@ -60,7 +60,7 @@
 													$batchEnd = \Illuminate\Support\Carbon::parse($batch->end_date)->format('d/m/Y');
 												@endphp
 												<option value="{{ $batch->id }}"
-													@selected(old('batch_id', $job->batch_id ?? '') == $batch->id)
+													@selected(old('batch_id', $job->batch_id ?? request('batch_id', '')) == $batch->id)
 													data-batch-quota="{{ (int) $batch->quota }}"
 													data-allocated-quota="{{ $batch->allocatedQuota($excludeJobId) }}"
 													data-remaining-quota="{{ $batch->remainingQuota($excludeJobId) }}">

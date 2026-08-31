@@ -61,7 +61,7 @@ return [
         'datatable' => 'Daftar Lowongan Pekerjaan',
         'add' => 'Tambah Lowongan',
         'batch' => 'Batch',
-        'title_col' => 'Judul',
+        'title_col' => 'Lowongan',
         'category' => 'Kategori',
         'show_salary' => 'Tampilkan Gaji',
         'salary' => 'Gaji',
