@@ -43,6 +43,11 @@ class CandidateController extends Controller
             ->addColumn('cv_total', function ($row) {
                 return $row->documents_count . ' Total CV/Resume';
             })
+            ->addColumn('is_online', function ($row) {
+                return $row->email_verified_at
+                    ? '<span class="badge bg-label-success">Verified</span>'
+                    : '<span class="badge bg-label-secondary">Unverified</span>';
+            })
             ->addColumn('action', function ($row) {
                 $btn = '<div class="btn-group" role="group">';
                 $btn .= '<a href="' . route('admin.candidates.show', $row->id) . '" class="btn btn-sm btn-primary detail" title="' . __('admin.applies.preview') . '"><i class="ti ti-eye"></i></a>';
