@@ -1,13 +1,13 @@
 @extends('admin.layouts.main')
 @section('content')
 	<div class="container-xxl flex-grow-1 container-p-y">
-		<!-- Navigation & Action Header -->
+		<!-- Header & Breadcrumb Navigation -->
 		<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
 			<div>
 				<h4 class="fw-bold mb-1">
-					<i class="ti ti-user-check text-primary me-2"></i>{{ __('admin.applies.candidate_personal_info') }}
+					<span class="text-muted fw-light">{{ __('admin.sidebar.candidate_management') }} /</span> {{ $candidate->name }}
 				</h4>
-				<p class="text-muted mb-0 small">Direktori profil lengkap, riwayat pendidikan, keahlian, dan repositori dokumen pelamar.</p>
+				<p class="text-muted mb-0 small">Direktori profil lengkap pelamar, latar belakang pendidikan, keahlian, dan riwayat lamaran.</p>
 			</div>
 			<div>
 				<a href="{{ route('admin.candidates.index') }}" class="btn btn-outline-secondary">
@@ -20,175 +20,152 @@
 			<!-- Left Column: Dossier Profile & History -->
 			<div class="col-md-7 mb-4">
 				<!-- Candidate Profile Card -->
-				<div class="card shadow-sm border-0 mb-4">
-					<div class="card-header bg-white border-bottom pb-3">
-						<div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-							<div class="d-flex align-items-center gap-3">
-								<div class="avatar avatar-lg bg-label-primary rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4">
-									{{ strtoupper(substr($candidate->name ?? 'P', 0, 2)) }}
-								</div>
-								<div>
-									<h5 class="mb-0 fw-bold text-dark">{{ $candidate->name }}</h5>
-									<span class="text-muted small">
-										<i class="ti ti-calendar me-1"></i>Terdaftar sejak: <strong>{{ date('d M Y, H:i', strtotime($candidate->created_at)) }} WIB</strong>
-									</span>
-								</div>
+				<div class="card mb-4">
+					<div class="card-header d-flex align-items-center justify-content-between border-bottom pb-3">
+						<div class="d-flex align-items-center gap-3">
+							<div class="avatar avatar-lg bg-label-primary rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4">
+								{{ strtoupper(substr($candidate->name ?? 'P', 0, 2)) }}
 							</div>
 							<div>
-								@if($candidate->email_verified_at)
-									<span class="badge bg-label-success fs-6 px-3 py-2">
-										<i class="ti ti-circle-check me-1"></i>Email Verified
-									</span>
-								@else
-									<span class="badge bg-label-secondary fs-6 px-3 py-2">
-										<i class="ti ti-clock me-1"></i>Unverified
-									</span>
-								@endif
+								<h5 class="mb-1 fw-bold">{{ $candidate->name }}</h5>
+								<span class="text-muted small">
+									<i class="ti ti-calendar me-1"></i>Terdaftar sejak: <strong>{{ date('d M Y, H:i', strtotime($candidate->created_at)) }} WIB</strong>
+								</span>
 							</div>
+						</div>
+						<div>
+							@if($candidate->email_verified_at)
+								<span class="badge bg-label-success px-3 py-2">
+									<i class="ti ti-circle-check me-1"></i>Email Verified
+								</span>
+							@else
+								<span class="badge bg-label-secondary px-3 py-2">
+									<i class="ti ti-clock me-1"></i>Unverified
+								</span>
+							@endif
 						</div>
 					</div>
 
-					<div class="card-body p-4">
+					<div class="card-body pt-4">
 						@php
 							$profile = $candidate->profile;
 						@endphp
 
 						<!-- Section 1: Biodata & Kontak Pelamar -->
 						<div class="mb-4">
-							<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-								<i class="ti ti-id text-primary fs-5"></i>
-								<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.candidate_personal_info') }}</h6>
-							</div>
+							<h6 class="text-muted text-uppercase fw-semibold mb-3 d-flex align-items-center gap-2" style="font-size: 13px; letter-spacing: 0.5px;">
+								<i class="ti ti-id text-primary"></i> {{ __('admin.applies.candidate_personal_info') }}
+							</h6>
 							<div class="row g-3">
 								<div class="col-sm-6">
-									<div class="p-2 rounded bg-light border-0">
-										<small class="text-muted d-block mb-1">{{ __('common.email') }}</small>
-										<span class="fw-semibold text-dark">{{ $candidate->email }}</span>
-									</div>
+									<small class="text-muted d-block mb-1">{{ __('common.email') }}</small>
+									<span class="fw-semibold">{{ $candidate->email }}</span>
 								</div>
 								<div class="col-sm-6">
-									<div class="p-2 rounded bg-light border-0">
-										<small class="text-muted d-block mb-1">{{ __('admin.applies.phone_wa') }}</small>
-										<span class="fw-semibold text-dark">
-											@if(!empty($candidate->phone))
-												<a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $candidate->phone) }}" target="_blank" class="text-success text-decoration-none">
-													<i class="ti ti-brand-whatsapp me-1"></i>{{ $candidate->phone }}
-												</a>
-											@else
-												-
-											@endif
-										</span>
-									</div>
+									<small class="text-muted d-block mb-1">{{ __('admin.applies.phone_wa') }}</small>
+									<span class="fw-semibold">
+										@if(!empty($candidate->phone))
+											<a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $candidate->phone) }}" target="_blank" class="text-success text-decoration-none">
+												<i class="ti ti-brand-whatsapp me-1"></i>{{ $candidate->phone }}
+											</a>
+										@else
+											-
+										@endif
+									</span>
 								</div>
 								<div class="col-sm-6">
-									<div class="p-2 rounded bg-light border-0">
-										<small class="text-muted d-block mb-1">{{ __('admin.applies.birth_info') }}</small>
-										<span class="fw-semibold text-dark">
-											@if(!empty($candidate->birth_date))
-												{{ \Carbon\Carbon::parse($candidate->birth_date)->translatedFormat('d F Y') }}
-												<span class="badge bg-label-secondary ms-1">{{ \Carbon\Carbon::parse($candidate->birth_date)->age }} tahun</span>
-											@else
-												-
-											@endif
-										</span>
-									</div>
+									<small class="text-muted d-block mb-1">{{ __('admin.applies.birth_info') }}</small>
+									<span class="fw-semibold">
+										@if(!empty($candidate->birth_date))
+											{{ \Carbon\Carbon::parse($candidate->birth_date)->translatedFormat('d F Y') }}
+											<span class="badge bg-label-secondary ms-1">{{ \Carbon\Carbon::parse($candidate->birth_date)->age }} tahun</span>
+										@else
+											-
+										@endif
+									</span>
 								</div>
 								<div class="col-sm-6">
-									<div class="p-2 rounded bg-light border-0">
-										<small class="text-muted d-block mb-1">{{ __('admin.applies.domicile') }}</small>
-										<span class="fw-semibold text-dark">{{ $profile?->city ?? '-' }}@if(!empty($profile?->province)), {{ $profile->province }}@endif</span>
-									</div>
+									<small class="text-muted d-block mb-1">{{ __('admin.applies.domicile') }}</small>
+									<span class="fw-semibold">{{ $profile?->city ?? '-' }}@if(!empty($profile?->province)), {{ $profile->province }}@endif</span>
 								</div>
 								<div class="col-12">
-									<div class="p-2 rounded bg-light border-0">
-										<small class="text-muted d-block mb-1">{{ __('candidate.auth.address') }}</small>
-										<span class="fw-semibold text-dark">{{ $candidate->address ?? '-' }}</span>
-									</div>
+									<small class="text-muted d-block mb-1">{{ __('candidate.auth.address') }}</small>
+									<span class="fw-semibold">{{ $candidate->address ?? '-' }}</span>
 								</div>
 							</div>
 						</div>
+
+						<hr class="my-4">
 
 						<!-- Section 2: Riwayat Pendidikan & Pengalaman -->
 						<div class="mb-4">
-							<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-								<i class="ti ti-school text-primary fs-5"></i>
-								<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.candidate_education_info') }}</h6>
-							</div>
+							<h6 class="text-muted text-uppercase fw-semibold mb-3 d-flex align-items-center gap-2" style="font-size: 13px; letter-spacing: 0.5px;">
+								<i class="ti ti-school text-primary"></i> {{ __('admin.applies.candidate_education_info') }}
+							</h6>
 							<div class="row g-3">
 								<div class="col-sm-8">
-									<div class="p-2 rounded bg-light border-0">
-										<small class="text-muted d-block mb-1">{{ __('admin.applies.education_details') }}</small>
-										<div>
-											<span class="badge bg-label-primary me-1">{{ $profile?->education_level ?? '-' }}</span>
-											<strong class="text-dark">{{ $profile?->major ?? '-' }}</strong>
-											<span class="text-muted">({{ $profile?->university ?? '-' }})</span>
-										</div>
+									<small class="text-muted d-block mb-1">{{ __('admin.applies.education_details') }}</small>
+									<div>
+										<span class="badge bg-label-primary me-1">{{ $profile?->education_level ?? '-' }}</span>
+										<strong class="text-dark">{{ $profile?->major ?? '-' }}</strong>
+										<span class="text-muted">({{ $profile?->university ?? '-' }})</span>
 									</div>
 								</div>
 								<div class="col-sm-4">
-									<div class="p-2 rounded bg-light border-0">
-										<small class="text-muted d-block mb-1">{{ __('admin.applies.gpa') }}</small>
-										<span class="fw-bold text-primary fs-6">{{ $profile?->gpa ?? '-' }}</span>
-									</div>
+									<small class="text-muted d-block mb-1">{{ __('admin.applies.gpa') }}</small>
+									<span class="fw-bold text-primary fs-6">{{ $profile?->gpa ?? '-' }}</span>
 								</div>
 								<div class="col-sm-6">
-									<div class="p-2 rounded bg-light border-0">
-										<small class="text-muted d-block mb-1">{{ __('admin.applies.experience_years') }}</small>
-										<span class="fw-semibold text-dark">
-											{{ $profile?->years_of_experience ? $profile->years_of_experience . ' tahun' : 'Fresh Graduate / 0 thn' }}
-										</span>
-									</div>
+									<small class="text-muted d-block mb-1">{{ __('admin.applies.experience_years') }}</small>
+									<span class="fw-semibold">
+										{{ $profile?->years_of_experience ? $profile->years_of_experience . ' tahun' : 'Fresh Graduate / 0 thn' }}
+									</span>
 								</div>
 								<div class="col-sm-6">
-									<div class="p-2 rounded bg-light border-0">
-										<small class="text-muted d-block mb-1">{{ __('admin.applies.last_experience') }}</small>
-										<span class="fw-semibold text-dark">
-											{{ $profile?->last_position ?? '-' }}@if(!empty($profile?->last_company)) di {{ $profile->last_company }}@endif
-										</span>
-									</div>
+									<small class="text-muted d-block mb-1">{{ __('admin.applies.last_experience') }}</small>
+									<span class="fw-semibold">
+										{{ $profile?->last_position ?? '-' }}@if(!empty($profile?->last_company)) di {{ $profile->last_company }}@endif
+									</span>
 								</div>
 								<div class="col-sm-6">
-									<div class="p-2 rounded bg-light border-0">
-										<small class="text-muted d-block mb-1">{{ __('admin.applies.expected_salary') }}</small>
-										<span class="fw-bold text-success">
-											{{ $profile?->expected_salary ? 'Rp ' . number_format($profile->expected_salary, 0, ',', '.') : 'Negosiasi / Mengikuti Standar' }}
-										</span>
-									</div>
+									<small class="text-muted d-block mb-1">{{ __('admin.applies.expected_salary') }}</small>
+									<span class="fw-bold text-success">
+										{{ $profile?->expected_salary ? 'Rp ' . number_format($profile->expected_salary, 0, ',', '.') : 'Negosiasi / Mengikuti Standar' }}
+									</span>
 								</div>
 							</div>
 						</div>
 
+						<hr class="my-4">
+
 						<!-- Section 3: Keahlian Pelamar (Skills) -->
 						<div>
-							<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-								<i class="ti ti-tags text-primary fs-5"></i>
-								<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.candidate_skills_info') }}</h6>
-							</div>
-							<div class="p-2 rounded bg-light border-0">
-								@if($candidate->skills && $candidate->skills->isNotEmpty())
-									<div class="d-flex flex-wrap gap-2">
-										@foreach($candidate->skills as $skill)
-											<span class="badge bg-white text-dark border shadow-xs px-3 py-2">
-												<i class="ti ti-check text-primary me-1"></i>{{ $skill->name }}
-											</span>
-										@endforeach
-									</div>
-								@else
-									<span class="text-muted small italic">{{ __('admin.applies.no_skills') }}</span>
-								@endif
-							</div>
+							<h6 class="text-muted text-uppercase fw-semibold mb-3 d-flex align-items-center gap-2" style="font-size: 13px; letter-spacing: 0.5px;">
+								<i class="ti ti-tags text-primary"></i> {{ __('admin.applies.candidate_skills_info') }}
+							</h6>
+							@if($candidate->skills && $candidate->skills->isNotEmpty())
+								<div class="d-flex flex-wrap gap-2">
+									@foreach($candidate->skills as $skill)
+										<span class="badge bg-label-primary fs-6 py-2 px-3">
+											<i class="ti ti-check me-1"></i>{{ $skill->name }}
+										</span>
+									@endforeach
+								</div>
+							@else
+								<span class="text-muted small italic">{{ __('admin.applies.no_skills') }}</span>
+							@endif
 						</div>
 
 					</div>
 				</div>
 
-				<!-- Section 5: Riwayat Pengajuan Lamaran Kerja -->
-				<div class="card shadow-sm border-0">
-					<div class="card-header bg-white border-bottom pb-3 d-flex align-items-center justify-content-between">
-						<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small d-flex align-items-center gap-2">
-							<i class="ti ti-history text-primary fs-5"></i>
+				<!-- Section 4: Riwayat Pengajuan Lamaran Kerja -->
+				<div class="card mb-4">
+					<div class="card-header d-flex align-items-center justify-content-between pb-3">
+						<h5 class="card-title mb-0 d-flex align-items-center gap-2">
+							<i class="ti ti-history text-primary"></i>
 							Riwayat Lamaran Pekerjaan ({{ $candidate->applies->count() }})
-						</h6>
+						</h5>
 					</div>
 					<div class="card-body p-0">
 						@if($candidate->applies->isNotEmpty())
@@ -216,7 +193,7 @@
 											@endphp
 											<tr>
 												<td>
-													<strong class="text-dark d-block">{{ $apply->job->title ?? '-' }}</strong>
+													<strong class="d-block">{{ $apply->job->title ?? '-' }}</strong>
 													<small class="text-muted">{{ $apply->job->code ?? '' }} | {{ $apply->job->category->name ?? '-' }}</small>
 												</td>
 												<td>
@@ -251,12 +228,12 @@
 			<!-- Right Column: Document Repository & Account Summary -->
 			<div class="col-md-5 mb-4">
 				<!-- Document Repository Card -->
-				<div class="card shadow-sm border-0 mb-4">
-					<div class="card-header bg-white border-bottom pb-3 d-flex align-items-center justify-content-between">
-						<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small d-flex align-items-center gap-2">
-							<i class="ti ti-files text-primary fs-5"></i>
+				<div class="card mb-4">
+					<div class="card-header d-flex align-items-center justify-content-between pb-3">
+						<h5 class="card-title mb-0 d-flex align-items-center gap-2">
+							<i class="ti ti-files text-primary"></i>
 							{{ __('candidate.documents.title') }} ({{ $candidate->documents->count() }})
-						</h6>
+						</h5>
 					</div>
 					<div class="card-body p-3">
 						@if($candidate->documents->isNotEmpty())
@@ -273,7 +250,7 @@
 											<div class="d-flex align-items-center gap-2">
 												<i class="ti ti-file-text text-primary fs-4"></i>
 												<div>
-													<span title="{{ $doc->name }}" class="fw-semibold text-dark d-block text-truncate" style="max-width: 180px;">{{ $doc->name }}</span>
+													<span title="{{ $doc->name }}" class="fw-semibold text-truncate d-block" style="max-width: 180px;">{{ $doc->name }}</span>
 													<span class="badge {{ $docBadgeClass }} mt-1">{{ $docTypeLabel }}</span>
 												</div>
 											</div>
@@ -304,22 +281,24 @@
 				</div>
 
 				<!-- Quick Summary Card -->
-				<div class="card shadow-sm border-0 bg-label-secondary">
-					<div class="card-body p-3">
-						<h6 class="fw-bold mb-3 text-dark d-flex align-items-center gap-2">
+				<div class="card mb-4">
+					<div class="card-header pb-2">
+						<h5 class="card-title mb-0 d-flex align-items-center gap-2">
 							<i class="ti ti-info-circle text-primary"></i> Ringkasan Akun Pelamar
-						</h6>
-						<ul class="list-unstyled mb-0 small text-muted">
-							<li class="mb-2 d-flex justify-content-between">
-								<span>Status Akun:</span>
+						</h5>
+					</div>
+					<div class="card-body pt-2">
+						<ul class="list-unstyled mb-0">
+							<li class="mb-3 d-flex justify-content-between align-items-center pb-2 border-bottom">
+								<span class="text-muted">Status Akun:</span>
 								<strong>{{ $candidate->email_verified_at ? 'Aktif & Terverifikasi' : 'Belum Verifikasi Email' }}</strong>
 							</li>
-							<li class="mb-2 d-flex justify-content-between">
-								<span>Total Berkas Dokumen:</span>
+							<li class="mb-3 d-flex justify-content-between align-items-center pb-2 border-bottom">
+								<span class="text-muted">Total Berkas Dokumen:</span>
 								<strong>{{ $candidate->documents->count() }} Berkas</strong>
 							</li>
-							<li class="d-flex justify-content-between">
-								<span>Total Lamaran Diajukan:</span>
+							<li class="d-flex justify-content-between align-items-center">
+								<span class="text-muted">Total Lamaran Diajukan:</span>
 								<strong>{{ $candidate->applies->count() }} Lamaran</strong>
 							</li>
 						</ul>
@@ -332,8 +311,8 @@
 	<!-- Document Preview Modal -->
 	<div class="modal fade" id="docPreviewModal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-lg modal-dialog-centered" id="docPreviewDialog" style="max-width: 900px;">
-			<div class="modal-content border-0 shadow-lg">
-				<div class="modal-header px-4 py-3 border-bottom bg-white">
+			<div class="modal-content">
+				<div class="modal-header px-4 py-3 border-bottom">
 					<h5 class="modal-title d-flex align-items-center gap-2 mb-0">
 						<i class="ti ti-file-text text-primary fs-4"></i>
 						<span id="docPreviewTitle" class="fw-bold fs-6 text-truncate" style="max-width: 550px;">{{ __('admin.applies.preview_title') }}</span>
@@ -341,10 +320,10 @@
 					</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body p-3 p-md-4 bg-light" id="docPreviewBody" style="max-height: 75vh; overflow-y: auto;">
+				<div class="modal-body p-3 p-md-4" id="docPreviewBody" style="max-height: 75vh; overflow-y: auto;">
 					<!-- Dynamic Preview Content -->
 				</div>
-				<div class="modal-footer px-4 py-3 border-top bg-white justify-content-between">
+				<div class="modal-footer px-4 py-3 border-top justify-content-between">
 					<a id="docPreviewExternalLink" href="#" target="_blank" class="btn btn-outline-secondary">
 						<i class="ti ti-external-link me-1"></i> {{ __('admin.applies.open_new_tab') }}
 					</a>
@@ -385,7 +364,7 @@
 			if (ext === 'pdf') {
 				setModalSize(true);
 				$('#docPreviewBody').html(`
-					<div class="bg-white rounded-3 shadow-sm overflow-hidden p-2">
+					<div class="rounded overflow-hidden p-1">
 						<iframe src="${url}" style="width:100%; height:62vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
 					</div>
 				`);
@@ -393,7 +372,7 @@
 				setModalSize(true);
 				$('#docPreviewBody').html(`
 					<div class="text-center py-2">
-						<div class="bg-white rounded-3 shadow-sm p-3 d-inline-block mw-100">
+						<div class="p-2 d-inline-block mw-100">
 							<img src="${url}" class="img-fluid rounded" style="max-height: 58vh; object-fit: contain;" alt="${title}">
 						</div>
 					</div>
@@ -401,7 +380,7 @@
 			} else if (ext === 'csv' || ext === 'txt') {
 				setModalSize(true);
 				$('#docPreviewBody').html(`
-					<div class="bg-white rounded-3 shadow-sm p-3">
+					<div class="p-2">
 						<div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
 							<span class="fw-bold text-primary"><i class="ti ti-table me-1"></i> Data Table Preview (${ext.toUpperCase()})</span>
 							<small class="text-muted">Parsed automatically</small>
@@ -471,13 +450,13 @@
 				if (isLocalhost) {
 					setModalSize(false);
 					$('#docPreviewBody').html(`
-						<div class="bg-white rounded-3 shadow-sm p-4 text-center">
+						<div class="p-3 text-center">
 							<div class="mb-3">
 								<i class="ti ${officeIconClass} d-block mx-auto mb-2" style="font-size: 3.5rem;"></i>
 								<h6 class="fw-bold mb-1 text-truncate">${title}</h6>
 								<span class="badge ${officeBadgeClass} mb-2">${officeTypeName} (.${ext.toUpperCase()})</span>
 							</div>
-							<div class="alert alert-info border-0 bg-light text-start p-3 mb-4">
+							<div class="alert alert-info border-0 text-start p-3 mb-4">
 								<div class="d-flex align-items-start gap-2">
 									<i class="ti ti-info-circle text-info fs-5 mt-1 flex-shrink-0"></i>
 									<div>
@@ -501,7 +480,7 @@
 					const absoluteUrl = window.location.origin + url;
 					const googleDocsUrl = `https://docs.google.com/gview?url=${encodeURIComponent(absoluteUrl)}&embedded=true`;
 					$('#docPreviewBody').html(`
-						<div class="bg-white rounded-3 shadow-sm overflow-hidden p-2">
+						<div class="rounded overflow-hidden p-1">
 							<iframe src="${googleDocsUrl}" style="width:100%; height:62vh; border:none; border-radius: 6px;" frameborder="0"></iframe>
 						</div>
 					`);
@@ -509,7 +488,7 @@
 			} else {
 				setModalSize(false);
 				$('#docPreviewBody').html(`
-					<div class="bg-white rounded-3 shadow-sm text-center py-5 px-3">
+					<div class="text-center py-5 px-3">
 						<i class="ti ti-file-description text-primary d-block mb-3" style="font-size: 3.5rem;"></i>
 						<h6 class="mb-2 text-truncate">${title}</h6>
 						<p class="text-muted small mb-4">Format file (.${ext}) dapat diunduh atau dibuka langsung di jendela baru browser.</p>

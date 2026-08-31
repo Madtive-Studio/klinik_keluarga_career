@@ -48,128 +48,107 @@
 
 							<!-- Section 1: Biodata & Kontak Pelamar -->
 							<div class="mb-4">
-								<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-									<i class="ti ti-user-check text-primary fs-5"></i>
-									<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.candidate_personal_info') }}</h6>
-								</div>
+								<h6 class="text-muted text-uppercase fw-semibold mb-3 d-flex align-items-center gap-2" style="font-size: 13px; letter-spacing: 0.5px;">
+									<i class="ti ti-id text-primary"></i> {{ __('admin.applies.candidate_personal_info') }}
+								</h6>
 								<div class="row g-3">
 									<div class="col-sm-6">
-										<div class="p-2 rounded bg-light border-0">
-											<small class="text-muted d-block mb-1">{{ __('common.email') }}</small>
-											<span class="fw-semibold text-dark">{{ $apply->candidate->email }}</span>
-										</div>
+										<small class="text-muted d-block mb-1">{{ __('common.email') }}</small>
+										<span class="fw-semibold">{{ $apply->candidate->email }}</span>
 									</div>
 									<div class="col-sm-6">
-										<div class="p-2 rounded bg-light border-0">
-											<small class="text-muted d-block mb-1">{{ __('admin.applies.phone_wa') }}</small>
-											<span class="fw-semibold text-dark">
-												@if(!empty($apply->candidate->phone))
-													<a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $apply->candidate->phone) }}" target="_blank" class="text-success text-decoration-none">
-														<i class="ti ti-brand-whatsapp me-1"></i>{{ $apply->candidate->phone }}
-													</a>
-												@else
-													-
-												@endif
-											</span>
-										</div>
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.phone_wa') }}</small>
+										<span class="fw-semibold">
+											@if(!empty($apply->candidate->phone))
+												<a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $apply->candidate->phone) }}" target="_blank" class="text-success text-decoration-none">
+													<i class="ti ti-brand-whatsapp me-1"></i>{{ $apply->candidate->phone }}
+												</a>
+											@else
+												-
+											@endif
+										</span>
 									</div>
 									<div class="col-sm-6">
-										<div class="p-2 rounded bg-light border-0">
-											<small class="text-muted d-block mb-1">{{ __('admin.applies.birth_info') }}</small>
-											<span class="fw-semibold text-dark">
-												@if(!empty($apply->candidate->birth_date))
-													{{ \Carbon\Carbon::parse($apply->candidate->birth_date)->translatedFormat('d F Y') }}
-													<span class="badge bg-label-secondary ms-1">{{ \Carbon\Carbon::parse($apply->candidate->birth_date)->age }} tahun</span>
-												@else
-													-
-												@endif
-											</span>
-										</div>
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.birth_info') }}</small>
+										<span class="fw-semibold">
+											@if(!empty($apply->candidate->birth_date))
+												{{ \Carbon\Carbon::parse($apply->candidate->birth_date)->translatedFormat('d F Y') }}
+												<span class="badge bg-label-secondary ms-1">{{ \Carbon\Carbon::parse($apply->candidate->birth_date)->age }} tahun</span>
+											@else
+												-
+											@endif
+										</span>
 									</div>
 									<div class="col-sm-6">
-										<div class="p-2 rounded bg-light border-0">
-											<small class="text-muted d-block mb-1">{{ __('admin.applies.domicile') }}</small>
-											<span class="fw-semibold text-dark">{{ $profile?->city ?? '-' }}@if(!empty($profile?->province)), {{ $profile->province }}@endif</span>
-										</div>
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.domicile') }}</small>
+										<span class="fw-semibold">{{ $profile?->city ?? '-' }}@if(!empty($profile?->province)), {{ $profile->province }}@endif</span>
 									</div>
 									<div class="col-12">
-										<div class="p-2 rounded bg-light border-0">
-											<small class="text-muted d-block mb-1">{{ __('candidate.auth.address') }}</small>
-											<span class="fw-semibold text-dark">{{ $apply->candidate->address ?? '-' }}</span>
-										</div>
+										<small class="text-muted d-block mb-1">{{ __('candidate.auth.address') }}</small>
+										<span class="fw-semibold">{{ $apply->candidate->address ?? '-' }}</span>
 									</div>
 								</div>
 							</div>
+
+							<hr class="my-4">
 
 							<!-- Section 2: Riwayat Pendidikan & Pengalaman -->
 							<div class="mb-4">
-								<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-									<i class="ti ti-school text-primary fs-5"></i>
-									<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.candidate_education_info') }}</h6>
-								</div>
+								<h6 class="text-muted text-uppercase fw-semibold mb-3 d-flex align-items-center gap-2" style="font-size: 13px; letter-spacing: 0.5px;">
+									<i class="ti ti-school text-primary"></i> {{ __('admin.applies.candidate_education_info') }}
+								</h6>
 								<div class="row g-3">
 									<div class="col-sm-8">
-										<div class="p-2 rounded bg-light border-0">
-											<small class="text-muted d-block mb-1">{{ __('admin.applies.education_details') }}</small>
-											<div>
-												<span class="badge bg-label-primary me-1">{{ $profile?->education_level ?? '-' }}</span>
-												<strong class="text-dark">{{ $profile?->major ?? '-' }}</strong>
-												<span class="text-muted">({{ $profile?->university ?? '-' }})</span>
-											</div>
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.education_details') }}</small>
+										<div>
+											<span class="badge bg-label-primary me-1">{{ $profile?->education_level ?? '-' }}</span>
+											<strong class="text-dark">{{ $profile?->major ?? '-' }}</strong>
+											<span class="text-muted">({{ $profile?->university ?? '-' }})</span>
 										</div>
 									</div>
 									<div class="col-sm-4">
-										<div class="p-2 rounded bg-light border-0">
-											<small class="text-muted d-block mb-1">{{ __('admin.applies.gpa') }}</small>
-											<span class="fw-bold text-primary fs-6">{{ $profile?->gpa ?? '-' }}</span>
-										</div>
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.gpa') }}</small>
+										<span class="fw-bold text-primary fs-6">{{ $profile?->gpa ?? '-' }}</span>
 									</div>
 									<div class="col-sm-6">
-										<div class="p-2 rounded bg-light border-0">
-											<small class="text-muted d-block mb-1">{{ __('admin.applies.experience_years') }}</small>
-											<span class="fw-semibold text-dark">
-												{{ $profile?->years_of_experience ? $profile->years_of_experience . ' tahun' : 'Fresh Graduate / 0 thn' }}
-											</span>
-										</div>
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.experience_years') }}</small>
+										<span class="fw-semibold">
+											{{ $profile?->years_of_experience ? $profile->years_of_experience . ' tahun' : 'Fresh Graduate / 0 thn' }}
+										</span>
 									</div>
 									<div class="col-sm-6">
-										<div class="p-2 rounded bg-light border-0">
-											<small class="text-muted d-block mb-1">{{ __('admin.applies.last_experience') }}</small>
-											<span class="fw-semibold text-dark">
-												{{ $profile?->last_position ?? '-' }}@if(!empty($profile?->last_company)) di {{ $profile->last_company }}@endif
-											</span>
-										</div>
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.last_experience') }}</small>
+										<span class="fw-semibold">
+											{{ $profile?->last_position ?? '-' }}@if(!empty($profile?->last_company)) di {{ $profile->last_company }}@endif
+										</span>
 									</div>
 									<div class="col-sm-6">
-										<div class="p-2 rounded bg-light border-0">
-											<small class="text-muted d-block mb-1">{{ __('admin.applies.expected_salary') }}</small>
-											<span class="fw-bold text-success">
-												{{ $profile?->expected_salary ? 'Rp ' . number_format($profile->expected_salary, 0, ',', '.') : 'Negosiasi / Mengikuti Standar' }}
-											</span>
-										</div>
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.expected_salary') }}</small>
+										<span class="fw-bold text-success">
+											{{ $profile?->expected_salary ? 'Rp ' . number_format($profile->expected_salary, 0, ',', '.') : 'Negosiasi / Mengikuti Standar' }}
+										</span>
 									</div>
 								</div>
 							</div>
 
+							<hr class="my-4">
+
 							<!-- Section 3: Keahlian Pelamar (Skills) -->
 							<div class="mb-4">
-								<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-									<i class="ti ti-tags text-primary fs-5"></i>
-									<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.candidate_skills_info') }}</h6>
-								</div>
-								<div class="p-2 rounded bg-light border-0">
-									@if($apply->candidate->skills && $apply->candidate->skills->isNotEmpty())
-										<div class="d-flex flex-wrap gap-2">
-											@foreach($apply->candidate->skills as $skill)
-												<span class="badge bg-white text-dark border shadow-xs px-3 py-2">
-													<i class="ti ti-check text-primary me-1"></i>{{ $skill->name }}
-												</span>
-											@endforeach
-										</div>
-									@else
-										<span class="text-muted small italic">{{ __('admin.applies.no_skills') }}</span>
-									@endif
-								</div>
+								<h6 class="text-muted text-uppercase fw-semibold mb-3 d-flex align-items-center gap-2" style="font-size: 13px; letter-spacing: 0.5px;">
+									<i class="ti ti-tags text-primary"></i> {{ __('admin.applies.candidate_skills_info') }}
+								</h6>
+								@if($apply->candidate->skills && $apply->candidate->skills->isNotEmpty())
+									<div class="d-flex flex-wrap gap-2">
+										@foreach($apply->candidate->skills as $skill)
+											<span class="badge bg-label-primary fs-6 py-2 px-3">
+												<i class="ti ti-check me-1"></i>{{ $skill->name }}
+											</span>
+										@endforeach
+									</div>
+								@else
+									<span class="text-muted small italic">{{ __('admin.applies.no_skills') }}</span>
+								@endif
 							</div>
 
 							<!-- Section 4: Informasi Lowongan Pekerjaan yang Dilamar -->
