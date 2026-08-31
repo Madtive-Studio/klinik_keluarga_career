@@ -30,23 +30,11 @@ class CandidateController extends Controller
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->editColumn('email_verified_at', function ($row) {
-                return $row->email_verified_at
-                    ? Carbon::parse($row->email_verified_at)->diffForHumans()
-                    : '-';
+            ->editColumn('phone', function ($row) {
+                return $row->phone ?? '-';
             })
-            ->editColumn('birth_date', function ($row) {
-                return $row->birth_date
-                    ? Carbon::parse($row->birth_date)->translatedFormat('d M Y')
-                    : '-';
-            })
-            ->addColumn('cv_total', function ($row) {
-                return $row->documents_count . ' Total CV/Resume';
-            })
-            ->addColumn('is_online', function ($row) {
-                return $row->email_verified_at
-                    ? '<span class="badge bg-label-success">Verified</span>'
-                    : '<span class="badge bg-label-secondary">Unverified</span>';
+            ->editColumn('address', function ($row) {
+                return $row->address ?? '-';
             })
             ->addColumn('action', function ($row) {
                 $btn = '<div class="btn-group" role="group">';
@@ -54,7 +42,7 @@ class CandidateController extends Controller
                 $btn .= '</div>';
                 return $btn;
             })
-            ->rawColumns(['is_online', 'action'])
+            ->rawColumns(['action'])
             ->make(true);
     }
 

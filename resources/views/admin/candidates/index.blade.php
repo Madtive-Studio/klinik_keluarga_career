@@ -14,12 +14,8 @@
 							<th>{{ __('admin.datatable.no') }}</th>
 							<th>{{ __('admin.candidates.name') }}</th>
 							<th>{{ __('admin.candidates.email') }}</th>
-							<th>{{ __('admin.candidates.email_verified_at') }}</th>
 							<th>{{ __('admin.candidates.phone') }}</th>
-							<th>{{ __('admin.candidates.birth_date') }}</th>
 							<th>{{ __('admin.candidates.address') }}</th>
-							<th>{{ __('admin.candidates.cv') }}</th>
-							<th>{{ __('admin.candidates.status') }}</th>
 							<th class="text-center">{{ __('admin.datatable.action') }}</th>
 						</tr>
 					</thead>
@@ -68,28 +64,17 @@
 							data: 'email'
 						},
 						{
-							data: 'email_verified_at'
-						},
-						{
 							data: 'phone'
-						},
-						{
-							data: 'birth_date'
 						},
 						{
 							data: 'address'
 						},
 						{
-							data: 'cv_total'
-						},
-						{
-							data: 'is_online'
-						},
-						{
 							data: 'action',
 							searchable: false,
 							orderable: false,
-							className: 'text-center'
+							className: 'text-center',
+							width: '8%'
 						},
 					],
 					columnDefs: [{
