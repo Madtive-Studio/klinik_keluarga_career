@@ -30,7 +30,9 @@ class JobManagementController extends Controller
     public function index()
     {
         $categories = Category::orderBy('name', 'ASC')->get();
-        $batches = Batch::orderBy('created_at', 'DESC')->get();
+        $batches = Batch::orderByRaw("CASE WHEN status = 'ACTIVE' THEN 0 ELSE 1 END")
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
         return view('admin.jobs.index', [
             'categories' => $categories,

@@ -27,13 +27,6 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        if ($upcomingInterviews->isEmpty()) {
-            $upcomingInterviews = ScheduleInterview::with(['candidate', 'job', 'batch'])
-                ->orderBy('start_datetime', 'DESC')
-                ->limit(5)
-                ->get();
-        }
-
         $chart = $this->buildMonthlyChartData();
 
         return view('admin.dashboard', [

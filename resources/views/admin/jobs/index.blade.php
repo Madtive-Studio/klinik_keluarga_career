@@ -22,6 +22,33 @@
 		.noUi-handle:before, .noUi-handle:after {
 			display: none !important;
 		}
+		.batch-pills-slider {
+			display: flex;
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: thin;
+			scroll-behavior: smooth;
+			padding-bottom: 6px;
+		}
+		.batch-pills-slider::-webkit-scrollbar {
+			height: 4px;
+		}
+		.batch-pills-slider::-webkit-scrollbar-track {
+			background: rgba(0, 0, 0, 0.05);
+			border-radius: 4px;
+		}
+		.batch-pills-slider::-webkit-scrollbar-thumb {
+			background: rgba(115, 103, 240, 0.35);
+			border-radius: 4px;
+		}
+		.batch-pills-slider::-webkit-scrollbar-thumb:hover {
+			background: rgba(115, 103, 240, 0.7);
+		}
+		.btn-batch-tab {
+			white-space: nowrap;
+			flex-shrink: 0;
+		}
 	</style>
 @endsection
 @section('content')
@@ -88,32 +115,34 @@
 			</div>
 		</div>
 
-		<!-- Batch Nav Tabs / Pills (1 Table dengan Navigasi Tab per Batch) -->
+		<!-- Batch Nav Tabs / Pills Slider (Scrollable Horizontal jika banyak batch) -->
 		@if($batches->isNotEmpty())
-			<ul class="nav nav-pills flex-wrap gap-2 mb-4" id="batch-pills">
-				@foreach ($batches as $index => $b)
-					@php
-						$isActive = ($b->status === 'ACTIVE' || $b->status === '1' || $b->status === 1);
-					@endphp
-					<li class="nav-item">
-						<button type="button"
-							class="nav-link btn-batch-tab {{ $index === 0 ? 'active' : '' }}"
-							data-batch-id="{{ $b->id }}"
-							data-batch-name="{{ $b->name }}"
-							data-batch-code="{{ $b->code }}"
-							data-batch-status="{{ $isActive ? 'Aktif' : 'Nonaktif' }}"
-							data-batch-status-class="{{ $isActive ? 'bg-label-success' : 'bg-label-secondary' }}"
-							data-batch-dates="{{ \Carbon\Carbon::parse($b->start_date)->translatedFormat('d M Y') }} s/d {{ \Carbon\Carbon::parse($b->end_date)->translatedFormat('d M Y') }}"
-							data-batch-quota="{{ $b->quota ?? '-' }}"
-							data-create-url="{{ route('admin.jobs.create', ['batch_id' => $b->id]) }}">
-							<i class="ti ti-layers-intersect me-1"></i> {{ $b->name }} ({{ $b->code }})
-							@if($isActive)
-								<span class="badge badge-dot bg-success ms-1" title="Gelombang Aktif"></span>
-							@endif
-						</button>
-					</li>
-				@endforeach
-			</ul>
+			<div class="batch-tabs-container mb-4">
+				<ul class="nav nav-pills batch-pills-slider gap-2 mb-0" id="batch-pills">
+					@foreach ($batches as $index => $b)
+						@php
+							$isActive = ($b->status === 'ACTIVE' || $b->status === '1' || $b->status === 1);
+						@endphp
+						<li class="nav-item">
+							<button type="button"
+								class="nav-link btn-batch-tab {{ $index === 0 ? 'active' : '' }}"
+								data-batch-id="{{ $b->id }}"
+								data-batch-name="{{ $b->name }}"
+								data-batch-code="{{ $b->code }}"
+								data-batch-status="{{ $isActive ? 'Aktif' : 'Nonaktif' }}"
+								data-batch-status-class="{{ $isActive ? 'bg-label-success' : 'bg-label-secondary' }}"
+								data-batch-dates="{{ \Carbon\Carbon::parse($b->start_date)->translatedFormat('d M Y') }} s/d {{ \Carbon\Carbon::parse($b->end_date)->translatedFormat('d M Y') }}"
+								data-batch-quota="{{ $b->quota ?? '-' }}"
+								data-create-url="{{ route('admin.jobs.create', ['batch_id' => $b->id]) }}">
+								<i class="ti ti-layers-intersect me-1"></i> {{ $b->name }} ({{ $b->code }})
+								@if($isActive)
+									<span class="badge badge-dot bg-success ms-1" title="Gelombang Aktif"></span>
+								@endif
+							</button>
+						</li>
+					@endforeach
+				</ul>
+			</div>
 
 			<!-- Single Card Table untuk Batch yang Sedang Dipilih -->
 			@php
