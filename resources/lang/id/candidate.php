@@ -146,6 +146,10 @@ return [
         'load_city_failed' => 'Gagal memuat kota/kabupaten',
         'expected_salary' => 'Ekspektasi Gaji',
         'expected_salary_placeholder' => '0',
+        'skills' => 'Keahlian & Keterampilan',
+        'skills_hint' => 'Cantumkan keahlian teknis maupun medis Anda untuk meningkatkan skor kecocokan kualifikasi (pisahkan dengan tanda koma).',
+        'skills_label' => 'Daftar Keahlian (Skills)',
+        'skills_placeholder' => 'Contoh: Keperawatan, Pelayanan Medis, Farmasi, Komunikasi Pasien, Microsoft Office',
         'save_profile' => 'Simpan Profil',
     ],
     'apply' => [

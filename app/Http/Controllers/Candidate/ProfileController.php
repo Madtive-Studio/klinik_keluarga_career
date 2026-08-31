@@ -15,7 +15,7 @@ class ProfileController extends Controller
 {
     public function edit(): View
     {
-        $candidate = Candidate::with('profile')
+        $candidate = Candidate::with(['profile', 'skills'])
             ->findOrFail(Auth::guard('candidate')->id());
 
         return view('candidate.profile.edit', [
@@ -48,6 +48,24 @@ class ProfileController extends Controller
                 ['candidate_id' => $candidate->id],
                 $profileData
             );
+
+            if ($request->has('skills')) {
+                $skillsInput = $request->input('skills');
+                if (is_string($skillsInput)) {
+                    $skillNames = array_filter(array_map('trim', explode(',', $skillsInput)));
+                } elseif (is_array($skillsInput)) {
+                    $skillNames = array_filter(array_map('trim', $skillsInput));
+                } else {
+                    $skillNames = [];
+                }
+
+                $candidate->skills()->delete();
+                foreach ($skillNames as $name) {
+                    if (!empty($name)) {
+                        $candidate->skills()->create(['name' => $name]);
+                    }
+                }
+            }
         });
 
         return redirect()

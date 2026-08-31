@@ -3,12 +3,14 @@
 @section('content')
 	@php
 		$profile = $candidate->profile;
+		$hasSkills = $candidate->skills && $candidate->skills->isNotEmpty();
 		$completionFields = ['education_level', 'major', 'university', 'years_of_experience', 'city', 'province', 'expected_salary'];
 		$filledCount = collect($completionFields)->filter(function ($field) use ($profile) {
 			$value = $profile?->{$field};
 			return $value !== null && $value !== '';
 		})->count();
-		$completionPercent = (int) round(($filledCount / count($completionFields)) * 100);
+		if ($hasSkills) $filledCount++;
+		$completionPercent = (int) round(($filledCount / (count($completionFields) + 1)) * 100);
 		$selectedProvince = old('province', $profile?->province);
 		$selectedCity = old('city', $profile?->city);
 		$expectedSalaryValue = old('expected_salary', $profile?->expected_salary);
@@ -65,6 +67,10 @@
 								<li id="checklist-location" data-section="location" class="{{ filled($profile?->province) && filled($profile?->city) ? 'is-complete' : '' }}">
 									<i class="mdi {{ filled($profile?->province) && filled($profile?->city) ? 'mdi-check-circle' : 'mdi-circle-outline' }}"></i>
 									{{ __('candidate.profile.location_preferences') }}
+								</li>
+								<li id="checklist-skills" data-section="skills" class="{{ $hasSkills ? 'is-complete' : '' }}">
+									<i class="mdi {{ $hasSkills ? 'mdi-check-circle' : 'mdi-circle-outline' }}"></i>
+									{{ __('candidate.profile.skills') }}
 								</li>
 							</ul>
 						</div>
@@ -209,6 +215,38 @@
 										<input type="hidden" name="expected_salary" id="expected_salary" value="{{ $expectedSalaryValue }}">
 										@error('expected_salary') <small class="text-danger">{{ $message }}</small> @enderror
 									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="profile-section-card card border-0 shadow-sm mb-4">
+							<div class="card-body p-4">
+								<div class="profile-section-card__title">
+									<span class="profile-section-card__icon"><i class="mdi mdi-tag-multiple-outline"></i></span>
+									<div>
+										<h5 class="mb-0">{{ __('candidate.profile.skills') }}</h5>
+										<p class="text-muted small mb-0">{{ __('candidate.profile.skills_hint') }}</p>
+									</div>
+								</div>
+								<div class="row mt-4">
+									<div class="col-12 mb-3">
+										<label class="form-label">{{ __('candidate.profile.skills_label') }}</label>
+										<input type="text" name="skills" id="skills-input" class="form-control profile-track-field" data-progress-field placeholder="{{ __('candidate.profile.skills_placeholder') }}" value="{{ old('skills', $candidate->skills->pluck('name')->implode(', ')) }}">
+										<small class="text-muted d-block mt-1"><i class="mdi mdi-information-outline me-1"></i>Ketik nama keahlian dan pisahkan dengan tanda koma ( , ).</small>
+										@error('skills') <small class="text-danger">{{ $message }}</small> @enderror
+									</div>
+									@if($candidate->skills->isNotEmpty())
+										<div class="col-12">
+											<small class="text-muted d-block mb-2">Keahlian tersimpan saat ini:</small>
+											<div class="d-flex flex-wrap gap-2">
+												@foreach($candidate->skills as $skill)
+													<span class="badge bg-primary text-white px-3 py-2" style="font-size: 13px;">
+														<i class="mdi mdi-check me-1"></i>{{ $skill->name }}
+													</span>
+												@endforeach
+											</div>
+										</div>
+									@endif
 								</div>
 							</div>
 						</div>

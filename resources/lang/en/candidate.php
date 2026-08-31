@@ -146,6 +146,10 @@ return [
         'load_city_failed' => 'Failed to load cities/regencies',
         'expected_salary' => 'Expected Salary',
         'expected_salary_placeholder' => '0',
+        'skills' => 'Skills & Competencies',
+        'skills_hint' => 'Include your technical or medical skills to increase your qualification matching score (separate with commas).',
+        'skills_label' => 'Skills List',
+        'skills_placeholder' => 'E.g., Nursing, Medical Care, Pharmacy, Patient Communication, Microsoft Office',
         'save_profile' => 'Save Profile',
     ],
     'apply' => [

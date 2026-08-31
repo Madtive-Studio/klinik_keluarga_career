@@ -37,6 +37,7 @@ class ProfileRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:255'],
             'province' => ['nullable', 'string', 'max:255'],
             'expected_salary' => ['nullable', 'integer', 'min:0'],
+            'skills' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
