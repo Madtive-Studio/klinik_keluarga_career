@@ -74,4 +74,20 @@ class CandidateControllerTest extends TestCase
         $response->assertSee('Universitas Indonesia');
         $response->assertSee('Penanganan Gawat Darurat');
     }
+
+    public function test_datatables_returns_json_data(): void
+    {
+        Candidate::factory()->create([
+            'name' => 'Siti Nurhaliza',
+            'email' => 'siti@klinikkeluarga.com',
+            'phone' => '089876543210',
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->get(route('admin.candidates.datatables'));
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['data', 'recordsTotal', 'recordsFiltered']);
+        $this->assertStringContainsString('Siti Nurhaliza', $response->getContent());
+    }
 }

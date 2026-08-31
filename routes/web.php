@@ -56,8 +56,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('jobs/{id}/toggle-salary', [JobManagementController::class, 'toggleShowSalary'])->name('jobs.toggle-salary');
 
         // Candidates
-        Route::resource('candidates', CandidateController::class)->only(['index', 'show']);
         Route::get('candidates/datatables', [CandidateController::class, 'datatables'])->name('candidates.datatables');
+        Route::resource('candidates', CandidateController::class)->only(['index', 'show']);
 
         // Applies
         Route::resource('applies', ApplicantController::class)->only(['index','show','update']);
