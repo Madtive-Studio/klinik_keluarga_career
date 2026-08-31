@@ -151,62 +151,65 @@
 								@endif
 							</div>
 
+							<hr class="my-4">
+
 							<!-- Section 4: Informasi Lowongan Pekerjaan yang Dilamar -->
 							<div class="mb-4">
-								<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-									<i class="ti ti-briefcase text-primary fs-5"></i>
-									<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.job_summary') }}</h6>
-								</div>
-								<div class="card bg-label-secondary border-0 p-3">
-									<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
-										<h6 class="mb-0 fw-bold text-dark">{{ $apply->job->title }}</h6>
-										<div>
-											<span class="badge bg-primary me-1">{{ $apply->job->code }}</span>
-											<span class="badge bg-label-info">{{ $apply->job->type }}</span>
-										</div>
+								<h6 class="text-muted text-uppercase fw-semibold mb-3 d-flex align-items-center gap-2" style="font-size: 13px; letter-spacing: 0.5px;">
+									<i class="ti ti-briefcase text-primary"></i> {{ __('admin.applies.job_summary') }}
+								</h6>
+								<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+									<h5 class="mb-0 fw-bold">{{ $apply->job->title }}</h5>
+									<div>
+										<span class="badge bg-label-primary me-1">{{ $apply->job->code }}</span>
+										<span class="badge bg-label-info">{{ $apply->job->type }}</span>
 									</div>
-									<div class="row g-2 small text-muted">
-										<div class="col-sm-6">
-											<i class="ti ti-category me-1"></i>{{ __('candidate.jobs.category') }}: <strong class="text-dark">{{ $apply->job->category->name ?? '-' }}</strong>
-										</div>
-										<div class="col-sm-6">
-											<i class="ti ti-layers-intersect me-1"></i>{{ __('admin.applies.batch') }}: <strong class="text-dark">{{ $apply->batch->name ?? '-' }} ({{ $apply->batch->code ?? '-' }})</strong>
-										</div>
-										<div class="col-sm-6">
-											<i class="ti ti-certificate me-1"></i>{{ __('admin.applies.job_requirements') }}: <strong class="text-dark">Min. {{ $apply->job->min_education ?? '-' }} | {{ $apply->job->experience ?? '-' }}</strong>
-										</div>
-										<div class="col-sm-6">
-											<i class="ti ti-cash me-1"></i>{{ __('candidate.jobs.salary') }}: 
-											<strong class="text-dark">
-												@if($apply->job->is_show_salary)
-													{{ $apply->job->salary_min ? 'Rp ' . number_format($apply->job->salary_min, 0, ',', '.') . ' - Rp ' . number_format($apply->job->salary_max, 0, ',', '.') : ($apply->job->salary ?? '-') }}
-												@else
-													{{ __('candidate.jobs.hidden') }}
-												@endif
-											</strong>
-										</div>
+								</div>
+								<div class="row g-3">
+									<div class="col-sm-6">
+										<small class="text-muted d-block mb-1">{{ __('candidate.jobs.category') }}</small>
+										<span class="fw-semibold">{{ $apply->job->category->name ?? '-' }}</span>
+									</div>
+									<div class="col-sm-6">
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.batch') }}</small>
+										<span class="fw-semibold">{{ $apply->batch->name ?? '-' }} ({{ $apply->batch->code ?? '-' }})</span>
+									</div>
+									<div class="col-sm-6">
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.job_requirements') }}</small>
+										<span class="fw-semibold">Min. {{ $apply->job->min_education ?? '-' }} | {{ $apply->job->experience ?? '-' }}</span>
+									</div>
+									<div class="col-sm-6">
+										<small class="text-muted d-block mb-1">{{ __('candidate.jobs.salary') }}</small>
+										<span class="fw-bold text-success">
+											@if($apply->job->is_show_salary)
+												{{ $apply->job->salary_min ? 'Rp ' . number_format($apply->job->salary_min, 0, ',', '.') . ' - Rp ' . number_format($apply->job->salary_max, 0, ',', '.') : ($apply->job->salary ?? '-') }}
+											@else
+												{{ __('candidate.jobs.hidden') }}
+											@endif
+										</span>
 									</div>
 								</div>
 							</div>
 
+							<hr class="my-4">
+
 							<!-- Section 5: Surat Lamaran (Cover Letter) & Deskripsi -->
 							<div>
-								<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-									<i class="ti ti-file-description text-primary fs-5"></i>
-									<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.cover_letter') }} & {{ __('admin.applies.description') }}</h6>
-								</div>
+								<h6 class="text-muted text-uppercase fw-semibold mb-3 d-flex align-items-center gap-2" style="font-size: 13px; letter-spacing: 0.5px;">
+									<i class="ti ti-file-description text-primary"></i> {{ __('admin.applies.cover_letter') }} & {{ __('admin.applies.description') }}
+								</h6>
 								@if(!empty($apply->cover_letter))
 									<div class="mb-3">
-										<small class="text-muted fw-bold d-block mb-1">{{ __('admin.applies.cover_letter') }}:</small>
-										<div class="p-3 bg-light rounded border border-light text-dark" style="line-height: 1.6;">
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.cover_letter') }}:</small>
+										<div class="p-3 border rounded" style="line-height: 1.6;">
 											{!! nl2br(e(strip_tags($apply->cover_letter))) !!}
 										</div>
 									</div>
 								@endif
 								@if(!empty($apply->description))
 									<div>
-										<small class="text-muted fw-bold d-block mb-1">{{ __('admin.applies.description') }}:</small>
-										<div class="p-3 bg-light rounded border border-light text-dark" style="line-height: 1.6;">
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.description') }}:</small>
+										<div class="p-3 border rounded" style="line-height: 1.6;">
 											{!! nl2br(e(strip_tags($apply->description))) !!}
 										</div>
 									</div>
