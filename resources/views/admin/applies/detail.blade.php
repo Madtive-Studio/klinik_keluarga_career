@@ -102,7 +102,7 @@
 										<small class="text-muted d-block mb-1">{{ __('admin.applies.education_details') }}</small>
 										<div>
 											<span class="badge bg-label-primary me-1">{{ $profile?->education_level ?? '-' }}</span>
-											<strong class="text-dark">{{ $profile?->major ?? '-' }}</strong>
+											<strong class="text-dark">{{ $profile?->major ?? '-' }}</strong><br>
 											<span class="text-muted">({{ $profile?->university ?? '-' }})</span>
 										</div>
 									</div>
@@ -110,16 +110,16 @@
 										<small class="text-muted d-block mb-1">{{ __('admin.applies.gpa') }}</small>
 										<span class="fw-bold text-primary fs-6">{{ $profile?->gpa ?? '-' }}</span>
 									</div>
-									<div class="col-sm-6">
-										<small class="text-muted d-block mb-1">{{ __('admin.applies.experience_years') }}</small>
-										<span class="fw-semibold">
-											{{ $profile?->years_of_experience ? $profile->years_of_experience . ' tahun' : 'Fresh Graduate / 0 thn' }}
-										</span>
-									</div>
-									<div class="col-sm-6">
+									<div class="col-sm-8">
 										<small class="text-muted d-block mb-1">{{ __('admin.applies.last_experience') }}</small>
 										<span class="fw-semibold">
 											{{ $profile?->last_position ?? '-' }}@if(!empty($profile?->last_company)) di {{ $profile->last_company }}@endif
+										</span>
+									</div>
+									<div class="col-sm-4">
+										<small class="text-muted d-block mb-1">{{ __('admin.applies.experience_years') }}</small>
+										<span class="fw-semibold">
+											{{ $profile?->years_of_experience ? $profile->years_of_experience . ' tahun' : 'Fresh Graduate / 0 thn' }}
 										</span>
 									</div>
 									<div class="col-sm-6">
