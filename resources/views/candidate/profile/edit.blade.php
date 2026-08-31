@@ -82,194 +82,227 @@
 						@csrf
 						@method('PUT')
 
-						<div class="profile-section-card card border-0 shadow-sm mb-4">
-							<div class="card-body p-4">
-								<div class="profile-section-card__title">
-									<span class="profile-section-card__icon"><i class="mdi mdi-account-cog-outline"></i></span>
-									<div>
-										<h5 class="mb-0">Informasi Akun</h5>
-										<p class="text-muted small mb-0">Kelola nama lengkap, username, dan nomor HP Anda</p>
-									</div>
-								</div>
-								<div class="row mt-4">
-									<div class="col-md-6 mb-3">
-										<label class="form-label">Nama Lengkap *</label>
-										<input type="text" name="name" class="form-control" value="{{ old('name', $candidate->name) }}" required>
-										@error('name') <small class="text-danger">{{ $message }}</small> @enderror
-									</div>
-									<div class="col-md-6 mb-3">
-										<label class="form-label">Username *</label>
-										<input type="text" name="username" class="form-control" value="{{ old('username', $candidate->username) }}" required>
-										@error('username') <small class="text-danger">{{ $message }}</small> @enderror
-									</div>
-									<div class="col-md-6 mb-3">
-										<label class="form-label">Email (Terverifikasi)</label>
-										<input type="email" class="form-control bg-light" value="{{ $candidate->email }}" readonly>
-									</div>
-									<div class="col-md-6 mb-3">
-										<label class="form-label">Nomor Telepon *</label>
-										<input type="tel" inputmode="numeric" name="phone" class="form-control" value="{{ old('phone', $candidate->phone) }}" required>
-										@error('phone') <small class="text-danger">{{ $message }}</small> @enderror
-									</div>
-								</div>
-							</div>
-						</div>
+						<!-- Tab Navigation: Profil Umum vs Keahlian (Skills) -->
+						<ul class="nav nav-pills nav-fill mb-4 p-1 bg-light rounded border shadow-sm" id="profile-tabs" role="tablist">
+							<li class="nav-item" role="presentation">
+								<button class="nav-link active fw-bold py-2 d-flex align-items-center justify-content-center gap-1" id="tab-general-btn" data-bs-toggle="pill" data-bs-target="#tab-general" type="button" role="tab" aria-controls="tab-general" aria-selected="true">
+									<i class="mdi mdi-account-circle-outline fs-5"></i> Profil Umum
+								</button>
+							</li>
+							<li class="nav-item" role="presentation">
+								<button class="nav-link fw-bold py-2 d-flex align-items-center justify-content-center gap-1" id="tab-skills-btn" data-bs-toggle="pill" data-bs-target="#tab-skills" type="button" role="tab" aria-controls="tab-skills" aria-selected="false">
+									<i class="mdi mdi-tag-multiple-outline fs-5"></i> Keahlian (Skills)
+									<span class="badge bg-primary text-white ms-1 rounded-pill" id="skills-count-badge">{{ $candidate->skills->count() }}</span>
+								</button>
+							</li>
+						</ul>
 
-						<div class="profile-section-card card border-0 shadow-sm mb-4">
-							<div class="card-body p-4">
-								<div class="profile-section-card__title">
-									<span class="profile-section-card__icon"><i class="mdi mdi-school"></i></span>
-									<div>
-										<h5 class="mb-0">{{ __('candidate.profile.education') }}</h5>
-										<p class="text-muted small mb-0">{{ __('candidate.profile.education_hint') }}</p>
-									</div>
-								</div>
-								<div class="row mt-4">
-									<div class="col-md-6 mb-3">
-										<label class="form-label">{{ __('candidate.profile.education_level') }} *</label>
-										<select name="education_level" class="form-control profile-track-field" data-progress-field required>
-											<option value="">{{ __('common.select') }}</option>
-											@foreach ($educationLevels as $level)
-												<option value="{{ $level->value }}" @selected(old('education_level', $profile?->education_level) === $level->value)>{{ $level->label() }}</option>
-											@endforeach
-										</select>
-										@error('education_level') <small class="text-danger">{{ $message }}</small> @enderror
-									</div>
-									<div class="col-md-6 mb-3">
-										<label class="form-label">{{ __('candidate.profile.major') }}</label>
-										<input type="text" name="major" class="form-control profile-track-field" data-progress-field value="{{ old('major', $profile?->major) }}">
-									</div>
-									<div class="col-md-8 mb-3">
-										<label class="form-label">{{ __('candidate.profile.university') }}</label>
-										<input type="text" name="university" class="form-control profile-track-field" data-progress-field value="{{ old('university', $profile?->university) }}">
-									</div>
-									<div class="col-md-4 mb-3">
-										<label class="form-label">{{ __('candidate.profile.gpa') }}</label>
-										<input type="number" step="0.01" min="0" max="4" name="gpa" class="form-control profile-track-field" data-progress-field value="{{ old('gpa', $profile?->gpa) }}">
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="profile-section-card card border-0 shadow-sm mb-4">
-							<div class="card-body p-4">
-								<div class="profile-section-card__title">
-									<span class="profile-section-card__icon"><i class="mdi mdi-briefcase-outline"></i></span>
-									<div>
-										<h5 class="mb-0">{{ __('candidate.profile.experience') }}</h5>
-										<p class="text-muted small mb-0">{{ __('candidate.profile.experience_hint') }}</p>
-									</div>
-								</div>
-								<div class="row mt-4">
-									<div class="col-md-3 mb-3">
-										<label class="form-label">{{ __('candidate.profile.years_of_experience') }} *</label>
-										<input type="number" min="0" max="50" name="years_of_experience" class="form-control profile-track-field" data-progress-field required value="{{ old('years_of_experience', $profile?->years_of_experience ?? '') }}">
-										@error('years_of_experience') <small class="text-danger">{{ $message }}</small> @enderror
-									</div>
-									<div class="col-md-4 mb-3">
-										<label class="form-label">{{ __('candidate.profile.last_position') }}</label>
-										<input type="text" name="last_position" class="form-control profile-track-field" data-progress-field value="{{ old('last_position', $profile?->last_position) }}">
-									</div>
-									<div class="col-md-5 mb-3">
-										<label class="form-label">{{ __('candidate.profile.last_company') }}</label>
-										<input type="text" name="last_company" class="form-control profile-track-field" data-progress-field value="{{ old('last_company', $profile?->last_company) }}">
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="profile-section-card card border-0 shadow-sm mb-4">
-							<div class="card-body p-4">
-								<div class="profile-section-card__title">
-									<span class="profile-section-card__icon"><i class="mdi mdi-map-marker-outline"></i></span>
-									<div>
-										<h5 class="mb-0">{{ __('candidate.profile.location_preferences') }}</h5>
-										<p class="text-muted small mb-0">{{ __('candidate.profile.location_hint') }}</p>
-									</div>
-								</div>
-								<div class="row mt-4">
-									<div class="col-md-6 mb-3">
-										<label class="form-label">{{ __('candidate.profile.province') }}</label>
-										<select name="province" id="province-select" class="form-control profile-track-field" data-progress-field data-selected="{{ $selectedProvince }}">
-											<option value="">{{ __('candidate.profile.select_province') }}</option>
-										</select>
-										@error('province') <small class="text-danger">{{ $message }}</small> @enderror
-									</div>
-									<div class="col-md-6 mb-3">
-										<label class="form-label">{{ __('candidate.profile.city') }}</label>
-										<select name="city" id="city-select" class="form-control profile-track-field" data-progress-field data-selected="{{ $selectedCity }}" disabled>
-											<option value="">{{ __('candidate.profile.select_city') }}</option>
-										</select>
-										@error('city') <small class="text-danger">{{ $message }}</small> @enderror
-									</div>
-									<div class="col-md-6 mb-3">
-										<label class="form-label">{{ __('candidate.profile.expected_salary') }}</label>
-										<input type="text"
-											inputmode="numeric"
-											id="expected_salary_display"
-											class="form-control salary-amount-input profile-track-field"
-											data-progress-field
-											placeholder="{{ __('candidate.profile.expected_salary_placeholder') }}"
-											value="{{ $expectedSalaryDisplay }}"
-											autocomplete="off">
-										<input type="hidden" name="expected_salary" id="expected_salary" value="{{ $expectedSalaryValue }}">
-										@error('expected_salary') <small class="text-danger">{{ $message }}</small> @enderror
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="profile-section-card card border-0 shadow-sm mb-4">
-							<div class="card-body p-4">
-								<div class="profile-section-card__title">
-									<span class="profile-section-card__icon"><i class="mdi mdi-tag-multiple-outline"></i></span>
-									<div>
-										<h5 class="mb-0">{{ __('candidate.profile.skills') }}</h5>
-										<p class="text-muted small mb-0">{{ __('candidate.profile.skills_hint') }}</p>
-									</div>
-								</div>
-								<div class="row mt-4">
-									<div class="col-12 mb-3">
-										<label class="form-label fw-semibold">{{ __('candidate.profile.skills_label') }}</label>
-										<div class="input-group">
-											<input type="text" id="skill-text-input" class="form-control" placeholder="{{ __('candidate.profile.skills_placeholder') }}" autocomplete="off">
-											<button type="button" class="btn btn-primary" id="btn-add-skill">
-												<i class="mdi mdi-plus me-1"></i>{{ __('candidate.profile.skills_add_btn') }}
-											</button>
+						<div class="tab-content" id="profile-tabs-content">
+							<!-- TAB 1: PROFIL UMUM -->
+							<div class="tab-pane fade show active" id="tab-general" role="tabpanel" aria-labelledby="tab-general-btn">
+								<!-- Section 1: Informasi Akun -->
+								<div class="profile-section-card card border-0 shadow-sm mb-4">
+									<div class="card-body p-4">
+										<div class="profile-section-card__title">
+											<span class="profile-section-card__icon"><i class="mdi mdi-account-cog-outline"></i></span>
+											<div>
+												<h5 class="mb-0">Informasi Akun</h5>
+												<p class="text-muted small mb-0">Kelola nama lengkap, username, dan nomor HP Anda</p>
+											</div>
 										</div>
-										<small class="text-muted d-block mt-1">
-											<i class="mdi mdi-information-outline me-1"></i>Ketik 1 keahlian lalu tekan <strong>Enter</strong> atau klik tombol <strong>Tambah</strong>.
-										</small>
-										@error('skills') <small class="text-danger">{{ $message }}</small> @enderror
-									</div>
-
-									<div class="col-12">
-										<label class="form-label fw-semibold mb-2">Daftar Keahlian Anda:</label>
-										<div id="skills-badge-list" class="d-flex flex-wrap gap-2 p-3 rounded bg-light border" style="min-height: 55px;">
-											@php
-												$currentSkills = old('skills', $candidate->skills->pluck('name')->toArray());
-											@endphp
-											@forelse($currentSkills as $skillName)
-												@if(filled($skillName))
-													<div class="skill-tag badge bg-primary text-white d-inline-flex align-items-center gap-2 px-3 py-2" style="font-size: 13px; border-radius: 6px;">
-														<span>{{ $skillName }}</span>
-														<input type="hidden" name="skills[]" value="{{ $skillName }}">
-														<button type="button" class="btn-close btn-close-white btn-remove-skill" style="font-size: 9px;" aria-label="Remove"></button>
-													</div>
-												@endif
-											@empty
-												<span class="text-muted small italic empty-skill-msg">{{ __('candidate.profile.skills_empty_list') }}</span>
-											@endforelse
+										<div class="row mt-4">
+											<div class="col-md-6 mb-3">
+												<label class="form-label">Nama Lengkap *</label>
+												<input type="text" name="name" class="form-control" value="{{ old('name', $candidate->name) }}" required>
+												@error('name') <small class="text-danger">{{ $message }}</small> @enderror
+											</div>
+											<div class="col-md-6 mb-3">
+												<label class="form-label">Username *</label>
+												<input type="text" name="username" class="form-control" value="{{ old('username', $candidate->username) }}" required>
+												@error('username') <small class="text-danger">{{ $message }}</small> @enderror
+											</div>
+											<div class="col-md-6 mb-3">
+												<label class="form-label">Email (Terverifikasi)</label>
+												<input type="email" class="form-control bg-light" value="{{ $candidate->email }}" readonly>
+											</div>
+											<div class="col-md-6 mb-3">
+												<label class="form-label">Nomor Telepon *</label>
+												<input type="tel" inputmode="numeric" name="phone" class="form-control" value="{{ old('phone', $candidate->phone) }}" required>
+												@error('phone') <small class="text-danger">{{ $message }}</small> @enderror
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						</div>
 
-						<div class="profile-form-actions d-flex justify-content-end">
-							<button type="submit" class="btn btn-primary px-4">
-								<i class="mdi mdi-content-save-outline me-1"></i>{{ __('candidate.profile.save_profile') }}
-							</button>
+								<!-- Section 2: Pendidikan -->
+								<div class="profile-section-card card border-0 shadow-sm mb-4">
+									<div class="card-body p-4">
+										<div class="profile-section-card__title">
+											<span class="profile-section-card__icon"><i class="mdi mdi-school"></i></span>
+											<div>
+												<h5 class="mb-0">{{ __('candidate.profile.education') }}</h5>
+												<p class="text-muted small mb-0">{{ __('candidate.profile.education_hint') }}</p>
+											</div>
+										</div>
+										<div class="row mt-4">
+											<div class="col-md-6 mb-3">
+												<label class="form-label">{{ __('candidate.profile.education_level') }} *</label>
+												<select name="education_level" class="form-control profile-track-field" data-progress-field required>
+													<option value="">{{ __('common.select') }}</option>
+													@foreach ($educationLevels as $level)
+														<option value="{{ $level->value }}" @selected(old('education_level', $profile?->education_level) === $level->value)>{{ $level->label() }}</option>
+													@endforeach
+												</select>
+												@error('education_level') <small class="text-danger">{{ $message }}</small> @enderror
+											</div>
+											<div class="col-md-6 mb-3">
+												<label class="form-label">{{ __('candidate.profile.major') }}</label>
+												<input type="text" name="major" class="form-control profile-track-field" data-progress-field value="{{ old('major', $profile?->major) }}">
+											</div>
+											<div class="col-md-8 mb-3">
+												<label class="form-label">{{ __('candidate.profile.university') }}</label>
+												<input type="text" name="university" class="form-control profile-track-field" data-progress-field value="{{ old('university', $profile?->university) }}">
+											</div>
+											<div class="col-md-4 mb-3">
+												<label class="form-label">{{ __('candidate.profile.gpa') }}</label>
+												<input type="number" step="0.01" min="0" max="4" name="gpa" class="form-control profile-track-field" data-progress-field value="{{ old('gpa', $profile?->gpa) }}">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Section 3: Pengalaman Kerja -->
+								<div class="profile-section-card card border-0 shadow-sm mb-4">
+									<div class="card-body p-4">
+										<div class="profile-section-card__title">
+											<span class="profile-section-card__icon"><i class="mdi mdi-briefcase-outline"></i></span>
+											<div>
+												<h5 class="mb-0">{{ __('candidate.profile.experience') }}</h5>
+												<p class="text-muted small mb-0">{{ __('candidate.profile.experience_hint') }}</p>
+											</div>
+										</div>
+										<div class="row mt-4">
+											<div class="col-md-3 mb-3">
+												<label class="form-label">{{ __('candidate.profile.years_of_experience') }} *</label>
+												<input type="number" min="0" max="50" name="years_of_experience" class="form-control profile-track-field" data-progress-field required value="{{ old('years_of_experience', $profile?->years_of_experience ?? '') }}">
+												@error('years_of_experience') <small class="text-danger">{{ $message }}</small> @enderror
+											</div>
+											<div class="col-md-4 mb-3">
+												<label class="form-label">{{ __('candidate.profile.last_position') }}</label>
+												<input type="text" name="last_position" class="form-control profile-track-field" data-progress-field value="{{ old('last_position', $profile?->last_position) }}">
+											</div>
+											<div class="col-md-5 mb-3">
+												<label class="form-label">{{ __('candidate.profile.last_company') }}</label>
+												<input type="text" name="last_company" class="form-control profile-track-field" data-progress-field value="{{ old('last_company', $profile?->last_company) }}">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Section 4: Lokasi & Ekspektasi Gaji -->
+								<div class="profile-section-card card border-0 shadow-sm mb-4">
+									<div class="card-body p-4">
+										<div class="profile-section-card__title">
+											<span class="profile-section-card__icon"><i class="mdi mdi-map-marker-outline"></i></span>
+											<div>
+												<h5 class="mb-0">{{ __('candidate.profile.location_preferences') }}</h5>
+												<p class="text-muted small mb-0">{{ __('candidate.profile.location_hint') }}</p>
+											</div>
+										</div>
+										<div class="row mt-4">
+											<div class="col-md-6 mb-3">
+												<label class="form-label">{{ __('candidate.profile.province') }}</label>
+												<select name="province" id="province-select" class="form-control profile-track-field" data-progress-field data-selected="{{ $selectedProvince }}">
+													<option value="">{{ __('candidate.profile.select_province') }}</option>
+												</select>
+												@error('province') <small class="text-danger">{{ $message }}</small> @enderror
+											</div>
+											<div class="col-md-6 mb-3">
+												<label class="form-label">{{ __('candidate.profile.city') }}</label>
+												<select name="city" id="city-select" class="form-control profile-track-field" data-progress-field data-selected="{{ $selectedCity }}" disabled>
+													<option value="">{{ __('candidate.profile.select_city') }}</option>
+												</select>
+												@error('city') <small class="text-danger">{{ $message }}</small> @enderror
+											</div>
+											<div class="col-md-6 mb-3">
+												<label class="form-label">{{ __('candidate.profile.expected_salary') }}</label>
+												<input type="text"
+													inputmode="numeric"
+													id="expected_salary_display"
+													class="form-control salary-amount-input profile-track-field"
+													data-progress-field
+													placeholder="{{ __('candidate.profile.expected_salary_placeholder') }}"
+													value="{{ $expectedSalaryDisplay }}"
+													autocomplete="off">
+												<input type="hidden" name="expected_salary" id="expected_salary" value="{{ $expectedSalaryValue }}">
+												@error('expected_salary') <small class="text-danger">{{ $message }}</small> @enderror
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="profile-form-actions d-flex justify-content-end">
+									<button type="submit" class="btn btn-primary px-4">
+										<i class="mdi mdi-content-save-outline me-1"></i>{{ __('candidate.profile.save_profile') }}
+									</button>
+								</div>
+							</div>
+
+							<!-- TAB 2: KEAHLIAN & KETERAMPILAN (SKILLS) -->
+							<div class="tab-pane fade" id="tab-skills" role="tabpanel" aria-labelledby="tab-skills-btn">
+								<div class="profile-section-card card border-0 shadow-sm mb-4">
+									<div class="card-body p-4">
+										<div class="profile-section-card__title">
+											<span class="profile-section-card__icon"><i class="mdi mdi-tag-multiple-outline"></i></span>
+											<div>
+												<h5 class="mb-0">{{ __('candidate.profile.skills') }}</h5>
+												<p class="text-muted small mb-0">{{ __('candidate.profile.skills_hint') }}</p>
+											</div>
+										</div>
+										<div class="row mt-4">
+											<div class="col-12 mb-3">
+												<label class="form-label fw-semibold">{{ __('candidate.profile.skills_label') }}</label>
+												<div class="input-group">
+													<input type="text" id="skill-text-input" class="form-control" placeholder="{{ __('candidate.profile.skills_placeholder') }}" autocomplete="off">
+													<button type="button" class="btn btn-primary" id="btn-add-skill">
+														<i class="mdi mdi-plus me-1"></i>{{ __('candidate.profile.skills_add_btn') }}
+													</button>
+												</div>
+												<small class="text-muted d-block mt-1">
+													<i class="mdi mdi-information-outline me-1"></i>Ketik 1 keahlian lalu tekan <strong>Enter</strong> atau klik tombol <strong>Tambah</strong>.
+												</small>
+												@error('skills') <small class="text-danger">{{ $message }}</small> @enderror
+											</div>
+
+											<div class="col-12">
+												<label class="form-label fw-semibold mb-2">Daftar Keahlian Anda:</label>
+												<div id="skills-badge-list" class="d-flex flex-wrap gap-2 p-3 rounded bg-light border" style="min-height: 80px;">
+													@php
+														$currentSkills = old('skills', $candidate->skills->pluck('name')->toArray());
+													@endphp
+													@forelse($currentSkills as $skillName)
+														@if(filled($skillName))
+															<div class="skill-tag badge bg-primary text-white d-inline-flex align-items-center gap-2 px-3 py-2" style="font-size: 13px; border-radius: 6px;">
+																<span>{{ $skillName }}</span>
+																<input type="hidden" name="skills[]" value="{{ $skillName }}">
+																<button type="button" class="btn-close btn-close-white btn-remove-skill" style="font-size: 9px;" aria-label="Remove"></button>
+															</div>
+														@endif
+													@empty
+														<span class="text-muted small italic empty-skill-msg">{{ __('candidate.profile.skills_empty_list') }}</span>
+													@endforelse
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="profile-form-actions d-flex justify-content-end">
+									<button type="submit" class="btn btn-primary px-4">
+										<i class="mdi mdi-content-save-outline me-1"></i>Simpan Keahlian
+									</button>
+								</div>
+							</div>
 						</div>
 					</form>
 				</div>
@@ -653,6 +686,11 @@
 
 			function updateSkillsProgress() {
 				const skillTags = skillsList ? skillsList.querySelectorAll('.skill-tag') : [];
+				const countBadge = document.getElementById('skills-count-badge');
+				if (countBadge) {
+					countBadge.textContent = skillTags.length;
+				}
+
 				const checklist = document.getElementById('checklist-skills');
 				if (checklist) {
 					const isComplete = skillTags.length > 0;
@@ -666,6 +704,33 @@
 					updateLiveProgress();
 				}
 			}
+
+			// Sidebar checklist click to switch tabs
+			document.querySelectorAll('.profile-checklist li').forEach(function(item) {
+				item.style.cursor = 'pointer';
+				item.addEventListener('click', function() {
+					const section = this.dataset.section;
+					if (section === 'skills') {
+						const skillsTabBtn = document.getElementById('tab-skills-btn');
+						if (skillsTabBtn) {
+							if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+								new bootstrap.Tab(skillsTabBtn).show();
+							} else {
+								skillsTabBtn.click();
+							}
+						}
+					} else {
+						const generalTabBtn = document.getElementById('tab-general-btn');
+						if (generalTabBtn) {
+							if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+								new bootstrap.Tab(generalTabBtn).show();
+							} else {
+								generalTabBtn.click();
+							}
+						}
+					}
+				});
+			});
 
 			loadProvinces();
 			updateLiveProgress();
