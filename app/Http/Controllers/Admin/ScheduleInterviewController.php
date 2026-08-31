@@ -43,10 +43,10 @@ class ScheduleInterviewController extends Controller
         return DataTables::of($query)
             ->addIndexColumn()
             ->editColumn('start_datetime', function ($row) {
-                return Carbon::parse($row->start_datetime)->translatedFormat('d M Y, H:i');
+                return Carbon::parse($row->start_datetime)->format('d-m-Y');
             })
             ->editColumn('end_datetime', function ($row) {
-                return Carbon::parse($row->end_datetime)->translatedFormat('d M Y, H:i');
+                return Carbon::parse($row->end_datetime)->format('d-m-Y');
             })
             ->editColumn('link', function ($row) {
                 return $row->is_online && $row->link ? '<a href="'.$row->link.'" target="_blank" class="btn btn-xs btn-outline-primary"><i class="ti ti-link me-1"></i>Link</a>' : '-';
