@@ -20,6 +20,7 @@
 							<th>{{ __('admin.candidates.address') }}</th>
 							<th>{{ __('admin.candidates.cv') }}</th>
 							<th>{{ __('admin.candidates.status') }}</th>
+							<th class="text-center">{{ __('admin.datatable.action') }}</th>
 						</tr>
 					</thead>
 				</table>
@@ -83,6 +84,12 @@
 						},
 						{
 							data: 'is_online'
+						},
+						{
+							data: 'action',
+							searchable: false,
+							orderable: false,
+							className: 'text-center'
 						},
 					],
 					columnDefs: [{
