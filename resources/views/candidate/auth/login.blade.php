@@ -7,12 +7,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta property="og:locale" content="{{ app()->getLocale() === 'id' ? 'id_ID' : 'en_US' }}" />
 	<meta property="og:type" content="website" />
-	<meta property="og:title" content="Madtive Studio" />
+	<meta property="og:title" content="{{ config('app.name') }} - {{ __('candidate.auth.login_title') }}" />
 	<meta property="og:description" content="{{ config('app.name') }} - {{ __('candidate.footer.about') }}" />
 	<meta property="og:url" content="{{ config('app.url') }}" />
 	<meta property="og:site_name" content="{{ config('app.name') }}" />
 	<meta name="description" content="{{ config('app.name') }} - {{ __('candidate.footer.about') }}">
-	<meta name="keywords" content="Madtive Studio">
+	<meta name="keywords" content="Klinik Keluarga, Karir Klinik Keluarga, Rekrutmen Klinik Keluarga">
 	<!-- Favicon -->
 	@include('layouts.app-icon')
 	<link rel="stylesheet" href="{{ asset('assets/candidate/css/bootstrap.min.css') }}" type="text/css">

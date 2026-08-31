@@ -12,7 +12,7 @@
     <meta property="og:url" content="{{ config('app.url') }}" />
     <meta property="og:site_name" content="{{ config('app.name') }}" />
     <meta name="description" content="{{ config('app.name') }} - {{ __('candidate.footer.about') }}">
-    <meta name="keywords" content="Madtive Studio">
+    <meta name="keywords" content="Klinik Keluarga, Karir Klinik Keluarga, Rekrutmen Klinik Keluarga">
     <!-- Favicon -->
    	@include('layouts.app-icon')
     <!-- Bootstrap core CSS -->

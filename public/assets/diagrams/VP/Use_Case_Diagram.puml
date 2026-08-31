@@ -19,10 +19,14 @@ actor "Pelamar" as Pelamar
 actor "HRD / Admin" as HRD
 
 rectangle "Sistem E-Recruitment Klinik Keluarga" {
-  package "Portal Pelamar" {
+  
+  package "Autentikasi & Akun" {
     usecase "UC-01: Registrasi Akun" as UC01
     usecase "UC-01a: Verifikasi Email" as UC01a
-    usecase "UC-02: Login Akun Pelamar" as UC02
+    usecase "UC-02: Login ke Sistem" as UC02 #E0F2FE
+  }
+
+  package "Portal Pelamar" {
     usecase "UC-03: Kelola Profil & Dokumen" as UC03
     usecase "UC-04: Melihat Lowongan Pekerjaan" as UC04
     usecase "UC-05: Melamar Pekerjaan" as UC05
@@ -30,33 +34,30 @@ rectangle "Sistem E-Recruitment Klinik Keluarga" {
   }
 
   package "Portal HRD / Admin" {
-    usecase "UC-07: Login Akun HRD" as UC07 #FEF3E2
-    usecase "UC-08: Kelola Lowongan & Batch" as UC08 #FEF3E2
-    usecase "UC-09: Meninjau Lamaran & Data Pelamar" as UC09 #FEF3E2
-    usecase "UC-10: Menjadwalkan Wawancara" as UC10 #FEF3E2
+    usecase "UC-07: Kelola Lowongan & Batch" as UC07 #FEF3E2
+    usecase "UC-08: Meninjau Lamaran & Data Pelamar" as UC08 #FEF3E2
+    usecase "UC-09: Menjadwalkan Wawancara" as UC09 #FEF3E2
   }
 }
 
-' Relasi Pelamar
+' Relasi Aktor Pelamar
 Pelamar -- UC01
 Pelamar -- UC02
 Pelamar -- UC03
 Pelamar -- UC04
 Pelamar -- UC06
 
-' Relasi Include & Extend pada Pelamar
+' Relasi Aktor HRD
+HRD -- UC02
+HRD -- UC07
+HRD -- UC08
+HRD -- UC09
+
+' Relasi Include & Extend
 UC01 ..> UC01a : <<include>>
 UC02 ..> UC01 : <<extend>>
 UC05 ..> UC04 : <<extend>>
 UC05 ..> UC03 : <<include>>
-
-' Relasi HRD
-HRD -- UC07
-HRD -- UC08
-HRD -- UC09
-HRD -- UC10
-
-' Relasi Extend pada HRD
-UC10 ..> UC09 : <<extend>>
+UC09 ..> UC08 : <<extend>>
 
 @enduml

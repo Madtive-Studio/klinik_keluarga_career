@@ -15,7 +15,7 @@ return [
     'home' => [
         'title' => 'Beranda',
         'heading' => 'Bergabunglah Bersama Kami!',
-        'subtitle' => 'Kami memiliki komitmen ingin membuat Kota Cianjur sebagai ekosistem IT terbesar, kamu bisa wujudkan impian kamu bersama Madtive Studio!',
+        'subtitle' => 'Bergabunglah bersama Klinik Keluarga untuk memberikan pelayanan kesehatan terbaik, profesional, dan penuh kehangatan bagi masyarakat.',
         'active_batch' => 'Aktif Batch : :batch',
         'no_active_batch' => 'Tidak ada batch aktif',
         'search_placeholder' => 'Cari loker...',
@@ -175,8 +175,8 @@ return [
     'verification' => [
         'email_title' => 'Verifikasi Email',
         'success_title' => 'Verifikasi Berhasil',
-        'success_message' => 'Email kamu berhasil di verifikasi',
-        'success_next' => 'Selanjutnya kamu dapat login pada tombol di bawah ini.',
+        'success_message' => 'Email Anda berhasil diverifikasi.',
+        'success_next' => 'Selanjutnya Anda dapat login melalui tombol di bawah ini.',
     ],
     'footer' => [
         'about' => 'Klinik Keluarga hadir sebagai rumah sehat, bukan sekadar klinik biasa. Kami menghadirkan suasana nyaman, bersih, dan asri dengan pelayanan profesional penuh kehangatan keluarga. Kami ingin setiap kunjungan menjadi oase yang menumbuhkan spirit untuk sehat—tempat berkumpulnya keluarga dalam kasih sayang, bukan hanya mengobati penyakit.',
@@ -185,7 +185,7 @@ return [
         'hours_days' => 'Senin - Minggu',
         'hours_morning' => 'Pagi  : 06.00 - 13.00 WIB',
         'hours_afternoon' => 'Siang : 14.00 - 20.00 WIB',
-        'copyright' => '© 2026 - :year Madtive Studio',
+        'copyright' => '© 2026 - :year Klinik Keluarga',
     ],
     'js' => [
         'loading' => 'Memuat data...',
