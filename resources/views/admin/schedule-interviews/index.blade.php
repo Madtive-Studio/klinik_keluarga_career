@@ -6,6 +6,10 @@
 				<strong>{{ $message }}</strong>
 			</div>
 		@endif
+		@php
+			$defaultStartDate = now()->startOfMonth()->format('Y-m-d');
+			$defaultEndDate = now()->endOfMonth()->format('Y-m-d');
+		@endphp
 		<!-- Date Range Filter Card -->
 		<div class="card mb-4 border-0 shadow-sm">
 			<div class="card-body py-3">
@@ -14,19 +18,19 @@
 						<label class="form-label fw-semibold text-dark mb-1">
 							<i class="ti ti-calendar me-1 text-primary"></i>{{ __('admin.schedule_interviews.start_date_filter') }}
 						</label>
-						<input type="date" class="form-control" id="filter_start_date" name="start_date">
+						<input type="date" class="form-control" id="filter_start_date" name="start_date" value="{{ $defaultStartDate }}">
 					</div>
 					<div class="col-md-4 col-sm-6">
 						<label class="form-label fw-semibold text-dark mb-1">
 							<i class="ti ti-calendar-event me-1 text-primary"></i>{{ __('admin.schedule_interviews.end_date_filter') }}
 						</label>
-						<input type="date" class="form-control" id="filter_end_date" name="end_date">
+						<input type="date" class="form-control" id="filter_end_date" name="end_date" value="{{ $defaultEndDate }}">
 					</div>
 					<div class="col-md-4 col-12 d-flex gap-2">
 						<button type="button" id="btn-filter" class="btn btn-primary flex-grow-1">
 							<i class="ti ti-filter me-1"></i> {{ __('admin.datatable.filter') }}
 						</button>
-						<button type="button" id="btn-reset" class="btn btn-outline-secondary" title="Reset Filter">
+						<button type="button" id="btn-reset" class="btn btn-outline-secondary" title="Reset ke Bulan Ini">
 							<i class="ti ti-refresh me-1"></i> Reset
 						</button>
 					</div>
@@ -141,6 +145,9 @@
 				$('div.head-label').html('<h5 class="card-title mb-0">{{ __('admin.schedule_interviews.title') }}</h5>');
 			}
 
+			const defaultStartDate = '{{ $defaultStartDate }}';
+			const defaultEndDate = '{{ $defaultEndDate }}';
+
 			$('#btn-filter').on('click', function() {
 				if (dt_basic) {
 					dt_basic.ajax.reload();
@@ -148,8 +155,8 @@
 			});
 
 			$('#btn-reset').on('click', function() {
-				$('#filter_start_date').val('');
-				$('#filter_end_date').val('');
+				$('#filter_start_date').val(defaultStartDate);
+				$('#filter_end_date').val(defaultEndDate);
 				if (dt_basic) {
 					dt_basic.ajax.reload();
 				}
