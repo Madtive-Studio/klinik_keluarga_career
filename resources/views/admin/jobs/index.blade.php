@@ -32,12 +32,12 @@
 			</div>
 		@endif
 
-		<!-- Global Filter Card (Rentang Gaji Slider 0 - 100 Juta, Step 1 Juta) -->
+		<!-- Global Filter Card (Semua Filter dalam 1 Row Rapi & Responsif) -->
 		<div class="card mb-4">
-			<div class="card-body">
+			<div class="card-body py-3">
 				<form id="filter-form" class="row g-3 align-items-end">
-					<div class="col-md-4 col-sm-6">
-						<label class="form-label fw-semibold">{{ __('admin.jobs.category') }}</label>
+					<div class="col-lg-3 col-md-6 col-sm-12">
+						<label class="form-label fw-semibold mb-1">{{ __('admin.jobs.category') }}</label>
 						<select name="category" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
 							@foreach ($categories as $category)
@@ -45,8 +45,8 @@
 							@endforeach
 						</select>
 					</div>
-					<div class="col-md-4 col-sm-6">
-						<label class="form-label fw-semibold">{{ __('admin.jobs.type') }}</label>
+					<div class="col-lg-2 col-md-6 col-sm-12">
+						<label class="form-label fw-semibold mb-1">{{ __('admin.jobs.type') }}</label>
 						<select name="type" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
 							@foreach (\App\Enums\JobType::getWithLabels() as $value => $label)
@@ -54,8 +54,8 @@
 							@endforeach
 						</select>
 					</div>
-					<div class="col-md-4 col-sm-6">
-						<label class="form-label fw-semibold">{{ __('admin.jobs.min_education') }}</label>
+					<div class="col-lg-2 col-md-6 col-sm-12">
+						<label class="form-label fw-semibold mb-1">{{ __('admin.jobs.min_education') }}</label>
 						<select name="min_education" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
 							@foreach (\App\Enums\EducationLevel::cases() as $level)
@@ -63,24 +63,24 @@
 							@endforeach
 						</select>
 					</div>
-					<div class="col-md-8 col-12">
-						<div class="d-flex align-items-center justify-content-between mb-2">
-							<label class="form-label fw-semibold mb-0">
-								<i class="ti ti-cash me-1 text-primary"></i>Rentang Gaji:
+					<div class="col-lg-3 col-md-6 col-sm-12">
+						<div class="d-flex align-items-center justify-content-between mb-1">
+							<label class="form-label fw-semibold mb-0 small">
+								<i class="ti ti-cash me-1 text-primary"></i>Gaji:
 							</label>
-							<span id="salary-range-label" class="badge bg-label-primary fs-6 px-3 py-1 fw-bold">Rp 0 - Rp 100.000.000</span>
+							<span id="salary-range-label" class="badge bg-label-primary px-2 py-1 fw-bold" style="font-size: 11px;">Rp 0 - Rp 100 Jt</span>
 						</div>
-						<div class="px-2 pt-2 pb-1">
+						<div class="px-2 pt-1 pb-1">
 							<div id="salary-slider"></div>
 						</div>
 						<input type="hidden" name="salary_min" id="salary_min" value="">
 						<input type="hidden" name="salary_max" id="salary_max" value="">
 					</div>
-					<div class="col-md-4 col-12 d-flex justify-content-end gap-2 align-items-center">
-						<button type="button" id="btn-reset-filters" class="btn btn-outline-secondary">
+					<div class="col-lg-2 col-md-6 col-sm-12 d-flex gap-2">
+						<button type="button" id="btn-reset-filters" class="btn btn-outline-secondary flex-grow-1" title="Reset Filter">
 							<i class="ti ti-refresh me-1"></i> Reset
 						</button>
-						<button type="submit" class="btn btn-primary">
+						<button type="submit" class="btn btn-primary flex-grow-1">
 							<i class="ti ti-filter me-1"></i>{{ __('admin.datatable.filter') }}
 						</button>
 					</div>
@@ -212,6 +212,13 @@
 					}
 				});
 
+				function formatRupiahShort(val) {
+					if (val === 0) return 'Rp 0';
+					if (val >= 1000000000) return 'Rp ' + (val / 1000000000) + ' M';
+					if (val >= 1000000) return 'Rp ' + (val / 1000000) + ' Jt';
+					return 'Rp ' + new Intl.NumberFormat('id-ID').format(val);
+				}
+
 				slider.noUiSlider.on('update', function (values, handle) {
 					const minVal = parseInt(values[0]);
 					const maxVal = parseInt(values[1]);
@@ -219,9 +226,7 @@
 					salaryMinInput.value = minVal > 0 ? minVal : '';
 					salaryMaxInput.value = maxVal < 100000000 ? maxVal : '';
 
-					const formattedMin = 'Rp ' + new Intl.NumberFormat('id-ID').format(minVal);
-					const formattedMax = 'Rp ' + new Intl.NumberFormat('id-ID').format(maxVal);
-					salaryLabel.innerText = formattedMin + ' - ' + formattedMax;
+					salaryLabel.innerText = formatRupiahShort(minVal) + ' - ' + formatRupiahShort(maxVal);
 				});
 
 				slider.noUiSlider.on('change', function () {
