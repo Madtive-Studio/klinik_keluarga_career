@@ -86,12 +86,12 @@
 						<ul class="nav nav-pills nav-fill mb-4 p-1 bg-light rounded border shadow-sm" id="profile-tabs" role="tablist">
 							<li class="nav-item" role="presentation">
 								<button class="nav-link active fw-bold py-2 d-flex align-items-center justify-content-center gap-1" id="tab-general-btn" data-bs-toggle="pill" data-bs-target="#tab-general" type="button" role="tab" aria-controls="tab-general" aria-selected="true">
-									<i class="mdi mdi-account-circle-outline fs-5"></i> Profil Umum
+									<i class="mdi mdi-account-outline fs-5"></i> Profil Umum
 								</button>
 							</li>
 							<li class="nav-item" role="presentation">
 								<button class="nav-link fw-bold py-2 d-flex align-items-center justify-content-center gap-1" id="tab-skills-btn" data-bs-toggle="pill" data-bs-target="#tab-skills" type="button" role="tab" aria-controls="tab-skills" aria-selected="false">
-									<i class="mdi mdi-tag-multiple-outline fs-5"></i> Keahlian (Skills)
+									<i class="mdi mdi-certificate fs-5"></i> Keahlian (Skills)
 									<span class="badge bg-primary text-white ms-1 rounded-pill" id="skills-count-badge">{{ $candidate->skills->count() }}</span>
 								</button>
 							</li>
@@ -104,7 +104,7 @@
 								<div class="profile-section-card card border-0 shadow-sm mb-4">
 									<div class="card-body p-4">
 										<div class="profile-section-card__title">
-											<span class="profile-section-card__icon"><i class="mdi mdi-account-cog-outline"></i></span>
+											<span class="profile-section-card__icon"><i class="mdi mdi-account-settings"></i></span>
 											<div>
 												<h5 class="mb-0">Informasi Akun</h5>
 												<p class="text-muted small mb-0">Kelola nama lengkap, username, dan nomor HP Anda</p>
@@ -253,7 +253,7 @@
 								<div class="profile-section-card card border-0 shadow-sm mb-4">
 									<div class="card-body p-4">
 										<div class="profile-section-card__title">
-											<span class="profile-section-card__icon"><i class="mdi mdi-tag-multiple-outline"></i></span>
+											<span class="profile-section-card__icon"><i class="mdi mdi-certificate"></i></span>
 											<div>
 												<h5 class="mb-0">{{ __('candidate.profile.skills') }}</h5>
 												<p class="text-muted small mb-0">{{ __('candidate.profile.skills_hint') }}</p>
