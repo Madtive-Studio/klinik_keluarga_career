@@ -8,62 +8,232 @@
 					@method('PATCH')
 				@endif
 				<div class="col-md-7 mb-6">
-					<div class="card">
-						<div class="card-header d-flex justify-content-between align-items-center">
-							<h5 class="mb-0">
-								<i class="menu-icon tf-icons ti ti-user"></i>
-								{{ __('admin.applies.detail_title') }}
-							</h5>
+					<!-- Profile & Application Dossier Card -->
+					<div class="card shadow-sm border-0 mb-4">
+						<div class="card-header bg-white border-bottom pb-3">
+							<div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+								<div class="d-flex align-items-center gap-3">
+									<div class="avatar avatar-md bg-label-primary rounded-circle d-flex align-items-center justify-content-center fw-bold fs-5">
+										{{ strtoupper(substr($apply->candidate->name ?? 'P', 0, 2)) }}
+									</div>
+									<div>
+										<h5 class="mb-0 fw-bold text-dark">{{ $apply->candidate->name }}</h5>
+										<span class="text-muted small">
+											<i class="ti ti-calendar me-1"></i>{{ __('admin.applies.applied_at') }}: <strong>{{ date('d M Y, H:i', strtotime($apply->created_at)) }} WIB</strong>
+										</span>
+									</div>
+								</div>
+								<div>
+									@php
+										$statusBadges = [
+											'IN REVIEW' => 'bg-label-info',
+											'NOT SUITABLE' => 'bg-label-danger',
+											'SHORTLISTED' => 'bg-label-success',
+											'HIRED' => 'bg-label-primary',
+										];
+										$badgeClass = $statusBadges[$apply->status] ?? 'bg-label-secondary';
+										$statusLabel = $statuses[$apply->status] ?? $apply->status;
+									@endphp
+									<span class="badge {{ $badgeClass }} fs-6 px-3 py-2">
+										<i class="ti ti-circle-check me-1"></i>{{ $statusLabel }}
+									</span>
+								</div>
+							</div>
 						</div>
-						<div class="card-body row">
-							<div class="col-md-12">
-								<div class="mb-3">
-									<label class="form-label">{{ __('admin.applies.batch') }}</label>
-									<div class="input-group input-group-merge">
-										<input type="text" class="form-control dt-full-name" value="{{ $apply->batch->code . ' - ' . $apply->batch->name ?? '-' }}" readonly />
+
+						<div class="card-body p-4">
+							@php
+								$profile = $apply->candidate->profile;
+							@endphp
+
+							<!-- Section 1: Biodata & Kontak Pelamar -->
+							<div class="mb-4">
+								<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+									<i class="ti ti-user-check text-primary fs-5"></i>
+									<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.candidate_personal_info') }}</h6>
+								</div>
+								<div class="row g-3">
+									<div class="col-sm-6">
+										<div class="p-2 rounded bg-light border-0">
+											<small class="text-muted d-block mb-1">{{ __('common.email') }}</small>
+											<span class="fw-semibold text-dark">{{ $apply->candidate->email }}</span>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="p-2 rounded bg-light border-0">
+											<small class="text-muted d-block mb-1">{{ __('admin.applies.phone_wa') }}</small>
+											<span class="fw-semibold text-dark">
+												@if(!empty($apply->candidate->phone))
+													<a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $apply->candidate->phone) }}" target="_blank" class="text-success text-decoration-none">
+														<i class="ti ti-brand-whatsapp me-1"></i>{{ $apply->candidate->phone }}
+													</a>
+												@else
+													-
+												@endif
+											</span>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="p-2 rounded bg-light border-0">
+											<small class="text-muted d-block mb-1">{{ __('admin.applies.birth_info') }}</small>
+											<span class="fw-semibold text-dark">
+												@if(!empty($apply->candidate->birth_date))
+													{{ \Carbon\Carbon::parse($apply->candidate->birth_date)->translatedFormat('d F Y') }}
+													<span class="badge bg-label-secondary ms-1">{{ \Carbon\Carbon::parse($apply->candidate->birth_date)->age }} tahun</span>
+												@else
+													-
+												@endif
+											</span>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="p-2 rounded bg-light border-0">
+											<small class="text-muted d-block mb-1">{{ __('admin.applies.domicile') }}</small>
+											<span class="fw-semibold text-dark">{{ $profile?->city ?? '-' }}@if(!empty($profile?->province)), {{ $profile->province }}@endif</span>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="p-2 rounded bg-light border-0">
+											<small class="text-muted d-block mb-1">{{ __('candidate.auth.address') }}</small>
+											<span class="fw-semibold text-dark">{{ $apply->candidate->address ?? '-' }}</span>
+										</div>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-12">
-								<div class="mb-3">
-									<label class="form-label">{{ __('admin.applies.job_vacancy') }}</label>
-									<div class="input-group input-group-merge">
-										<input type="text" class="form-control dt-full-name" value="{{ $apply->job->code . ' - ' . $apply->job->title . ' - ' . $apply->job->type . ' | ' . $apply->job->category->name }}" readonly />
+
+							<!-- Section 2: Riwayat Pendidikan & Pengalaman -->
+							<div class="mb-4">
+								<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+									<i class="ti ti-school text-primary fs-5"></i>
+									<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.candidate_education_info') }}</h6>
+								</div>
+								<div class="row g-3">
+									<div class="col-sm-8">
+										<div class="p-2 rounded bg-light border-0">
+											<small class="text-muted d-block mb-1">{{ __('admin.applies.education_details') }}</small>
+											<div>
+												<span class="badge bg-label-primary me-1">{{ $profile?->education_level ?? '-' }}</span>
+												<strong class="text-dark">{{ $profile?->major ?? '-' }}</strong>
+												<span class="text-muted">({{ $profile?->university ?? '-' }})</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="p-2 rounded bg-light border-0">
+											<small class="text-muted d-block mb-1">{{ __('admin.applies.gpa') }}</small>
+											<span class="fw-bold text-primary fs-6">{{ $profile?->gpa ?? '-' }}</span>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="p-2 rounded bg-light border-0">
+											<small class="text-muted d-block mb-1">{{ __('admin.applies.experience_years') }}</small>
+											<span class="fw-semibold text-dark">
+												{{ $profile?->years_of_experience ? $profile->years_of_experience . ' tahun' : 'Fresh Graduate / 0 thn' }}
+											</span>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="p-2 rounded bg-light border-0">
+											<small class="text-muted d-block mb-1">{{ __('admin.applies.last_experience') }}</small>
+											<span class="fw-semibold text-dark">
+												{{ $profile?->last_position ?? '-' }}@if(!empty($profile?->last_company)) di {{ $profile->last_company }}@endif
+											</span>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="p-2 rounded bg-light border-0">
+											<small class="text-muted d-block mb-1">{{ __('admin.applies.expected_salary') }}</small>
+											<span class="fw-bold text-success">
+												{{ $profile?->expected_salary ? 'Rp ' . number_format($profile->expected_salary, 0, ',', '.') : 'Negosiasi / Mengikuti Standar' }}
+											</span>
+										</div>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-12">
-								<div class="mb-3">
-									<label class="form-label">{{ __('admin.applies.applicant_detail') }}</label>
-									<div class="input-group input-group-merge">
-										<input type="text" class="form-control dt-full-name" value="{{ $apply->candidate->name . ' - ' . $apply->candidate->phone . ' - ' . $apply->candidate->email }}" readonly />
+
+							<!-- Section 3: Keahlian Pelamar (Skills) -->
+							<div class="mb-4">
+								<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+									<i class="ti ti-tags text-primary fs-5"></i>
+									<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.candidate_skills_info') }}</h6>
+								</div>
+								<div class="p-2 rounded bg-light border-0">
+									@if($apply->candidate->skills && $apply->candidate->skills->isNotEmpty())
+										<div class="d-flex flex-wrap gap-2">
+											@foreach($apply->candidate->skills as $skill)
+												<span class="badge bg-white text-dark border shadow-xs px-3 py-2">
+													<i class="ti ti-check text-primary me-1"></i>{{ $skill->name }}
+												</span>
+											@endforeach
+										</div>
+									@else
+										<span class="text-muted small italic">{{ __('admin.applies.no_skills') }}</span>
+									@endif
+								</div>
+							</div>
+
+							<!-- Section 4: Informasi Lowongan Pekerjaan yang Dilamar -->
+							<div class="mb-4">
+								<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+									<i class="ti ti-briefcase text-primary fs-5"></i>
+									<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.job_summary') }}</h6>
+								</div>
+								<div class="card bg-label-secondary border-0 p-3">
+									<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+										<h6 class="mb-0 fw-bold text-dark">{{ $apply->job->title }}</h6>
+										<div>
+											<span class="badge bg-primary me-1">{{ $apply->job->code }}</span>
+											<span class="badge bg-label-info">{{ $apply->job->type }}</span>
+										</div>
+									</div>
+									<div class="row g-2 small text-muted">
+										<div class="col-sm-6">
+											<i class="ti ti-category me-1"></i>{{ __('candidate.jobs.category') }}: <strong class="text-dark">{{ $apply->job->category->name ?? '-' }}</strong>
+										</div>
+										<div class="col-sm-6">
+											<i class="ti ti-layers-intersect me-1"></i>{{ __('admin.applies.batch') }}: <strong class="text-dark">{{ $apply->batch->name ?? '-' }} ({{ $apply->batch->code ?? '-' }})</strong>
+										</div>
+										<div class="col-sm-6">
+											<i class="ti ti-certificate me-1"></i>{{ __('admin.applies.job_requirements') }}: <strong class="text-dark">Min. {{ $apply->job->min_education ?? '-' }} | {{ $apply->job->experience ?? '-' }}</strong>
+										</div>
+										<div class="col-sm-6">
+											<i class="ti ti-cash me-1"></i>{{ __('candidate.jobs.salary') }}: 
+											<strong class="text-dark">
+												@if($apply->job->is_show_salary)
+													{{ $apply->job->salary_min ? 'Rp ' . number_format($apply->job->salary_min, 0, ',', '.') . ' - Rp ' . number_format($apply->job->salary_max, 0, ',', '.') : ($apply->job->salary ?? '-') }}
+												@else
+													{{ __('candidate.jobs.hidden') }}
+												@endif
+											</strong>
+										</div>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-12">
-								<div class="mb-3">
-									<label class="form-label">{{ __('admin.applies.applied_at') }}</label>
-									<div class="input-group input-group-merge">
-										<input type="text" class="form-control dt-full-name" value="{{ date('d M Y H:i:s', strtotime($apply->created_at)) }}" />
-									</div>
+
+							<!-- Section 5: Surat Lamaran (Cover Letter) & Deskripsi -->
+							<div>
+								<div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+									<i class="ti ti-file-description text-primary fs-5"></i>
+									<h6 class="fw-bold mb-0 text-uppercase tracking-wider text-primary small">{{ __('admin.applies.cover_letter') }} & {{ __('admin.applies.description') }}</h6>
 								</div>
-							</div>
-							<div class="col-md-12">
-								<div class="mb-3">
-									<label class="form-label">{{ __('admin.applies.cover_letter') }}</label>
-									<div class="input-group input-group-merge">
-										{!! $apply->cover_letter !!}
+								@if(!empty($apply->cover_letter))
+									<div class="mb-3">
+										<small class="text-muted fw-bold d-block mb-1">{{ __('admin.applies.cover_letter') }}:</small>
+										<div class="p-3 bg-light rounded border border-light text-dark" style="line-height: 1.6;">
+											{!! nl2br(e(strip_tags($apply->cover_letter))) !!}
+										</div>
 									</div>
-								</div>
-							</div>
-							<div class="col-md-12">
-								<div class="mb-3">
-									<label class="form-label">{{ __('admin.applies.description') }}</label>
-									<div class="input-group input-group-merge">
-										{!! $apply->description !!}
+								@endif
+								@if(!empty($apply->description))
+									<div>
+										<small class="text-muted fw-bold d-block mb-1">{{ __('admin.applies.description') }}:</small>
+										<div class="p-3 bg-light rounded border border-light text-dark" style="line-height: 1.6;">
+											{!! nl2br(e(strip_tags($apply->description))) !!}
+										</div>
 									</div>
-								</div>
+								@endif
 							</div>
+
 						</div>
 					</div>
 				</div>
