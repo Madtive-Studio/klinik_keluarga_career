@@ -1,19 +1,10 @@
 @extends('admin.layouts.main')
 @section('content')
 	<div class="container-xxl flex-grow-1 container-p-y">
-		<!-- Header & Breadcrumb Navigation -->
-		<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
-			<div>
-				<h4 class="fw-bold mb-1">
-					<span class="text-muted fw-light">{{ __('admin.sidebar.candidate_management') }} /</span> {{ $candidate->name }}
-				</h4>
-				<p class="text-muted mb-0 small">Direktori profil lengkap pelamar, latar belakang pendidikan, keahlian, dan riwayat lamaran.</p>
-			</div>
-			<div>
-				<a href="{{ route('admin.candidates.index') }}" class="btn btn-outline-secondary">
-					<i class="ti ti-arrow-left me-1"></i> {{ __('admin.jobs.back_to_list') }}
-				</a>
-			</div>
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<a href="{{ route('admin.candidates.index') }}" class="btn btn-outline-secondary">
+				<i class="ti ti-arrow-left me-1"></i> {{ __('admin.jobs.back_to_list') }}
+			</a>
 		</div>
 
 		<div class="row">
