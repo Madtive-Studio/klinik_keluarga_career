@@ -5,7 +5,9 @@ return [
         'email_not_verified' => 'Email Anda belum diverifikasi.',
         'invalid_credentials' => 'Email atau password salah!',
         'register_success' => 'Pendaftaran berhasil, silakan periksa kotak masuk email Anda untuk melakukan verifikasi.',
-        'email_verified' => 'Email Anda sudah diverifikasi.',
+        'email_verified' => 'Email Anda berhasil diverifikasi.',
+        'already_verified' => 'Akun Anda sudah terverifikasi sebelumnya. Silakan langsung masuk.',
+        'invalid_verification_token' => 'Tautan verifikasi tidak valid atau tidak ditemukan.',
     ],
     'profile' => [
         'saved' => 'Profil berhasil disimpan.',

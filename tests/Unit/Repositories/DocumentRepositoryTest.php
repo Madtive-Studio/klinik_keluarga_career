@@ -115,7 +115,7 @@ class DocumentRepositoryTest extends TestCase
     {
         $candidate = Candidate::factory()->create();
         Document::factory()->for($candidate)->cv()->create(['name' => 'a.pdf']);
-        Document::factory()->for($candidate)->mcu()->create(['name' => 'b.pdf']);
+        Document::factory()->for($candidate)->suratLamaran()->create(['name' => 'b.pdf']);
 
         $cvs = $this->repository->findCVsByCandidate($candidate->id);
 
@@ -132,10 +132,10 @@ class DocumentRepositoryTest extends TestCase
     {
         Storage::fake('public');
 
-        $file = UploadedFile::fake()->create('mcu_result.pdf', 100, 'application/pdf');
-        $path = $this->repository->uploadDocument($file, DocumentType::MCU);
+        $file = UploadedFile::fake()->create('surat_lamaran.pdf', 100, 'application/pdf');
+        $path = $this->repository->uploadDocument($file, DocumentType::SURAT_LAMARAN);
 
-        $this->assertStringContainsString('candidates/documents/mcu', $path);
+        $this->assertStringContainsString('candidates/documents/surat_lamaran', $path);
         Storage::disk('public')->assertExists($path);
     }
 

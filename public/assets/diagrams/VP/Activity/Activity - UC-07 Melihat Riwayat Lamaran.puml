@@ -1,0 +1,63 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam defaultFontColor #000000
+skinparam shadowing false
+skinparam swimlaneWidth 270
+
+skinparam activity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  BorderThickness 1
+  DiamondBackgroundColor #7ACFF5
+  DiamondBorderColor #000000
+}
+
+skinparam ArrowColor #000000
+skinparam PartitionBorderColor #000000
+skinparam PartitionBackgroundColor #E6E6E6
+skinparam PartitionFontSize 11
+skinparam PartitionFontStyle plain
+
+left header
+<b><size:13>Melihat Riwayat Lamaran</size></b>
+endheader
+
+|#E6E6E6|Pelamar|
+|#E6E6E6|Sistem|
+
+|Pelamar|
+start
+:Akses Menu\n"Lamaran Saya";
+
+|Sistem|
+:Query data riwayat\nlamaran kandidat;
+
+if (Data riwayat lamaran\nditemukan?) then (Tidak)
+  :Tampilkan halaman kosong\n"Belum Ada Lamaran";
+  |Pelamar|
+  :Melihat pesan belum ada\nlamaran yang diajukan;
+  stop
+else (Ya)
+  |Sistem|
+  :Tampilkan daftar lamaran\n& badge status terkini;
+  |Pelamar|
+  :Pilih kartu lamaran &\ntinjau status tahapan;
+  |Sistem|
+  :Cek status seleksi &\njadwal wawancara;
+  if (Lolos ke tahap\nwawancara?) then (Tidak)
+    :Tampilkan status review\natau belum lolos seleksi;
+    |Pelamar|
+    :Melihat pembaruan status\nreview / seleksi;
+    stop
+  else (Ya)
+    |Sistem|
+    :Tampilkan status lolos &\nkirim email undangan interview;
+    :Kirim detail jadwal, link\nmeeting / lokasi via surel;
+    |Pelamar|
+    :Menerima notifikasi email\n& konfirmasi jadwal interview;
+    stop
+  endif
+endif
+
+@enduml

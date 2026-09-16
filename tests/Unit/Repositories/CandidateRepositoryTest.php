@@ -79,7 +79,7 @@ class CandidateRepositoryTest extends TestCase
     {
         $candidate = Candidate::factory()->create();
         Document::factory()->for($candidate)->cv()->create();
-        Document::factory()->for($candidate)->mcu()->create();
+        Document::factory()->for($candidate)->suratLamaran()->create();
 
         $result = $this->repository->getWithDocumentsPaginated($candidate->id, 10, DocumentType::CV->value);
 

@@ -5,11 +5,10 @@ namespace App\Enums;
 enum DocumentType: string
 {
     case CV = 'CV';
-    case IJAZAH = 'IJAZAH';
+    case SURAT_LAMARAN = 'SURAT_LAMARAN';
     case STR = 'STR';
-    case SIP = 'SIP';
     case CERTIFICATE = 'CERTIFICATE';
-    case MCU = 'MCU';
+    case IJAZAH = 'IJAZAH';
     case OTHERS = 'OTHERS';
 
     public static function getValues(): array
@@ -30,11 +29,10 @@ enum DocumentType: string
     {
         return match($this) {
             self::CV => 'candidates/documents/cv',
-            self::IJAZAH => 'candidates/documents/ijazah',
+            self::SURAT_LAMARAN => 'candidates/documents/surat_lamaran',
             self::STR => 'candidates/documents/str',
-            self::SIP => 'candidates/documents/sip',
             self::CERTIFICATE => 'candidates/documents/certificate',
-            self::MCU => 'candidates/documents/mcu',
+            self::IJAZAH => 'candidates/documents/ijazah',
             self::OTHERS => 'candidates/documents/others',
         };
     }
@@ -48,11 +46,10 @@ enum DocumentType: string
     {
         return match($this) {
             self::CV => 'bg-primary',
-            self::IJAZAH => 'bg-info',
+            self::SURAT_LAMARAN => 'bg-indigo',
             self::STR => 'bg-success',
-            self::SIP => 'bg-success',
             self::CERTIFICATE => 'bg-warning',
-            self::MCU => 'bg-danger',
+            self::IJAZAH => 'bg-info',
             self::OTHERS => 'bg-secondary',
         };
     }

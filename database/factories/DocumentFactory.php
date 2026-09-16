@@ -34,12 +34,12 @@ class DocumentFactory extends Factory
         ]);
     }
     
-    // State untuk tipe MCU
-    public function mcu(): static
+    // State untuk tipe Surat Lamaran
+    public function suratLamaran(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => DocumentType::MCU,
-            'name' => 'mcu_' . $this->faker->date() . '.pdf',
+            'type' => DocumentType::SURAT_LAMARAN,
+            'name' => 'surat_lamaran_' . $this->faker->name() . '.pdf',
         ]);
     }
     

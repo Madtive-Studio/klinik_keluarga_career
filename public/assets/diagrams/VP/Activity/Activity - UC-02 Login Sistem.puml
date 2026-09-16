@@ -1,0 +1,69 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam defaultFontColor #000000
+skinparam shadowing false
+skinparam swimlaneWidth 270
+
+skinparam activity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  BorderThickness 1
+  DiamondBackgroundColor #7ACFF5
+  DiamondBorderColor #000000
+}
+
+skinparam ArrowColor #000000
+skinparam PartitionBorderColor #000000
+skinparam PartitionBackgroundColor #E6E6E6
+skinparam PartitionFontSize 11
+skinparam PartitionFontStyle plain
+
+left header
+<b><size:13>Login ke Sistem</size></b>
+endheader
+
+|#E6E6E6|User (Pelamar/HRD)|
+|#E6E6E6|Sistem|
+
+|User (Pelamar/HRD)|
+start
+:Akses halaman\nLogin;
+:Mengisi formulir\nlogin;
+:Klik tombol\n"Masuk";
+
+|Sistem|
+:Terima permintaan\nlogin;
+
+if (Validasi kelengkapan\nformulir login) then (Tidak)
+  :Tampilkan pesan Error;
+  |User (Pelamar/HRD)|
+  :Melihat Notifikasi Error\ndan perbaiki Input;
+  stop
+else (Ya)
+  |Sistem|
+  :Mencocokkan Kredensial\nke Database;
+  if (Kredensial\nsesuai?) then (Tidak)
+    :Tampilkan pesan\n"Email/Password Salah";
+    |User (Pelamar/HRD)|
+    :Melihat notifikasi\nkesalahan Login;
+    stop
+  else (Ya)
+    |Sistem|
+    if (Email terverifikasi &\nakun aktif?) then (Tidak)
+      :Tampilkan notifikasi\nverifikasi Email;
+      |User (Pelamar/HRD)|
+      :Melihat notifikasi\nverifikasi akun;
+      stop
+    else (Ya)
+      |Sistem|
+      :Buat Sesi Login\n(Session);
+      :Arahkan (Redirect)\nke Dashboard;
+      |User (Pelamar/HRD)|
+      :Menerima tampilan\nhalaman Dashboard;
+      stop
+    endif
+  endif
+endif
+
+@enduml

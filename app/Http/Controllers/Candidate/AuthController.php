@@ -80,7 +80,10 @@ class AuthController extends Controller
 
         $candidate = Candidate::create($candidateData);
 
-        $verificationUrl = route('candidate.email-verification', ['token' => $candidate->verification_token]);
+        $verificationUrl = route('candidate.email-verification', [
+            'token' => $candidate->verification_token,
+            'email' => $candidate->email,
+        ]);
         $candidate->notify(new ActivationEmailNotification($candidate, $verificationUrl));
 
         return redirect()->back()->with('success', __('messages.auth.register_success'));
@@ -118,19 +121,31 @@ class AuthController extends Controller
         return $cleaned;
     }
 
-    public function verification($token)
+    public function verification(Request $request, $token)
     {
         $candidate = Candidate::where('verification_token', $token)->first();
+
         if ($candidate) {
+            if ($candidate->email_verified_at) {
+                return redirect()->route('candidate.login.form')->with('info', __('messages.auth.already_verified'));
+            }
+
             $candidate->update([
                 'email_verified_at' => now(),
-                'verification_token' => null
             ]);
-    
+
             return view('candidate.auth.success-verification');
         }
 
-        return redirect()->route('candidate.login.form')->with('success', __('messages.auth.email_verified'));
+        $email = $request->query('email');
+        if ($email) {
+            $candidateByEmail = Candidate::where('email', $email)->first();
+            if ($candidateByEmail && $candidateByEmail->email_verified_at) {
+                return redirect()->route('candidate.login.form')->with('info', __('messages.auth.already_verified'));
+            }
+        }
+
+        return redirect()->route('candidate.login.form')->with('error', __('messages.auth.invalid_verification_token'));
     }
 
     public function logout()

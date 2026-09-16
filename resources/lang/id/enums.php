@@ -22,11 +22,10 @@ return [
     ],
     'document_type' => [
         'CV' => 'Curriculum Vitae',
-        'IJAZAH' => 'Ijazah / Transkrip',
+        'SURAT_LAMARAN' => 'Surat Lamaran Pekerjaan',
         'STR' => 'STR',
-        'SIP' => 'SIP',
         'CERTIFICATE' => 'Sertifikat Kompetensi / Pelatihan',
-        'MCU' => 'Medical Checkup Unit',
+        'IJAZAH' => 'Ijazah / Transkrip',
         'OTHERS' => 'Dokumen Lainnya',
     ],
 ];

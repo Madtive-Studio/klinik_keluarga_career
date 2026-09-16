@@ -1,0 +1,83 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam defaultFontColor #000000
+skinparam shadowing false
+skinparam swimlaneWidth 270
+
+skinparam activity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  BorderThickness 1
+  DiamondBackgroundColor #7ACFF5
+  DiamondBorderColor #000000
+}
+
+skinparam ArrowColor #000000
+skinparam PartitionBorderColor #000000
+skinparam PartitionBackgroundColor #E6E6E6
+skinparam PartitionFontSize 11
+skinparam PartitionFontStyle plain
+
+left header
+<b><size:13>Melamar Pekerjaan</size></b>
+endheader
+
+|#E6E6E6|Pelamar|
+|#E6E6E6|Sistem|
+
+|Pelamar|
+start
+:Eksplorasi Katalog Lowongan\npada Batch Aktif;
+:Pilih Posisi Lowongan\n& Buka Detail Lowongan;
+:Klik tombol\n"Lamar Sekarang";
+
+|Sistem|
+if (Lowongan & gelombang\nmasih aktif / tersedia?) then (Tidak)
+  :Tampilkan notifikasi\n"Lowongan Tidak Tersedia";
+  |Pelamar|
+  :Melihat notifikasi\nlowongan telah ditutup;
+  stop
+else (Ya)
+  |Sistem|
+  :Tampilkan formulir\npengajuan lamaran;
+  
+  |Pelamar|
+  repeat
+    :Isi Surat Lamaran, Alasan Melamar\n& Pilih Dokumen Lampiran;
+    :Klik tombol\n"Kirim Lamaran";
+    
+    |Sistem|
+    :Terima data pengajuan\nlamaran kerja;
+  backward:Tampilkan notifikasi\n"Lengkapi Dokumen & Isian";
+  |Pelamar|
+  repeat while (Dokumen lampiran & deskripsi\nterisi lengkap?) is (Tidak)
+  ->Ya;
+  
+  |Sistem|
+  if (Syarat pendidikan\nterpenuhi?) then (Tidak)
+    :Tampilkan notifikasi\n"Kualifikasi Belum Sesuai";
+    |Pelamar|
+    :Melihat notifikasi syarat\npendidikan belum memenuhi;
+    stop
+  else (Ya)
+    |Sistem|
+    :Validasi riwayat lamaran\npada posisi yang sama;
+    if (Belum pernah melamar\nposisi ini sebelumnya?) then (Tidak)
+      :Tampilkan notifikasi\n"Sudah Pernah Melamar";
+      |Pelamar|
+      :Melihat notifikasi\nlamaran sudah pernah ada;
+      stop
+    else (Ya)
+      |Sistem|
+      :Simpan lamaran & jalankan\nAuto-Scoring (1-100);
+      :Kirim email konfirmasi\nbukti lamaran kerja;
+      :Tampilkan halaman\n"Lamaran Berhasil Diajukan";
+      |Pelamar|
+      :Melihat konfirmasi sukses\n& pantau status lamaran;
+      stop
+    endif
+  endif
+endif
+
+@enduml

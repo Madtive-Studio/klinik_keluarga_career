@@ -6,6 +6,8 @@ return [
         'invalid_credentials' => 'Invalid email or password!',
         'register_success' => 'Registration successful, please check your email for verification',
         'email_verified' => 'Your email has been verified',
+        'already_verified' => 'Your account is already verified. Please log in.',
+        'invalid_verification_token' => 'Verification link is invalid or not found.',
     ],
     'profile' => [
         'saved' => 'Profile saved successfully.',

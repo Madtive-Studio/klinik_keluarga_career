@@ -56,7 +56,7 @@ class DocumentControllerTest extends TestCase
         $this->actingAs($this->candidate, 'candidate');
 
         Document::factory()->cv()->create(['candidate_id' => $this->candidate->id]);
-        Document::factory()->mcu()->create(['candidate_id' => $this->candidate->id]);
+        Document::factory()->suratLamaran()->create(['candidate_id' => $this->candidate->id]);
 
         $response = $this->get(route('candidate.my.documents.index', ['type' => DocumentType::CV->value]));
 
@@ -122,18 +122,18 @@ class DocumentControllerTest extends TestCase
         Storage::fake('public');
         $this->actingAs($this->candidate, 'candidate');
 
-        $file = UploadedFile::fake()->image('mcu_photo.jpg');
+        $file = UploadedFile::fake()->image('surat_lamaran.jpg');
 
         $response = $this->post(route('candidate.my.documents.store'), [
             'file' => $file,
-            'type' => DocumentType::MCU->value,
+            'type' => DocumentType::SURAT_LAMARAN->value,
         ]);
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
         $this->assertDatabaseHas('documents', [
             'candidate_id' => $this->candidate->id,
-            'type'         => DocumentType::MCU->value,
+            'type'         => DocumentType::SURAT_LAMARAN->value,
         ]);
     }
 

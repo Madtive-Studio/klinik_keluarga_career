@@ -55,7 +55,7 @@ HRD -- UC09
 
 ' Relasi Include & Extend
 UC01 ..> UC01a : <<include>>
-UC02 ..> UC01 : <<extend>>
+UC02 ..> UC01a : <<include>>
 UC05 ..> UC04 : <<extend>>
 UC05 ..> UC03 : <<include>>
 UC09 ..> UC08 : <<extend>>

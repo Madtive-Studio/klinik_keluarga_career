@@ -1,0 +1,59 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam defaultFontColor #000000
+skinparam shadowing false
+skinparam swimlaneWidth 270
+
+skinparam activity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  BorderThickness 1
+  DiamondBackgroundColor #7ACFF5
+  DiamondBorderColor #000000
+}
+
+skinparam ArrowColor #000000
+skinparam PartitionBorderColor #000000
+skinparam PartitionBackgroundColor #E6E6E6
+skinparam PartitionFontSize 11
+skinparam PartitionFontStyle plain
+
+left header
+<b><size:13>Registrasi Akun & Verifikasi</size></b>
+endheader
+
+|#E6E6E6|User (Pelamar)|
+|#E6E6E6|Sistem|
+
+|User (Pelamar)|
+start
+:Akses halaman\nRegistrasi;
+:Mengisi formulir\nregistrasi;
+:Klik tombol\n"Daftar";
+
+|Sistem|
+:Terima permintaan\nregistrasi;
+
+if (Validasi kelengkapan\nformulir registrasi) then (Tidak)
+  :Tampilkan pesan Error;
+  |User (Pelamar)|
+  :Melihat Notifikasi Error\ndan perbaiki Input;
+  stop
+else (Ya)
+  |Sistem|
+  :Form registrasi\ndisimpan ke Database;
+  :Sistem mengirim link\nverifikasi melalui Email;
+  |User (Pelamar)|
+  :Menerima link untuk\nverifikasi Akun di Email\n(Sekali pakai);
+  :Klik "Link" verifikasi;
+  |Sistem|
+  if (Link/Token\nvalid?) then (Tidak)
+    :Dikembalikan ke\nhalaman Login dengan\npesan bahwa Link tidak\nvalid;
+  else (Ya)
+    :Menampilkan halaman\nbahwa Verifikasi berhasil;
+  endif
+  stop
+endif
+
+@enduml

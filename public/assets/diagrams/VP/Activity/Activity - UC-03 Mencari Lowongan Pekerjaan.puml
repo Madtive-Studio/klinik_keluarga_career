@@ -1,0 +1,61 @@
+@startuml Activity - UC-03 Mencari Lowongan Pekerjaan
+skinparam backgroundColor #FFFFFF
+skinparam ActivityBackgroundColor #7ACFF5
+skinparam ActivityBorderColor #000000
+skinparam ActivityFontColor #000000
+skinparam ActivityFontSize 13
+skinparam ActivityFontName Arial
+
+skinparam ActivityDiamondBackgroundColor #7ACFF5
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondFontColor #000000
+skinparam ActivityDiamondFontSize 12
+skinparam ActivityDiamondFontName Arial
+
+skinparam ArrowColor #000000
+skinparam ArrowFontSize 12
+
+skinparam PartitionBorderColor #000000
+skinparam PartitionBackgroundColor #E6E6E6
+skinparam PartitionFontColor #000000
+skinparam PartitionFontSize 11
+skinparam PartitionFontStyle plain
+
+left header
+<b><size:13>Mencari Lowongan Pekerjaan</size></b>
+endheader
+
+|#E6E6E6|Pelamar|
+|#E6E6E6|Sistem|
+
+|Pelamar|
+start
+:Akses Halaman Utama\nPortal Karir;
+
+|Sistem|
+:Tampilkan Beranda Karir\n& Daftar Batch Aktif;
+
+|Pelamar|
+:Input Kata Kunci Posisi\n/ Filter Kategori;
+
+|Sistem|
+:Menampilkan hasil pencarian\nlowongan;
+
+if (Lowongan sesuai\nkriteria ditemukan?) then (Tidak)
+  :Tampilkan notifikasi\n"Lowongan Tidak Ditemukan";
+  |Pelamar|
+  :Melihat pesan kosong\n& atur ulang filter pencarian;
+  stop
+else (Ya)
+  |Sistem|
+  :Tampilkan kartu daftar\nlowongan pekerjaan;
+  |Pelamar|
+  :Klik judul lowongan /\ntombol "Lihat Detail";
+  |Sistem|
+  :Muat rincian kualifikasi,\ndeskripsi tugas & benefit;
+  |Pelamar|
+  :Meninjau persyaratan &\nsiap mengajukan lamaran;
+  stop
+endif
+
+@enduml

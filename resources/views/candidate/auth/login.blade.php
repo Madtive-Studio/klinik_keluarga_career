@@ -60,6 +60,16 @@
 										<strong>{{ Session::get('must_login') }}</strong>
 									</div>
 								@endif
+								@if (Session::has('warning'))
+									<div class="alert alert-warning" role="alert">
+										<strong>{{ Session::get('warning') }}</strong>
+									</div>
+								@endif
+								@if (Session::has('info'))
+									<div class="alert alert-info" role="alert">
+										<strong>{{ Session::get('info') }}</strong>
+									</div>
+								@endif
 								@if (Session::has('success'))
 									<div class="alert alert-success" role="alert">
 										<strong>{{ Session::get('success') }}</strong>

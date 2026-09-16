@@ -1,27 +1,6 @@
 @extends('admin.layouts.main')
 @section('css')
-	<link rel="stylesheet" href="{{ asset('assets/admin/assets/vendor/libs/nouislider/nouislider.css') }}" />
 	<style>
-		.noUi-connect {
-			background: #7367f0 !important;
-		}
-		.noUi-horizontal {
-			height: 8px !important;
-		}
-		.noUi-handle {
-			width: 18px !important;
-			height: 18px !important;
-			right: -9px !important;
-			top: -6px !important;
-			border-radius: 50% !important;
-			background: #ffffff !important;
-			border: 3px solid #7367f0 !important;
-			box-shadow: 0 2px 6px rgba(115, 103, 240, 0.4) !important;
-			cursor: grab !important;
-		}
-		.noUi-handle:before, .noUi-handle:after {
-			display: none !important;
-		}
 		.batch-pills-slider {
 			display: flex;
 			flex-wrap: nowrap;
@@ -59,7 +38,7 @@
 			</div>
 		@endif
 
-		<!-- Global Filter Card (Semua Filter dalam 1 Row Rapi & Responsif) -->
+		<!-- Global Filter Card -->
 		<div class="card mb-4">
 			<div class="card-body py-3">
 				<form id="filter-form" class="row g-3 align-items-end">
@@ -72,7 +51,7 @@
 							@endforeach
 						</select>
 					</div>
-					<div class="col-lg-2 col-md-6 col-sm-12">
+					<div class="col-lg-3 col-md-6 col-sm-12">
 						<label class="form-label fw-semibold mb-1 d-flex align-items-center" style="min-height: 20px;">{{ __('admin.jobs.type') }}</label>
 						<select name="type" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
@@ -81,7 +60,7 @@
 							@endforeach
 						</select>
 					</div>
-					<div class="col-lg-2 col-md-6 col-sm-12">
+					<div class="col-lg-3 col-md-6 col-sm-12">
 						<label class="form-label fw-semibold mb-1 d-flex align-items-center" style="min-height: 20px;">{{ __('admin.jobs.min_education') }}</label>
 						<select name="min_education" class="form-control filter-select">
 							<option value="">{{ __('admin.datatable.all') }}</option>
@@ -91,19 +70,6 @@
 						</select>
 					</div>
 					<div class="col-lg-3 col-md-6 col-sm-12">
-						<div class="d-flex align-items-center justify-content-between mb-1" style="min-height: 20px;">
-							<label class="form-label fw-semibold mb-0">
-								<i class="ti ti-cash me-1 text-primary"></i>Gaji:
-							</label>
-							<span id="salary-range-label" class="badge bg-label-primary px-2 py-0 fw-bold" style="font-size: 11px;">Rp 0 - Rp 100 Jt</span>
-						</div>
-						<div class="d-flex align-items-center px-1" style="height: 38px;">
-							<div id="salary-slider" class="w-100"></div>
-						</div>
-						<input type="hidden" name="salary_min" id="salary_min" value="">
-						<input type="hidden" name="salary_max" id="salary_max" value="">
-					</div>
-					<div class="col-lg-2 col-md-6 col-sm-12">
 						<div class="d-flex gap-2" style="height: 38px;">
 							<button type="button" id="btn-reset-filters" class="btn btn-outline-secondary flex-grow-1" style="height: 38px;" title="Reset Filter">
 								<i class="ti ti-refresh me-1"></i> Reset
@@ -210,7 +176,6 @@
 	</div>
 @endsection
 @section('js')
-	<script src="{{ asset('assets/admin/assets/vendor/libs/nouislider/nouislider.js') }}"></script>
 	<script>
 		function getAttrValue(el, val) {
 			if (!val) return '-'
@@ -218,53 +183,6 @@
 		}
 
 		$(function() {
-			// Inisialisasi Slider Rentang Gaji (0 - 100jt, step 1jt)
-			const slider = document.getElementById('salary-slider');
-			const salaryMinInput = document.getElementById('salary_min');
-			const salaryMaxInput = document.getElementById('salary_max');
-			const salaryLabel = document.getElementById('salary-range-label');
-
-			if (slider && typeof noUiSlider !== 'undefined') {
-				noUiSlider.create(slider, {
-					start: [0, 100000000],
-					connect: true,
-					step: 1000000,
-					range: {
-						'min': 0,
-						'max': 100000000
-					},
-					format: {
-						to: function (value) {
-							return Math.round(value);
-						},
-						from: function (value) {
-							return Number(value);
-						}
-					}
-				});
-
-				function formatRupiahShort(val) {
-					if (val === 0) return 'Rp 0';
-					if (val >= 1000000000) return 'Rp ' + (val / 1000000000) + ' M';
-					if (val >= 1000000) return 'Rp ' + (val / 1000000) + ' Jt';
-					return 'Rp ' + new Intl.NumberFormat('id-ID').format(val);
-				}
-
-				slider.noUiSlider.on('update', function (values, handle) {
-					const minVal = parseInt(values[0]);
-					const maxVal = parseInt(values[1]);
-
-					salaryMinInput.value = minVal > 0 ? minVal : '';
-					salaryMaxInput.value = maxVal < 100000000 ? maxVal : '';
-
-					salaryLabel.innerText = formatRupiahShort(minVal) + ' - ' + formatRupiahShort(maxVal);
-				});
-
-				slider.noUiSlider.on('change', function () {
-					if (dt_table) dt_table.ajax.reload();
-				});
-			}
-
 			$(document).on('click', '.edit', function() {
 				let route = getAttrValue(this, 'route')
 				window.location.href = route
@@ -297,12 +215,14 @@
 					},
 					columns: [
 						{
-							data: 'DT_RowIndex',
-							name: 'DT_RowIndex',
+							data: null,
 							searchable: false,
 							orderable: false,
 							className: 'text-center',
-							width: '5%'
+							width: '5%',
+							render: function (data, type, row, meta) {
+								return meta.row + meta.settings._iDisplayStart + 1;
+							}
 						},
 						{
 							data: 'title'
@@ -401,11 +321,6 @@
 
 			$('#btn-reset-filters').on('click', function() {
 				$('#filter-form')[0].reset();
-				if (slider && slider.noUiSlider) {
-					slider.noUiSlider.set([0, 100000000]);
-				}
-				if (salaryMinInput) salaryMinInput.value = '';
-				if (salaryMaxInput) salaryMaxInput.value = '';
 				if (dt_table) dt_table.ajax.reload();
 			});
 

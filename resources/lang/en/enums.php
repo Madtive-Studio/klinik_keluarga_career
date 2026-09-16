@@ -22,11 +22,10 @@ return [
     ],
     'document_type' => [
         'CV' => 'Curriculum Vitae',
-        'IJAZAH' => 'Diploma / Transcript',
+        'SURAT_LAMARAN' => 'Application Letter / Cover Letter',
         'STR' => 'STR (Professional Registration)',
-        'SIP' => 'SIP (Practice License)',
         'CERTIFICATE' => 'Competency / Training Certificate',
-        'MCU' => 'Medical Checkup Unit',
+        'IJAZAH' => 'Diploma / Transcript',
         'OTHERS' => 'Other Documents',
     ],
 ];
