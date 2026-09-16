@@ -1,0 +1,96 @@
+@startuml UC-01_Registrasi_Akun_Sequence
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+skinparam shadowing false
+skinparam sequenceArrowThickness 1
+skinparam sequenceParticipantBorderThickness 1
+skinparam sequenceLifeLineBorderColor #000000
+skinparam sequenceLifeLineBorderThickness 1
+skinparam sequenceLifeLineBackgroundColor #7ACFF5
+skinparam sequenceGroupBorderThickness 1
+skinparam sequenceGroupFontSize 10
+skinparam sequenceGroupHeaderFontColor #000000
+skinparam sequenceGroupFontColor #000000
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 160
+skinparam pageMargin 10
+hide footbox
+
+skinparam participant {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam boundary {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam control {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam entity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+' Deklarasi Lifeline
+actor "Pelamar" as Pelamar
+boundary "RegisterPage" as Page
+control "AuthController" as Controller
+entity "CandidateModel" as Model
+
+' Group sd View/Read: Akses Form Registrasi
+group sd View/Read
+  Pelamar -> Page : 1. Akses halaman registrasi
+  activate Pelamar
+  activate Page
+  Page -> Controller : 1.1 register()
+  activate Controller
+  Controller --> Page : 1.2 Return view("candidate.auth.register")
+  deactivate Controller
+  Page --> Pelamar : 1.3 Tampilkan formulir registrasi
+  deactivate Page
+  deactivate Pelamar
+end
+
+' Group sd Create: Proses Pendaftaran Akun Pelamar
+group sd Create
+  Pelamar -> Page : 2. Isi formulir data diri & klik tombol "Daftar"
+  activate Pelamar
+  activate Page
+  Page -> Controller : 2.1 verify(request)
+  activate Controller
+  Controller -> Controller : 2.1.1 validate(request)
+  Controller -> Model : 2.1.2 create(candidateData)
+  activate Model
+  Model --> Controller : 2.1.3 Result (candidate)
+  deactivate Model
+
+  alt <font color=black>[Sukses: Data Valid]</font>
+    Controller -> Controller : 2.2 notify(ActivationEmailNotification)
+    Controller --> Page : 2.3 Return redirect back dengan pesan sukses
+    Page --> Pelamar : 2.4 Tampilkan notifikasi berhasil & instruksi cek email aktivasi
+  else <font color=black>[Gagal: Validasi Gagal / Duplikasi Data]</font>
+    Controller --> Page : 2.5 Return redirect back dengan pesan error
+    Page --> Pelamar : 2.6 Tampilkan pesan kesalahan validasi input
+  end
+  deactivate Controller
+  deactivate Page
+  deactivate Pelamar
+end
+
+@enduml

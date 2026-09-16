@@ -1,0 +1,98 @@
+@startuml UC-03_Mencari_Lowongan_Sequence
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+skinparam shadowing false
+skinparam sequenceArrowThickness 1
+skinparam sequenceParticipantBorderThickness 1
+skinparam sequenceLifeLineBorderColor #000000
+skinparam sequenceLifeLineBorderThickness 1
+skinparam sequenceLifeLineBackgroundColor #7ACFF5
+skinparam sequenceGroupBorderThickness 1
+skinparam sequenceGroupFontSize 10
+skinparam sequenceGroupHeaderFontColor #000000
+skinparam sequenceGroupFontColor #000000
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 160
+skinparam pageMargin 10
+hide footbox
+
+skinparam participant {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam boundary {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam control {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam entity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+' Deklarasi Lifeline
+actor "Pelamar" as Pelamar
+boundary "VacancyPage" as Page
+control "VacancyController" as Controller
+entity "JobModel" as Model
+
+' Group sd View/Read: Eksplorasi & Pencarian Lowongan
+group sd View/Read
+  Pelamar -> Page : 1. Akses halaman lowongan & masukkan kata kunci / filter
+  activate Pelamar
+  activate Page
+  Page -> Controller : 1.1 index(request)
+  activate Controller
+  Controller -> Model : 1.1.1 getVacancies(keyword, category)
+  activate Model
+  Model --> Controller : 1.1.2 Result data lowongan
+  deactivate Model
+
+  alt <font color=black>[Sukses: Lowongan Ditemukan]</font>
+    Controller --> Page : 1.2 Return view("candidate.jobs.vacancies.index")
+    Page --> Pelamar : 1.3 Tampilkan katalog kartu lowongan pekerjaan
+  else <font color=black>[Gagal: Lowongan Tidak Ditemukan]</font>
+    Controller --> Page : 1.4 Return view dengan daftar lowongan kosong
+    Page --> Pelamar : 1.5 Tampilkan notifikasi "Lowongan Tidak Ditemukan"
+  end
+  deactivate Controller
+  deactivate Page
+  deactivate Pelamar
+end
+
+' Group sd Detail: Melihat Rincian Informasi Lowongan (UC-03a)
+group sd Detail
+  Pelamar -> Page : 2. Klik judul lowongan / tombol "Lihat Detail"
+  activate Pelamar
+  activate Page
+  Page -> Controller : 2.1 show(uuid)
+  activate Controller
+  Controller -> Model : 2.1.1 findVacancy(uuid)
+  activate Model
+  Model --> Controller : 2.1.2 Result detail lowongan & kualifikasi
+  deactivate Model
+  Controller --> Page : 2.2 Return view("candidate.jobs.vacancies.detail")
+  deactivate Controller
+  Page --> Pelamar : 2.3 Tampilkan rincian tugas, benefit, & syarat kualifikasi
+  deactivate Page
+  deactivate Pelamar
+end
+
+@enduml

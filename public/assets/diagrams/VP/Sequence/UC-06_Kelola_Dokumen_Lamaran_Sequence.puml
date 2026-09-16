@@ -1,0 +1,123 @@
+@startuml UC-06_Kelola_Dokumen_Lamaran_Sequence
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+skinparam shadowing false
+skinparam sequenceArrowThickness 1
+skinparam sequenceParticipantBorderThickness 1
+skinparam sequenceLifeLineBorderColor #000000
+skinparam sequenceLifeLineBorderThickness 1
+skinparam sequenceLifeLineBackgroundColor #7ACFF5
+skinparam sequenceGroupBorderThickness 1
+skinparam sequenceGroupFontSize 10
+skinparam sequenceGroupHeaderFontColor #000000
+skinparam sequenceGroupFontColor #000000
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 160
+skinparam pageMargin 10
+hide footbox
+
+skinparam participant {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam boundary {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam control {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam entity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+' Deklarasi Lifeline
+actor "Pelamar" as Pelamar
+boundary "DocumentPage" as Page
+control "DocumentController" as Controller
+entity "DocumentModel" as Model
+
+' Group sd View/Read: Akses Daftar Dokumen
+group sd View/Read
+  Pelamar -> Page : 1. Akses menu dokumen lamaran
+  activate Pelamar
+  activate Page
+  Page -> Controller : 1.1 index()
+  activate Controller
+  Controller -> Model : 1.1.1 getCandidateDocuments(candidateId)
+  activate Model
+  Model --> Controller : 1.1.2 Result daftar dokumen
+  deactivate Model
+  Controller --> Page : 1.2 Return view("candidate.documents.index")
+  deactivate Controller
+  Page --> Pelamar : 1.3 Tampilkan daftar dokumen terunggah
+  deactivate Page
+  deactivate Pelamar
+end
+
+' Group sd Create: Unggah Dokumen Baru
+group sd Create
+  Pelamar -> Page : 2. Pilih jenis berkas, unggah file & klik "Simpan Dokumen"
+  activate Pelamar
+  activate Page
+  Page -> Controller : 2.1 store(request)
+  activate Controller
+  Controller -> Controller : 2.1.1 validate(request)
+  Controller -> Model : 2.1.2 store(request)
+  activate Model
+  Model --> Controller : 2.1.3 Result (document)
+  deactivate Model
+
+  alt <font color=black>[Sukses: Berkas Valid & Tersimpan]</font>
+    Controller --> Page : 2.2 Return redirect back dengan pesan sukses
+    Page --> Pelamar : 2.3 Tampilkan notifikasi "Dokumen Berhasil Diunggah"
+  else <font color=black>[Gagal: Format / Ukuran File Tidak Sesuai]</font>
+    Controller --> Page : 2.4 Return redirect back dengan pesan error
+    Page --> Pelamar : 2.5 Tampilkan notifikasi gagal unggah dokumen
+  end
+  deactivate Controller
+  deactivate Page
+  deactivate Pelamar
+end
+
+' Group sd Delete: Hapus Berkas Dokumen
+group sd Delete
+  Pelamar -> Page : 3. Klik ikon / tombol hapus dokumen
+  activate Pelamar
+  activate Page
+  Page -> Controller : 3.1 destroy(id)
+  activate Controller
+  Controller -> Model : 3.1.1 delete(id)
+  activate Model
+  Model --> Controller : 3.1.2 Result status hapus
+  deactivate Model
+
+  alt <font color=black>[Sukses: Dokumen Dihapus]</font>
+    Controller --> Page : 3.2 Return redirect back dengan pesan sukses
+    Page --> Pelamar : 3.3 Tampilkan notifikasi berkas berhasil dihapus
+  else <font color=black>[Gagal: Terjadi Kesalahan Sistem]</font>
+    Controller --> Page : 3.4 Return redirect back dengan pesan error
+    Page --> Pelamar : 3.5 Tampilkan pesan kesalahan hapus berkas
+  end
+  deactivate Controller
+  deactivate Page
+  deactivate Pelamar
+end
+
+@enduml

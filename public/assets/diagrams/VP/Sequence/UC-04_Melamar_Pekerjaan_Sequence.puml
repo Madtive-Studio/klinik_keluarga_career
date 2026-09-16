@@ -1,0 +1,105 @@
+@startuml UC-04_Melamar_Pekerjaan_Sequence
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+skinparam shadowing false
+skinparam sequenceArrowThickness 1
+skinparam sequenceParticipantBorderThickness 1
+skinparam sequenceLifeLineBorderColor #000000
+skinparam sequenceLifeLineBorderThickness 1
+skinparam sequenceLifeLineBackgroundColor #7ACFF5
+skinparam sequenceGroupBorderThickness 1
+skinparam sequenceGroupFontSize 10
+skinparam sequenceGroupHeaderFontColor #000000
+skinparam sequenceGroupFontColor #000000
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 160
+skinparam pageMargin 10
+hide footbox
+
+skinparam participant {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam boundary {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam control {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam entity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+' Deklarasi Lifeline
+actor "Pelamar" as Pelamar
+boundary "VacancyPage" as Page
+control "ApplicationController" as Controller
+entity "ApplyModel" as Model
+
+' Group sd View/Read: Akses Form Lamaran
+group sd View/Read
+  Pelamar -> Page : 1. Klik tombol "Lamar Sekarang"
+  activate Pelamar
+  activate Page
+  Page -> Controller : 1.1 apply(uuid)
+  activate Controller
+  Controller -> Model : 1.1.1 checkEligibility(uuid, candidateId)
+  activate Model
+  Model --> Controller : 1.1.2 Result status kelayakan
+  deactivate Model
+
+  alt <font color=black>[Sukses: Batch Aktif & Memenuhi Syarat]</font>
+    Controller --> Page : 1.2 Return view("candidate.jobs.vacancies.apply")
+    Page --> Pelamar : 1.3 Tampilkan formulir pengajuan lamaran
+  else <font color=black>[Gagal: Sudah Pernah Melamar / Batch Ditutup]</font>
+    Controller --> Page : 1.4 Return redirect back dengan pesan peringatan
+    Page --> Pelamar : 1.5 Tampilkan notifikasi peringatan akses formulir
+  end
+  deactivate Controller
+  deactivate Page
+  deactivate Pelamar
+end
+
+' Group sd Create: Pengiriman Berkas Lamaran
+group sd Create
+  Pelamar -> Page : 2. Isi surat lamaran, alasan, pilih berkas & klik "Kirim Lamaran"
+  activate Pelamar
+  activate Page
+  Page -> Controller : 2.1 store(request)
+  activate Controller
+  Controller -> Controller : 2.1.1 validate(request)
+  Controller -> Model : 2.1.2 submitApplication(candidateId, jobUuid, data)
+  activate Model
+  Model --> Controller : 2.1.3 Result (applyRecord)
+  deactivate Model
+
+  alt <font color=black>[Sukses: Berkas Lengkap & Lamaran Tersimpan]</font>
+    Controller --> Page : 2.2 Return redirect route("applications.success")
+    Page --> Pelamar : 2.3 Tampilkan halaman "Lamaran Berhasil Diajukan"
+  else <font color=black>[Gagal: Dokumen Belum Lengkap / Validasi Gagal]</font>
+    Controller --> Page : 2.4 Return redirect back dengan pesan error
+    Page --> Pelamar : 2.5 Tampilkan notifikasi kesalahan & lengkapi data
+  end
+  deactivate Controller
+  deactivate Page
+  deactivate Pelamar
+end
+
+@enduml

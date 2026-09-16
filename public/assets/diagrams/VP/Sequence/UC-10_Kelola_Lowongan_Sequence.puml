@@ -1,0 +1,142 @@
+@startuml UC-10_Kelola_Lowongan_Sequence
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+skinparam shadowing false
+skinparam sequenceArrowThickness 1
+skinparam sequenceParticipantBorderThickness 1
+skinparam sequenceLifeLineBorderColor #000000
+skinparam sequenceLifeLineBorderThickness 1
+skinparam sequenceLifeLineBackgroundColor #7ACFF5
+skinparam sequenceGroupBorderThickness 1
+skinparam sequenceGroupFontSize 10
+skinparam sequenceGroupHeaderFontColor #000000
+skinparam sequenceGroupFontColor #000000
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 160
+skinparam pageMargin 10
+hide footbox
+
+skinparam participant {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam boundary {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam control {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam entity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+' Deklarasi Lifeline
+actor "HRD / Admin" as HRD
+boundary "JobPage" as Page
+control "JobController" as Controller
+entity "JobModel" as Model
+
+' Group sd View/Read: Akses Data Lowongan
+group sd View/Read
+  HRD -> Page : 1. Akses menu lowongan pekerjaan
+  activate HRD
+  activate Page
+  Page -> Controller : 1.1 datatables(request)
+  activate Controller
+  Controller -> Model : 1.1.1 with(['batch', 'category', 'criteria'])->get()
+  activate Model
+  Model --> Controller : 1.1.2 Result data lowongan kerja
+  deactivate Model
+  Controller --> Page : 1.2 Return JSON DataTables data
+  deactivate Controller
+  Page --> HRD : 1.3 Tampilkan tabel daftar lowongan pekerjaan
+  deactivate Page
+  deactivate HRD
+end
+
+' Group sd Create: Buat Posisi Lowongan Baru
+group sd Create
+  HRD -> Page : 2. Pilih kategori, batch aktif, isi kualifikasi & klik "Simpan Lowongan"
+  activate HRD
+  activate Page
+  Page -> Controller : 2.1 store(request)
+  activate Controller
+  Controller -> Controller : 2.1.1 validate(request)
+  Controller -> Model : 2.1.2 create(jobData)
+  activate Model
+  Model --> Controller : 2.1.3 Result (job)
+  deactivate Model
+
+  alt <font color=black>[Sukses: Data Valid & Terhubung Batch Aktif]</font>
+    Controller --> Page : 2.2 Return redirect back dengan pesan sukses
+    Page --> HRD : 2.3 Tampilkan notifikasi "Lowongan Berhasil Ditambahkan"
+  else <font color=black>[Gagal: Formulir Tidak Lengkap / Validasi Gagal]</font>
+    Controller --> Page : 2.4 Return redirect back dengan pesan error
+    Page --> HRD : 2.5 Tampilkan pesan kesalahan kelengkapan formulir
+  end
+  deactivate Controller
+  deactivate Page
+  deactivate HRD
+end
+
+' Group sd Update: Ubah Data Lowongan & Kriteria
+group sd Update
+  HRD -> Page : 3. Klik tombol edit lowongan, ubah rincian kualifikasi & klik "Perbarui"
+  activate HRD
+  activate Page
+  Page -> Controller : 3.1 update(request, id)
+  activate Controller
+  Controller -> Controller : 3.1.1 validate(request)
+  Controller -> Model : 3.1.2 findOrFail(id)->update(attributes)
+  activate Model
+  Model --> Controller : 3.1.3 Result status update
+  deactivate Model
+
+  alt <font color=black>[Sukses: Perubahan Disimpan]</font>
+    Controller --> Page : 3.2 Return redirect back dengan pesan sukses
+    Page --> HRD : 3.3 Tampilkan notifikasi "Lowongan Berhasil Diperbarui"
+  else <font color=black>[Gagal: Validasi Gagal]</font>
+    Controller --> Page : 3.4 Return redirect back dengan pesan error
+    Page --> HRD : 3.5 Tampilkan pesan kesalahan pembaruan lowongan
+  end
+  deactivate Controller
+  deactivate Page
+  deactivate HRD
+end
+
+' Group sd Delete: Hapus Lowongan
+group sd Delete
+  HRD -> Page : 4. Klik tombol hapus lowongan
+  activate HRD
+  activate Page
+  Page -> Controller : 4.1 destroy(id)
+  activate Controller
+  Controller -> Model : 4.1.1 findOrFail(id)->delete()
+  activate Model
+  Model --> Controller : 4.1.2 Result status hapus
+  deactivate Model
+  Controller --> Page : 4.2 Return redirect back dengan pesan sukses
+  deactivate Controller
+  Page --> HRD : 4.3 Tampilkan notifikasi lowongan berhasil dihapus
+  deactivate Page
+  deactivate HRD
+end
+
+@enduml

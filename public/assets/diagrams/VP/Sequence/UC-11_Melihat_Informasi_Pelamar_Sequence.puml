@@ -1,0 +1,92 @@
+@startuml UC-11_Melihat_Informasi_Pelamar_Sequence
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+skinparam shadowing false
+skinparam sequenceArrowThickness 1
+skinparam sequenceParticipantBorderThickness 1
+skinparam sequenceLifeLineBorderColor #000000
+skinparam sequenceLifeLineBorderThickness 1
+skinparam sequenceLifeLineBackgroundColor #7ACFF5
+skinparam sequenceGroupBorderThickness 1
+skinparam sequenceGroupFontSize 10
+skinparam sequenceGroupHeaderFontColor #000000
+skinparam sequenceGroupFontColor #000000
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 160
+skinparam pageMargin 10
+hide footbox
+
+skinparam participant {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam boundary {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam control {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam entity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+' Deklarasi Lifeline
+actor "HRD / Admin" as HRD
+boundary "CandidatePage" as Page
+control "CandidateController" as Controller
+entity "CandidateModel" as Model
+
+' Group sd View/Read: Direktori Pelamar
+group sd View/Read
+  HRD -> Page : 1. Akses menu data pelamar
+  activate HRD
+  activate Page
+  Page -> Controller : 1.1 datatables(request)
+  activate Controller
+  Controller -> Model : 1.1.1 withCount('documents')->get()
+  activate Model
+  Model --> Controller : 1.1.2 Result direktori master pelamar
+  deactivate Model
+  Controller --> Page : 1.2 Return JSON DataTables data
+  deactivate Controller
+  Page --> HRD : 1.3 Tampilkan tabel daftar kandidat pelamar
+  deactivate Page
+  deactivate HRD
+end
+
+' Group sd Detail: Melihat Informasi & Berkas Pelamar
+group sd Detail
+  HRD -> Page : 2. Klik tombol pratinjau / detail pelamar
+  activate HRD
+  activate Page
+  Page -> Controller : 2.1 show(id)
+  activate Controller
+  Controller -> Model : 2.1.1 with(['profile', 'skills', 'documents', 'applies'])->findOrFail(id)
+  activate Model
+  Model --> Controller : 2.1.2 Result data lengkap & berkas dokumen
+  deactivate Model
+  Controller --> Page : 2.2 Return view("admin.candidates.detail")
+  deactivate Controller
+  Page --> HRD : 2.3 Tampilkan profil biodata, berkas CV, STR, & riwayat lamaran
+  deactivate Page
+  deactivate HRD
+end
+
+@enduml

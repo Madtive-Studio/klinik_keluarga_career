@@ -1,0 +1,99 @@
+@startuml UC-05_Kelola_Profil_Sequence
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+skinparam shadowing false
+skinparam sequenceArrowThickness 1
+skinparam sequenceParticipantBorderThickness 1
+skinparam sequenceLifeLineBorderColor #000000
+skinparam sequenceLifeLineBorderThickness 1
+skinparam sequenceLifeLineBackgroundColor #7ACFF5
+skinparam sequenceGroupBorderThickness 1
+skinparam sequenceGroupFontSize 10
+skinparam sequenceGroupHeaderFontColor #000000
+skinparam sequenceGroupFontColor #000000
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 160
+skinparam pageMargin 10
+hide footbox
+
+skinparam participant {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam boundary {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam control {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam entity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+' Deklarasi Lifeline
+actor "Pelamar" as Pelamar
+boundary "ProfilePage" as Page
+control "ProfileController" as Controller
+entity "CandidateModel" as Model
+
+' Group sd View/Read: Akses Data Profil
+group sd View/Read
+  Pelamar -> Page : 1. Akses menu profil saya
+  activate Pelamar
+  activate Page
+  Page -> Controller : 1.1 edit()
+  activate Controller
+  Controller -> Model : 1.1.1 with(['profile', 'skills'])->findOrFail(id)
+  activate Model
+  Model --> Controller : 1.1.2 Result data kandidat, profil & keahlian
+  deactivate Model
+  Controller --> Page : 1.2 Return view("candidate.profile.edit")
+  deactivate Controller
+  Page --> Pelamar : 1.3 Tampilkan formulir data profil & keahlian
+  deactivate Page
+  deactivate Pelamar
+end
+
+' Group sd Update: Perbarui Biodata & Kualifikasi
+group sd Update
+  Pelamar -> Page : 2. Ubah biodata, pendidikan, pengalaman & klik "Simpan Perubahan"
+  activate Pelamar
+  activate Page
+  Page -> Controller : 2.1 update(request)
+  activate Controller
+  Controller -> Controller : 2.1.1 validate(request)
+  Controller -> Model : 2.1.2 updateProfileAndSkills(data)
+  activate Model
+  Model --> Controller : 2.1.3 Result update
+  deactivate Model
+
+  alt <font color=black>[Sukses: Data Profil Valid]</font>
+    Controller --> Page : 2.2 Return redirect back dengan pesan sukses
+    Page --> Pelamar : 2.3 Tampilkan notifikasi "Profil Berhasil Diperbarui"
+  else <font color=black>[Gagal: Format Data Tidak Valid]</font>
+    Controller --> Page : 2.4 Return redirect back dengan pesan error
+    Page --> Pelamar : 2.5 Tampilkan notifikasi kesalahan validasi profil
+  end
+  deactivate Controller
+  deactivate Page
+  deactivate Pelamar
+end
+
+@enduml

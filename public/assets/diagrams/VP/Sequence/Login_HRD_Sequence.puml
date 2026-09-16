@@ -1,0 +1,95 @@
+@startuml Login_HRD_Sequence
+skinparam defaultFontName Arial
+skinparam defaultFontSize 10
+skinparam shadowing false
+skinparam sequenceArrowThickness 1
+skinparam sequenceParticipantBorderThickness 1
+skinparam sequenceLifeLineBorderColor #000000
+skinparam sequenceLifeLineBorderThickness 1
+skinparam sequenceLifeLineBackgroundColor #7ACFF5
+skinparam sequenceGroupBorderThickness 1
+skinparam sequenceGroupFontSize 10
+skinparam sequenceGroupHeaderFontColor #000000
+skinparam sequenceGroupFontColor #000000
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 160
+skinparam pageMargin 10
+hide footbox
+
+skinparam participant {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam boundary {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam control {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+skinparam entity {
+  BackgroundColor #7ACFF5
+  BorderColor #000000
+  FontSize 10
+}
+
+' Deklarasi Lifeline
+actor "HRD / Admin" as HRD
+boundary "LoginPage" as Page
+control "LoginController" as Controller
+entity "UserModel" as Model
+
+' Group sd View/Read: Akses Form Login HRD
+group sd View/Read
+  HRD -> Page : 1. Akses halaman login admin
+  activate HRD
+  activate Page
+  Page -> Controller : 1.1 login()
+  activate Controller
+  Controller --> Page : 1.2 Return view("admin.auth.login")
+  deactivate Controller
+  Page --> HRD : 1.3 Tampilkan formulir login admin/HRD
+  deactivate Page
+  deactivate HRD
+end
+
+' Group sd Process: Otentikasi Sesi HRD
+group sd Process
+  HRD -> Page : 2. Masukkan username/email & password, klik "Masuk"
+  activate HRD
+  activate Page
+  Page -> Controller : 2.1 process(request)
+  activate Controller
+  Controller -> Model : 2.1.1 where('email' or 'username', loginInput)->first()
+  activate Model
+  Model --> Controller : 2.1.2 Data akun user admin
+  deactivate Model
+
+  alt <font color=black>[Sukses: Kredensial Valid]</font>
+    Controller -> Controller : 2.2 Auth::guard("admin")->login(user)
+    Controller --> Page : 2.3 Return redirect route("admin.dashboard")
+    Page --> HRD : 2.4 Tampilkan dashboard manajemen admin/HRD
+  else <font color=black>[Gagal: Kredensial Tidak Sesuai]</font>
+    Controller --> Page : 2.5 Return redirect back dengan pesan error
+    Page --> HRD : 2.6 Tampilkan notifikasi kesalahan login
+  end
+  deactivate Controller
+  deactivate Page
+  deactivate HRD
+end
+
+@enduml
