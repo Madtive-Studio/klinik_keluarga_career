@@ -1,0 +1,439 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam dpi 115
+skinparam defaultFontColor #000000
+skinparam shadowing false
+skinparam roundcorner 0
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 60
+
+' Match Visual Paradigm style: text symbols (+, -), no circular badges
+hide circle
+skinparam classAttributeIconSize 0
+
+skinparam package {
+  BackgroundColor transparent
+  BorderColor transparent
+  FontColor transparent
+  FontSize 1
+}
+
+skinparam class {
+  BackgroundColor #FFFFFF
+  HeaderBackgroundColor #7ACFF5
+  BorderColor #000000
+  BorderThickness 1
+  FontColor #000000
+  FontSize 16
+  FontName Arial
+  FontStyle bold
+  AttributeFontColor #000000
+  AttributeFontSize 13
+  AttributeFontName Arial
+}
+
+skinparam enum {
+  BackgroundColor #FFFFFF
+  HeaderBackgroundColor #7ACFF5
+  BorderColor #000000
+  BorderThickness 1
+  FontColor #000000
+  FontSize 14
+  FontName Arial
+  FontStyle bold
+  AttributeFontColor #000000
+  AttributeFontSize 12
+}
+
+skinparam ArrowColor #000000
+skinparam ArrowFontSize 12
+skinparam ArrowFontColor #222222
+
+' ========================================================
+' 1. LEFT COLUMN: MANAJEMEN LOWONGAN & KRITERIA
+' ========================================================
+package "Vacancies" {
+  class User {
+    -id: bigint
+    -name: varchar(150)
+    -email: varchar(100)
+    -email_verified_at: timestamp
+    -password: varchar(100)
+    -level: UserLevel
+    -remember_token: varchar(100)
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +jobs(): HasMany
+    +isAdmin(): bool
+    +isHrd(): bool
+  }
+
+  enum UserLevel <<enumeration>> {
+    ADMIN
+    HRD
+  }
+
+  class Category {
+    -id: int
+    -name: varchar(255)
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +jobs(): HasMany
+  }
+
+  class Job {
+    -id: bigint
+    -uuid: varchar(36)
+    -batch_id: bigint
+    -category_id: bigint
+    -user_id: bigint
+    -code: varchar(50)
+    -title: varchar(150)
+    -qualification: text
+    -description: text
+    -type: JobType
+    -quota: double
+    -salary_min: bigint
+    -salary_max: bigint
+    -experience: varchar(100)
+    -is_show_salary: bool
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +batch(): BelongsTo
+    +category(): BelongsTo
+    +user(): BelongsTo
+    +criteria(): HasOne
+    +images(): HasMany
+    +applies(): HasMany
+    +candidateMeetsEducation(level: string): bool
+  }
+
+  enum JobType <<enumeration>> {
+    FULLTIME_ONSITE
+    PARTIME_FREELANCER
+    WFH_REMOTE
+    INTERNSHIP
+  }
+
+  class JobImage {
+    -id: bigint
+    -job_id: bigint
+    -job_uuid: varchar(36)
+    -original_name: varchar(255)
+    -hash_name: varchar(255)
+    -size: decimal
+    -extension: varchar(10)
+    -mime_type: varchar(100)
+    -is_primary: bool
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +job(): BelongsTo
+    +getImageUrlAttribute(): string
+  }
+
+  class JobCriteria {
+    -id: bigint
+    -job_id: bigint
+    -min_education: EducationLevel
+    -min_experience_years: tinyint
+    -weight_education: tinyint
+    -weight_experience: tinyint
+    -weight_skills: tinyint
+    -weight_profile: tinyint
+    -weight_cover_letter: tinyint
+    -threshold_shortlist: tinyint
+    -threshold_reject: tinyint
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +job(): BelongsTo
+    +skills(): HasMany
+  }
+
+  class JobCriteriaSkill {
+    -id: bigint
+    -job_criteria_id: bigint
+    -skill_name: varchar(100)
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +criteria(): BelongsTo
+  }
+
+  enum EducationLevel <<enumeration>> {
+    SMA
+    D3
+    D4
+    S1
+    S2
+    S3
+  }
+}
+
+' ========================================================
+' 2. CENTER COLUMN: GELOMBANG, SELEKSI & WAWANCARA
+' ========================================================
+package "Selection" {
+  class Batch {
+    -id: bigint
+    -code: varchar(50)
+    -name: varchar(100)
+    -start_date: timestamp
+    -end_date: timestamp
+    -quota: double
+    -status: BatchStatus
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +jobs(): HasMany
+    +applies(): HasMany
+    +isActive(): bool
+  }
+
+  enum BatchStatus <<enumeration>> {
+    ACTIVE
+    INACTIVE
+  }
+
+  class Company {
+    -id: bigint
+    -name: varchar(150)
+    -address: text
+    -location: varchar(100)
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +getCompanyInfo(): array
+  }
+
+  class Apply {
+    -id: bigint
+    -uuid: varchar(36)
+    -candidate_id: bigint
+    -batch_id: bigint
+    -job_id: bigint
+    -cover_letter: text
+    -status: ApplyStatus
+    -description: text
+    -auto_score: tinyint
+    -score_recommendation: ScoreRecommendation
+    -score_breakdown: json
+    -scored_at: timestamp
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +candidate(): BelongsTo
+    +job(): BelongsTo
+    +batch(): BelongsTo
+    +applyDocuments(): HasMany
+    +documents(): HasManyThrough
+  }
+
+  enum ApplyStatus <<enumeration>> {
+    PENDING
+    REVIEWED
+    SHORTLISTED
+    INTERVIEW
+    ACCEPTED
+    REJECTED
+  }
+
+  enum ScoreRecommendation <<enumeration>> {
+    SHORTLIST
+    REVIEW
+    REJECT
+  }
+
+  class ApplyDocument {
+    -id: bigint
+    -apply_id: bigint
+    -document_id: bigint
+    -type: varchar(255)
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +apply(): BelongsTo
+    +document(): BelongsTo
+  }
+
+  class ScheduleInterview {
+    -id: bigint
+    -uuid: varchar(36)
+    -code: varchar(50)
+    -title: varchar(150)
+    -link: varchar(255)
+    -start_datetime: timestamp
+    -end_datetime: timestamp
+    -description: text
+    -candidate_id: bigint
+    -apply_id: bigint
+    -job_id: bigint
+    -batch_id: bigint
+    -is_online: bool
+    -status: InterviewStatus
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +candidate(): BelongsTo
+    +apply(): BelongsTo
+    +job(): BelongsTo
+    +batch(): BelongsTo
+  }
+
+  enum InterviewStatus <<enumeration>> {
+    SCHEDULED
+    COMPLETED
+    CANCELLED
+    RESCHEDULED
+  }
+}
+
+' ========================================================
+' 3. RIGHT COLUMN: DATA PELAMAR & DOKUMEN
+' ========================================================
+package "CandidatePkg" {
+  class Candidate {
+    -id: bigint
+    -name: varchar(150)
+    -email: varchar(100)
+    -phone: varchar(20)
+    -birth_date: date
+    -address: text
+    -email_verified_at: timestamp
+    -verification_token: varchar(100)
+    -password: varchar(100)
+    -remember_token: varchar(100)
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +profile(): HasOne
+    +skills(): HasMany
+    +documents(): HasMany
+    +applies(): HasMany
+    +interviews(): HasMany
+  }
+
+  class CandidateProfile {
+    -id: bigint
+    -candidate_id: bigint
+    -education_level: EducationLevel
+    -major: varchar(150)
+    -university: varchar(150)
+    -gpa: decimal
+    -years_of_experience: tinyint
+    -last_position: varchar(150)
+    -last_company: varchar(150)
+    -city: varchar(150)
+    -province: varchar(150)
+    -expected_salary: int
+    -availability_date: date
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +candidate(): BelongsTo
+  }
+
+  class CandidateSkill {
+    -id: bigint
+    -candidate_id: bigint
+    -name: varchar(100)
+    -level: SkillLevel
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +candidate(): BelongsTo
+  }
+
+  enum SkillLevel <<enumeration>> {
+    BEGINNER
+    INTERMEDIATE
+    ADVANCED
+    EXPERT
+  }
+
+  class Document {
+    -id: bigint
+    -candidate_id: bigint
+    -name: varchar(150)
+    -file: varchar(255)
+    -type: DocumentType
+    -created_at: timestamp
+    -updated_at: timestamp
+    __
+    +candidate(): BelongsTo
+    +applies(): BelongsToMany
+  }
+
+  enum DocumentType <<enumeration>> {
+    CV
+    IJAZAH
+    TRANSKRIP
+    STR
+    SERTIFIKAT
+    LAINNYA
+  }
+}
+
+' ========================================================
+' HORIZONTAL PACKAGE ANCHORS (LEFT -> CENTER -> RIGHT)
+' ========================================================
+Vacancies -[hidden]right-> Selection
+Selection -[hidden]right-> CandidatePkg
+
+' ========================================================
+' INTRA-PACKAGE RELATIONS
+' ========================================================
+
+' Vacancies (Left)
+User "1" -down-> "0..*" Job 
+User -left.> UserLevel
+Category "1" -down-> "0..*" Job 
+Job "1" *-down- "0..*" JobImage
+Job "1" *-down- "0..1" JobCriteria
+Job -left.> JobType
+JobCriteria "1" *-down- "0..*" JobCriteriaSkill
+JobCriteria -down.> EducationLevel
+
+' Selection (Center)
+Batch -right.> BatchStatus
+Apply -right.> ApplyStatus
+Apply -right.> ScoreRecommendation
+Apply "1" -down-> "0..*" ApplyDocument 
+Apply "1" -down-> "0..*" ScheduleInterview 
+ScheduleInterview -right.> InterviewStatus
+
+' Candidate (Right)
+Candidate "1" *-down- "0..*" Document
+Candidate "1" *-down- "0..1" CandidateProfile
+Candidate "1" *-down- "0..*" CandidateSkill
+Document -[hidden]right-> CandidateProfile
+CandidateProfile -[hidden]right-> CandidateSkill
+CandidateSkill -right.> SkillLevel
+Document -right.> DocumentType
+
+' ========================================================
+' CLEAN INTER-PACKAGE RELATIONS (NO CROSSINGS)
+' ========================================================
+
+' Batch (Center Top) to Job (Left)
+Batch "1" -left-> "0..*" Job 
+
+' Batch (Center Top) to Apply (Center Mid)
+Batch "1" -down-> "0..*" Apply 
+
+' Job (Left Mid) to Apply (Center Mid)
+Job "1" -right-> "0..*" Apply 
+
+' Candidate (Right Mid) to Apply (Center Mid)
+Candidate "1" -left-> "0..*" Apply 
+
+' Document (Right Bottom) to ApplyDocument (Center Bottom)
+Document "1" -[#000000]down-> "0..*" ApplyDocument 
+
+@enduml
