@@ -53,38 +53,38 @@ boundary "ApplicationPage" as Page
 control "ApplicantController" as Controller
 entity "ApplyModel" as Model
 
-' Group sd View/Read: Akses Daftar Berkas Lamaran & Auto-Score
+' Group sd View/Read: Akses Daftar Berkas Lamaran
 group sd View/Read
   HRD -> Page : 1. Akses menu seleksi berkas lamaran
   activate HRD
   activate Page
   Page -> Controller : 1.1 datatables(request)
   activate Controller
-  Controller -> Model : 1.1.1 with(['candidate', 'job', 'batch', 'applyDocuments'])->orderByDesc('auto_score')->get()
+  Controller -> Model : 1.1.1 with(['candidate', 'job', 'batch', 'applyDocuments'])->latest()->get()
   activate Model
-  Model --> Controller : 1.1.2 Result data pelamar & auto-score
+  Model --> Controller : 1.1.2 Result data pelamar
   deactivate Model
   Controller --> Page : 1.2 Return JSON DataTables data
   deactivate Controller
-  Page --> HRD : 1.3 Tampilkan daftar pelamar terurut peringkat auto-score
+  Page --> HRD : 1.3 Tampilkan daftar berkas pelamar
   deactivate Page
   deactivate HRD
 end
 
-' Group sd Detail: Pratinjau Dokumen & Kriteria Pelamar
+' Group sd Detail: Pratinjau Dokumen Pelamar
 group sd Detail
   HRD -> Page : 2. Klik tombol detail berkas pelamar
   activate HRD
   activate Page
   Page -> Controller : 2.1 show(id)
   activate Controller
-  Controller -> Model : 2.1.1 with(['candidate.profile', 'candidate.skills', 'job.criteria', 'applyDocuments.document'])->findOrFail(id)
+  Controller -> Model : 2.1.1 with(['candidate.profile', 'candidate.skills', 'applyDocuments.document'])->findOrFail(id)
   activate Model
   Model --> Controller : 2.1.2 Result rincian berkas lamaran
   deactivate Model
   Controller --> Page : 2.2 Return view("admin.applies.detail")
   deactivate Controller
-  Page --> HRD : 2.3 Tampilkan resume, berkas CV, STR, & kriteria evaluasi
+  Page --> HRD : 2.3 Tampilkan resume & berkas CV, STR pelamar
   deactivate Page
   deactivate HRD
 end

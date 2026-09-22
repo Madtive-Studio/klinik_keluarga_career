@@ -31,7 +31,9 @@
 			<ul class="nav nav-pills mb-4" role="tablist">
 				<li class="nav-item"><button type="button" class="nav-link active" id="tab-btn-basic" data-bs-toggle="tab" data-bs-target="#tab-basic">{{ __('admin.jobs.tab_basic') }}</button></li>
 				<li class="nav-item"><button type="button" class="nav-link" id="tab-btn-content" data-bs-toggle="tab" data-bs-target="#tab-content">{{ __('admin.jobs.tab_content') }}</button></li>
-				<li class="nav-item"><button type="button" class="nav-link" id="tab-btn-scoring" data-bs-toggle="tab" data-bs-target="#tab-scoring">{{ __('admin.jobs.tab_scoring') }}</button></li>
+				@if (config('scoring.enabled', false))
+					<li class="nav-item"><button type="button" class="nav-link" id="tab-btn-scoring" data-bs-toggle="tab" data-bs-target="#tab-scoring">{{ __('admin.jobs.tab_scoring') }}</button></li>
+				@endif
 			</ul>
 
 			<div class="tab-content">
@@ -238,72 +240,74 @@
 					</div>
 				</div>
 
-				<div class="tab-pane fade" id="tab-scoring">
-					<div class="card mb-4">
-						<div class="card-header"><h5 class="mb-0">{{ __('admin.jobs.auto_scoring') }}</h5></div>
-						<div class="card-body row">
-							@php
-								$criteria = isset($job) ? $job->criteria : null;
-							@endphp
-							<div class="col-md-4 mb-3">
-								<label class="form-label">{{ __('admin.jobs.min_education') }}</label>
-								<select name="min_education" class="form-control @error('min_education') is-invalid @enderror">
-									<option value="">{{ __('admin.jobs.no_requirement') }}</option>
-									@foreach (\App\Enums\EducationLevel::cases() as $level)
-										<option value="{{ $level->value }}" @selected(old('min_education', $criteria?->min_education) === $level->value)>{{ $level->label() }}</option>
-									@endforeach
-								</select>
-								@error('min_education') <small class="text-danger">{{ $message }}</small> @enderror
-							</div>
-							<div class="col-md-12 mb-3">
-								<small class="text-muted">{{ __('admin.jobs.experience_scoring_hint') }}</small>
-							</div>
-							<div class="col-md-12"><hr><p class="mb-2"><strong>{{ __('admin.jobs.weight_title') }}</strong></p></div>
-							<div class="col-12 mb-3">
-								<div id="weight-total-alert" class="alert alert-warning d-none mb-0" role="alert">
-									<strong>{{ __('admin.jobs.weight_adjust') }}</strong>
-									<span id="weight-total-message">{{ __('admin.js.weight_default') }}</span>
+				@if (config('scoring.enabled', false))
+					<div class="tab-pane fade" id="tab-scoring">
+						<div class="card mb-4">
+							<div class="card-header"><h5 class="mb-0">{{ __('admin.jobs.auto_scoring') }}</h5></div>
+							<div class="card-body row">
+								@php
+									$criteria = isset($job) ? $job->criteria : null;
+								@endphp
+								<div class="col-md-4 mb-3">
+									<label class="form-label">{{ __('admin.jobs.min_education') }}</label>
+									<select name="min_education" class="form-control @error('min_education') is-invalid @enderror">
+										<option value="">{{ __('admin.jobs.no_requirement') }}</option>
+										@foreach (\App\Enums\EducationLevel::cases() as $level)
+											<option value="{{ $level->value }}" @selected(old('min_education', $criteria?->min_education) === $level->value)>{{ $level->label() }}</option>
+										@endforeach
+									</select>
+									@error('min_education') <small class="text-danger">{{ $message }}</small> @enderror
 								</div>
-								<div id="weight-total-success" class="alert alert-success d-none mb-0" role="alert">
-									{{ __('admin.jobs.weight_ready') }}
+								<div class="col-md-12 mb-3">
+									<small class="text-muted">{{ __('admin.jobs.experience_scoring_hint') }}</small>
 								</div>
-							</div>
-							<div class="col-md-3 mb-3">
-								<label class="form-label">{{ __('admin.jobs.weight_education') }}</label>
-								<input type="number" min="0" max="100" name="weight_education" class="form-control weight-input @error('weight_education') is-invalid @enderror" value="{{ old('weight_education', $criteria?->weight_education ?? 30) }}">
-								@error('weight_education') <small class="text-danger">{{ $message }}</small> @enderror
-							</div>
-							<div class="col-md-3 mb-3">
-								<label class="form-label">{{ __('admin.jobs.weight_experience') }}</label>
-								<input type="number" min="0" max="100" name="weight_experience" class="form-control weight-input @error('weight_experience') is-invalid @enderror" value="{{ old('weight_experience', $criteria?->weight_experience ?? 30) }}">
-								@error('weight_experience') <small class="text-danger">{{ $message }}</small> @enderror
-							</div>
-							<div class="col-md-3 mb-3">
-								<label class="form-label">{{ __('admin.jobs.weight_profile') }}</label>
-								<input type="number" min="0" max="100" name="weight_profile" class="form-control weight-input @error('weight_profile') is-invalid @enderror" value="{{ old('weight_profile', $criteria?->weight_profile ?? 20) }}">
-								@error('weight_profile') <small class="text-danger">{{ $message }}</small> @enderror
-							</div>
-							<div class="col-md-3 mb-3">
-								<label class="form-label">{{ __('admin.jobs.weight_cover_letter') }}</label>
-								<input type="number" min="0" max="100" name="weight_cover_letter" class="form-control weight-input @error('weight_cover_letter') is-invalid @enderror" value="{{ old('weight_cover_letter', $criteria?->weight_cover_letter ?? 20) }}">
-								@error('weight_cover_letter') <small class="text-danger">{{ $message }}</small> @enderror
-							</div>
-							<div class="col-md-12"><hr><p class="mb-2"><strong>{{ __('admin.jobs.threshold_title') }}</strong></p></div>
-							<div class="col-md-6 mb-3">
-								<label class="form-label">{{ __('admin.jobs.threshold_shortlist') }}</label>
-								<input type="number" min="0" max="100" name="threshold_shortlist" class="form-control @error('threshold_shortlist') is-invalid @enderror" value="{{ old('threshold_shortlist', $criteria?->threshold_shortlist ?? 70) }}">
-								<small class="text-muted">{{ __('admin.jobs.threshold_shortlist_hint') }}</small>
-								@error('threshold_shortlist') <small class="text-danger d-block">{{ $message }}</small> @enderror
-							</div>
-							<div class="col-md-6 mb-3">
-								<label class="form-label">{{ __('admin.jobs.threshold_review') }}</label>
-								<input type="number" min="0" max="100" name="threshold_reject" class="form-control @error('threshold_reject') is-invalid @enderror" value="{{ old('threshold_reject', $criteria?->threshold_reject ?? 40) }}">
-								<small class="text-muted">{{ __('admin.jobs.threshold_review_hint') }}</small>
-								@error('threshold_reject') <small class="text-danger d-block">{{ $message }}</small> @enderror
+								<div class="col-md-12"><hr><p class="mb-2"><strong>{{ __('admin.jobs.weight_title') }}</strong></p></div>
+								<div class="col-12 mb-3">
+									<div id="weight-total-alert" class="alert alert-warning d-none mb-0" role="alert">
+										<strong>{{ __('admin.jobs.weight_adjust') }}</strong>
+										<span id="weight-total-message">{{ __('admin.js.weight_default') }}</span>
+									</div>
+									<div id="weight-total-success" class="alert alert-success d-none mb-0" role="alert">
+										{{ __('admin.jobs.weight_ready') }}
+									</div>
+								</div>
+								<div class="col-md-3 mb-3">
+									<label class="form-label">{{ __('admin.jobs.weight_education') }}</label>
+									<input type="number" min="0" max="100" name="weight_education" class="form-control weight-input @error('weight_education') is-invalid @enderror" value="{{ old('weight_education', $criteria?->weight_education ?? 30) }}">
+									@error('weight_education') <small class="text-danger">{{ $message }}</small> @enderror
+								</div>
+								<div class="col-md-3 mb-3">
+									<label class="form-label">{{ __('admin.jobs.weight_experience') }}</label>
+									<input type="number" min="0" max="100" name="weight_experience" class="form-control weight-input @error('weight_experience') is-invalid @enderror" value="{{ old('weight_experience', $criteria?->weight_experience ?? 30) }}">
+									@error('weight_experience') <small class="text-danger">{{ $message }}</small> @enderror
+								</div>
+								<div class="col-md-3 mb-3">
+									<label class="form-label">{{ __('admin.jobs.weight_profile') }}</label>
+									<input type="number" min="0" max="100" name="weight_profile" class="form-control weight-input @error('weight_profile') is-invalid @enderror" value="{{ old('weight_profile', $criteria?->weight_profile ?? 20) }}">
+									@error('weight_profile') <small class="text-danger">{{ $message }}</small> @enderror
+								</div>
+								<div class="col-md-3 mb-3">
+									<label class="form-label">{{ __('admin.jobs.weight_cover_letter') }}</label>
+									<input type="number" min="0" max="100" name="weight_cover_letter" class="form-control weight-input @error('weight_cover_letter') is-invalid @enderror" value="{{ old('weight_cover_letter', $criteria?->weight_cover_letter ?? 20) }}">
+									@error('weight_cover_letter') <small class="text-danger">{{ $message }}</small> @enderror
+								</div>
+								<div class="col-md-12"><hr><p class="mb-2"><strong>{{ __('admin.jobs.threshold_title') }}</strong></p></div>
+								<div class="col-md-6 mb-3">
+									<label class="form-label">{{ __('admin.jobs.threshold_shortlist') }}</label>
+									<input type="number" min="0" max="100" name="threshold_shortlist" class="form-control @error('threshold_shortlist') is-invalid @enderror" value="{{ old('threshold_shortlist', $criteria?->threshold_shortlist ?? 70) }}">
+									<small class="text-muted">{{ __('admin.jobs.threshold_shortlist_hint') }}</small>
+									@error('threshold_shortlist') <small class="text-danger d-block">{{ $message }}</small> @enderror
+								</div>
+								<div class="col-md-6 mb-3">
+									<label class="form-label">{{ __('admin.jobs.threshold_review') }}</label>
+									<input type="number" min="0" max="100" name="threshold_reject" class="form-control @error('threshold_reject') is-invalid @enderror" value="{{ old('threshold_reject', $criteria?->threshold_reject ?? 40) }}">
+									<small class="text-muted">{{ __('admin.jobs.threshold_review_hint') }}</small>
+									@error('threshold_reject') <small class="text-danger d-block">{{ $message }}</small> @enderror
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				@endif
 			</div>
 
 			<div class="d-flex justify-content-end gap-2 mt-2">

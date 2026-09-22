@@ -13,6 +13,8 @@ services:
       - ./docker/images:/var/www/public/images/upload
     depends_on:
       - db
+    environment:
+      - AUTO_SCORING_ENABLED=${AUTO_SCORING_ENABLED:-false}
     networks:
       - himed_network
 

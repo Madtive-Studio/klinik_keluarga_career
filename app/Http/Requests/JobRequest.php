@@ -71,28 +71,30 @@ class JobRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
-            $weights = [
-                (int) $this->input('weight_education', 30),
-                (int) $this->input('weight_experience', 30),
-                (int) $this->input('weight_profile', 20),
-                (int) $this->input('weight_cover_letter', 20),
-            ];
+            if (config('scoring.enabled', false)) {
+                $weights = [
+                    (int) $this->input('weight_education', 30),
+                    (int) $this->input('weight_experience', 30),
+                    (int) $this->input('weight_profile', 20),
+                    (int) $this->input('weight_cover_letter', 20),
+                ];
 
-            if (array_sum($weights) !== 100) {
-                $validator->errors()->add(
-                    'weight_education',
-                    __('validation.custom.weight_education.weight_total', ['total' => array_sum($weights)])
-                );
-            }
+                if (array_sum($weights) !== 100) {
+                    $validator->errors()->add(
+                        'weight_education',
+                        __('validation.custom.weight_education.weight_total', ['total' => array_sum($weights)])
+                    );
+                }
 
-            $shortlist = (int) $this->input('threshold_shortlist', 70);
-            $reject = (int) $this->input('threshold_reject', 40);
+                $shortlist = (int) $this->input('threshold_shortlist', 70);
+                $reject = (int) $this->input('threshold_reject', 40);
 
-            if ($shortlist <= $reject) {
-                $validator->errors()->add(
-                    'threshold_shortlist',
-                    __('validation.custom.weight_education.threshold_order')
-                );
+                if ($shortlist <= $reject) {
+                    $validator->errors()->add(
+                        'threshold_shortlist',
+                        __('validation.custom.weight_education.threshold_order')
+                    );
+                }
             }
 
             $batchId = (int) $this->input('batch_id');

@@ -118,16 +118,18 @@ class ApplicationRepository
             'updated_at'   => now(),
         ];
 
-        $scoreResult = $this->scoringService->calculate(
-            $candidate,
-            $job,
-            (string) $requestData['cover_letter']
-        );
+        if (config('scoring.enabled', false)) {
+            $scoreResult = $this->scoringService->calculate(
+                $candidate,
+                $job,
+                (string) $requestData['cover_letter']
+            );
 
-        $applyData['auto_score'] = $scoreResult['score'];
-        $applyData['score_recommendation'] = $scoreResult['recommendation'];
-        $applyData['score_breakdown'] = $scoreResult['breakdown'];
-        $applyData['scored_at'] = now();
+            $applyData['auto_score'] = $scoreResult['score'];
+            $applyData['score_recommendation'] = $scoreResult['recommendation'];
+            $applyData['score_breakdown'] = $scoreResult['breakdown'];
+            $applyData['scored_at'] = now();
+        }
 
         $apply = $this->create($applyData);
 

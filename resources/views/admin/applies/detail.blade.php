@@ -228,7 +228,7 @@
 							</h5>
 						</div>
 						<div class="card-body">
-							@if ($apply->auto_score !== null)
+							@if (config('scoring.enabled', false) && $apply->auto_score !== null)
 								@php
 									$recommendation = $apply->score_recommendation
 										? \App\Enums\ScoreRecommendation::from($apply->score_recommendation)

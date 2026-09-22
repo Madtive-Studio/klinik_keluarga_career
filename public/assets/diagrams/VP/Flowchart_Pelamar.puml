@@ -28,7 +28,7 @@ endif
 (A)
 detach
 
-|Bagian 2: Pengajuan Lamaran & Auto-Scoring|
+|Bagian 2: Pengajuan Lamaran|
 (A)
 :Lengkapi Profil & Unggah Berkas (CV, STR);
 :Eksplorasi Katalog Lowongan pada Batch Aktif;
@@ -41,7 +41,7 @@ endif
 
 :Isi Cover Letter & Pilih Lampiran;
 :Klik Tombol "Lamar Sekarang";
-:Sistem Simpan Lamaran & Jalankan Auto-Scoring (1-100);
+:Sistem Simpan Lamaran;
 :Sistem Kirim Email Konfirmasi Lamaran;
 :Pelamar Pantau Status di "Lamaran Saya";
 stop

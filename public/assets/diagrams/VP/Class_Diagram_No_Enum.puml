@@ -88,7 +88,6 @@ package "Vacancies" {
     +batch(): BelongsTo
     +category(): BelongsTo
     +user(): BelongsTo
-    +criteria(): HasOne
     +images(): HasMany
     +applies(): HasMany
     +candidateMeetsEducation(level: string): bool
@@ -109,35 +108,6 @@ package "Vacancies" {
     __
     +job(): BelongsTo
     +getImageUrlAttribute(): string
-  }
-
-  class JobCriteria {
-    -id: bigint
-    -job_id: bigint
-    -min_education: varchar(20)
-    -min_experience_years: tinyint
-    -weight_education: tinyint
-    -weight_experience: tinyint
-    -weight_skills: tinyint
-    -weight_profile: tinyint
-    -weight_cover_letter: tinyint
-    -threshold_shortlist: tinyint
-    -threshold_reject: tinyint
-    -created_at: timestamp
-    -updated_at: timestamp
-    __
-    +job(): BelongsTo
-    +skills(): HasMany
-  }
-
-  class JobCriteriaSkill {
-    -id: bigint
-    -job_criteria_id: bigint
-    -skill_name: varchar(100)
-    -created_at: timestamp
-    -updated_at: timestamp
-    __
-    +criteria(): BelongsTo
   }
 }
 
@@ -161,17 +131,6 @@ package "Selection" {
     +isActive(): bool
   }
 
-  class Company {
-    -id: bigint
-    -name: varchar(150)
-    -address: text
-    -location: varchar(100)
-    -created_at: timestamp
-    -updated_at: timestamp
-    __
-    +getCompanyInfo(): array
-  }
-
   class Apply {
     -id: bigint
     -uuid: varchar(36)
@@ -181,10 +140,6 @@ package "Selection" {
     -cover_letter: text
     -status: varchar(20)
     -description: text
-    -auto_score: tinyint
-    -score_recommendation: varchar(20)
-    -score_breakdown: json
-    -scored_at: timestamp
     -created_at: timestamp
     -updated_at: timestamp
     __
@@ -316,8 +271,6 @@ Selection -[hidden]right-> CandidatePkg
 User "1" -down-> "0..*" Job 
 Category "1" -down-> "0..*" Job 
 Job "1" *-down- "0..*" JobImage
-Job "1" *-down- "0..1" JobCriteria
-JobCriteria "1" *-down- "0..*" JobCriteriaSkill
 
 ' Selection (Center)
 Apply "1" -down-> "0..*" ApplyDocument 

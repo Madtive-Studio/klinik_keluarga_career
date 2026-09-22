@@ -70,7 +70,7 @@ else (Ya)
       stop
     else (Ya)
       |Sistem|
-      :Simpan lamaran & jalankan\nAuto-Scoring (1-100);
+      :Simpan data lamaran\n& dokumen pendukung;
       :Kirim email konfirmasi\nbukti lamaran kerja;
       :Tampilkan halaman\n"Lamaran Berhasil Diajukan";
       |Pelamar|

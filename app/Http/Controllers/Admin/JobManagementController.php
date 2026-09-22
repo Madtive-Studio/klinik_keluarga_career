@@ -161,7 +161,9 @@ class JobManagementController extends Controller
         try {
             DB::transaction(function () use ($request, $attributes) {
                 $job = Job::create($attributes);
-                $job->criteria()->create($request->criteriaAttributes());
+                if (config('scoring.enabled', false)) {
+                    $job->criteria()->create($request->criteriaAttributes());
+                }
 
                 $this->jobImageService->associateImagesToJob($job->uuid, $job->id);
                 $this->jobImageService->ensurePrimaryImageExists($job->uuid);
@@ -225,10 +227,12 @@ class JobManagementController extends Controller
         try {
             DB::transaction(function () use ($request, $job, $attributes) {
                 $job->update($attributes);
-                $job->criteria()->updateOrCreate(
-                    ['job_id' => $job->id],
-                    $request->criteriaAttributes()
-                );
+                if (config('scoring.enabled', false)) {
+                    $job->criteria()->updateOrCreate(
+                        ['job_id' => $job->id],
+                        $request->criteriaAttributes()
+                    );
+                }
 
                 $this->jobImageService->associateImagesToJob($job->uuid, $job->id);
                 $this->jobImageService->ensurePrimaryImageExists($job->uuid);

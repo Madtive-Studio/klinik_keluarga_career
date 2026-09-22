@@ -34,7 +34,6 @@ node "Application & Web Server\n<<device>>\n(Ubuntu Linux 24.04 LTS)" as AppServ
   
   node "PHP 8.2 Runtime\n<<executionEnvironment>>" as PHPEnv {
     component "Laravel 11 Framework Core" as LaravelCore
-    component "Auto-Scoring Engine\n(ScoringService)" as ScoringEngine
     component "Notification & Mailer Subsystem" as MailerSubsystem
     component "Eloquent ORM" as Eloquent
   }
@@ -57,7 +56,6 @@ node "External Mail Gateway\n<<device>>" as MailServer {
 ' Relations
 Client -- AppServer : "HTTPS (Port 443)\nTCP/IP Network"
 Proxy ..> LaravelCore : "PHP-FPM / FastCGI"
-LaravelCore ..> ScoringEngine
 LaravelCore ..> MailerSubsystem
 LaravelCore ..> Eloquent
 LaravelCore --> Storage : "Read / Write I/O"
