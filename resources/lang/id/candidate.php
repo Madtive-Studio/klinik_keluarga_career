@@ -34,6 +34,10 @@ return [
         'birth_date' => 'Tanggal Lahir',
         'address' => 'Alamat Lengkap',
         'password_confirmation' => 'Konfirmasi Password',
+        'password_match' => 'Password cocok',
+        'password_mismatch' => 'Konfirmasi password tidak cocok',
+        'birth_date_future_error' => 'Tanggal lahir tidak boleh lebih dari hari ini',
+        'phone_digits_hint' => 'Hanya angka diperbolehkan (9-15 digit)',
     ],
     'jobs' => [
         'title' => 'Loker',

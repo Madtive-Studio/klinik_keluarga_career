@@ -60,6 +60,52 @@ class CandidateAuthControllerTest extends TestCase
     }
 
     #[Test]
+    public function candidateCannotRegisterWithFutureBirthDate(): void
+    {
+        $tomorrow = now()->addDay()->format('Y-m-d');
+
+        $response = $this->from(route('candidate.register.form'))
+            ->post(route('candidate.register.verify'), [
+                'name' => 'Budi Santoso',
+                'username' => 'budifuture',
+                'email' => 'future@example.com',
+                'phone' => '81234567891',
+                'country_code' => '+62',
+                'birth_date' => $tomorrow,
+                'address' => 'Jl. Kesehatan No. 12',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+            ]);
+
+        $response->assertSessionHasErrors('birth_date');
+        $this->assertDatabaseMissing('candidates', [
+            'email' => 'future@example.com',
+        ]);
+    }
+
+    #[Test]
+    public function candidateCannotRegisterWhenPasswordsDoNotMatch(): void
+    {
+        $response = $this->from(route('candidate.register.form'))
+            ->post(route('candidate.register.verify'), [
+                'name' => 'Budi Santoso',
+                'username' => 'budimismatch',
+                'email' => 'mismatch@example.com',
+                'phone' => '81234567892',
+                'country_code' => '+62',
+                'birth_date' => '1995-05-20',
+                'address' => 'Jl. Kesehatan No. 12',
+                'password' => 'password123',
+                'password_confirmation' => 'different123',
+            ]);
+
+        $response->assertSessionHasErrors('password');
+        $this->assertDatabaseMissing('candidates', [
+            'email' => 'mismatch@example.com',
+        ]);
+    }
+
+    #[Test]
     public function verifiedCandidateCanAuthenticate(): void
     {
         $candidate = Candidate::factory()->create([
@@ -73,6 +119,36 @@ class CandidateAuthControllerTest extends TestCase
             'password' => 'password123',
         ]);
 
+        $response->assertRedirect(route('candidate.home'));
+        $this->assertAuthenticatedAs($candidate, 'candidate');
+    }
+
+    #[Test]
+    public function candidateCanLoginWithVariousPhoneFormats(): void
+    {
+        $candidate = Candidate::factory()->create([
+            'email' => 'phoneuser@example.com',
+            'phone' => '6281234567899',
+            'password' => bcrypt('password123'),
+            'email_verified_at' => now(),
+        ]);
+
+        // Login using 08... format
+        $response = $this->post(route('candidate.login.process'), [
+            'email' => '081234567899',
+            'password' => 'password123',
+        ]);
+        $response->assertRedirect(route('candidate.home'));
+        $this->assertAuthenticatedAs($candidate, 'candidate');
+
+        // Logout
+        $this->post(route('candidate.logout'));
+
+        // Login using 8... format
+        $response = $this->post(route('candidate.login.process'), [
+            'email' => '81234567899',
+            'password' => 'password123',
+        ]);
         $response->assertRedirect(route('candidate.home'));
         $this->assertAuthenticatedAs($candidate, 'candidate');
     }

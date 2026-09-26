@@ -34,6 +34,10 @@ return [
         'birth_date' => 'Date of Birth',
         'address' => 'Full Address',
         'password_confirmation' => 'Confirm Password',
+        'password_match' => 'Passwords match',
+        'password_mismatch' => 'Passwords do not match',
+        'birth_date_future_error' => 'Birth date cannot be in the future',
+        'phone_digits_hint' => 'Only digits allowed (9-15 digits)',
     ],
     'jobs' => [
         'title' => 'Jobs',

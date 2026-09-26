@@ -33,9 +33,14 @@ class AuthController extends Controller
         $loginInput = trim($request->input('email', $request->input('login')));
         $password = $request->password;
 
+        $normalizedPhone = normalizePhoneNumber($loginInput);
+
         $candidate = Candidate::where('email', $loginInput)
             ->orWhere('username', $loginInput)
             ->orWhere('phone', $loginInput)
+            ->when($normalizedPhone, function ($query, $normalizedPhone) {
+                $query->orWhere('phone', $normalizedPhone);
+            })
             ->first();
 
         if ($candidate && Hash::check($password, $candidate->password)) {
@@ -66,7 +71,7 @@ class AuthController extends Controller
             'password' => 'required|min:8|confirmed',
             'name' => 'required',
             'phone' => 'required|numeric|digits_between:9,15',
-            'birth_date' => 'required',
+            'birth_date' => 'required|date|before_or_equal:today',
             'address' => 'required',
         ]);
 
@@ -91,34 +96,7 @@ class AuthController extends Controller
 
     private function normalizePhoneNumber(?string $phone, ?string $countryCode = '+62'): ?string
     {
-        if (empty($phone)) {
-            return null;
-        }
-
-        $cleaned = preg_replace('/[^\d+]/', '', trim($phone));
-
-        if (str_starts_with($cleaned, '+')) {
-            $cleaned = substr($cleaned, 1);
-        }
-
-        if (str_starts_with($cleaned, '0')) {
-            return $cleaned;
-        }
-
-        if (str_starts_with($cleaned, '62')) {
-            return $cleaned;
-        }
-
-        $cleanCountryCode = preg_replace('/[^\d]/', '', $countryCode ?: '62');
-        if ($cleanCountryCode === '62' && str_starts_with($cleaned, '8')) {
-            return '62' . $cleaned;
-        }
-
-        if ($cleanCountryCode && !str_starts_with($cleaned, $cleanCountryCode)) {
-            return $cleanCountryCode . $cleaned;
-        }
-
-        return $cleaned;
+        return normalizePhoneNumber($phone, $countryCode);
     }
 
     public function verification(Request $request, $token)

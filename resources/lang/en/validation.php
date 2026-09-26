@@ -192,6 +192,11 @@ return [
         'quota' => [
             'exceeds_batch' => 'Job quota exceeds remaining batch quota. Batch quota: :batch_quota, allocated: :allocated, remaining: :remaining.',
         ],
+        'birth_date' => [
+            'required' => 'Birth date is required.',
+            'date' => 'Birth date is not a valid date.',
+            'before_or_equal' => 'Birth date cannot be in the future.',
+        ],
     ],
 
     /*

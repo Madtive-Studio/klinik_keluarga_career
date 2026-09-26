@@ -132,7 +132,7 @@
                                                             <option value="+27" {{ old('country_code') == '+27' ? 'selected' : '' }}>🇿🇦 +27 (ZA)</option>
                                                         </optgroup>
                                                     </select>
-                                                    <input type="tel" inputmode="numeric" class="form-control" placeholder="..." name="phone" value="{{ old('phone') }}">
+                                                    <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="15" class="form-control" id="phone_input" placeholder="..." name="phone" value="{{ old('phone') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                                 </div>
                                                 @error('phone') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -142,7 +142,7 @@
                                         <div class="col-md-6">
                                             <div class="mb-3 position-relative">
                                                 <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.birth_date') }} <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control flatpickr" readonly placeholder="..." name="birth_date" value="{{ old('birth_date') }}">
+                                                <input type="text" class="form-control flatpickr flatpickr-birthdate" id="birth_date_input" readonly placeholder="..." name="birth_date" max="{{ date('Y-m-d') }}" data-max-date="today" value="{{ old('birth_date') }}">
                                                 @error('birth_date') <span
                                                     class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
                                                 @enderror
@@ -169,7 +169,7 @@
                                         <div class="col-md-12">
                                             <div class="mb-3 position-relative">
                                                 <label class="form-label text-dark fw-semibold">{{ __('common.password') }} <span class="text-danger">*</span></label>
-                                                <input type="password" class="form-control" placeholder="..." name="password">
+                                                <input type="password" class="form-control" id="password_input" placeholder="..." name="password">
                                                 @error('password') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
                                                 @enderror
@@ -178,7 +178,8 @@
                                         <div class="col-md-12">
                                             <div class="mb-3 position-relative">
                                                 <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.password_confirmation') }} <span class="text-danger">*</span></label>
-                                                <input type="password" class="form-control" placeholder="..." name="password_confirmation">
+                                                <input type="password" class="form-control" id="password_confirmation_input" placeholder="..." name="password_confirmation">
+                                                <div id="password-match-feedback" class="mt-1" style="font-size: 0.85rem; display: none;"></div>
                                                 @error('password_confirmation') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
                                                 @enderror
@@ -210,6 +211,105 @@
     <script src="{{ asset('assets/candidate/js/flatpickr.min.js') }}"></script>
     <script src="{{ asset('assets/candidate/js/flatpickr-id.min.js') }}"></script>
     <script src="{{ asset('assets/candidate/js/app.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            const $phoneInput = $('#phone_input');
+            const $passwordInput = $('#password_input');
+            const $confirmInput = $('#password_confirmation_input');
+            const $matchFeedback = $('#password-match-feedback');
+            const matchText = @json(__('candidate.auth.password_match'));
+            const mismatchText = @json(__('candidate.auth.password_mismatch'));
+            const birthDateErrorText = @json(__('candidate.auth.birth_date_future_error'));
+
+            // 1. Strictly restrict phone input to digits only
+            $phoneInput.on('keydown keypress', function(e) {
+                // Allow control keys: backspace, delete, tab, escape, enter
+                if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+                    // Allow Ctrl/Cmd + A, C, V, X
+                    (e.ctrlKey === true || e.metaKey === true)) {
+                    return;
+                }
+                // Prevent anything that is not a digit key
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+
+            $phoneInput.on('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+            $phoneInput.on('paste', function(e) {
+                const clipboardData = e.originalEvent.clipboardData || window.clipboardData;
+                if (clipboardData) {
+                    const pastedData = clipboardData.getData('text');
+                    if (!/^\d+$/.test(pastedData)) {
+                        e.preventDefault();
+                        const numericOnly = pastedData.replace(/\D/g, '');
+                        document.execCommand('insertText', false, numericOnly);
+                    }
+                }
+            });
+
+            // 2. Real-time UI validation for password confirmation
+            function validatePasswordMatch() {
+                const password = $passwordInput.val();
+                const confirm = $confirmInput.val();
+
+                if (confirm.length === 0) {
+                    $confirmInput.removeClass('is-valid is-invalid');
+                    $matchFeedback.hide().empty();
+                    return;
+                }
+
+                if (password === confirm) {
+                    $confirmInput.removeClass('is-invalid').addClass('is-valid');
+                    $matchFeedback.html(
+                        '<div class="text-success fw-bold d-flex align-items-center mt-1"><i class="mdi mdi-check-circle-outline me-1"></i>' + matchText + '</div>'
+                    ).show();
+                } else {
+                    $confirmInput.removeClass('is-valid').addClass('is-invalid');
+                    $matchFeedback.html(
+                        '<div class="text-danger fw-bold d-flex align-items-center mt-1"><i class="mdi mdi-close-circle-outline me-1"></i>' + mismatchText + '</div>'
+                    ).show();
+                }
+            }
+
+            $passwordInput.on('input change', function() {
+                if ($confirmInput.val().length > 0) {
+                    validatePasswordMatch();
+                }
+            });
+
+            $confirmInput.on('input change', validatePasswordMatch);
+
+            // 3. Form submit validation guard
+            $('.login-form').on('submit', function(e) {
+                const password = $passwordInput.val();
+                const confirm = $confirmInput.val();
+
+                if (confirm.length > 0 && password !== confirm) {
+                    e.preventDefault();
+                    $confirmInput.focus();
+                    validatePasswordMatch();
+                    return false;
+                }
+
+                const birthDateVal = $('#birth_date_input').val();
+                if (birthDateVal) {
+                    const selectedDate = new Date(birthDateVal);
+                    const today = new Date();
+                    today.setHours(23, 59, 59, 999);
+                    if (selectedDate > today) {
+                        e.preventDefault();
+                        alert(birthDateErrorText);
+                        $('#birth_date_input').focus();
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

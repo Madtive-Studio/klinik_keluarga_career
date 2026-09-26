@@ -19,6 +19,7 @@ return [
     ],
     'email' => ':attribute harus berupa email yang valid.',
     'confirmed' => 'Konfirmasi :attribute tidak cocok.',
+    'before_or_equal' => ':attribute tidak boleh lebih dari :date.',
     'date' => ':attribute bukan tanggal yang valid.',
     'file' => ':attribute harus berupa file.',
     'mimes' => 'Format :attribute harus :values.',
@@ -127,6 +128,11 @@ return [
         ],
         'quota' => [
             'exceeds_batch' => 'Kuota lowongan melebihi sisa kuota batch. Kuota batch: :batch_quota, terpakai: :allocated, sisa: :remaining.',
+        ],
+        'birth_date' => [
+            'required' => 'Tanggal lahir wajib diisi.',
+            'date' => 'Tanggal lahir tidak valid.',
+            'before_or_equal' => 'Tanggal lahir tidak boleh lebih dari hari ini.',
         ],
     ],
 ];

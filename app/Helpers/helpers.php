@@ -110,3 +110,39 @@ function parseJobExperienceYears(?string $experience): int
 
     return 0;
 }
+
+function normalizePhoneNumber(?string $phone, ?string $countryCode = '+62'): ?string
+{
+    if (empty($phone)) {
+        return null;
+    }
+
+    $cleaned = preg_replace('/[^\d]/', '', trim($phone));
+    if ($cleaned === '') {
+        return null;
+    }
+
+    $cleanCountryCode = preg_replace('/[^\d]/', '', $countryCode ?: '62');
+
+    // If number starts with country code followed by a trunk prefix '0' (e.g. 620812...)
+    if (!empty($cleanCountryCode) && str_starts_with($cleaned, $cleanCountryCode . '0')) {
+        $cleaned = $cleanCountryCode . substr($cleaned, strlen($cleanCountryCode) + 1);
+    }
+
+    // If number already starts with the country code, return as is
+    if (!empty($cleanCountryCode) && str_starts_with($cleaned, $cleanCountryCode)) {
+        return $cleaned;
+    }
+
+    // Strip leading national trunk zero (e.g. 0812... -> 812...)
+    if (str_starts_with($cleaned, '0')) {
+        $cleaned = ltrim($cleaned, '0');
+    }
+
+    // Prepend country code if not already present
+    if (!empty($cleanCountryCode)) {
+        return $cleanCountryCode . $cleaned;
+    }
+
+    return $cleaned;
+}
