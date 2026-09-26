@@ -78,4 +78,30 @@ class JobApplyEligibilityTest extends TestCase
         $this->assertTrue($eligibility['can_apply']);
         $this->assertFalse($eligibility['education_not_met']);
     }
+
+    #[Test]
+    public function getApplyEligibilityBlocksWhenBatchIsInactive(): void
+    {
+        $batch = \App\Models\Batch::factory()->inactive()->create();
+        $job = Job::factory()->create(['batch_id' => $batch->id]);
+        $candidate = Candidate::factory()->create(['email_verified_at' => now()]);
+
+        $eligibility = $this->repository->getApplyEligibility($job->fresh(), $candidate->id);
+
+        $this->assertFalse($eligibility['can_apply']);
+        $this->assertTrue($eligibility['batch_expired']);
+    }
+
+    #[Test]
+    public function getApplyEligibilityBlocksWhenBatchIsExpired(): void
+    {
+        $batch = \App\Models\Batch::factory()->expired()->create();
+        $job = Job::factory()->create(['batch_id' => $batch->id]);
+        $candidate = Candidate::factory()->create(['email_verified_at' => now()]);
+
+        $eligibility = $this->repository->getApplyEligibility($job->fresh(), $candidate->id);
+
+        $this->assertFalse($eligibility['can_apply']);
+        $this->assertTrue($eligibility['batch_expired']);
+    }
 }

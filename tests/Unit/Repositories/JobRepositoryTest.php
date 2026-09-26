@@ -167,7 +167,7 @@ class JobRepositoryTest extends TestCase
     #[Test]
     public function getByFiltersAndPaginatedFiltersBySalaryMin(): void
     {
-        $batch = Batch::factory()->create();
+        $batch = Batch::factory()->active()->create();
         $batchId = $batch->id;
 
         $match = Job::factory()->create([
@@ -198,7 +198,7 @@ class JobRepositoryTest extends TestCase
     #[Test]
     public function getByFiltersAndPaginatedFiltersBySalaryMax(): void
     {
-        $batch = Batch::factory()->create();
+        $batch = Batch::factory()->active()->create();
         $batchId = $batch->id;
 
         $match = Job::factory()->create([
@@ -229,7 +229,7 @@ class JobRepositoryTest extends TestCase
     #[Test]
     public function getByFiltersAndPaginatedFiltersByMinEducation(): void
     {
-        $batch = Batch::factory()->create();
+        $batch = Batch::factory()->active()->create();
         $batchId = $batch->id;
 
         $match = Job::factory()->create(['batch_id' => $batchId]);
@@ -286,5 +286,38 @@ class JobRepositoryTest extends TestCase
 
         $this->assertSame(1, $result['jobs']->total());
         $this->assertSame($high->id, $result['jobs']->first()->id);
+    }
+
+    #[Test]
+    public function getByFiltersAndPaginatedExcludesJobsFromInactiveBatches(): void
+    {
+        $inactiveBatch = Batch::factory()->inactive()->create();
+        Job::factory()->create(['batch_id' => $inactiveBatch->id]);
+
+        $filters = [
+            'searchQuery' => null,
+            'categoryId' => null,
+            'jobType' => null,
+            'batchId' => null,
+        ];
+
+        $paginator = $this->repository->getByFiltersAndPaginated($filters, 10);
+
+        $this->assertSame(0, $paginator->total());
+    }
+
+    #[Test]
+    public function findVacancyApplyFormDataReturnsBatchExpiredWhenBatchInactive(): void
+    {
+        $candidate = \App\Models\Candidate::factory()->create(['email_verified_at' => now()]);
+        \App\Models\CandidateProfile::factory()->for($candidate)->create([
+            'education_level' => 'S1',
+        ]);
+        $inactiveBatch = Batch::factory()->inactive()->create();
+        $job = Job::factory()->create(['batch_id' => $inactiveBatch->id]);
+
+        $result = $this->repository->findVacancyApplyFormData($job->uuid, $candidate->id);
+
+        $this->assertTrue($result['batch_expired']);
     }
 }

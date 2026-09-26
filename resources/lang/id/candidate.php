@@ -58,6 +58,7 @@ return [
         'salary_max' => 'Gaji Maksimum',
         'min_education' => 'Min. Pendidikan',
         'apply_now' => 'Lamar Sekarang',
+        'batch_closed' => 'Pendaftaran Ditutup',
         'already_applied' => 'Sudah Melamar',
         'complete_profile_to_apply' => 'Lengkapi Profil untuk Melamar',
         'login_to_apply' => 'Login untuk Melamar',

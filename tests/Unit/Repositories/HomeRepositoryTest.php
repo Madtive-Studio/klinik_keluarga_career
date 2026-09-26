@@ -172,4 +172,30 @@ class HomeRepositoryTest extends TestCase
 
         $this->assertCount(2, $result);
     }
+
+    #[Test]
+    public function getHomeDisplayDataReturnsEmptyJobsWhenNoActiveBatch(): void
+    {
+        Batch::factory()->inactive()->create();
+
+        $jobTypes = [
+            JobType::WFH_REMOTE->value => JobType::WFH_REMOTE,
+        ];
+
+        $data = $this->repository->getHomeDisplayData($jobTypes);
+
+        $this->assertNull($data['activeBatch']);
+        $this->assertCount(0, $data['jobsByType']['All']);
+        $this->assertCount(0, $data['jobsByType'][JobType::WFH_REMOTE->value]);
+    }
+
+    #[Test]
+    public function getJobsByTypeForHomeReturnsEmptyCollectionWhenNoActiveBatch(): void
+    {
+        Batch::factory()->inactive()->create();
+
+        $result = $this->repository->getJobsByTypeForHome(JobType::WFH_REMOTE->value);
+
+        $this->assertCount(0, $result);
+    }
 }

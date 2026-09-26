@@ -265,6 +265,13 @@
 					dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
 					displayLength: 10,
 					lengthMenu: [7, 10, 25, 50, 75, 100],
+					drawCallback: function (settings) {
+						const api = this.api();
+						const startIndex = settings._iDisplayStart;
+						api.column(0, { page: 'current' }).nodes().each(function (cell, i) {
+							cell.innerHTML = startIndex + i + 1;
+						});
+					},
 					language: {
 						paginate: {
 							next: '<i class="ti ti-chevron-right ti-sm"></i>',

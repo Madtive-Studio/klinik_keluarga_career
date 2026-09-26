@@ -7,8 +7,10 @@ enum DocumentType: string
     case CV = 'CV';
     case SURAT_LAMARAN = 'SURAT_LAMARAN';
     case STR = 'STR';
+    case SIP = 'SIP';
     case CERTIFICATE = 'CERTIFICATE';
     case IJAZAH = 'IJAZAH';
+    case MCU = 'MCU';
     case OTHERS = 'OTHERS';
 
     public static function getValues(): array
@@ -31,8 +33,10 @@ enum DocumentType: string
             self::CV => 'candidates/documents/cv',
             self::SURAT_LAMARAN => 'candidates/documents/surat_lamaran',
             self::STR => 'candidates/documents/str',
+            self::SIP => 'candidates/documents/sip',
             self::CERTIFICATE => 'candidates/documents/certificate',
             self::IJAZAH => 'candidates/documents/ijazah',
+            self::MCU => 'candidates/documents/mcu',
             self::OTHERS => 'candidates/documents/others',
         };
     }
@@ -48,8 +52,10 @@ enum DocumentType: string
             self::CV => 'bg-primary',
             self::SURAT_LAMARAN => 'bg-indigo',
             self::STR => 'bg-success',
+            self::SIP => 'bg-teal',
             self::CERTIFICATE => 'bg-warning',
             self::IJAZAH => 'bg-info',
+            self::MCU => 'bg-danger',
             self::OTHERS => 'bg-secondary',
         };
     }

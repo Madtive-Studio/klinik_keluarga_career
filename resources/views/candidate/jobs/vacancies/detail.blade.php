@@ -124,6 +124,7 @@
 						$eligibility = $applyEligibility ?? [
 							'can_apply' => true,
 							'already_applied' => false,
+							'batch_expired' => false,
 							'education_not_met' => false,
 							'profile_incomplete' => false,
 							'min_education_label' => null,
@@ -132,7 +133,12 @@
 						$isLoggedIn = auth('candidate')->check();
 					@endphp
 					<div class="job-detail border rounded mt-4 p-3">
-						@if (!$isLoggedIn)
+						@if ($eligibility['batch_expired'] ?? false)
+							<button type="button" class="btn btn-secondary w-100" disabled>
+								{{ __('candidate.jobs.batch_closed') }}
+							</button>
+							<small class="text-danger d-block mt-2 text-center">{{ __('messages.application.batch_expired') }}</small>
+						@elseif (!$isLoggedIn)
 							<a href="{{ route('candidate.login.form') }}" class="btn btn-primary w-100">
 								{{ __('candidate.jobs.login_to_apply') }}
 							</a>

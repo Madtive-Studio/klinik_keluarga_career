@@ -83,6 +83,11 @@ class ApplicationRepository
             return ['error' => 'Data lowongan pekerjaan tidak ditemukan'];
         }
 
+        $job->loadMissing('batch');
+        if (!$job->batch || $job->batch->status !== 'ACTIVE' || ($job->batch->end_date && $job->batch->end_date < now())) {
+            return ['error' => __('messages.application.batch_expired')];
+        }
+
         if ($this->candidateHasApplied($candidateId, $job)) {
             return ['already_applied' => true, 'warning' => 'Kamu sudah melamar pekerjaan ini. Silakan cek halaman <a href="' . route('candidate.my.applications.index') . '">Lamaran Saya</a> untuk melihat status lamaran kamu.'];
         }

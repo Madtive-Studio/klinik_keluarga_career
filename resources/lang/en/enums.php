@@ -24,8 +24,10 @@ return [
         'CV' => 'Curriculum Vitae',
         'SURAT_LAMARAN' => 'Application Letter / Cover Letter',
         'STR' => 'STR (Professional Registration)',
+        'SIP' => 'SIP (Practice License)',
         'CERTIFICATE' => 'Competency / Training Certificate',
         'IJAZAH' => 'Diploma / Transcript',
+        'MCU' => 'Medical Check Up (MCU)',
         'OTHERS' => 'Other Documents',
     ],
 ];

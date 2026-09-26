@@ -29,6 +29,9 @@ class JobRepository
         $minEducation = $filters['minEducation'] ?? null;
 
         $query = Job::with(['category', 'batch', 'criteria', 'images'])
+            ->whereHas('batch', function ($q) {
+                $q->where('status', 'ACTIVE')->available();
+            })
             ->orderBy('created_at', 'desc');
 
         if ($batchId) {
@@ -148,7 +151,7 @@ class JobRepository
         ];
 
         $job->loadMissing('batch');
-        if ($job->batch && $job->batch->end_date < now()) {
+        if (!$job->batch || $job->batch->status !== 'ACTIVE' || ($job->batch->end_date && $job->batch->end_date < now())) {
             $eligibility['can_apply'] = false;
             $eligibility['batch_expired'] = true;
 
@@ -202,6 +205,10 @@ class JobRepository
         }
 
         $eligibility = $this->getApplyEligibility($job, $candidateId);
+
+        if ($eligibility['batch_expired']) {
+            return ['batch_expired' => true];
+        }
 
         if ($eligibility['profile_incomplete']) {
             return ['profile_incomplete' => true];

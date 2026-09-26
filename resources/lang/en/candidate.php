@@ -58,6 +58,7 @@ return [
         'salary_max' => 'Maximum Salary',
         'min_education' => 'Min. Education',
         'apply_now' => 'Apply Now',
+        'batch_closed' => 'Application Closed',
         'already_applied' => 'Already Applied',
         'complete_profile_to_apply' => 'Complete Profile to Apply',
         'login_to_apply' => 'Login to Apply',

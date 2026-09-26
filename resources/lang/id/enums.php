@@ -24,8 +24,10 @@ return [
         'CV' => 'Curriculum Vitae',
         'SURAT_LAMARAN' => 'Surat Lamaran Pekerjaan',
         'STR' => 'STR',
+        'SIP' => 'SIP',
         'CERTIFICATE' => 'Sertifikat Kompetensi / Pelatihan',
         'IJAZAH' => 'Ijazah / Transkrip',
+        'MCU' => 'Medical Check Up (MCU)',
         'OTHERS' => 'Dokumen Lainnya',
     ],
 ];

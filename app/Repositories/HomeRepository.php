@@ -26,6 +26,10 @@ class HomeRepository
 
         if ($batchId) {
             $query->where('batch_id', $batchId);
+        } else {
+            $query->whereHas('batch', function ($q) {
+                $q->where('status', 'ACTIVE')->available();
+            });
         }
 
         return $query->get();
@@ -40,6 +44,10 @@ class HomeRepository
 
         if ($batchId) {
             $query->where('batch_id', $batchId);
+        } else {
+            $query->whereHas('batch', function ($q) {
+                $q->where('status', 'ACTIVE')->available();
+            });
         }
 
         return $query->get();
@@ -54,12 +62,14 @@ class HomeRepository
     public function getHomeDisplayData(array $jobTypes): array
     {
         $activeBatch = $this->batchRepo->getActiveBatch();
+        $batchId = $activeBatch?->id;
+
         $jobsByType = [
-            'All' => $this->getLatestJobs(),
+            'All' => $activeBatch ? $this->getLatestJobs($batchId) : collect(),
         ];
 
         foreach (array_keys($jobTypes) as $jobType) {
-            $jobsByType[$jobType] = $this->getLatestJobsByType($jobType);
+            $jobsByType[$jobType] = $activeBatch ? $this->getLatestJobsByType($jobType, $batchId) : collect();
         }
 
         $candidateId = auth('candidate')->id();
@@ -82,13 +92,19 @@ class HomeRepository
      */
     public function getJobsByTypeForHome(?string $jobType): Collection
     {
+        $activeBatch = $this->batchRepo->getActiveBatch();
+
+        if (!$activeBatch) {
+            return collect();
+        }
+
         $normalizedType = trim((string) $jobType);
 
         if ($normalizedType === '' || strtoupper($normalizedType) === 'ALL') {
-            return $this->getLatestJobs();
+            return $this->getLatestJobs($activeBatch->id);
         }
 
-        return $this->getLatestJobsByType($normalizedType);
+        return $this->getLatestJobsByType($normalizedType, $activeBatch->id);
     }
 
     /**
