@@ -52,7 +52,7 @@ skinparam ArrowFontSize 12
 skinparam ArrowFontColor #222222
 
 ' ========================================================
-' 1. LEFT COLUMN: MANAJEMEN LOWONGAN & KRITERIA
+' 1. LEFT COLUMN: MANAJEMEN LOWONGAN
 ' ========================================================
 package "Vacancies" {
   class User {

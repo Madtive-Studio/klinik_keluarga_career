@@ -96,7 +96,7 @@ group sd Create
   deactivate HRD
 end
 
-' Group sd Update: Ubah Data Lowongan & Kriteria
+' Group sd Update: Ubah Data Lowongan
 group sd Update
   HRD -> Page : 3. Klik tombol edit lowongan, ubah rincian kualifikasi & klik "Perbarui"
   activate HRD

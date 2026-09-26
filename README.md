@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Sistem E-Recruitment & Talent Acquisition Resmi Klinik Keluarga</strong><br>
-  Platform digital terpadu untuk publikasi lowongan kerja, pengelolaan berkas kandidat medis/umum, penilaian kualifikasi otomatis (Auto-Scoring Engine), dan penjadwalan wawancara kerja.
+  Platform digital terpadu untuk publikasi lowongan kerja, pengelolaan berkas kandidat medis/umum, evaluasi kualifikasi pelamar, dan penjadwalan wawancara kerja.
 </p>
 
 <p align="center">
@@ -26,7 +26,7 @@
 
 Sistem ini memfasilitasi integrasi dua arah:
 1. **Portal Publik & Pelamar (*Candidate Area*)**: Memudahkan pencari kerja mencari posisi lowongan, melengkapi data profil/pendidikan, mengunggah berkas CV/STR, melamar pekerjaan secara daring, serta memantau status kelulusan seleksi.
-2. **Portal HRD & Administrator (*Admin Area*)**: Membantu tim manajemen rekrutmen mengelola master gelombang (*batch*), mempublikasikan lowongan, mengevaluasi berkas pelamar berbantukan kalkulasi skor otomatis (*Auto-Scoring Engine*), serta menjadwalkan sesi interview dengan notifikasi surel terintegrasi.
+2. **Portal HRD & Administrator (*Admin Area*)**: Membantu tim manajemen rekrutmen mengelola master gelombang (*batch*), mempublikasikan lowongan, mengevaluasi dan menyeleksi berkas pelamar secara digital, serta menjadwalkan sesi interview dengan notifikasi surel terintegrasi.
 
 ---
 
@@ -44,15 +44,7 @@ Sistem ini memfasilitasi integrasi dua arah:
 ### 🏢 Portal HRD / Admin (Admin Area)
 * **Dashboard Statistik & Analisis**: Ringkasan data gelombang aktif, kuota pendaftar, pelamar diterima, serta visualisasi grafik pendaftaran 12 bulan terakhir.
 * **Manajemen Gelombang Rekrutmen (*Batch Management*)**: Pengaturan tanggal mulai, batas akhir pendaftaran, kuota kandidat, serta status aktivasi gelombang.
-* **Manajemen Kategori & Lowongan**: Pembuatan rincian kualifikasi lowongan, benefit, rentang gaji, batas kuota, serta pengaturan bobot kriteria kualifikasi.
-* **Mesin Penilaian Otomatis (*Auto-Scoring Engine*)**:
-  * Menghitung skor kelayakan pelamar secara objektif (skala 0–100) berdasarkan 5 parameter:
-    1. Kesesuaian Jenjang Pendidikan Minimal
-    2. Kesesuaian Total Pengalaman Kerja
-    3. Kecocokan Keahlian Wajib (*Required Skills Match*)
-    4. Kelengkapan Profil & Data Diri
-    5. Kelengkapan Berkas Dokumen Pendukung & Surat Lamaran
-  * Memberikan rekomendasi otomatis (*Recommended / Review / Not Suitable*) untuk membantu tim HRD.
+* **Manajemen Kategori & Lowongan**: Pembuatan rincian kualifikasi lowongan, benefit, rentang gaji, batas kuota, serta publikasi lowongan kerja.
 * **Direktori Akun Pelamar (*Talent Pool Directory*)**: Pencarian basis data seluruh kandidat terdaftar dengan tampilan *Dossier Evaluasi Profil*.
 * **Peninjauan Lamaran & Evaluasi Seleksi**: Penelaahan berkas lamaran per posisi, pengubahan status seleksi, dan penulisan catatan review.
 * **Penjadwalan Wawancara (*Interview Scheduler*)**:

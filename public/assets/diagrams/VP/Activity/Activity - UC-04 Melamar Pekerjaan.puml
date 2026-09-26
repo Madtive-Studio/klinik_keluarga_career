@@ -1,4 +1,4 @@
-@startuml
+@startuml Activity - UC-04 Melamar Pekerjaan
 skinparam defaultFontName Arial
 skinparam defaultFontSize 11
 skinparam defaultFontColor #000000
@@ -62,7 +62,6 @@ else (Ya)
     stop
   else (Ya)
     |Sistem|
-    :Validasi riwayat lamaran\npada posisi yang sama;
     if (Belum pernah melamar\nposisi ini sebelumnya?) then (Tidak)
       :Tampilkan notifikasi\n"Sudah Pernah Melamar";
       |Pelamar|
@@ -70,7 +69,7 @@ else (Ya)
       stop
     else (Ya)
       |Sistem|
-      :Simpan data lamaran\n& dokumen pendukung;
+      :Simpan data lamaran &\ndokumen pendukung;
       :Kirim email konfirmasi\nbukti lamaran kerja;
       :Tampilkan halaman\n"Lamaran Berhasil Diajukan";
       |Pelamar|

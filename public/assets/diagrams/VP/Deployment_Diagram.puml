@@ -23,7 +23,7 @@ title Deployment Diagram Sistem E-Recruitment Klinik Keluarga
 
 node "Client Device\n<<device>>\n(PC / Laptop / Smartphone)" as Client {
   node "Web Browser\n<<executionEnvironment>>" as Browser {
-    component "Web Interface UI\n(HTML5, CSS3, Bootstrap 5, JS, SlimSelect)" as WebUI
+    component "Web Interface UI\n(HTML5, CSS3, Bootstrap 5, JavaScript)" as WebUI
   }
 }
 
