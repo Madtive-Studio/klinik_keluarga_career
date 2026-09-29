@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BatchRequest;
 use App\Models\Batch;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\Facades\DataTables;
 
 class BatchController extends Controller
@@ -75,9 +75,11 @@ class BatchController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BatchRequest $request)
     {
-        $data = $this->validatedBatchData($request);
+        $data = $request->validated();
+        $data['start_date'] = parseFlatpickrDatetime($data['start_date']);
+        $data['end_date'] = parseFlatpickrDatetime($data['end_date']);
         $data['status'] = 'INACTIVE';
 
         Batch::create($data);
@@ -107,33 +109,15 @@ class BatchController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BatchRequest $request, string $id)
     {
-        Batch::findOrFail($id)->update($this->validatedBatchData($request));
-
-        return redirect()->route('admin.batches.index')->with('success', __('messages.admin.batch.updated'));
-    }
-
-    private function validatedBatchData(Request $request): array
-    {
-        $data = $request->validate([
-            'code' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255'],
-            'quota' => ['required', 'integer', 'min:0'],
-            'start_date' => ['required', 'date_format:d-m-Y H:i:s'],
-            'end_date' => ['required', 'date_format:d-m-Y H:i:s'],
-        ]);
-
+        $data = $request->validated();
         $data['start_date'] = parseFlatpickrDatetime($data['start_date']);
         $data['end_date'] = parseFlatpickrDatetime($data['end_date']);
 
-        if (Carbon::parse($data['end_date'])->lte(Carbon::parse($data['start_date']))) {
-            throw ValidationException::withMessages([
-                'end_date' => 'End date tidak boleh sebelum atau sama dengan start date.',
-            ]);
-        }
+        Batch::findOrFail($id)->update($data);
 
-        return $data;
+        return redirect()->route('admin.batches.index')->with('success', __('messages.admin.batch.updated'));
     }
 
     /**

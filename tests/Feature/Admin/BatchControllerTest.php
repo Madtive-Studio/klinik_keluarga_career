@@ -121,4 +121,103 @@ class BatchControllerTest extends TestCase
         $response->assertRedirect(route('admin.batches.index'));
         $this->assertDatabaseMissing('batches', ['id' => $batch->id]);
     }
+
+    #[Test]
+    public function storeNormalizesQuotaWhenExceedingInteger(): void
+    {
+        $startDate = Carbon::now()->addDay()->format('d-m-Y H:i:s');
+        $endDate = Carbon::now()->addDays(14)->format('d-m-Y H:i:s');
+
+        $response = $this->actingAs($this->admin, 'admin')->post(route('admin.batches.store'), [
+            'code' => '#BATCH-OVERFLOW',
+            'name' => 'Batch Overflow Test',
+            'quota' => '999999999999999999999999999',
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]);
+
+        $response->assertRedirect(route('admin.batches.index'));
+        $this->assertDatabaseHas('batches', [
+            'code' => '#BATCH-OVERFLOW',
+            'name' => 'Batch Overflow Test',
+            'quota' => 2147483647,
+        ]);
+    }
+
+    #[Test]
+    public function storeFailsValidationWhenQuotaIsNonNumeric(): void
+    {
+        $startDate = Carbon::now()->addDay()->format('d-m-Y H:i:s');
+        $endDate = Carbon::now()->addDays(14)->format('d-m-Y H:i:s');
+
+        $response = $this->actingAs($this->admin, 'admin')->post(route('admin.batches.store'), [
+            'code' => '#BATCH-INVALID-QUOTA',
+            'name' => 'Batch Non Numeric Test',
+            'quota' => 'bukan-angka',
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]);
+
+        $response->assertSessionHasErrors('quota');
+        $this->assertDatabaseMissing('batches', [
+            'code' => '#BATCH-INVALID-QUOTA',
+        ]);
+    }
+
+    #[Test]
+    public function storeFailsValidationWhenQuotaContainsLetters(): void
+    {
+        $startDate = Carbon::now()->addDay()->format('d-m-Y H:i:s');
+        $endDate = Carbon::now()->addDays(14)->format('d-m-Y H:i:s');
+
+        $response = $this->actingAs($this->admin, 'admin')->post(route('admin.batches.store'), [
+            'code' => '#BATCH-ALPHANUM',
+            'name' => 'Batch Alphanumeric Test',
+            'quota' => '50kuota',
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]);
+
+        $response->assertSessionHasErrors('quota');
+    }
+
+    #[Test]
+    public function storeFailsValidationWhenQuotaIsNegative(): void
+    {
+        $startDate = Carbon::now()->addDay()->format('d-m-Y H:i:s');
+        $endDate = Carbon::now()->addDays(14)->format('d-m-Y H:i:s');
+
+        $response = $this->actingAs($this->admin, 'admin')->post(route('admin.batches.store'), [
+            'code' => '#BATCH-NEGATIVE',
+            'name' => 'Batch Negative Test',
+            'quota' => -10,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]);
+
+        $response->assertSessionHasErrors('quota');
+    }
+
+    #[Test]
+    public function updateNormalizesQuotaWhenExceedingInteger(): void
+    {
+        $batch = Batch::factory()->create();
+
+        $startDate = Carbon::now()->addDays(2)->format('d-m-Y H:i:s');
+        $endDate = Carbon::now()->addDays(20)->format('d-m-Y H:i:s');
+
+        $response = $this->actingAs($this->admin, 'admin')->put(route('admin.batches.update', $batch->id), [
+            'code' => $batch->code,
+            'name' => 'Batch Terupdate Normalized',
+            'quota' => '3000000000',
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]);
+
+        $response->assertRedirect(route('admin.batches.index'));
+        $this->assertDatabaseHas('batches', [
+            'id' => $batch->id,
+            'quota' => 2147483647,
+        ]);
+    }
 }

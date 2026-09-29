@@ -8,6 +8,16 @@
 						<h5 class="mb-0">{{ isset($batch) ? __('admin.batches.form_edit') : __('admin.batches.form_create') }}</h5>
 					</div>
 					<div class="card-body">
+						@if ($errors->any())
+							<div class="alert alert-danger" role="alert">
+								<ul class="mb-0 ps-3">
+									@foreach ($errors->all() as $error)
+										<li>{{ $error }}</li>
+									@endforeach
+								</ul>
+							</div>
+						@endif
+
 						<form class="add-new-record pt-0 row g-2" id="form-add-new-record" method="POST" action="{{ !empty($batch) ? route('admin.batches.update', $batch->id) : route('admin.batches.store') }}">
 							@csrf
 							@if (!empty($batch))
@@ -16,34 +26,37 @@
 							<div class="mb-3">
 								<label class="form-label">{{ __('admin.batches.code') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" class="form-control dt-full-name" name="code" readonly placeholder="{{ __('admin.batches.code') }}" required value="{{ isset($batch) ? $batch->code : $code }}" />
+									<input type="text" class="form-control dt-full-name @error('code') is-invalid @enderror" name="code" readonly placeholder="{{ __('admin.batches.code') }}" required value="{{ old('code', isset($batch) ? $batch->code : ($code ?? '')) }}" />
 								</div>
+								@error('code') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 							<div class="mb-3">
 								<label class="form-label">{{ __('admin.batches.name') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" class="form-control dt-full-name" name="name" placeholder="{{ __('admin.batches.name') }}" value="{{ isset($batch) ? $batch->name : '' }}" required />
+									<input type="text" class="form-control dt-full-name @error('name') is-invalid @enderror" name="name" placeholder="{{ __('admin.batches.name') }}" value="{{ old('name', isset($batch) ? $batch->name : '') }}" required />
 								</div>
+								@error('name') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 							<div class="mb-3">
 								<label class="form-label">{{ __('admin.batches.quota') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" class="form-control dt-full-name" name="quota" placeholder="{{ __('admin.batches.quota') }}" value="{{ isset($batch) ? $batch->quota : 0 }}" required />
+									<input type="text" class="form-control dt-full-name @error('quota') is-invalid @enderror" id="batch_quota" name="quota" placeholder="{{ __('admin.batches.quota') }}" value="{{ old('quota', isset($batch) ? $batch->quota : 0) }}" required />
 								</div>
+								@error('quota') <small class="text-danger d-block" id="error-batch-quota">{{ $message }}</small> @enderror
 							</div>
 							<div class="mb-3">
 								<label class="form-label">{{ __('admin.batches.start_date') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" class="form-control flatpickr-datetime" name="start_date" placeholder="{{ __('admin.form.datetime_placeholder') }}" required value="{{ old('start_date', isset($batch) ? formatFlatpickrDatetime($batch->start_date) : '') }}" />
+									<input type="text" class="form-control flatpickr-datetime @error('start_date') is-invalid @enderror" name="start_date" placeholder="{{ __('admin.form.datetime_placeholder') }}" required value="{{ old('start_date', isset($batch) ? formatFlatpickrDatetime($batch->start_date) : '') }}" />
 								</div>
-								@error('start_date') <small class="text-danger">{{ $message }}</small> @enderror
+								@error('start_date') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 							<div class="mb-3">
 								<label class="form-label">{{ __('admin.batches.end_date') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" class="form-control flatpickr-datetime" name="end_date" placeholder="{{ __('admin.form.datetime_placeholder') }}" required value="{{ old('end_date', isset($batch) ? formatFlatpickrDatetime($batch->end_date) : '') }}" />
+									<input type="text" class="form-control flatpickr-datetime @error('end_date') is-invalid @enderror" name="end_date" placeholder="{{ __('admin.form.datetime_placeholder') }}" required value="{{ old('end_date', isset($batch) ? formatFlatpickrDatetime($batch->end_date) : '') }}" />
 								</div>
-								@error('end_date') <small class="text-danger">{{ $message }}</small> @enderror
+								@error('end_date') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 							<div class="mb-3">
 								<button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">{{ __('admin.form.submit') }}</button>
@@ -57,4 +70,21 @@
 	</div>
 @endsection
 @section('js')
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const quotaInput = document.getElementById('batch_quota');
+			if (quotaInput) {
+				quotaInput.addEventListener('blur', function() {
+					const val = this.value.trim();
+					if (/^\d+$/.test(val)) {
+						const maxInt = '2147483647';
+						const cleanVal = val.replace(/^0+/, '') || '0';
+						if (cleanVal.length > maxInt.length || (cleanVal.length === maxInt.length && cleanVal > maxInt)) {
+							this.value = '2147483647';
+						}
+					}
+				});
+			}
+		});
+	</script>
 @endsection
