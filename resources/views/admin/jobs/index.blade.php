@@ -1,32 +1,75 @@
 @extends('admin.layouts.main')
 @section('css')
 	<style>
+		.batch-tabs-container {
+			width: 100%;
+			position: relative;
+		}
+		.batch-scroll-wrapper {
+			width: 100%;
+			overflow: hidden;
+			position: relative;
+		}
+		.nav.nav-pills.batch-pills-slider,
 		.batch-pills-slider {
-			display: flex;
-			flex-wrap: nowrap;
-			overflow-x: auto;
+			display: flex !important;
+			flex-direction: row !important;
+			flex-wrap: nowrap !important;
+			overflow-x: auto !important;
+			overflow-y: hidden !important;
 			-webkit-overflow-scrolling: touch;
 			scrollbar-width: thin;
+			scrollbar-color: #7367f0 rgba(0, 0, 0, 0.06);
 			scroll-behavior: smooth;
-			padding-bottom: 6px;
+			padding-bottom: 8px;
+			margin-bottom: 0;
+			white-space: nowrap !important;
 		}
+		.nav.nav-pills.batch-pills-slider::-webkit-scrollbar,
 		.batch-pills-slider::-webkit-scrollbar {
-			height: 4px;
+			height: 5px;
 		}
+		.nav.nav-pills.batch-pills-slider::-webkit-scrollbar-track,
 		.batch-pills-slider::-webkit-scrollbar-track {
-			background: rgba(0, 0, 0, 0.05);
-			border-radius: 4px;
+			background: rgba(47, 43, 61, 0.06);
+			border-radius: 6px;
 		}
+		.nav.nav-pills.batch-pills-slider::-webkit-scrollbar-thumb,
 		.batch-pills-slider::-webkit-scrollbar-thumb {
-			background: rgba(115, 103, 240, 0.35);
-			border-radius: 4px;
+			background: #7367f0;
+			border-radius: 6px;
 		}
+		.nav.nav-pills.batch-pills-slider::-webkit-scrollbar-thumb:hover,
 		.batch-pills-slider::-webkit-scrollbar-thumb:hover {
-			background: rgba(115, 103, 240, 0.7);
+			background: #5e50ee;
 		}
-		.btn-batch-tab {
-			white-space: nowrap;
-			flex-shrink: 0;
+		.nav.nav-pills.batch-pills-slider .nav-item,
+		.batch-pills-slider .nav-item {
+			flex: 0 0 auto !important;
+			white-space: nowrap !important;
+			display: inline-block !important;
+		}
+		.nav.nav-pills.batch-pills-slider .btn-batch-tab,
+		.batch-pills-slider .btn-batch-tab {
+			white-space: nowrap !important;
+			flex-shrink: 0 !important;
+			display: inline-flex !important;
+			align-items: center;
+		}
+		.batch-scroll-btn {
+			width: 32px;
+			height: 32px;
+			min-width: 32px;
+			border-radius: 50% !important;
+			padding: 0;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.2s ease;
+		}
+		.batch-scroll-btn:hover {
+			background-color: #7367f0;
+			color: #fff;
 		}
 	</style>
 @endsection
@@ -86,30 +129,40 @@
 		<!-- Batch Nav Tabs / Pills Slider (Scrollable Horizontal jika banyak batch) -->
 		@if($batches->isNotEmpty())
 			<div class="batch-tabs-container mb-4">
-				<ul class="nav nav-pills batch-pills-slider gap-2 mb-0" id="batch-pills">
-					@foreach ($batches as $index => $b)
-						@php
-							$isActive = ($b->status === 'ACTIVE' || $b->status === '1' || $b->status === 1);
-						@endphp
-						<li class="nav-item">
-							<button type="button"
-								class="nav-link btn-batch-tab {{ $index === 0 ? 'active' : '' }}"
-								data-batch-id="{{ $b->id }}"
-								data-batch-name="{{ $b->name }}"
-								data-batch-code="{{ $b->code }}"
-								data-batch-status="{{ $isActive ? 'Aktif' : 'Nonaktif' }}"
-								data-batch-status-class="{{ $isActive ? 'bg-label-success' : 'bg-label-secondary' }}"
-								data-batch-dates="{{ \Carbon\Carbon::parse($b->start_date)->translatedFormat('d M Y') }} s/d {{ \Carbon\Carbon::parse($b->end_date)->translatedFormat('d M Y') }}"
-								data-batch-quota="{{ $b->quota ?? '-' }}"
-								data-create-url="{{ route('admin.jobs.create', ['batch_id' => $b->id]) }}">
-								<i class="ti ti-layers-intersect me-1"></i> {{ $b->name }} ({{ $b->code }})
-								@if($isActive)
-									<span class="badge badge-dot bg-success ms-1" title="Gelombang Aktif"></span>
-								@endif
-							</button>
-						</li>
-					@endforeach
-				</ul>
+				<div class="d-flex align-items-center">
+					<button type="button" class="btn btn-sm btn-icon btn-outline-primary me-2 batch-scroll-btn" id="btn-batch-prev" title="Scroll Kiri" style="flex-shrink: 0; display: none;">
+						<i class="ti ti-chevron-left"></i>
+					</button>
+					<div class="batch-scroll-wrapper flex-grow-1">
+						<ul class="nav nav-pills batch-pills-slider gap-2 mb-0" id="batch-pills">
+							@foreach ($batches as $index => $b)
+								@php
+									$isActive = ($b->status === 'ACTIVE' || $b->status === '1' || $b->status === 1);
+								@endphp
+								<li class="nav-item">
+									<button type="button"
+										class="nav-link btn-batch-tab {{ $index === 0 ? 'active' : '' }}"
+										data-batch-id="{{ $b->id }}"
+										data-batch-name="{{ $b->name }}"
+										data-batch-code="{{ $b->code }}"
+										data-batch-status="{{ $isActive ? 'Aktif' : 'Nonaktif' }}"
+										data-batch-status-class="{{ $isActive ? 'bg-label-success' : 'bg-label-secondary' }}"
+										data-batch-dates="{{ \Carbon\Carbon::parse($b->start_date)->translatedFormat('d M Y') }} s/d {{ \Carbon\Carbon::parse($b->end_date)->translatedFormat('d M Y') }}"
+										data-batch-quota="{{ $b->quota ?? '-' }}"
+										data-create-url="{{ route('admin.jobs.create', ['batch_id' => $b->id]) }}">
+										<i class="ti ti-layers-intersect me-1"></i> {{ $b->name }} ({{ $b->code }})
+										@if($isActive)
+											<span class="badge badge-dot bg-success ms-1" title="Gelombang Aktif"></span>
+										@endif
+									</button>
+								</li>
+							@endforeach
+						</ul>
+					</div>
+					<button type="button" class="btn btn-sm btn-icon btn-outline-primary ms-2 batch-scroll-btn" id="btn-batch-next" title="Scroll Kanan" style="flex-shrink: 0; display: none;">
+						<i class="ti ti-chevron-right"></i>
+					</button>
+				</div>
 			</div>
 
 			<!-- Single Card Table untuk Batch yang Sedang Dipilih -->
@@ -281,10 +334,73 @@
 				});
 			}
 
+			// Horizontal scrolling logic for batch tabs slider
+			const batchSlider = document.getElementById('batch-pills');
+			const btnBatchPrev = document.getElementById('btn-batch-prev');
+			const btnBatchNext = document.getElementById('btn-batch-next');
+
+			function updateBatchScrollButtons() {
+				if (!batchSlider) return;
+				const hasOverflow = batchSlider.scrollWidth > batchSlider.clientWidth + 2;
+				if (hasOverflow) {
+					if (btnBatchPrev) {
+						btnBatchPrev.style.display = 'inline-flex';
+						const isStart = batchSlider.scrollLeft <= 5;
+						btnBatchPrev.disabled = isStart;
+						btnBatchPrev.style.opacity = isStart ? '0.4' : '1';
+					}
+					if (btnBatchNext) {
+						btnBatchNext.style.display = 'inline-flex';
+						const maxScroll = batchSlider.scrollWidth - batchSlider.clientWidth;
+						const isEnd = batchSlider.scrollLeft >= maxScroll - 5;
+						btnBatchNext.disabled = isEnd;
+						btnBatchNext.style.opacity = isEnd ? '0.4' : '1';
+					}
+				} else {
+					if (btnBatchPrev) btnBatchPrev.style.display = 'none';
+					if (btnBatchNext) btnBatchNext.style.display = 'none';
+				}
+			}
+
+			if (batchSlider) {
+				// Mouse wheel horizontal scroll
+				batchSlider.addEventListener('wheel', function(e) {
+					if (e.deltaY !== 0) {
+						e.preventDefault();
+						this.scrollLeft += e.deltaY;
+						updateBatchScrollButtons();
+					}
+				}, { passive: false });
+
+				batchSlider.addEventListener('scroll', updateBatchScrollButtons);
+				window.addEventListener('resize', updateBatchScrollButtons);
+
+				if (btnBatchPrev) {
+					btnBatchPrev.addEventListener('click', function() {
+						batchSlider.scrollBy({ left: -260, behavior: 'smooth' });
+						setTimeout(updateBatchScrollButtons, 350);
+					});
+				}
+
+				if (btnBatchNext) {
+					btnBatchNext.addEventListener('click', function() {
+						batchSlider.scrollBy({ left: 260, behavior: 'smooth' });
+						setTimeout(updateBatchScrollButtons, 350);
+					});
+				}
+
+				// Initial update after DOM render
+				setTimeout(updateBatchScrollButtons, 150);
+			}
+
 			// Event saat berganti tab Batch
 			$('.btn-batch-tab').on('click', function() {
 				$('.btn-batch-tab').removeClass('active');
 				$(this).addClass('active');
+
+				if (this.scrollIntoView) {
+					this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+				}
 
 				currentBatchId = $(this).data('batch-id');
 				$('#current-batch-name').text($(this).data('batch-name'));
