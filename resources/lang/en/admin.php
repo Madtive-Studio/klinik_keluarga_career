@@ -81,7 +81,7 @@ return [
         'applicants_quota' => 'Applicants / Quota',
         'create' => 'Create Job',
         'edit' => 'Edit Job',
-        'subtitle' => 'Manage job information, description, and scoring criteria.',
+        'subtitle' => 'Manage job information, description, and qualifications.',
         'back_to_list' => 'Back to Job List',
         'validation_failed' => 'Validation failed.',
         'validation_hint' => 'Please check the highlighted fields below.',

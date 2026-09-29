@@ -1,8 +1,8 @@
 @forelse ($jobs as $key => $job)
     @php
         $salaryDisplay = $job->is_show_salary ? $job->salary_display : '-';
-        $minEducation = $job->relationLoaded('criteria') && $job->criteria
-            ? \App\Enums\EducationLevel::labelOf($job->criteria->min_education)
+        $minEducation = $job->min_education
+            ? \App\Enums\EducationLevel::labelOf($job->min_education)
             : '-';
         $jobTypeLabel = \App\Enums\JobType::tryFrom($job->type)?->getLabel() ?? $job->type;
         $appliedJobIds = $appliedJobIds ?? [];

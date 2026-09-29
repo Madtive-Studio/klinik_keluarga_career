@@ -81,7 +81,7 @@ return [
         'applicants_quota' => 'Pendaftar / Kuota',
         'create' => 'Buat Lowongan',
         'edit' => 'Edit Lowongan',
-        'subtitle' => 'Kelola informasi lowongan, deskripsi, dan kriteria penilaian.',
+        'subtitle' => 'Kelola informasi lowongan, deskripsi, dan kualifikasi pekerjaan.',
         'back_to_list' => 'Kembali ke Daftar Lowongan',
         'validation_failed' => 'Validasi gagal.',
         'validation_hint' => 'Periksa field yang ditandai di bawah ini.',

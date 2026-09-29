@@ -13,9 +13,11 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Add min_education column to jobs table
-        Schema::table('jobs', function (Blueprint $table) {
-            $table->string('min_education', 50)->nullable()->after('experience');
-        });
+        if (!Schema::hasColumn('jobs', 'min_education')) {
+            Schema::table('jobs', function (Blueprint $table) {
+                $table->string('min_education', 50)->nullable()->after('experience');
+            });
+        }
 
         // 2. Migrate existing min_education data from job_criteria to jobs
         if (Schema::hasTable('job_criteria')) {
