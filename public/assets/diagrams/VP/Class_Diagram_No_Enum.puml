@@ -81,6 +81,7 @@ package "Vacancies" {
     -salary_min: bigint
     -salary_max: bigint
     -experience: varchar(100)
+    -min_education: varchar(50)
     -is_show_salary: bool
     -created_at: timestamp
     -updated_at: timestamp

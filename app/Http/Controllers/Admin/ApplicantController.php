@@ -75,7 +75,7 @@ class ApplicantController extends Controller
 
     public function show($id)
     {
-        $apply = Apply::with(['candidate.profile', 'candidate.skills', 'job.category', 'job.criteria', 'batch', 'applyDocuments.document'])->findOrFail($id);
+        $apply = Apply::with(['candidate.profile', 'candidate.skills', 'job.category', 'batch', 'applyDocuments.document'])->findOrFail($id);
         return view('admin.applies.detail', [
             'uuid' => (string)Str::uuid(),
             'apply' => $apply,

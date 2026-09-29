@@ -28,7 +28,7 @@ class JobRepository
         $salaryMax = $filters['salaryMax'] ?? null;
         $minEducation = $filters['minEducation'] ?? null;
 
-        $query = Job::with(['category', 'batch', 'criteria', 'images'])
+        $query = Job::with(['category', 'batch', 'images'])
             ->whereHas('batch', function ($q) {
                 $q->where('status', 'ACTIVE')->available();
             })
@@ -64,18 +64,16 @@ class JobRepository
 
         if (!empty($minEducation)) {
             $educationRank = EducationLevel::rankOf($minEducation);
-            $query->whereHas('criteria', function ($q) use ($educationRank) {
-                $q->whereRaw(
-                    'CASE '
-                    . "WHEN min_education = 'SMA' THEN 1 "
-                    . "WHEN min_education = 'D3' THEN 2 "
-                    . "WHEN min_education = 'D4' THEN 3 "
-                    . "WHEN min_education = 'S1' THEN 4 "
-                    . "WHEN min_education = 'S2' THEN 5 "
-                    . "WHEN min_education = 'S3' THEN 6 "
-                    . 'ELSE 0 END >= ?', [$educationRank]
-                );
-            });
+            $query->whereRaw(
+                'CASE '
+                . "WHEN min_education = 'SMA' THEN 1 "
+                . "WHEN min_education = 'D3' THEN 2 "
+                . "WHEN min_education = 'D4' THEN 3 "
+                . "WHEN min_education = 'S1' THEN 4 "
+                . "WHEN min_education = 'S2' THEN 5 "
+                . "WHEN min_education = 'S3' THEN 6 "
+                . 'ELSE 0 END >= ?', [$educationRank]
+            );
         }
 
         return $query->paginate($perPage);
@@ -125,7 +123,6 @@ class JobRepository
     {
         $job = $this->findByUuid($uuid);
         abort_if(!$job, 404);
-        $job->loadMissing('criteria');
         $appliesTotal = $job->applies()->count();
 
         return [
@@ -138,15 +135,13 @@ class JobRepository
 
     public function getApplyEligibility(Job $job, ?int $candidateId): array
     {
-        $job->loadMissing('criteria');
-
         $eligibility = [
             'can_apply' => true,
             'already_applied' => false,
             'batch_expired' => false,
             'education_not_met' => false,
             'profile_incomplete' => false,
-            'min_education_label' => EducationLevel::labelOf($job->criteria?->min_education),
+            'min_education_label' => EducationLevel::labelOf($job->min_education),
             'candidate_education_label' => null,
         ];
 

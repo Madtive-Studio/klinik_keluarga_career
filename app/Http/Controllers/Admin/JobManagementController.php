@@ -42,7 +42,7 @@ class JobManagementController extends Controller
 
     public function datatables(Request $request)
     {
-        $query = Job::with(['batch', 'category', 'criteria'])
+        $query = Job::with(['batch', 'category'])
             ->orderBy('id', 'ASC');
 
         if ($batchId = $request->get('batch_id')) {
@@ -67,18 +67,16 @@ class JobManagementController extends Controller
 
         if ($minEducation = $request->get('min_education')) {
             $educationRank = EducationLevel::rankOf($minEducation);
-            $query->whereHas('criteria', function ($q) use ($educationRank) {
-                $q->whereRaw(
-                    'CASE '
-                    . "WHEN min_education = 'SMA' THEN 1 "
-                    . "WHEN min_education = 'D3' THEN 2 "
-                    . "WHEN min_education = 'D4' THEN 3 "
-                    . "WHEN min_education = 'S1' THEN 4 "
-                    . "WHEN min_education = 'S2' THEN 5 "
-                    . "WHEN min_education = 'S3' THEN 6 "
-                    . 'ELSE 0 END >= ?', [$educationRank]
-                );
-            });
+            $query->whereRaw(
+                'CASE '
+                . "WHEN min_education = 'SMA' THEN 1 "
+                . "WHEN min_education = 'D3' THEN 2 "
+                . "WHEN min_education = 'D4' THEN 3 "
+                . "WHEN min_education = 'S1' THEN 4 "
+                . "WHEN min_education = 'S2' THEN 5 "
+                . "WHEN min_education = 'S3' THEN 6 "
+                . 'ELSE 0 END >= ?', [$educationRank]
+            );
         }
 
         return DataTables::of($query)
@@ -101,11 +99,7 @@ class JobManagementController extends Controller
                 return JobType::tryBadge($row->type);
             })
             ->addColumn('min_education', function ($row) {
-                $level = $row->relationLoaded('criteria') && $row->criteria
-                    ? $row->criteria->min_education
-                    : null;
-
-                return $level ? EducationLevel::labelOf($level) : '-';
+                return $row->min_education ? EducationLevel::labelOf($row->min_education) : '-';
             })
             ->editColumn('quota', function ($row) {
                 $applicants = Apply::where('job_id', $row->id)
@@ -152,18 +146,15 @@ class JobManagementController extends Controller
 
         $attributes = $request->safe()->only([
             'uuid', 'code', 'batch_id', 'category_id', 'title', 'type', 'quota',
-            'salary_min', 'salary_max', 'experience', 'qualification', 'description',
+            'salary_min', 'salary_max', 'experience', 'min_education', 'qualification', 'description',
         ]) + [
             'user_id' => auth()->user()->id,
             'is_show_salary' => $request->input('is_show_salary') === '1',
         ];
 
         try {
-            DB::transaction(function () use ($request, $attributes) {
+            DB::transaction(function () use ($attributes) {
                 $job = Job::create($attributes);
-                if (config('scoring.enabled', false)) {
-                    $job->criteria()->create($request->criteriaAttributes());
-                }
 
                 $this->jobImageService->associateImagesToJob($job->uuid, $job->id);
                 $this->jobImageService->ensurePrimaryImageExists($job->uuid);
@@ -190,7 +181,7 @@ class JobManagementController extends Controller
      */
     public function edit(string $id)
     {
-        $job = Job::with('criteria')->findOrFail($id);
+        $job = Job::findOrFail($id);
         $batches = Batch::available()->orderBy('created_at', 'DESC')->get();
         $currentBatch = $job->batch;
         if ($currentBatch && $currentBatch->end_date < now()) {
@@ -218,21 +209,15 @@ class JobManagementController extends Controller
 
         $attributes = $request->safe()->only([
             'uuid', 'code', 'batch_id', 'category_id', 'title', 'type', 'quota',
-            'salary_min', 'salary_max', 'experience', 'qualification', 'description',
+            'salary_min', 'salary_max', 'experience', 'min_education', 'qualification', 'description',
         ]) + [
             'user_id' => auth()->user()->id,
             'is_show_salary' => $request->input('is_show_salary') === '1',
         ];
 
         try {
-            DB::transaction(function () use ($request, $job, $attributes) {
+            DB::transaction(function () use ($job, $attributes) {
                 $job->update($attributes);
-                if (config('scoring.enabled', false)) {
-                    $job->criteria()->updateOrCreate(
-                        ['job_id' => $job->id],
-                        $request->criteriaAttributes()
-                    );
-                }
 
                 $this->jobImageService->associateImagesToJob($job->uuid, $job->id);
                 $this->jobImageService->ensurePrimaryImageExists($job->uuid);

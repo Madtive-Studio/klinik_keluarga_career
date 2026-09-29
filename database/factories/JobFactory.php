@@ -55,6 +55,7 @@ class JobFactory extends Factory
             'salary_min'     => $salaryMin,
             'salary_max'     => $salaryMax,
             'experience'     => $this->faker->randomElement(self::$experiences),
+            'min_education'  => null,
             'is_show_salary' => $this->faker->boolean(),
             'qualification'  => implode("\n", [
                 '- ' . $this->faker->sentence(),

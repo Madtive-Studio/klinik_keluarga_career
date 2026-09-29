@@ -103,7 +103,7 @@ class ApplicationRepository
             return [
                 'education_not_met' => true,
                 'error' => __('messages.application.education_not_met', [
-                    'required' => EducationLevel::labelOf($job->criteria?->min_education),
+                    'required' => EducationLevel::labelOf($job->min_education),
                     'current' => EducationLevel::labelOf($candidate->profile->education_level),
                 ]),
             ];

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Job extends Model
 {
@@ -16,7 +15,7 @@ class Job extends Model
     protected $table = 'jobs';
     protected $fillable = [
         'uuid', 'title', 'qualification', 'quota', 'user_id', 'description', 'type', 'code',
-        'salary_min', 'salary_max', 'is_show_salary', 'experience', 'batch_id', 'category_id',
+        'salary_min', 'salary_max', 'is_show_salary', 'experience', 'min_education', 'batch_id', 'category_id',
     ];
 
     protected $casts = [
@@ -86,15 +85,9 @@ class Job extends Model
         return $this->hasMany(Apply::class, 'job_id', 'id')->where('batch_id', $this->batch_id);
     }
 
-    public function criteria(): HasOne
-    {
-        return $this->hasOne(JobCriteria::class);
-    }
-
     public function candidateMeetsEducation(?string $candidateEducationLevel): bool
     {
-        $this->loadMissing('criteria');
-        $minEducation = $this->criteria?->min_education;
+        $minEducation = $this->min_education;
 
         if (!$minEducation) {
             return true;

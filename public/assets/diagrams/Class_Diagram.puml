@@ -99,6 +99,7 @@ package "Vacancies" {
     -salary_min: bigint
     -salary_max: bigint
     -experience: varchar(100)
+    -min_education: EducationLevel
     -is_show_salary: bool
     -created_at: timestamp
     -updated_at: timestamp
@@ -336,6 +337,7 @@ User -left.> UserLevel
 Category "1" -down-> "0..*" Job 
 Job "1" *-down- "0..*" JobImage
 Job -left.> JobType
+Job -down.> EducationLevel
 
 ' Selection (Center)
 Batch -right.> BatchStatus

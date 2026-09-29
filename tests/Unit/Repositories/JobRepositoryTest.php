@@ -11,7 +11,6 @@ use App\Models\CandidateProfile;
 use App\Models\Category;
 use App\Models\Document;
 use App\Models\Job;
-use App\Models\JobCriteria;
 use App\Repositories\JobRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -232,11 +231,8 @@ class JobRepositoryTest extends TestCase
         $batch = Batch::factory()->active()->create();
         $batchId = $batch->id;
 
-        $match = Job::factory()->create(['batch_id' => $batchId]);
-        JobCriteria::factory()->for($match)->create(['min_education' => 'S3']);
-
-        $mismatch = Job::factory()->create(['batch_id' => $batchId]);
-        JobCriteria::factory()->for($mismatch)->create(['min_education' => 'SMA']);
+        $match = Job::factory()->create(['batch_id' => $batchId, 'min_education' => 'S3']);
+        $mismatch = Job::factory()->create(['batch_id' => $batchId, 'min_education' => 'SMA']);
 
         $filters = [
             'searchQuery' => null,
@@ -264,15 +260,15 @@ class JobRepositoryTest extends TestCase
             'batch_id' => $batch->id,
             'category_id' => $category->id,
             'salary_max' => 10_000_000,
+            'min_education' => 'S1',
         ]);
-        JobCriteria::factory()->for($high)->create(['min_education' => 'S1']);
 
         $low = Job::factory()->create([
             'batch_id' => $batch->id,
             'category_id' => $category->id,
             'salary_max' => 2_000_000,
+            'min_education' => 'SMA',
         ]);
-        JobCriteria::factory()->for($low)->create(['min_education' => 'SMA']);
 
         $result = $this->repository->getVacanciesPaginated(
             searchQuery: null,

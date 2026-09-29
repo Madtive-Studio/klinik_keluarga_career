@@ -8,7 +8,6 @@ use App\Models\Candidate;
 use App\Models\CandidateProfile;
 use App\Models\Document;
 use App\Models\Job;
-use App\Models\JobCriteria;
 use App\Repositories\JobRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -46,8 +45,7 @@ class JobApplyEligibilityTest extends TestCase
     #[Test]
     public function getApplyEligibilityBlocksWhenEducationBelowRequirement(): void
     {
-        $job = Job::factory()->create();
-        JobCriteria::factory()->for($job)->create([
+        $job = Job::factory()->create([
             'min_education' => EducationLevel::S2->value,
         ]);
         $candidate = Candidate::factory()->create(['email_verified_at' => now()]);
@@ -64,8 +62,7 @@ class JobApplyEligibilityTest extends TestCase
     #[Test]
     public function getApplyEligibilityAllowsWhenEducationMeetsRequirement(): void
     {
-        $job = Job::factory()->create();
-        JobCriteria::factory()->for($job)->create([
+        $job = Job::factory()->create([
             'min_education' => EducationLevel::S1->value,
         ]);
         $candidate = Candidate::factory()->create(['email_verified_at' => now()]);
