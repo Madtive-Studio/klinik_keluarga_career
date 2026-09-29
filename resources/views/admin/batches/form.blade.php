@@ -24,10 +24,14 @@
 								@method('PATCH')
 							@endif
 							<div class="mb-3">
-								<label class="form-label">{{ __('admin.batches.code') }}</label>
-								<div class="input-group input-group-merge">
-									<input type="text" class="form-control dt-full-name @error('code') is-invalid @enderror" name="code" readonly placeholder="{{ __('admin.batches.code') }}" required value="{{ old('code', isset($batch) ? $batch->code : ($code ?? '')) }}" />
+								<label class="form-label" for="batch_code">{{ __('admin.batches.code') }}</label>
+								<div class="input-group">
+									<input type="text" class="form-control dt-full-name @error('code') is-invalid @enderror" id="batch_code" name="code" placeholder="{{ __('admin.batches.code') }}" required value="{{ old('code', isset($batch) ? $batch->code : ($code ?? '')) }}" maxlength="50" />
+									<button type="button" class="btn btn-outline-secondary" id="btn-generate-code" title="{{ __('admin.batches.regenerate_code') }}">
+										<i class="ti ti-refresh me-1"></i> <span class="d-none d-sm-inline">{{ __('admin.batches.regenerate_code') }}</span>
+									</button>
 								</div>
+								<small class="text-muted d-block mt-1">{{ __('admin.batches.code_help') }}</small>
 								@error('code') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 							<div class="mb-3">
@@ -72,6 +76,16 @@
 @section('js')
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
+			const btnGenerateCode = document.getElementById('btn-generate-code');
+			const codeInput = document.getElementById('batch_code');
+			if (btnGenerateCode && codeInput) {
+				btnGenerateCode.addEventListener('click', function() {
+					const randomPart = Math.random().toString(16).substring(2, 12).toUpperCase();
+					codeInput.value = '#' + randomPart;
+					codeInput.focus();
+				});
+			}
+
 			const quotaInput = document.getElementById('batch_quota');
 			if (quotaInput) {
 				quotaInput.addEventListener('blur', function() {

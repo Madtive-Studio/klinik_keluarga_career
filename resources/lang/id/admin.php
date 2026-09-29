@@ -143,6 +143,8 @@ return [
         'status' => 'Status',
         'form_create' => 'Form Buat Batch',
         'form_edit' => 'Form Edit Batch',
+        'code_help' => 'Kode otomatis dihasilkan secara default. Admin dapat mengubah atau menginput kode batch sendiri.',
+        'regenerate_code' => 'Generate Kode Baru',
     ],
     'categories' => [
         'title' => 'Daftar Kategori Pekerjaan',

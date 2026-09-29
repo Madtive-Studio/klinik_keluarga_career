@@ -21,6 +21,10 @@ class BatchRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        if ($this->has('code')) {
+            $this->merge(['code' => trim((string) $this->input('code'))]);
+        }
+
         if ($this->has('quota')) {
             $rawQuota = trim((string) $this->input('quota'));
 
@@ -47,7 +51,7 @@ class BatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => ['required', 'string', 'max:255'],
+            'code' => ['required', 'string', 'max:50'],
             'name' => ['required', 'string', 'max:255'],
             'quota' => ['required', 'integer', 'min:0', 'max:2147483647'],
             'start_date' => ['required', 'date_format:d-m-Y H:i:s'],

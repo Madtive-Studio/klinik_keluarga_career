@@ -220,4 +220,64 @@ class BatchControllerTest extends TestCase
             'quota' => 2147483647,
         ]);
     }
+
+    #[Test]
+    public function createDisplaysFormWithEditableCodeInput(): void
+    {
+        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.batches.create'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.batches.form');
+        $response->assertViewHas('code');
+        $response->assertDontSee('name="code" readonly', false);
+        $response->assertSee('id="batch_code"', false);
+        $response->assertSee('id="btn-generate-code"', false);
+    }
+
+    #[Test]
+    public function storeAcceptsCustomAdminBatchCode(): void
+    {
+        $startDate = Carbon::now()->addDay()->format('d-m-Y H:i:s');
+        $endDate = Carbon::now()->addDays(14)->format('d-m-Y H:i:s');
+
+        $response = $this->actingAs($this->admin, 'admin')->post(route('admin.batches.store'), [
+            'code' => 'CUSTOM-GELOMBANG-01',
+            'name' => 'Gelombang Khusus Dokter',
+            'quota' => 15,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]);
+
+        $response->assertRedirect(route('admin.batches.index'));
+        $this->assertDatabaseHas('batches', [
+            'code' => 'CUSTOM-GELOMBANG-01',
+            'name' => 'Gelombang Khusus Dokter',
+            'quota' => 15,
+        ]);
+    }
+
+    #[Test]
+    public function updateAcceptsCustomAdminBatchCode(): void
+    {
+        $batch = Batch::factory()->create(['code' => 'ORIGINAL-CODE']);
+
+        $startDate = Carbon::now()->addDays(2)->format('d-m-Y H:i:s');
+        $endDate = Carbon::now()->addDays(20)->format('d-m-Y H:i:s');
+
+        $response = $this->actingAs($this->admin, 'admin')->put(route('admin.batches.update', $batch->id), [
+            'code' => 'UPDATED-CUSTOM-CODE',
+            'name' => 'Batch Custom Updated',
+            'quota' => 30,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]);
+
+        $response->assertRedirect(route('admin.batches.index'));
+        $this->assertDatabaseHas('batches', [
+            'id' => $batch->id,
+            'code' => 'UPDATED-CUSTOM-CODE',
+            'name' => 'Batch Custom Updated',
+            'quota' => 30,
+        ]);
+    }
 }
