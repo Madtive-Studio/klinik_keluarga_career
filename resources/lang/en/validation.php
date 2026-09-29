@@ -197,6 +197,17 @@ return [
             'date' => 'Birth date is not a valid date.',
             'before_or_equal' => 'Birth date cannot be in the future.',
         ],
+        'start_datetime' => [
+            'required' => 'Start datetime is required.',
+            'date_format' => 'Start datetime format is invalid (dd-mm-yyyy HH:mm:ss).',
+            'after' => 'Start time cannot be earlier than current time.',
+            'after_or_equal' => 'Start time cannot be earlier than current time.',
+        ],
+        'end_datetime' => [
+            'required' => 'End datetime is required.',
+            'date_format' => 'End datetime format is invalid (dd-mm-yyyy HH:mm:ss).',
+            'after' => 'End time must be after start time.',
+        ],
     ],
 
     /*

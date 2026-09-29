@@ -1,15 +1,63 @@
 @extends('candidate.layouts.main', ['navbarType' => 'candidate'])
 @section('title', __('candidate.jobs.title'))
 @section('content')
+	<style>
+		.vacancies-search-wrapper {
+			position: relative;
+			z-index: 10;
+			margin-top: -55px;
+		}
+		.vacancies-search-card {
+			background: #ffffff !important;
+			border-radius: 14px;
+			box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12) !important;
+			border: 1px solid rgba(226, 232, 240, 0.9);
+			transition: all 0.3s ease;
+		}
+		.vacancies-search-card .input-group-text {
+			background-color: #f8fafc;
+			border-color: #e2e8f0;
+			border-radius: 8px 0 0 8px;
+		}
+		.vacancies-search-card .form-control,
+		.vacancies-search-card .form-select {
+			background-color: #f8fafc;
+			border-color: #e2e8f0;
+			border-radius: 0 8px 8px 0;
+			font-size: 14px;
+		}
+		.vacancies-search-card .form-control:focus,
+		.vacancies-search-card .form-select:focus {
+			background-color: #ffffff;
+			border-color: #2f55d4;
+			box-shadow: 0 0 0 3px rgba(47, 85, 212, 0.15);
+		}
+		.vacancies-search-card .btn-search-vacancies {
+			border-radius: 8px;
+			padding: 10px 16px;
+			font-weight: 600;
+			box-shadow: 0 4px 12px rgba(47, 85, 212, 0.25);
+			transition: all 0.2s ease-in-out;
+		}
+		.vacancies-search-card .btn-search-vacancies:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 6px 16px rgba(47, 85, 212, 0.35);
+		}
+		@media (max-width: 768px) {
+			.vacancies-search-wrapper {
+				margin-top: -35px;
+			}
+		}
+	</style>
 	<section class="bg-half page-next-level">
 		<div class="bg-overlay"></div>
-		<div class="container">
+		<div class="container" style="position: relative; z-index: 2;">
 			<div class="row justify-content-center">
 				<div class="col-md-6">
 					<div class="text-center text-white">
 						<h4 class="text-uppercase title mb-4">{{ __('candidate.jobs.list_title') }}</h4>
 						<ul class="page-next d-inline-block mb-0">
-							<li><a href="#" class="text-uppercase fw-bold">{{ __('candidate.nav.home') }}</a></li>
+							<li><a href="{{ route('candidate.home') }}" class="text-uppercase fw-bold">{{ __('candidate.nav.home') }}</a></li>
 							<li>
 								<span class="text-uppercase text-white fw-bold">{{ __('candidate.jobs.search_jobs') }}</span>
 							</li>
@@ -19,49 +67,47 @@
 			</div>
 		</div>
 	</section>
-	<div class="container">
-		<div class="home-form-position">
-			<div class="row justify-content-center">
-				<div class="col-lg-10">
-					<div class="home-registration-form job-list-reg-form bg-light shadow p-4 mb-0">
-						<form id="filter-form" class="registration-form">
-							<div class="row g-2">
-								<div class="col-12 col-md-5">
-									<div class="input-group">
-										<span class="input-group-text"><i class="fa fa-briefcase text-muted"></i></span>
-										<input type="text" name="q" value="{{ request()->get('q') }}" class="form-control" placeholder="{{ __('candidate.home.search_placeholder') }}">
-									</div>
-								</div>
-								<div class="col-12 col-md-3">
-									<div class="input-group">
-										<span class="input-group-text"><i class="fa fa-list-alt text-muted"></i></span>
-										<select id="select-job-type" name="job_type" class="form-select">
-											<option value="SEMUA">{{ __('candidate.applications.tab_all') }}</option>
-											@foreach ($jobTypes as $value => $label)
-												<option value="{{ $value }}" {{ request()->get('job_type') == $value ? 'selected' : '' }}>{{ $label }}</option>
-											@endforeach
-										</select>
-									</div>
-								</div>
-								<div class="col-12 col-md-2">
-									<div class="input-group">
-										<span class="input-group-text"><i class="fa fa-list-alt text-muted"></i></span>
-										<select id="select-category" name="category" class="form-select">
-											<option value="SEMUA">{{ __('candidate.applications.tab_all') }}</option>
-											@foreach ($categories as $category)
-												<option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-											@endforeach
-										</select>
-									</div>
-								</div>
-								<div class="col-12 col-md-2">
-									<button type="submit" class="btn btn-primary w-100">
-										<i class="mdi mdi-filter me-1"></i>{{ __('common.search') }}
-									</button>
+	<div class="container vacancies-search-wrapper mb-4">
+		<div class="row justify-content-center">
+			<div class="col-lg-10">
+				<div class="vacancies-search-card p-3 p-md-4">
+					<form id="filter-form" class="registration-form">
+						<div class="row g-2 align-items-center">
+							<div class="col-12 col-md-5">
+								<div class="input-group">
+									<span class="input-group-text"><i class="fa fa-briefcase text-muted"></i></span>
+									<input type="text" name="q" value="{{ request()->get('q') }}" class="form-control" placeholder="{{ __('candidate.home.search_placeholder') }}">
 								</div>
 							</div>
-						</form>
-					</div>
+							<div class="col-12 col-md-3">
+								<div class="input-group">
+									<span class="input-group-text"><i class="fa fa-list-alt text-muted"></i></span>
+									<select id="select-job-type" name="job_type" class="form-select">
+										<option value="SEMUA">{{ __('candidate.applications.tab_all') }}</option>
+										@foreach ($jobTypes as $value => $label)
+											<option value="{{ $value }}" {{ request()->get('job_type') == $value ? 'selected' : '' }}>{{ $label }}</option>
+										@endforeach
+									</select>
+								</div>
+							</div>
+							<div class="col-12 col-md-2">
+								<div class="input-group">
+									<span class="input-group-text"><i class="fa fa-list-alt text-muted"></i></span>
+									<select id="select-category" name="category" class="form-select">
+										<option value="SEMUA">{{ __('candidate.applications.tab_all') }}</option>
+										@foreach ($categories as $category)
+											<option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+										@endforeach
+									</select>
+								</div>
+							</div>
+							<div class="col-12 col-md-2">
+								<button type="submit" class="btn btn-primary btn-search-vacancies w-100">
+									<i class="mdi mdi-filter me-1"></i>{{ __('common.search') }}
+								</button>
+							</div>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>

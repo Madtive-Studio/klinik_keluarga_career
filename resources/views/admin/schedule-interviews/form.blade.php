@@ -69,18 +69,18 @@
 								<div class="mb-3">
 									<label class="form-label">{{ __('admin.schedule_interviews.start_datetime') }}</label>
 									<div class="input-group input-group-merge">
-										<input type="text" class="form-control flatpickr-datetime" name="start_datetime" placeholder="{{ __('admin.form.datetime_placeholder') }}" required value="{{ old('start_datetime', isset($scheduleInterview) ? formatFlatpickrDatetime($scheduleInterview->start_datetime) : '') }}" />
+										<input type="text" class="form-control flatpickr-datetime" id="start_datetime" name="start_datetime" placeholder="{{ __('admin.form.datetime_placeholder') }}" required value="{{ old('start_datetime', isset($scheduleInterview) ? formatFlatpickrDatetime($scheduleInterview->start_datetime) : '') }}" data-min-date="{{ isset($scheduleInterview) ? '' : 'today' }}" />
 									</div>
-									@error('start_datetime') <small class="text-danger">{{ $message }}</small> @enderror
+									<small class="text-danger error-feedback" id="error-start-datetime">@error('start_datetime') {{ $message }} @enderror</small>
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="mb-3">
 									<label class="form-label">{{ __('admin.schedule_interviews.end_datetime') }}</label>
 									<div class="input-group input-group-merge">
-										<input type="text" class="form-control flatpickr-datetime" name="end_datetime" placeholder="{{ __('admin.form.datetime_placeholder') }}" required value="{{ old('end_datetime', isset($scheduleInterview) ? formatFlatpickrDatetime($scheduleInterview->end_datetime) : '') }}" />
+										<input type="text" class="form-control flatpickr-datetime" id="end_datetime" name="end_datetime" placeholder="{{ __('admin.form.datetime_placeholder') }}" required value="{{ old('end_datetime', isset($scheduleInterview) ? formatFlatpickrDatetime($scheduleInterview->end_datetime) : '') }}" data-min-date="{{ isset($scheduleInterview) ? '' : 'today' }}" />
 									</div>
-									@error('end_datetime') <small class="text-danger">{{ $message }}</small> @enderror
+									<small class="text-danger error-feedback" id="error-end-datetime">@error('end_datetime') {{ $message }} @enderror</small>
 								</div>
 							</div>
 							<div class="col-md-12" id="form_link">
@@ -281,6 +281,101 @@
 					}
 				});
 			}
+
+			const form = document.getElementById('form-add-new-record');
+			const startInput = document.getElementById('start_datetime');
+			const endInput = document.getElementById('end_datetime');
+			const startErr = document.getElementById('error-start-datetime');
+			const endErr = document.getElementById('error-end-datetime');
+
+			if (!form || !startInput || !endInput) return;
+
+			function parseDatetimeString(str) {
+				if (!str) return null;
+				const parts = str.trim().split(' ');
+				if (parts.length !== 2) return null;
+				const dateParts = parts[0].split('-');
+				const timeParts = parts[1].split(':');
+				if (dateParts.length !== 3 || timeParts.length < 2) return null;
+				const day = parseInt(dateParts[0], 10);
+				const month = parseInt(dateParts[1], 10) - 1;
+				const year = parseInt(dateParts[2], 10);
+				const hour = parseInt(timeParts[0], 10);
+				const minute = parseInt(timeParts[1], 10);
+				const second = timeParts[2] ? parseInt(timeParts[2], 10) : 0;
+				const d = new Date(year, month, day, hour, minute, second);
+				return isNaN(d.getTime()) ? null : d;
+			}
+
+			function getSelectedDate(input) {
+				if (input._flatpickr && input._flatpickr.selectedDates.length > 0) {
+					return input._flatpickr.selectedDates[0];
+				}
+				if (input.value) {
+					if (input._flatpickr) {
+						const parsed = input._flatpickr.parseDate(input.value, 'd-m-Y H:i:S');
+						if (parsed) return parsed;
+					}
+					return parseDatetimeString(input.value);
+				}
+				return null;
+			}
+
+			function validateInterviewDates() {
+				let isValid = true;
+				if (startErr) startErr.textContent = '';
+				if (endErr) endErr.textContent = '';
+				startInput.classList.remove('is-invalid');
+				endInput.classList.remove('is-invalid');
+
+				const startDate = getSelectedDate(startInput);
+				const endDate = getSelectedDate(endInput);
+				const minAllowedTime = new Date(Date.now() - 60000);
+
+				@if (empty($scheduleInterview))
+				if (startDate && startDate.getTime() < minAllowedTime.getTime()) {
+					isValid = false;
+					startInput.classList.add('is-invalid');
+					if (startErr) {
+						startErr.textContent = @json(__('admin.schedule_interviews.validation_start_past'));
+					}
+				}
+				@else
+				const originalStartVal = "{{ formatFlatpickrDatetime($scheduleInterview->start_datetime) }}";
+				if (startInput.value.trim() !== originalStartVal && startDate && startDate.getTime() < minAllowedTime.getTime()) {
+					isValid = false;
+					startInput.classList.add('is-invalid');
+					if (startErr) {
+						startErr.textContent = @json(__('admin.schedule_interviews.validation_start_past'));
+					}
+				}
+				@endif
+
+				if (startDate && endDate && endDate.getTime() <= startDate.getTime()) {
+					isValid = false;
+					endInput.classList.add('is-invalid');
+					if (endErr) {
+						endErr.textContent = @json(__('admin.schedule_interviews.validation_end_before_start'));
+					}
+				}
+
+				return isValid;
+			}
+
+			startInput.addEventListener('change', validateInterviewDates);
+			endInput.addEventListener('change', validateInterviewDates);
+			startInput.addEventListener('input', validateInterviewDates);
+			endInput.addEventListener('input', validateInterviewDates);
+
+			form.addEventListener('submit', function(e) {
+				if (!validateInterviewDates()) {
+					e.preventDefault();
+					const firstInvalid = form.querySelector('.is-invalid');
+					if (firstInvalid) {
+						firstInvalid.focus();
+					}
+				}
+			});
 		});
 	</script>
 @endsection

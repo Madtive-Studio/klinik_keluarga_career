@@ -177,7 +177,7 @@ class ScheduleInterviewController extends Controller
             return redirect()->route('admin.schedule-interviews.index')->with('success', __('messages.admin.schedule_interview.invalid_apply'));
         }
 
-        $data = $this->validatedScheduleInterviewData($request);
+        $data = $this->validatedScheduleInterviewData($request, (int) $id);
         $data['job_id'] = $applyData->job_id;
         $data['batch_id'] = $applyData->batch_id;
         $data['candidate_id'] = $applyData->candidate_id;
@@ -195,26 +195,45 @@ class ScheduleInterviewController extends Controller
         return redirect()->route('admin.schedule-interviews.index')->with('success', __('messages.admin.schedule_interview.updated'));
     }
 
-    private function validatedScheduleInterviewData(Request $request): array
+    private function validatedScheduleInterviewData(Request $request, ?int $id = null): array
     {
-        $data = $request->validate([
+        $rules = [
             'uuid' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:255'],
             'apply_id' => ['required', 'integer', 'exists:applies,id'],
             'title' => ['required', 'string', 'max:255'],
             'start_datetime' => ['required', 'date_format:d-m-Y H:i:s'],
-            'end_datetime' => ['required', 'date_format:d-m-Y H:i:s'],
+            'end_datetime' => ['required', 'date_format:d-m-Y H:i:s', 'after:start_datetime'],
             'link' => ['nullable', 'string', 'max:255'],
             'description' => ['required', 'string'],
+        ];
+
+        if (!$id) {
+            $rules['start_datetime'][] = 'after:' . now()->subMinute()->format('d-m-Y H:i:s');
+        }
+
+        $data = $request->validate($rules, [
+            'start_datetime.after' => __('admin.schedule_interviews.validation_start_past'),
+            'start_datetime.after_or_equal' => __('admin.schedule_interviews.validation_start_past'),
+            'end_datetime.after' => __('admin.schedule_interviews.validation_end_before_start'),
         ]);
 
         $data['start_datetime'] = parseFlatpickrDatetime($data['start_datetime']);
         $data['end_datetime'] = parseFlatpickrDatetime($data['end_datetime']);
         $data['link'] = $data['link'] ?? '';
 
+        if (Carbon::parse($data['start_datetime'])->lt(now()->subMinute())) {
+            $existing = $id ? ScheduleInterview::find($id) : null;
+            if (!$existing || Carbon::parse($existing->start_datetime)->ne(Carbon::parse($data['start_datetime']))) {
+                throw ValidationException::withMessages([
+                    'start_datetime' => __('admin.schedule_interviews.validation_start_past'),
+                ]);
+            }
+        }
+
         if (Carbon::parse($data['end_datetime'])->lte(Carbon::parse($data['start_datetime']))) {
             throw ValidationException::withMessages([
-                'end_datetime' => 'End datetime tidak boleh sebelum atau sama dengan start datetime.',
+                'end_datetime' => __('admin.schedule_interviews.validation_end_before_start'),
             ]);
         }
 

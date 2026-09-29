@@ -2,6 +2,9 @@
 
 namespace App\Enums;
 
+/**
+ * @deprecated SkillLevel is deprecated as candidate_skills table only tracks skill names.
+ */
 enum SkillLevel: string
 {
     case BASIC = 'basic';

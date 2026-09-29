@@ -134,5 +134,16 @@ return [
             'date' => 'Tanggal lahir tidak valid.',
             'before_or_equal' => 'Tanggal lahir tidak boleh lebih dari hari ini.',
         ],
+        'start_datetime' => [
+            'required' => 'Waktu mulai wajib diisi.',
+            'date_format' => 'Format waktu mulai tidak valid (dd-mm-yyyy HH:mm:ss).',
+            'after' => 'Waktu mulai tidak boleh kurang dari waktu saat ini.',
+            'after_or_equal' => 'Waktu mulai tidak boleh kurang dari waktu saat ini.',
+        ],
+        'end_datetime' => [
+            'required' => 'Waktu selesai wajib diisi.',
+            'date_format' => 'Format waktu selesai tidak valid (dd-mm-yyyy HH:mm:ss).',
+            'after' => 'Waktu selesai tidak boleh kurang dari atau sama dengan waktu mulai.',
+        ],
     ],
 ];

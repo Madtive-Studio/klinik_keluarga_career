@@ -236,7 +236,6 @@ package "CandidatePkg" {
     -id: bigint
     -candidate_id: bigint
     -name: varchar(100)
-    -level: varchar(20)
     -created_at: timestamp
     -updated_at: timestamp
     __

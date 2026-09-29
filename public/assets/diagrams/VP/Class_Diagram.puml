@@ -292,18 +292,10 @@ package "CandidatePkg" {
     -id: bigint
     -candidate_id: bigint
     -name: varchar(100)
-    -level: SkillLevel
     -created_at: timestamp
     -updated_at: timestamp
     __
     +candidate(): BelongsTo
-  }
-
-  enum SkillLevel <<enumeration>> {
-    BEGINNER
-    INTERMEDIATE
-    ADVANCED
-    EXPERT
   }
 
   class Document {
@@ -359,7 +351,6 @@ Candidate "1" *-down- "0..1" CandidateProfile
 Candidate "1" *-down- "0..*" CandidateSkill
 Document -[hidden]right-> CandidateProfile
 CandidateProfile -[hidden]right-> CandidateSkill
-CandidateSkill -right.> SkillLevel
 Document -right.> DocumentType
 
 ' ========================================================

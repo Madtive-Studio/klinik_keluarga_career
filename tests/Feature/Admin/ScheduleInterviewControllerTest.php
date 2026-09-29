@@ -112,4 +112,158 @@ class ScheduleInterviewControllerTest extends TestCase
 
         Notification::assertSentTo($candidate, InterviewInvitationNotification::class);
     }
+
+    #[Test]
+    public function storeFailsWhenStartDatetimeIsBeforeToday(): void
+    {
+        $candidate = Candidate::factory()->create();
+        $job = Job::factory()->create();
+        $apply = Apply::factory()->create([
+            'candidate_id' => $candidate->id,
+            'job_id' => $job->id,
+            'status' => 'SHORTLISTED',
+        ]);
+
+        $yesterday = Carbon::now()->subDay()->format('d-m-Y H:i:s');
+        $tomorrow = Carbon::now()->addDay()->format('d-m-Y H:i:s');
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.schedule-interviews.store'), [
+                'uuid' => (string) Str::uuid(),
+                'code' => '#INT-PAST',
+                'apply_id' => $apply->id,
+                'title' => 'Wawancara Medis',
+                'start_datetime' => $yesterday,
+                'end_datetime' => $tomorrow,
+                'is_online' => '1',
+                'link' => 'https://meet.google.com/abc-defg-hij',
+                'description' => 'Test interview.',
+            ]);
+
+        $response->assertSessionHasErrors('start_datetime');
+    }
+
+    #[Test]
+    public function storeFailsWhenEndDatetimeIsBeforeOrEqualToStartDatetime(): void
+    {
+        $candidate = Candidate::factory()->create();
+        $job = Job::factory()->create();
+        $apply = Apply::factory()->create([
+            'candidate_id' => $candidate->id,
+            'job_id' => $job->id,
+            'status' => 'SHORTLISTED',
+        ]);
+
+        $start = Carbon::now()->addDays(2)->format('d-m-Y 14:00:00');
+        $end = Carbon::now()->addDays(2)->format('d-m-Y 13:00:00');
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.schedule-interviews.store'), [
+                'uuid' => (string) Str::uuid(),
+                'code' => '#INT-END-BEFORE-START',
+                'apply_id' => $apply->id,
+                'title' => 'Wawancara Medis',
+                'start_datetime' => $start,
+                'end_datetime' => $end,
+                'is_online' => '1',
+                'link' => 'https://meet.google.com/abc-defg-hij',
+                'description' => 'Test interview.',
+            ]);
+
+        $response->assertSessionHasErrors('end_datetime');
+    }
+
+    #[Test]
+    public function storeFailsWhenStartDatetimeIsEarlierToday(): void
+    {
+        Carbon::setTestNow(Carbon::create(2026, 9, 28, 14, 0, 0));
+
+        $candidate = Candidate::factory()->create();
+        $job = Job::factory()->create();
+        $apply = Apply::factory()->create([
+            'candidate_id' => $candidate->id,
+            'job_id' => $job->id,
+            'status' => 'SHORTLISTED',
+        ]);
+
+        $earlierToday = '28-09-2026 12:00:00';
+        $laterToday = '28-09-2026 15:00:00';
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.schedule-interviews.store'), [
+                'uuid' => (string) Str::uuid(),
+                'code' => '#INT-PAST-HOUR',
+                'apply_id' => $apply->id,
+                'title' => 'Wawancara Medis',
+                'start_datetime' => $earlierToday,
+                'end_datetime' => $laterToday,
+                'is_online' => '1',
+                'link' => 'https://meet.google.com/abc-defg-hij',
+                'description' => 'Test interview.',
+            ]);
+
+        $response->assertSessionHasErrors('start_datetime');
+
+        Carbon::setTestNow();
+    }
+
+    #[Test]
+    public function storeFailsWhenEndDatetimeIsEarlierMinutesThanStart(): void
+    {
+        $candidate = Candidate::factory()->create();
+        $job = Job::factory()->create();
+        $apply = Apply::factory()->create([
+            'candidate_id' => $candidate->id,
+            'job_id' => $job->id,
+            'status' => 'SHORTLISTED',
+        ]);
+
+        $start = Carbon::now()->addDays(2)->format('d-m-Y 14:30:00');
+        $end = Carbon::now()->addDays(2)->format('d-m-Y 14:15:00');
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.schedule-interviews.store'), [
+                'uuid' => (string) Str::uuid(),
+                'code' => '#INT-END-MINUTES-EARLIER',
+                'apply_id' => $apply->id,
+                'title' => 'Wawancara Medis',
+                'start_datetime' => $start,
+                'end_datetime' => $end,
+                'is_online' => '1',
+                'link' => 'https://meet.google.com/abc-defg-hij',
+                'description' => 'Test interview.',
+            ]);
+
+        $response->assertSessionHasErrors('end_datetime');
+    }
+
+    #[Test]
+    public function storeFailsWhenEndDatetimeIsSameMinuteAsStart(): void
+    {
+        $candidate = Candidate::factory()->create();
+        $job = Job::factory()->create();
+        $apply = Apply::factory()->create([
+            'candidate_id' => $candidate->id,
+            'job_id' => $job->id,
+            'status' => 'SHORTLISTED',
+        ]);
+
+        $start = Carbon::now()->addDays(2)->format('d-m-Y 14:30:00');
+        $end = Carbon::now()->addDays(2)->format('d-m-Y 14:30:00');
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.schedule-interviews.store'), [
+                'uuid' => (string) Str::uuid(),
+                'code' => '#INT-END-SAME-MINUTE',
+                'apply_id' => $apply->id,
+                'title' => 'Wawancara Medis',
+                'start_datetime' => $start,
+                'end_datetime' => $end,
+                'is_online' => '1',
+                'link' => 'https://meet.google.com/abc-defg-hij',
+                'description' => 'Test interview.',
+            ]);
+
+        $response->assertSessionHasErrors('end_datetime');
+    }
 }

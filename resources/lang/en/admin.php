@@ -238,6 +238,8 @@ return [
         'uuid' => 'UUID',
         'code' => 'Code',
         'description' => 'Description',
+        'validation_start_past' => 'Start time cannot be earlier than current time.',
+        'validation_end_before_start' => 'End time cannot be earlier than or equal to start time.',
     ],
     'form' => [
         'submit' => 'Submit',

@@ -13,7 +13,6 @@ class CandidateSkill extends Model
     protected $fillable = [
         'candidate_id',
         'name',
-        'level',
     ];
 
     public function candidate(): BelongsTo

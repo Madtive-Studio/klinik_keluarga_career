@@ -55,20 +55,62 @@ document.addEventListener('DOMContentLoaded', function () {
     const endEl = document.querySelector('.flatpickr-datetime[name="' + endName + '"]');
     if (!startEl || !endEl) return;
 
-    const endPicker = initFlatpickr(endEl);
-    const startPicker = initFlatpickr(startEl, {
-      onChange: function (selectedDates) {
-        const minDate = selectedDates[0] || null;
-        endPicker.set('minDate', minDate);
+    const getMinDate = function (el) {
+      if (el.dataset.minDate === 'today') {
+        return new Date();
+      }
+      return el.dataset.minDate || null;
+    };
 
-        if (endPicker.selectedDates[0] && minDate && endPicker.selectedDates[0] <= minDate) {
-          endPicker.clear();
+    let startPicker;
+    let endPicker;
+
+    const endOptions = {
+      onOpen: function () {
+        if (startPicker && startPicker.selectedDates[0]) {
+          endPicker.set('minDate', new Date(startPicker.selectedDates[0].getTime() + 60000));
+        } else if (endEl.dataset.minDate === 'today') {
+          endPicker.set('minDate', new Date());
+        }
+      }
+    };
+    const endMinDate = getMinDate(endEl);
+    if (endMinDate) {
+      endOptions.minDate = endMinDate;
+    }
+
+    endPicker = initFlatpickr(endEl, endOptions);
+    const startOptions = {
+      onOpen: function () {
+        if (startEl.dataset.minDate === 'today') {
+          startPicker.set('minDate', new Date());
         }
       },
-    });
+      onChange: function (selectedDates) {
+        if (selectedDates[0]) {
+          const nextMin = new Date(selectedDates[0].getTime() + 60000);
+          endPicker.set('minDate', nextMin);
+          if (endPicker.selectedDates[0] && endPicker.selectedDates[0] <= selectedDates[0]) {
+            endPicker.clear();
+          }
+        } else {
+          const defaultMin = getMinDate(endEl);
+          endPicker.set('minDate', defaultMin);
+        }
+      },
+    };
+
+    const startMinDate = getMinDate(startEl);
+    if (startMinDate) {
+      startOptions.minDate = startMinDate;
+    }
+
+    startPicker = initFlatpickr(startEl, startOptions);
 
     if (startPicker.selectedDates[0]) {
-      endPicker.set('minDate', startPicker.selectedDates[0]);
+      endPicker.set('minDate', new Date(startPicker.selectedDates[0].getTime() + 60000));
+    } else if (endMinDate) {
+      endPicker.set('minDate', endMinDate);
     }
   });
 

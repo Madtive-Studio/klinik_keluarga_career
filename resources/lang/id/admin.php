@@ -238,6 +238,8 @@ return [
         'uuid' => 'UUID',
         'code' => 'Kode',
         'description' => 'Deskripsi',
+        'validation_start_past' => 'Waktu mulai tidak boleh kurang dari waktu saat ini.',
+        'validation_end_before_start' => 'Waktu akhir tidak boleh kurang dari atau sama dengan waktu mulai.',
     ],
     'form' => [
         'submit' => 'Simpan',
