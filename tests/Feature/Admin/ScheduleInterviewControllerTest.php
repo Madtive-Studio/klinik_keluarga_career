@@ -72,6 +72,8 @@ class ScheduleInterviewControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('admin.schedule-interviews.form');
         $response->assertViewHas(['uuid', 'code', 'applies']);
+        $response->assertSee('<input type="hidden" name="uuid"', false);
+        $response->assertDontSee('<input type="text" class="form-control dt-full-name" name="uuid"', false);
     }
 
     #[Test]
@@ -266,4 +268,42 @@ class ScheduleInterviewControllerTest extends TestCase
 
         $response->assertSessionHasErrors('end_datetime');
     }
+
+    #[Test]
+    public function storeCreatesScheduleEvenIfUuidOmitted(): void
+    {
+        Notification::fake();
+
+        $candidate = Candidate::factory()->create();
+        $job = Job::factory()->create();
+        $apply = Apply::factory()->create([
+            'candidate_id' => $candidate->id,
+            'job_id' => $job->id,
+            'status' => 'SHORTLISTED',
+        ]);
+
+        $start = Carbon::now()->addDays(2)->format('d-m-Y 10:00:00');
+        $end = Carbon::now()->addDays(2)->format('d-m-Y 11:00:00');
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.schedule-interviews.store'), [
+                'code' => '#INT-AUTO-UUID',
+                'apply_id' => $apply->id,
+                'title' => 'Interview without UUID in request',
+                'start_datetime' => $start,
+                'end_datetime' => $end,
+                'is_online' => '1',
+                'link' => 'https://meet.google.com/xyz',
+                'description' => 'Test interview with auto generated uuid.',
+            ]);
+
+        $response->assertRedirect(route('admin.schedule-interviews.index'));
+        $this->assertDatabaseHas('schedule_interviews', [
+            'code' => '#INT-AUTO-UUID',
+            'title' => 'Interview without UUID in request',
+        ]);
+        $interview = ScheduleInterview::where('code', '#INT-AUTO-UUID')->first();
+        $this->assertNotEmpty($interview->uuid);
+    }
 }
+

@@ -197,6 +197,10 @@ class ScheduleInterviewController extends Controller
 
     private function validatedScheduleInterviewData(Request $request, ?int $id = null): array
     {
+        if (!$request->filled('uuid') && !$id) {
+            $request->merge(['uuid' => (string) Str::uuid()]);
+        }
+
         $rules = [
             'uuid' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:255'],

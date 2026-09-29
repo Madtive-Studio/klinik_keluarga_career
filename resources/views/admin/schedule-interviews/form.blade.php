@@ -22,19 +22,12 @@
 							<h5 class="mb-0">{{ isset($scheduleInterview) ? __('admin.schedule_interviews.form_edit') : __('admin.schedule_interviews.form_create') }}</h5>
 						</div>
 						<div class="card-body row">
-							<div class="col-md-6">
-								<div class="mb-3">
-									<label class="form-label">{{ __('admin.schedule_interviews.uuid') }}</label>
-									<div class="input-group input-group-merge">
-										<input type="text" class="form-control dt-full-name" name="uuid" readonly placeholder="{{ __('admin.schedule_interviews.code') }}" required value="{{ isset($scheduleInterview) ? $scheduleInterview->uuid : $uuid }}" />
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6">
+							<input type="hidden" name="uuid" value="{{ old('uuid', isset($scheduleInterview) ? $scheduleInterview->uuid : ($uuid ?? '')) }}" />
+							<div class="col-md-12">
 								<div class="mb-3">
 									<label class="form-label">{{ __('admin.schedule_interviews.code') }}</label>
 									<div class="input-group input-group-merge">
-										<input type="text" class="form-control dt-full-name" name="code" readonly placeholder="{{ __('admin.schedule_interviews.code') }}" required value="{{ isset($scheduleInterview) ? $scheduleInterview->code : $code }}" />
+										<input type="text" class="form-control dt-full-name" name="code" readonly placeholder="{{ __('admin.schedule_interviews.code') }}" required value="{{ old('code', isset($scheduleInterview) ? $scheduleInterview->code : ($code ?? '')) }}" />
 									</div>
 								</div>
 							</div>
