@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Enums\ScoreRecommendation;
 use App\Models\Apply;
 use App\Models\Candidate;
 use App\Models\Job;
@@ -46,7 +45,7 @@ class ApplicantController extends Controller
             });
         }
 
-        $query = $query->with(['candidate', 'job', 'batch', 'applyDocuments.document'])->orderByDesc('auto_score')->orderBy('created_at', 'ASC');
+        $query = $query->with(['candidate', 'job', 'batch', 'applyDocuments.document'])->orderBy('created_at', 'DESC');
 
         return DataTables::of($query)
             ->addIndexColumn()
@@ -63,18 +62,6 @@ class ApplicantController extends Controller
                 }
                 return __('admin.applies.documents_count', ['count' => $docs->count()]);
             })
-            ->editColumn('auto_score', function ($row) {
-                return $row->auto_score !== null ? $row->auto_score . '/100' : '-';
-            })
-            ->editColumn('score_recommendation', function ($row) {
-                if (!$row->score_recommendation) {
-                    return '-';
-                }
-
-                $recommendation = ScoreRecommendation::from($row->score_recommendation);
-
-                return '<span class="badge ' . $recommendation->badgeClass() . '">' . $recommendation->label() . '</span>';
-            })
             ->addColumn('action', function ($row) {
                 $btn = '<div class="btn-group" role="group" aria-label="Basic example">';
                 $btn .= '<a href="'.route('admin.applies.show', $row->id).'" class="btn btn-sm btn-primary detail"><i class="ti ti-eye"></i></a>';
@@ -82,7 +69,7 @@ class ApplicantController extends Controller
 
                 return $btn;
             })
-            ->rawColumns(['action', 'score_recommendation'])
+            ->rawColumns(['action'])
             ->make(true);
     }
 

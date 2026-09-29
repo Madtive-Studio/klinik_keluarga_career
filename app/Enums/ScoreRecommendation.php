@@ -2,6 +2,9 @@
 
 namespace App\Enums;
 
+/**
+ * @deprecated Auto-scoring has been removed from applies table.
+ */
 enum ScoreRecommendation: string
 {
     case SHORTLIST = 'SHORTLIST';

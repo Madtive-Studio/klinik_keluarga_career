@@ -28,10 +28,6 @@
 							<th>{{ __('admin.applies.job') }}</th>
 							<th>{{ __('admin.applies.batch') }}</th>
 							<th>{{ __('admin.applies.cv') }}</th>
-							@if (config('scoring.enabled', false))
-								<th>{{ __('admin.applies.score') }}</th>
-								<th>{{ __('admin.applies.recommendation') }}</th>
-							@endif
 							<th>{{ __('admin.applies.status') }}</th>
 							<th>{{ __('admin.datatable.action') }}</th>
 						</tr>
@@ -78,17 +74,6 @@
 						{
 							data: 'document.name'
 						},
-						@if (config('scoring.enabled', false))
-						{
-							data: 'auto_score',
-							className: 'text-center'
-						},
-						{
-							data: 'score_recommendation',
-							orderable: false,
-							searchable: false
-						},
-						@endif
 						{
 							data: 'status'
 						},
@@ -97,7 +82,7 @@
 						}
 					],
 					order: [
-						[{{ config('scoring.enabled', false) ? 5 : 0 }}, '{{ config('scoring.enabled', false) ? 'desc' : 'asc' }}']
+						[0, 'asc']
 					],
 					dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-6 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end mt-n6 mt-md-0"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
 					displayLength: 7,

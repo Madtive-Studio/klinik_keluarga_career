@@ -11,7 +11,6 @@ use App\Models\Job;
 use App\Notifications\ApplicationSubmittedNotification;
 use App\Repositories\CandidateRepository;
 use App\Repositories\DocumentRepository;
-use App\Services\ScoringService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -21,7 +20,6 @@ class ApplicationRepository
     public function __construct(
         private DocumentRepository $documentRepo,
         private CandidateRepository $candidateRepo,
-        private ScoringService $scoringService,
     ) {}
 
     public function findByJobBatchAndCandidate(int $jobId, ?int $batchId, int $candidateId): ?Apply
@@ -122,19 +120,6 @@ class ApplicationRepository
             'created_at'   => now(),
             'updated_at'   => now(),
         ];
-
-        if (config('scoring.enabled', false)) {
-            $scoreResult = $this->scoringService->calculate(
-                $candidate,
-                $job,
-                (string) $requestData['cover_letter']
-            );
-
-            $applyData['auto_score'] = $scoreResult['score'];
-            $applyData['score_recommendation'] = $scoreResult['recommendation'];
-            $applyData['score_breakdown'] = $scoreResult['breakdown'];
-            $applyData['scored_at'] = now();
-        }
 
         $apply = $this->create($applyData);
 

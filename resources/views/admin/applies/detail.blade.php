@@ -228,31 +228,6 @@
 							</h5>
 						</div>
 						<div class="card-body">
-							@if (config('scoring.enabled', false) && $apply->auto_score !== null)
-								@php
-									$recommendation = $apply->score_recommendation
-										? \App\Enums\ScoreRecommendation::from($apply->score_recommendation)
-										: null;
-								@endphp
-								<div class="alert alert-light border mb-3">
-									<h6 class="mb-2">{{ __('admin.applies.auto_scoring') }}</h6>
-									<p class="mb-1"><strong>{{ __('admin.applies.score_label') }}:</strong> {{ $apply->auto_score }}/100</p>
-									@if ($recommendation)
-										<p class="mb-1"><strong>{{ __('admin.applies.recommendation_label') }}:</strong>
-											<span class="badge {{ $recommendation->badgeClass() }}">{{ $recommendation->label() }}</span>
-										</p>
-									@endif
-									@if ($apply->score_breakdown)
-										<ul class="mb-0 mt-2">
-											<li>{{ __('admin.applies.breakdown_education') }}: {{ $apply->score_breakdown['education'] ?? 0 }}</li>
-											<li>{{ __('admin.applies.breakdown_experience') }}: {{ $apply->score_breakdown['experience'] ?? 0 }}</li>
-											<li>{{ __('admin.applies.breakdown_profile') }}: {{ $apply->score_breakdown['profile'] ?? 0 }}</li>
-											<li>{{ __('admin.applies.breakdown_cover_letter') }}: {{ $apply->score_breakdown['cover_letter'] ?? 0 }}</li>
-										</ul>
-									@endif
-									<small class="text-muted d-block mt-2">{{ __('admin.applies.scored_at') }}: {{ optional($apply->scored_at)->format('d M Y H:i') ?? '-' }}</small>
-								</div>
-							@endif
 							<div class="mb-3">
 								<label class="form-label fw-bold">{{ __('admin.applies.documents') }}</label>
 								@php

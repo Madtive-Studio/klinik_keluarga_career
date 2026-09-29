@@ -67,7 +67,6 @@ class ApplicationControllerTest extends TestCase
     {
         Notification::fake();
 
-        config(['scoring.enabled' => true]);
         $this->actingAs($this->candidate, 'candidate');
 
         $job = Job::factory()->create();
@@ -92,44 +91,13 @@ class ApplicationControllerTest extends TestCase
         ]);
 
         $apply = Apply::where('candidate_id', $this->candidate->id)->where('job_id', $job->id)->first();
-        $this->assertNotNull($apply->auto_score);
-        $this->assertNotNull($apply->score_recommendation);
+        $this->assertNotNull($apply);
 
         $this->assertDatabaseHas('apply_documents', [
             'apply_id'    => $apply->id,
             'document_id' => $document->id,
             'type'        => 'CV',
         ]);
-    }
-
-    #[Test]
-    public function storeDoesNotCalculateScoreWhenScoringIsDisabled(): void
-    {
-        Notification::fake();
-        config(['scoring.enabled' => false]);
-
-        $this->actingAs($this->candidate, 'candidate');
-
-        $job = Job::factory()->create();
-        $document = \App\Models\Document::factory()->create([
-            'candidate_id' => $this->candidate->id,
-            'type' => 'CV',
-        ]);
-
-        $response = $this->post(route('candidate.jobs.applications.store'), [
-            'job_uuid'          => $job->uuid,
-            'existing_documents' => [$document->id],
-            'cover_letter'      => 'Saya tertarik dengan posisi ini.',
-            'description'       => 'Pengalaman saya sesuai kebutuhan.',
-        ]);
-
-        $response->assertRedirect(route('candidate.jobs.applications.success', $job->uuid));
-
-        $apply = Apply::where('candidate_id', $this->candidate->id)->where('job_id', $job->id)->first();
-        $this->assertNull($apply->auto_score);
-        $this->assertNull($apply->score_recommendation);
-        $this->assertNull($apply->score_breakdown);
-        $this->assertNull($apply->scored_at);
     }
 
     #[Test]

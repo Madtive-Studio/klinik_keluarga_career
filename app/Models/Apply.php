@@ -20,17 +20,8 @@ class Apply extends Model
         'cover_letter',
         'status',
         'description',
-        'auto_score',
-        'score_recommendation',
-        'score_breakdown',
-        'scored_at',
         'created_at',
         'updated_at',
-    ];
-
-    protected $casts = [
-        'score_breakdown' => 'array',
-        'scored_at' => 'datetime',
     ];
 
     public function getRouteKeyName()
