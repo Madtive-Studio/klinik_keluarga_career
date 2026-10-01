@@ -50,7 +50,7 @@ skinparam entity {
 ' Deklarasi Lifeline
 actor "HRD / Admin" as HRD
 boundary "JobPage" as Page
-control "JobController" as Controller
+control "JobManagementController" as Controller
 entity "JobModel" as Model
 
 ' Group sd View/Read: Akses Data Lowongan

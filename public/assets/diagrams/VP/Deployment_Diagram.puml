@@ -32,7 +32,7 @@ node "Application & Web Server\n<<device>>\n(Ubuntu Linux 24.04 LTS)" as AppServ
     component "HTTP Handler / Reverse Proxy" as Proxy
   }
   
-  node "PHP 8.2 Runtime\n<<executionEnvironment>>" as PHPEnv {
+  node "PHP 8.3 Runtime\n<<executionEnvironment>>" as PHPEnv {
     component "Laravel 11 Framework Core" as LaravelCore
     component "Notification & Mailer Subsystem" as MailerSubsystem
     component "Eloquent ORM" as Eloquent
@@ -43,7 +43,7 @@ node "Application & Web Server\n<<device>>\n(Ubuntu Linux 24.04 LTS)" as AppServ
 
 node "Database Server\n<<device>>\n(Linux Server)" as DBServer {
   node "PostgreSQL 16 DBMS\n<<executionEnvironment>>" as PGEnv {
-    database "klinik_keluarga_career\n[15 Relational Tables]" as Database
+    database "klinik_keluarga_career\n[12 Relational Tables]" as Database
   }
 }
 
