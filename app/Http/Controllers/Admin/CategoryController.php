@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
@@ -53,9 +53,9 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        Category::create($request->all());
+        Category::create($request->validated());
         return redirect()->route('admin.categories.index')->with('success', __('messages.admin.category.created'));
     }
 
@@ -81,9 +81,9 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CategoryRequest $request, string $id)
     {
-        Category::findOrFail($id)->update($request->all());
+        Category::findOrFail($id)->update($request->validated());
         return redirect()->route('admin.categories.index')->with('success', __('messages.admin.category.updated'));
     }
 
