@@ -115,7 +115,7 @@ return [
         'uploading' => 'Mengupload dokumen...',
         'upload_failed' => 'Upload dokumen gagal',
         'invalid_file_type' => 'Format file tidak didukung. Gunakan PDF, DOCX, DOC, atau gambar (PNG, JPG, WEBP, GIF).',
-        'file_too_large' => 'Ukuran file melebihi batas maksimum 20 MB.',
+        'file_too_large' => 'Ukuran file melebihi batas maksimum 10 MB.',
         'empty_title' => 'Belum ada dokumen',
         'empty_description' => 'Seret file ke tipe dokumen di menu kiri, atau pilih tipe lalu upload melalui area di atas.',
         'empty_filtered_title' => 'Belum ada dokumen :type',

@@ -227,8 +227,8 @@ class DocumentControllerTest extends TestCase
     {
         $this->actingAs($this->candidate, 'candidate');
 
-        // 20481 KB > 20480 KB (max defined in DocumentRequest)
-        $file = UploadedFile::fake()->create('heavy_file.pdf', 20481, 'application/pdf');
+        // 10241 KB > 10240 KB (max defined in DocumentRequest)
+        $file = UploadedFile::fake()->create('heavy_file.pdf', 10241, 'application/pdf');
 
         $response = $this->post(route('candidate.my.documents.store'), [
             'file' => $file,

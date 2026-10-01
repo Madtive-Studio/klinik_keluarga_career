@@ -219,7 +219,7 @@
 		const documentTypesOptions = @json($documentTypesOptions);
 		const documentStoreUrl = @json(route('candidate.my.documents.store'));
 		const csrfToken = @json(csrf_token());
-		const maxDocumentSize = 20480 * 1024;
+		const maxDocumentSize = 10240 * 1024;
 		const allowedDocumentExtensions = ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg', 'webp', 'gif', 'xls', 'xlsx'];
 		const allowedDocumentMimePrefixes = ['image/'];
 

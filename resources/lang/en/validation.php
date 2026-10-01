@@ -157,9 +157,9 @@ return [
         'documents.*.file' => [
             'required' => 'Document file is required.',
             'file' => 'File must be a valid file.',
-            'uploaded' => 'File failed to upload. Maximum size is 20MB. Please try again.',
+            'uploaded' => 'File failed to upload. Maximum size is 10MB. Please try again.',
             'mimes' => 'File format must be PDF, DOC, or DOCX.',
-            'max' => 'Maximum file size is 20MB.',
+            'max' => 'Maximum file size is 10MB.',
         ],
         'documents.*.type' => [
             'required' => 'Please select a document type.',
@@ -168,7 +168,7 @@ return [
             'required' => 'File is required.',
             'file' => 'File must be a valid file.',
             'mimes' => 'File must be an image, PDF, Word, or Excel file.',
-            'max' => 'File size must be less than 20MB.',
+            'max' => 'File size must be less than 10MB.',
         ],
         'image' => [
             'image' => 'Image must be a valid image file.',
