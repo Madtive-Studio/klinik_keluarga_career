@@ -67,7 +67,7 @@
 													data-batch-quota="{{ (int) $batch->quota }}"
 													data-allocated-quota="{{ $batch->allocatedQuota($excludeJobId) }}"
 													data-remaining-quota="{{ $batch->remainingQuota($excludeJobId) }}">
-													{{ $batch->code }} - {{ $batch->name }} | {{ $batchStart }} - {{ $batchEnd }}
+													{{ $batch->name }} | {{ $batchStart }} - {{ $batchEnd }}
 												</option>
 											@endforeach
 										</select>
@@ -91,7 +91,7 @@
 									@error('category_id') <small class="text-danger">{{ $message }}</small> @enderror
 								</div>
 							</div>
-							<div class="mb-3">
+							<div class="col-md-6 mb-3">
 								<label class="form-label">{{ __('admin.jobs.title_col') }}</label>
 								<div class="input-group input-group-merge">
 									<input type="text" class="form-control dt-full-name @error('title') is-invalid @enderror" name="title" placeholder="{{ __('admin.jobs.title_col') }}" value="{{ old('title', $job->title ?? '') }}" required />
@@ -135,7 +135,7 @@
 								@error('images') <small class="text-danger d-block">{{ $message }}</small> @enderror
 								@error('images.*') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
-							<div class="mb-3">
+							<div class="col-md-12 mb-3">
 								<label class="form-label">{{ __('admin.jobs.type') }}</label>
 								<div class="input-group input-group-merge">
 									<select name="type" id="type" class="form-control @error('type') is-invalid @enderror" required>
@@ -147,7 +147,7 @@
 								</div>
 								@error('type') <small class="text-danger">{{ $message }}</small> @enderror
 							</div>
-							<div class="row g-3">
+							<div class="row g-3 mb-3">
 								@php
 									$salaryMinValue = old('salary_min', $job->salary_min ?? '');
 									$salaryMaxValue = old('salary_max', $job->salary_max ?? '');
@@ -203,6 +203,7 @@
 										</label>
 									</div>
 								</div>
+							</div>
 							<div class="row g-3">
 								<div class="col-md-6 mb-3">
 									<label class="form-label">{{ __('admin.jobs.min_education') }}</label>
