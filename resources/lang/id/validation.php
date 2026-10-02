@@ -104,6 +104,7 @@ return [
         'file' => [
             'required' => 'File wajib diisi.',
             'file' => 'File harus berupa file.',
+            'uploaded' => 'File tidak berhasil diunggah ke server. Pastikan ukuran file maksimal 10MB dan coba lagi.',
             'mimes' => 'File harus berupa Gambar, PDF, Word, atau Excel.',
             'max' => 'Ukuran file harus kurang dari 10MB.',
         ],

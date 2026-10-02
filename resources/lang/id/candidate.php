@@ -106,7 +106,7 @@ return [
         'select_type_modal_title' => 'Pilih Jenis Dokumen',
         'select_type_modal_label' => 'Jenis Dokumen',
         'select_type_modal_required' => 'Silakan pilih jenis dokumen terlebih dahulu.',
-        'accepted_formats' => 'Format: PDF, DOCX, DOC, dan gambar (PNG, JPG, WEBP, GIF).',
+        'accepted_formats' => 'Format: PDF, DOCX, DOC, dan gambar (PNG, JPG, WEBP, GIF). Maksimal 10MB.',
         'select_type_hint' => 'Pilih tipe dokumen di menu kiri, lalu seret file ke tipe tersebut atau ke area upload.',
         'sidebar_drop_hint' => 'Lepaskan file di sini',
         'confirm_upload_title' => 'Konfirmasi Upload',

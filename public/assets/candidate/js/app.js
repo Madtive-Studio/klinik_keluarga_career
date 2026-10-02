@@ -51,23 +51,24 @@
     });
 
     $(window).ready(function() {
-        flatpickr.localize(window.appLocale === 'id' ? flatpickr.l10ns.id : flatpickr.l10ns.default);
-        $(".flatpickr").each(function() {
-            const $this = $(this);
-            const isBirthDate = $this.attr('name') === 'birth_date' || $this.hasClass('flatpickr-birthdate') || $this.attr('id') === 'birth_date_input';
-            const explicitMax = $this.attr('max') || $this.data('max-date');
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr.localize(window.appLocale === 'id' ? flatpickr.l10ns.id : flatpickr.l10ns.default);
+            $(".flatpickr").each(function() {
+                const $this = $(this);
+                const isBirthDate = $this.attr('name') === 'birth_date' || $this.hasClass('flatpickr-birthdate') || $this.attr('id') === 'birth_date_input';
+                const explicitMax = $this.attr('max') || $this.data('max-date');
 
-            $this.flatpickr({
-                dateFormat: "Y-m-d",
-                allowInput: false,
-                altInput: true,
-                altFormat: "d F Y",
-                locale: window.appLocale === 'id' ? 'id' : 'default',
-                disableMobile: true,
-                maxDate: isBirthDate ? "today" : (explicitMax || undefined),
-                defaultDate: $this.val() ? $this.val() : undefined
+                $this.flatpickr({
+                    dateFormat: "Y-m-d",
+                    allowInput: false,
+                    altInput: true,
+                    altFormat: "d F Y",
+                    locale: window.appLocale === 'id' ? 'id' : 'default',
+                    disableMobile: true,
+                    maxDate: isBirthDate ? "today" : (explicitMax || undefined),
+                    defaultDate: $this.val() ? $this.val() : undefined
+                });
             });
-        });
-
+        }
     });
 })(jQuery)

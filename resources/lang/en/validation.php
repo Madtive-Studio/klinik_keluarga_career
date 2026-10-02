@@ -167,6 +167,7 @@ return [
         'file' => [
             'required' => 'File is required.',
             'file' => 'File must be a valid file.',
+            'uploaded' => 'File failed to upload. Maximum size is 10MB. Please try again.',
             'mimes' => 'File must be an image, PDF, Word, or Excel file.',
             'max' => 'File size must be less than 10MB.',
         ],

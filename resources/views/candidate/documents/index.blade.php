@@ -25,9 +25,11 @@
 						</div>
 					@endif
 
+					<input type="file" id="document-file-input" accept=".pdf,.doc,.docx,image/*"
+					style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">
 					@if ($activeType)
-						<div id="document-dropzone"
-							class="document-dropzone mb-3"
+						<label for="document-file-input" id="document-dropzone"
+							class="document-dropzone mb-3 d-block"
 							data-type="{{ $activeType->value }}"
 							data-label="{{ $activeType->getLabel() }}">
 							<div class="document-dropzone__content text-center py-4 px-3">
@@ -36,11 +38,10 @@
 								<p class="mb-0 text-muted small">{{ __('candidate.documents.dropzone_hint') }}</p>
 								<p class="mb-0 text-muted small mt-1">{{ __('candidate.documents.accepted_formats') }}</p>
 							</div>
-							<input type="file" id="document-file-input" class="d-none" accept=".pdf,.doc,.docx,image/*">
-						</div>
+						</label>
 					@else
-						<div id="document-dropzone"
-							class="document-dropzone mb-3"
+						<label for="document-file-input" id="document-dropzone"
+							class="document-dropzone mb-3 d-block"
 							data-type=""
 							data-label="">
 							<div class="document-dropzone__content text-center py-4 px-3">
@@ -49,8 +50,7 @@
 								<p class="mb-0 text-muted small">{{ __('candidate.documents.dropzone_all_hint') }}</p>
 								<p class="mb-0 text-muted small mt-1">{{ __('candidate.documents.accepted_formats') }}</p>
 							</div>
-							<input type="file" id="document-file-input" class="d-none" accept=".pdf,.doc,.docx,image/*">
-						</div>
+						</label>
 					@endif
 
 					<div class="d-flex justify-content-between align-items-center mb-3">
@@ -277,6 +277,7 @@
 					cancelButtonText: documentI18n.cancel,
 				}).then(function(result) {
 					if (!result.isConfirmed) {
+						$fileInput.val('');
 						return Promise.resolve(false);
 					}
 
@@ -316,6 +317,7 @@
 					}
 				}).then(function(result) {
 					if (!result.isConfirmed || !result.value) {
+						$fileInput.val('');
 						return;
 					}
 					uploadDocument(file, result.value);
@@ -375,6 +377,7 @@
 
 			function handleSelectedFile(file, type, typeLabel) {
 				if (!file || !validateFile(file)) {
+					$fileInput.val('');
 					return;
 				}
 
@@ -411,9 +414,7 @@
 			if ($dropzone.length && $fileInput.length) {
 				bindDropTarget($dropzone);
 
-				$dropzone.on('click', function() {
-					$fileInput.trigger('click');
-				});
+				// Click-to-select is handled natively by <label for="document-file-input">
 
 				$fileInput.on('change', function() {
 					if (!this.files || !this.files.length) return;

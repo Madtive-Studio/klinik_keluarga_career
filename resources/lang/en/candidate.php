@@ -106,7 +106,7 @@ return [
         'select_type_modal_title' => 'Select Document Type',
         'select_type_modal_label' => 'Document Type',
         'select_type_modal_required' => 'Please select a document type first.',
-        'accepted_formats' => 'Formats: PDF, DOCX, DOC, and images (PNG, JPG, WEBP, GIF).',
+        'accepted_formats' => 'Formats: PDF, DOCX, DOC, and images (PNG, JPG, WEBP, GIF). Maximum 10MB.',
         'select_type_hint' => 'Select a document type on the left, then drag a file onto that type or the upload area.',
         'sidebar_drop_hint' => 'Drop file here',
         'confirm_upload_title' => 'Confirm Upload',
