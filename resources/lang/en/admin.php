@@ -89,6 +89,7 @@ return [
         'tab_content' => 'Qualifications & Description',
         'tab_scoring' => 'Scoring Criteria',
         'code' => 'Code',
+        'regenerate_code' => 'Generate New Code',
         'select_batch' => 'Select Batch',
         'select_category' => 'Select Category',
         'select_type' => 'Select Type',

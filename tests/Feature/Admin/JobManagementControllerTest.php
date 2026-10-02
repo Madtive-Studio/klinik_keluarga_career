@@ -78,4 +78,73 @@ class JobManagementControllerTest extends TestCase
         $response->assertRedirect(route('admin.jobs.index'));
         $this->assertDatabaseMissing('jobs', ['id' => $job->id]);
     }
+
+    #[Test]
+    public function createDisplaysFormWithEditableCodeInput(): void
+    {
+        $response = $this->actingAs($this->admin, 'admin')->get(route('admin.jobs.create'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.jobs.form');
+        $response->assertViewHas('code');
+        $response->assertDontSee('name="code" readonly', false);
+        $response->assertSee('id="job_code"', false);
+        $response->assertSee('id="btn-generate-code"', false);
+    }
+
+    #[Test]
+    public function storeAcceptsCustomAdminJobCode(): void
+    {
+        $batch = Batch::factory()->create(['quota' => 50]);
+        $category = Category::factory()->create();
+
+        $response = $this->actingAs($this->admin, 'admin')->post(route('admin.jobs.store'), [
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'code' => 'CUSTOM-JOB-CODE-01',
+            'batch_id' => $batch->id,
+            'category_id' => $category->id,
+            'title' => 'Software Engineer',
+            'type' => \App\Enums\JobType::FULLTIME_ONSITE->value,
+            'quota' => 5,
+            'salary_min' => 5000000,
+            'salary_max' => 8000000,
+            'experience' => '1-2 years',
+            'qualification' => 'PHP, Laravel',
+            'description' => 'Develop web apps',
+        ]);
+
+        $response->assertRedirect(route('admin.jobs.index'));
+        $this->assertDatabaseHas('jobs', [
+            'code' => 'CUSTOM-JOB-CODE-01',
+            'title' => 'Software Engineer',
+            'quota' => 5,
+        ]);
+    }
+
+    #[Test]
+    public function updateAcceptsCustomAdminJobCode(): void
+    {
+        $job = Job::factory()->create(['code' => 'INITIAL-JOB-CODE']);
+
+        $response = $this->actingAs($this->admin, 'admin')->put(route('admin.jobs.update', $job->id), [
+            'uuid' => $job->uuid,
+            'code' => 'UPDATED-CUSTOM-JOB-CODE',
+            'batch_id' => $job->batch_id,
+            'category_id' => $job->category_id,
+            'title' => $job->title,
+            'type' => $job->type,
+            'quota' => $job->quota,
+            'salary_min' => $job->salary_min,
+            'salary_max' => $job->salary_max,
+            'experience' => $job->experience,
+            'qualification' => $job->qualification,
+            'description' => $job->description,
+        ]);
+
+        $response->assertRedirect(route('admin.jobs.index'));
+        $this->assertDatabaseHas('jobs', [
+            'id' => $job->id,
+            'code' => 'UPDATED-CUSTOM-JOB-CODE',
+        ]);
+    }
 }

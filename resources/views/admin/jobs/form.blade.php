@@ -40,10 +40,14 @@
 							<input type="hidden" name="uuid" value="{{ old('uuid', $job->uuid ?? $uuid ?? '') }}">
 							<div class="col-md-6">
 								<div class="mb-3">
-									<label class="form-label">{{ __('admin.jobs.code') }}</label>
-									<div class="input-group input-group-merge">
-										<input type="text" class="form-control dt-full-name" name="code" readonly placeholder="{{ __('admin.jobs.code') }}" required value="{{ old('code', $job->code ?? $code ?? '') }}" />
+									<label class="form-label" for="job_code">{{ __('admin.jobs.code') }}</label>
+									<div class="input-group">
+										<input type="text" class="form-control dt-full-name @error('code') is-invalid @enderror" id="job_code" name="code" placeholder="{{ __('admin.jobs.code') }}" required value="{{ old('code', $job->code ?? $code ?? '') }}" maxlength="50" />
+										<button type="button" class="btn btn-outline-secondary" id="btn-generate-code" title="{{ __('admin.jobs.regenerate_code') }}">
+											<i class="ti ti-refresh me-1"></i> <span class="d-none d-sm-inline">{{ __('admin.jobs.regenerate_code') }}</span>
+										</button>
 									</div>
+									@error('code') <small class="text-danger d-block">{{ $message }}</small> @enderror
 								</div>
 							</div>
 							<div class="col-md-6">
@@ -922,6 +926,16 @@
 				});
 				quillEditor.addEventListener('input', function() {
 					editor.root.innerHTML = quillEditor.value;
+				});
+			}
+
+			const btnGenerateCode = document.getElementById('btn-generate-code');
+			const codeInput = document.getElementById('job_code');
+			if (btnGenerateCode && codeInput) {
+				btnGenerateCode.addEventListener('click', function() {
+					const randomPart = Math.random().toString(16).substring(2, 12).toUpperCase();
+					codeInput.value = '#' + randomPart;
+					codeInput.focus();
 				});
 			}
 		});

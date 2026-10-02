@@ -16,11 +16,18 @@ class JobRequest extends FormRequest
         return auth('admin')->check();
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('code')) {
+            $this->merge(['code' => trim((string) $this->input('code'))]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'uuid' => ['required', 'string'],
-            'code' => ['required', 'string'],
+            'code' => ['required', 'string', 'max:50'],
             'batch_id' => ['required', 'exists:batches,id'],
             'category_id' => ['required', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:255'],
@@ -40,6 +47,7 @@ class JobRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'code' => __('admin.jobs.code'),
             'batch_id' => __('validation.attributes.batch_id'),
             'category_id' => __('validation.attributes.category_id'),
             'title' => __('validation.attributes.title'),

@@ -89,6 +89,7 @@ return [
         'tab_content' => 'Kualifikasi & Deskripsi',
         'tab_scoring' => 'Kriteria Penilaian',
         'code' => 'Kode',
+        'regenerate_code' => 'Generate Kode Baru',
         'select_batch' => 'Pilih Batch',
         'select_category' => 'Pilih Kategori',
         'select_type' => 'Pilih Tipe',
