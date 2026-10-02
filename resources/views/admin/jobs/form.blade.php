@@ -63,7 +63,7 @@
 													$batchEnd = \Illuminate\Support\Carbon::parse($batch->end_date)->format('d/m/Y');
 												@endphp
 												<option value="{{ $batch->id }}"
-													@selected(old(`batch_id`, $job->batch_id ?? request('batch_id', '')) == $batch->id)
+													{{ old('batch_id', $job->batch_id ?? request('batch_id', '')) == $batch->id ? 'selected' : '' }}
 													data-batch-quota="{{ (int) $batch->quota }}"
 													data-allocated-quota="{{ $batch->allocatedQuota($excludeJobId) }}"
 													data-remaining-quota="{{ $batch->remainingQuota($excludeJobId) }}">
@@ -82,7 +82,7 @@
 										<select name="category_id" id="category_id" class="form-control @error('category_id') is-invalid @enderror" required>
 											<option value="">{{ __('admin.jobs.select_category') }}</option>
 											@foreach ($categories as $category)
-												<option value="{{ $category->id }}" @selected(old(`category_id`, $job->category_id ?? '') == $category->id)>
+												<option value="{{ $category->id }}" {{ old('category_id', $job->category_id ?? '') == $category->id ? 'selected' : '' }}>
 													{{ $category->name }}
 												</option>
 											@endforeach
@@ -141,7 +141,7 @@
 									<select name="type" id="type" class="form-control @error('type') is-invalid @enderror" required>
 										<option value="">{{ __('admin.jobs.select_type') }}</option>
 										@foreach (\App\Enums\JobType::cases() as $jobType)
-											<option value="{{ $jobType->value }}" @selected(old(`type`, $job->type ?? '') === $jobType->value)>{{ $jobType->getLabel() }}</option>
+											<option value="{{ $jobType->value }}" {{ old('type', $job->type ?? '') === $jobType->value ? 'selected' : '' }}>{{ $jobType->getLabel() }}</option>
 										@endforeach
 									</select>
 								</div>
@@ -210,7 +210,7 @@
 									<select name="min_education" class="form-control @error('min_education') is-invalid @enderror">
 										<option value="">{{ __('admin.jobs.no_requirement') }}</option>
 										@foreach (\App\Enums\EducationLevel::cases() as $level)
-											<option value="{{ $level->value }}" @selected(old(`min_education`, $job->min_education ?? '') === $level->value)>{{ $level->label() }}</option>
+											<option value="{{ $level->value }}" {{ old('min_education', $job->min_education ?? '') === $level->value ? 'selected' : '' }}>{{ $level->label() }}</option>
 										@endforeach
 									</select>
 									@error('min_education') <small class="text-danger">{{ $message }}</small> @enderror
