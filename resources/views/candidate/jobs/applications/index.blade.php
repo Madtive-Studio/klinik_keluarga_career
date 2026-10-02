@@ -170,9 +170,10 @@
 				}
 			}
 
-			let modalElement = document.getElementById('jobImageModal');
-			let modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-			modal.show();
+			const $modal = $('#jobImageModal');
+			if ($modal.length && window.bootstrap) {
+				bootstrap.Modal.getOrCreateInstance($modal[0]).show();
+			}
 		}
 
 		$(function() {

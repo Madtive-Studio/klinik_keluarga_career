@@ -237,67 +237,59 @@
 			$('#imageZoomModal').on('hidden.bs.modal', function () {
 				$('#zoomCarousel').carousel(0);
 			});
-		});
+			{{-- Dynamic document multi-select --}}
+			const allDocs = @json($candidate->documents ?? []);
 
-		{{-- Dynamic document multi-select --}}
-		var allDocs = @json($candidate->documents ?? []);
-
-		function rebuildDocumentOptions() {
-			var selected = [];
-			document.querySelectorAll('.document-select').forEach(function(sel) {
-				if (sel.value) selected.push(sel.value);
-			});
-			document.querySelectorAll('.document-select').forEach(function(sel) {
-				var val = sel.value;
-				sel.innerHTML = '<option value="">' + '{{ __("candidate.apply.select_document") }}' + '</option>';
-				allDocs.forEach(function(doc) {
-					if (!selected.includes(String(doc.id)) || String(doc.id) === val) {
-						var opt = document.createElement('option');
-						opt.value = doc.id;
-						opt.textContent = doc.name + ' (' + doc.type_label + ')';
-						sel.appendChild(opt);
-					}
+			function rebuildDocumentOptions() {
+				const selected = [];
+				$('.document-select').each(function() {
+					const val = $(this).val();
+					if (val) selected.push(val);
 				});
-				sel.value = val;
-			});
-			document.querySelectorAll('.remove-document').forEach(function(btn) {
-				btn.classList.toggle('d-none', document.querySelectorAll('.document-row').length <= 1);
-			});
-		}
 
-		document.getElementById('add-document').addEventListener('click', function() {
-			var container = document.getElementById('document-selector');
-			var rows = container.querySelectorAll('.document-row');
-			if (rows.length > 0) {
-				var clone = rows[0].cloneNode(true);
-				clone.querySelector('select').value = '';
-				container.insertBefore(clone, this);
-				rebuildDocumentOptions();
+				$('.document-select').each(function() {
+					const $sel = $(this);
+					const currentVal = $sel.val();
+					let html = '<option value="">' + '{{ __("candidate.apply.select_document") }}' + '</option>';
+					allDocs.forEach(function(doc) {
+						if (!selected.includes(String(doc.id)) || String(doc.id) === currentVal) {
+							html += '<option value="' + doc.id + '">' + doc.name + ' (' + doc.type_label + ')</option>';
+						}
+					});
+					$sel.html(html).val(currentVal);
+				});
+
+				const isSingleRow = $('.document-row').length <= 1;
+				$('.remove-document').toggleClass('d-none', isSingleRow);
 			}
-		});
 
-		document.getElementById('document-selector').addEventListener('change', function(e) {
-			if (e.target.classList.contains('document-select')) {
-				rebuildDocumentOptions();
-			}
-		});
-
-		document.getElementById('document-selector').addEventListener('click', function(e) {
-			if (e.target.classList.contains('remove-document')) {
-				var row = e.target.closest('.document-row');
-				var container = document.getElementById('document-selector');
-				if (container.querySelectorAll('.document-row').length > 1) {
-					row.remove();
+			$('#add-document').on('click', function() {
+				const $rows = $('#document-selector .document-row');
+				if ($rows.length > 0) {
+					const $clone = $rows.first().clone();
+					$clone.find('select').val('');
+					$clone.insertBefore(this);
 					rebuildDocumentOptions();
 				}
-			}
-		});
+			});
 
-		document.getElementById('apply-form')?.addEventListener('submit', function() {
-			this.querySelectorAll('.document-select').forEach(function(sel) {
-				if (!sel.value) {
-					sel.disabled = true;
+			$('#document-selector').on('change', '.document-select', function() {
+				rebuildDocumentOptions();
+			});
+
+			$('#document-selector').on('click', '.remove-document', function() {
+				if ($('#document-selector .document-row').length > 1) {
+					$(this).closest('.document-row').remove();
+					rebuildDocumentOptions();
 				}
+			});
+
+			$('#apply-form').on('submit', function() {
+				$(this).find('.document-select').each(function() {
+					if (!$(this).val()) {
+						$(this).prop('disabled', true);
+					}
+				});
 			});
 		});
 	</script>

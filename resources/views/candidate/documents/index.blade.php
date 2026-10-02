@@ -224,13 +224,11 @@
 		const allowedDocumentMimePrefixes = ['image/'];
 
 		$(function() {
-			const dropzone = document.getElementById('document-dropzone');
-			const fileInput = document.getElementById('document-file-input');
+			const $dropzone = $('#document-dropzone');
+			const $fileInput = $('#document-file-input');
 
 			function escapeHtml(text) {
-				const div = document.createElement('div');
-				div.textContent = text;
-				return div.innerHTML;
+				return $('<div>').text(text).html();
 			}
 
 			function getFileExtension(fileName) {
@@ -310,8 +308,7 @@
 					confirmButtonText: documentI18n.yes_upload,
 					cancelButtonText: documentI18n.cancel,
 					preConfirm: function() {
-						const selectElem = document.getElementById('swal-document-type');
-						const selectedVal = selectElem ? selectElem.value : '';
+						const selectedVal = $('#swal-document-type').val() || '';
 						if (!selectedVal) {
 							Swal.showValidationMessage(documentI18n.select_type_modal_required);
 						}
@@ -331,9 +328,7 @@
 				formData.append('type', type);
 				formData.append('_token', csrfToken);
 
-				if (dropzone) {
-					dropzone.classList.add('is-uploading');
-				}
+				$dropzone.addClass('is-uploading');
 
 				Swal.fire({
 					title: documentI18n.uploading,
@@ -343,28 +338,18 @@
 					},
 				});
 
-				return fetch(documentStoreUrl, {
-					method: 'POST',
-					body: formData,
+				return $.ajax({
+					url: documentStoreUrl,
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
 					headers: {
 						'Accept': 'application/json',
 						'X-Requested-With': 'XMLHttpRequest',
-					},
-				})
-				.then(function(response) {
-					return response.json().then(function(payload) {
-						return { ok: response.ok, payload: payload };
-					});
-				})
-				.then(function(result) {
-					if (!result.ok) {
-						const message = result.payload.message
-							|| (result.payload.errors && Object.values(result.payload.errors)[0][0])
-							|| documentI18n.upload_failed;
-						throw new Error(message);
 					}
-
-					return Swal.fire({
+				}).done(function() {
+					Swal.fire({
 						icon: 'success',
 						title: documentI18n.upload_success,
 						timer: 1500,
@@ -372,21 +357,19 @@
 					}).then(function() {
 						window.location.reload();
 					});
-				})
-				.catch(function(error) {
+				}).fail(function(jqXHR) {
+					const payload = jqXHR.responseJSON || {};
+					const message = payload.message
+						|| (payload.errors && Object.values(payload.errors)[0][0])
+						|| documentI18n.upload_failed;
 					Swal.fire({
 						icon: 'error',
 						title: documentI18n.upload_failed,
-						text: error.message || documentI18n.upload_failed,
+						text: message,
 					});
-				})
-				.finally(function() {
-					if (dropzone) {
-						dropzone.classList.remove('is-uploading');
-					}
-					if (fileInput) {
-						fileInput.value = '';
-					}
+				}).always(function() {
+					$dropzone.removeClass('is-uploading');
+					$fileInput.val('');
 				});
 			}
 
@@ -402,59 +385,48 @@
 				}
 			}
 
-			function bindDropTarget(element) {
-				if (!element) {
-					return;
-				}
+			function bindDropTarget($el) {
+				if (!$el.length) return;
 
-				['dragenter', 'dragover'].forEach(function(eventName) {
-					element.addEventListener(eventName, function(event) {
-						event.preventDefault();
-						event.stopPropagation();
-						element.classList.add('is-dragover');
-					});
+				$el.on('dragenter dragover', function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).addClass('is-dragover');
 				});
 
-				['dragleave', 'drop'].forEach(function(eventName) {
-					element.addEventListener(eventName, function(event) {
-						event.preventDefault();
-						event.stopPropagation();
-						element.classList.remove('is-dragover');
-					});
+				$el.on('dragleave drop', function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).removeClass('is-dragover');
 				});
 
-				element.addEventListener('drop', function(event) {
-					const files = event.dataTransfer?.files;
-					if (!files || !files.length) {
-						return;
-					}
-
-					handleSelectedFile(files[0], element.dataset.type || '', element.dataset.label || '');
+				$el.on('drop', function(e) {
+					const dt = e.originalEvent.dataTransfer;
+					const files = dt?.files;
+					if (!files || !files.length) return;
+					handleSelectedFile(files[0], $(this).data('type') || '', $(this).data('label') || '');
 				});
 			}
 
-			if (dropzone && fileInput) {
-				bindDropTarget(dropzone);
+			if ($dropzone.length && $fileInput.length) {
+				bindDropTarget($dropzone);
 
-				dropzone.addEventListener('click', function() {
-					fileInput.click();
+				$dropzone.on('click', function() {
+					$fileInput.trigger('click');
 				});
 
-				fileInput.addEventListener('change', function() {
-					if (!fileInput.files || !fileInput.files.length) {
-						return;
-					}
-
+				$fileInput.on('change', function() {
+					if (!this.files || !this.files.length) return;
 					handleSelectedFile(
-						fileInput.files[0],
-						dropzone.dataset.type || '',
-						dropzone.dataset.label || ''
+						this.files[0],
+						$dropzone.data('type') || '',
+						$dropzone.data('label') || ''
 					);
 				});
 			}
 
-			document.querySelectorAll('.document-type-drop').forEach(function(element) {
-				bindDropTarget(element);
+			$('.document-type-drop').each(function() {
+				bindDropTarget($(this));
 			});
 
 			$('#perPage').on('change', function() {

@@ -355,11 +355,24 @@
 			text-align: center;
 			padding: 1rem 0.5rem;
 		}
+
+		.ql-toolbar.ql-snow {
+			border-top-left-radius: 0.375rem;
+			border-top-right-radius: 0.375rem;
+			border-color: #dbdade;
+		}
+		.ql-container.ql-snow {
+			border-bottom-left-radius: 0.375rem;
+			border-bottom-right-radius: 0.375rem;
+			border-color: #dbdade;
+			font-family: inherit;
+			font-size: 0.9375rem;
+		}
 	</style>
 @endsection
 @section('js')
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
+		$(function() {
 			const tabFieldMap = {
 				'tab-basic': ['batch_id', 'category_id', 'title', 'images', 'type', 'quota', 'salary_min', 'salary_max', 'is_show_salary', 'min_education', 'experience'],
 				'tab-content': ['qualification', 'description'],
@@ -369,23 +382,23 @@
 			if (errorFields.length) {
 				for (const [tabId, fields] of Object.entries(tabFieldMap)) {
 					if (fields.some(field => errorFields.includes(field))) {
-						const tabButton = document.getElementById('tab-btn-' + tabId.replace('tab-', ''));
-						if (tabButton) {
-							bootstrap.Tab.getOrCreateInstance(tabButton).show();
+						const $tabButton = $('#tab-btn-' + tabId.replace('tab-', ''));
+						if ($tabButton.length && window.bootstrap) {
+							bootstrap.Tab.getOrCreateInstance($tabButton[0]).show();
 						}
 						break;
 					}
 				}
 
-				const alert = document.querySelector('.alert-danger');
-				if (alert) {
-					alert.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				const $alert = $('.alert-danger');
+				if ($alert.length) {
+					$alert[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
 				}
 			}
 
 			const salaryInputs = [
-				{ display: document.getElementById('salary_min_display'), hidden: document.getElementById('salary_min') },
-				{ display: document.getElementById('salary_max_display'), hidden: document.getElementById('salary_max') },
+				{ $display: $('#salary_min_display'), $hidden: $('#salary_min') },
+				{ $display: $('#salary_max_display'), $hidden: $('#salary_max') },
 			];
 
 			function parseSalaryAmount(value) {
@@ -402,39 +415,38 @@
 				return new Intl.NumberFormat('id-ID').format(amount);
 			}
 
-			function syncSalaryHiddenInput(displayInput, hiddenInput) {
-				if (!displayInput || !hiddenInput) return;
-				const amount = parseSalaryAmount(displayInput.value);
-				hiddenInput.value = amount === '' ? '' : String(amount);
-				displayInput.value = amount === '' ? '' : formatSalaryAmount(amount);
+			function syncSalaryHiddenInput($displayInput, $hiddenInput) {
+				if (!$displayInput.length || !$hiddenInput.length) return;
+				const amount = parseSalaryAmount($displayInput.val());
+				$hiddenInput.val(amount === '' ? '' : String(amount));
+				$displayInput.val(amount === '' ? '' : formatSalaryAmount(amount));
 			}
 
 			salaryInputs.forEach(function (pair) {
-				if (!pair.display || !pair.hidden) return;
+				if (!pair.$display.length || !pair.$hidden.length) return;
 
-				pair.display.addEventListener('input', function () {
-					const digits = pair.display.value.replace(/\D/g, '');
-					pair.hidden.value = digits;
-					pair.display.value = digits ? formatSalaryAmount(digits) : '';
+				pair.$display.on('input', function () {
+					const digits = $(this).val().replace(/\D/g, '');
+					pair.$hidden.val(digits);
+					$(this).val(digits ? formatSalaryAmount(digits) : '');
 				});
 
-				pair.display.addEventListener('blur', function () {
-					syncSalaryHiddenInput(pair.display, pair.hidden);
+				pair.$display.on('blur', function () {
+					syncSalaryHiddenInput(pair.$display, pair.$hidden);
 				});
 			});
 
-			document.getElementById('form-add-new-record')?.addEventListener('submit', function () {
+			$('#form-add-new-record').on('submit', function () {
 				salaryInputs.forEach(function (pair) {
-					syncSalaryHiddenInput(pair.display, pair.hidden);
+					syncSalaryHiddenInput(pair.$display, pair.$hidden);
 				});
 			});
 
-			const showSalarySwitch = document.getElementById('show_salary_switch');
-			showSalarySwitch?.addEventListener('change', function () {
-				const state = this.closest('.switch')?.querySelector('.switch-toggle-slider span');
-				if (!state) return;
-				state.classList.toggle('switch-on', this.checked);
-				state.classList.toggle('switch-off', !this.checked);
+			$('#show_salary_switch').on('change', function () {
+				const $state = $(this).closest('.switch').find('.switch-toggle-slider span');
+				if (!$state.length) return;
+				$state.toggleClass('switch-on', this.checked);
+				$state.toggleClass('switch-off', !this.checked);
 			});
 
 			@php
@@ -463,50 +475,49 @@
 			let jobImages = @json($initialJobImages);
 			let pendingUploads = [];
 
-			const batchSelect = document.getElementById('batch_id');
-			const jobQuotaInput = document.getElementById('job_quota');
-			const batchQuotaInfo = document.getElementById('batch-quota-info');
-			const batchQuotaWarning = document.getElementById('batch-quota-warning');
+			const $batchSelect = $('#batch_id');
+			const $jobQuotaInput = $('#job_quota');
+			const $batchQuotaInfo = $('#batch-quota-info');
+			const $batchQuotaWarning = $('#batch-quota-warning');
 
-			const imageInput = document.getElementById('job-image-input');
-			const imageDropzone = document.getElementById('job-image-dropzone');
-			const imageGallery = document.getElementById('job-image-gallery');
-			const imagePlaceholder = document.getElementById('job-image-placeholder');
-			const imageBrowseBtn = document.getElementById('job-image-browse');
-			const imageCounter = document.getElementById('job-image-counter');
-			const imageError = document.getElementById('job-image-error');
-			const hiddenInputs = document.getElementById('job-image-hidden-inputs');
+			const $imageInput = $('#job-image-input');
+			const $imageDropzone = $('#job-image-dropzone');
+			const $imageGallery = $('#job-image-gallery');
+			const $imagePlaceholder = $('#job-image-placeholder');
+			const $imageBrowseBtn = $('#job-image-browse');
+			const $imageCounter = $('#job-image-counter');
+			const $imageError = $('#job-image-error');
+			const $hiddenInputs = $('#job-image-hidden-inputs');
 
 			function showImageError(message) {
-				if (!imageError) return;
-				imageError.textContent = message;
-				imageError.classList.remove('d-none');
-				imageDropzone?.classList.add('is-invalid');
+				if (!$imageError.length) return;
+				$imageError.text(message).removeClass('d-none');
+				$imageDropzone.addClass('is-invalid');
 			}
 
 			function clearImageError() {
-				if (!imageError) return;
-				imageError.textContent = '';
-				imageError.classList.add('d-none');
-				imageDropzone?.classList.remove('is-invalid');
+				if (!$imageError.length) return;
+				$imageError.text('').addClass('d-none');
+				$imageDropzone.removeClass('is-invalid');
 			}
 
 			function updateImageCounter() {
-				if (!imageCounter) return;
-				imageCounter.textContent = jobImageI18n.counter
+				if (!$imageCounter.length) return;
+				$imageCounter.text(jobImageI18n.counter
 					.replace(':count', jobImages.length + pendingUploads.length)
-					.replace(':max', maxJobImages);
+					.replace(':max', maxJobImages));
 			}
 
 			function syncHiddenInputs() {
-				if (!hiddenInputs) return;
-				hiddenInputs.innerHTML = jobImages.map(function(image) {
+				if (!$hiddenInputs.length) return;
+				const html = jobImages.map(function(image) {
 					return '<input type="hidden" name="images[]" value="' + image.path.replace(/"/g, '&quot;') + '">';
 				}).join('');
+				$hiddenInputs.html(html);
 			}
 
 			function renderJobImages() {
-				if (!imageGallery) return;
+				if (!$imageGallery.length) return;
 
 				const uploadedHtml = jobImages.map(function(image, index) {
 					return ''
@@ -534,10 +545,10 @@
 						+ '</div>';
 				}).join('');
 
-				imageGallery.innerHTML = uploadedHtml + pendingHtml;
+				$imageGallery.html(uploadedHtml + pendingHtml);
 
-				if (imagePlaceholder) {
-					imagePlaceholder.style.display = (jobImages.length + pendingUploads.length) ? 'none' : 'block';
+				if ($imagePlaceholder.length) {
+					$imagePlaceholder.toggle((jobImages.length + pendingUploads.length) === 0);
 				}
 
 				updateImageCounter();
@@ -545,50 +556,48 @@
 			}
 
 			function updatePendingUploadProgress(uploadId, progress) {
-				const bar = imageGallery?.querySelector('[data-upload-id="' + uploadId + '"] .progress-bar');
-				if (!bar) return;
-				bar.style.width = progress + '%';
-				bar.setAttribute('aria-valuenow', String(progress));
-				bar.textContent = progress + '%';
+				const $bar = $imageGallery.find('[data-upload-id="' + uploadId + '"] .progress-bar');
+				if (!$bar.length) return;
+				$bar.css('width', progress + '%').attr('aria-valuenow', String(progress)).text(progress + '%');
 			}
 
 			function getSelectedBatchOption() {
-				if (!batchSelect) return null;
-				const option = batchSelect.options[batchSelect.selectedIndex];
+				if (!$batchSelect.length) return null;
+				const selectEl = $batchSelect[0];
+				const option = selectEl.options[selectEl.selectedIndex];
 				return option && option.value ? option : null;
 			}
 
 			function updateBatchQuotaDisplay() {
 				const option = getSelectedBatchOption();
 
-				if (!batchQuotaInfo) return;
+				if (!$batchQuotaInfo.length) return;
 
 				if (!option) {
-					batchQuotaInfo.textContent = batchQuotaI18n.info
+					$batchQuotaInfo.text(batchQuotaI18n.info
 						.replace(':quota', '-')
 						.replace(':allocated', '-')
-						.replace(':remaining', '-');
-					batchQuotaWarning?.classList.add('d-none');
+						.replace(':remaining', '-'));
+					$batchQuotaWarning.addClass('d-none');
 					return;
 				}
 
 				const batchQuota = parseInt(option.dataset.batchQuota || '0', 10);
 				const allocated = parseInt(option.dataset.allocatedQuota || '0', 10);
 				const remaining = parseInt(option.dataset.remainingQuota || '0', 10);
-				const requestedQuota = parseInt(jobQuotaInput?.value || '0', 10);
+				const requestedQuota = parseInt($jobQuotaInput.val() || '0', 10);
 
-				batchQuotaInfo.textContent = batchQuotaI18n.info
+				$batchQuotaInfo.text(batchQuotaI18n.info
 					.replace(':quota', batchQuota)
 					.replace(':allocated', allocated)
-					.replace(':remaining', remaining);
+					.replace(':remaining', remaining));
 
-				if (!batchQuotaWarning) return;
+				if (!$batchQuotaWarning.length) return;
 
 				if (requestedQuota > remaining) {
-					batchQuotaWarning.textContent = batchQuotaI18n.warning.replace(':remaining', remaining);
-					batchQuotaWarning.classList.remove('d-none');
+					$batchQuotaWarning.text(batchQuotaI18n.warning.replace(':remaining', remaining)).removeClass('d-none');
 				} else {
-					batchQuotaWarning.classList.add('d-none');
+					$batchQuotaWarning.addClass('d-none');
 				}
 			}
 
@@ -608,70 +617,64 @@
 			}
 
 			function uploadJobImage(file, onProgress) {
-				return new Promise(function(resolve, reject) {
-					const xhr = new XMLHttpRequest();
-					const formData = new FormData();
-					formData.append('image', file);
-					formData.append('job_uuid', jobUuid);
-					formData.append('_token', csrfToken);
+				const formData = new FormData();
+				formData.append('image', file);
+				formData.append('job_uuid', jobUuid);
+				formData.append('_token', csrfToken);
 
-					xhr.upload.addEventListener('progress', function(event) {
-						if (!event.lengthComputable || typeof onProgress !== 'function') return;
-						onProgress(Math.min(100, Math.round((event.loaded / event.total) * 100)));
-					});
-
-					xhr.addEventListener('load', function() {
-						let payload = {};
-
-						try {
-							payload = JSON.parse(xhr.responseText || '{}');
-						} catch (error) {
-							payload = {};
+				return $.ajax({
+					url: uploadUrl,
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					headers: {
+						'X-Requested-With': 'XMLHttpRequest',
+						'Accept': 'application/json'
+					},
+					xhr: function() {
+						const xhr = $.ajaxSettings.xhr();
+						if (xhr.upload && typeof onProgress === 'function') {
+							xhr.upload.addEventListener('progress', function(event) {
+								if (event.lengthComputable) {
+									onProgress(Math.min(100, Math.round((event.loaded / event.total) * 100)));
+								}
+							});
 						}
-
-						if (xhr.status >= 200 && xhr.status < 300) {
-							resolve(payload);
-							return;
-						}
-
-						const message = payload.errors?.image?.[0]
-							|| payload.message
-							|| jobImageI18n.uploadFailed;
-						reject(new Error(message));
-					});
-
-					xhr.addEventListener('error', function() {
-						reject(new Error(jobImageI18n.uploadFailed));
-					});
-
-					xhr.open('POST', uploadUrl);
-					xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-					xhr.setRequestHeader('Accept', 'application/json');
-					xhr.send(formData);
+						return xhr;
+					}
+				}).catch(function(jqXHR) {
+					const payload = jqXHR.responseJSON || {};
+					const message = payload.errors?.image?.[0]
+						|| payload.message
+						|| jobImageI18n.uploadFailed;
+					throw new Error(message);
 				});
 			}
 
-			async function removeJobImage(index) {
+			function removeJobImage(index) {
 				const image = jobImages[index];
-				if (!image) return;
+				if (!image) return Promise.resolve();
 
-				await fetch(deleteUrl, {
-					method: 'DELETE',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-CSRF-TOKEN': csrfToken,
-						'X-Requested-With': 'XMLHttpRequest',
-						'Accept': 'application/json',
-					},
-					body: JSON.stringify({
+				return $.ajax({
+					url: deleteUrl,
+					type: 'DELETE',
+					contentType: 'application/json',
+					data: JSON.stringify({
 						job_uuid: jobUuid,
 						path: image.path,
+						_token: csrfToken
 					}),
+					headers: {
+						'X-CSRF-TOKEN': csrfToken,
+						'X-Requested-With': 'XMLHttpRequest',
+						'Accept': 'application/json'
+					}
+				}).done(function() {
+					jobImages.splice(index, 1);
+					renderJobImages();
+					clearImageError();
 				});
-
-				jobImages.splice(index, 1);
-				renderJobImages();
-				clearImageError();
 			}
 
 			async function handleSelectedFiles(fileList) {
@@ -683,7 +686,7 @@
 					return;
 				}
 
-				imageDropzone?.classList.add('is-uploading');
+				$imageDropzone.addClass('is-uploading');
 
 				try {
 					for (const file of files) {
@@ -734,210 +737,116 @@
 				} catch (error) {
 					showImageError(error.message || jobImageI18n.uploadFailed);
 				} finally {
-					imageDropzone?.classList.remove('is-uploading');
-					if (imageInput) {
-						imageInput.value = '';
-					}
+					$imageDropzone.removeClass('is-uploading');
+					$imageInput.val('');
 				}
 			}
 
-			imageBrowseBtn?.addEventListener('click', function(event) {
+			$imageBrowseBtn.on('click', function(event) {
 				event.preventDefault();
 				event.stopPropagation();
-				imageInput?.click();
+				$imageInput.trigger('click');
 			});
 
-			imageDropzone?.addEventListener('click', function(event) {
-				if (event.target.closest('.job-image-item__remove, #job-image-browse')) {
+			$imageDropzone.on('click', function(event) {
+				if ($(event.target).closest('.job-image-item__remove, #job-image-browse').length) {
 					return;
 				}
 				if ((jobImages.length + pendingUploads.length) >= maxJobImages) {
 					showImageError(jobImageI18n.maxReached);
 					return;
 				}
-				imageInput?.click();
+				$imageInput.trigger('click');
 			});
 
-			imageInput?.addEventListener('change', function() {
+			$imageInput.on('change', function() {
 				handleSelectedFiles(this.files);
 			});
 
-			imageGallery?.addEventListener('click', function(event) {
-				const button = event.target.closest('.job-image-item__remove');
-				if (!button) return;
+			$imageGallery.on('click', '.job-image-item__remove', function(event) {
 				event.preventDefault();
-				removeJobImage(parseInt(button.dataset.index, 10));
+				const index = parseInt($(this).data('index'), 10);
+				removeJobImage(index);
 			});
 
-			['dragenter', 'dragover'].forEach(function(eventName) {
-				imageDropzone?.addEventListener(eventName, function(event) {
-					event.preventDefault();
-					event.stopPropagation();
-					imageDropzone.classList.add('is-dragover');
-				});
+			$imageDropzone.on('dragenter dragover', function(event) {
+				event.preventDefault();
+				event.stopPropagation();
+				$imageDropzone.addClass('is-dragover');
 			});
 
-			['dragleave', 'drop'].forEach(function(eventName) {
-				imageDropzone?.addEventListener(eventName, function(event) {
-					event.preventDefault();
-					event.stopPropagation();
-					imageDropzone.classList.remove('is-dragover');
-				});
+			$imageDropzone.on('dragleave drop', function(event) {
+				event.preventDefault();
+				event.stopPropagation();
+				$imageDropzone.removeClass('is-dragover');
 			});
 
-			imageDropzone?.addEventListener('drop', function(event) {
-				handleSelectedFiles(event.dataTransfer?.files);
+			$imageDropzone.on('drop', function(event) {
+				const dt = event.originalEvent.dataTransfer;
+				handleSelectedFiles(dt?.files);
 			});
 
 			renderJobImages();
 			updateBatchQuotaDisplay();
 
-			batchSelect?.addEventListener('change', updateBatchQuotaDisplay);
-			jobQuotaInput?.addEventListener('input', updateBatchQuotaDisplay);
+			$batchSelect.on('change', updateBatchQuotaDisplay);
+			$jobQuotaInput.on('input', updateBatchQuotaDisplay);
 
-			if (document.getElementById('quill-editor-qualification-area')) {
-				const toolbarOptions = [
-					['bold', 'italic', 'underline', 'strike'],
-					['blockquote', 'code-block'],
-					['link', 'image', 'video', 'formula'],
-					[{
-						'header': 1
-					}, {
-						'header': 2
-					}],
-					[{
-						'list': 'ordered'
-					}, {
-						'list': 'bullet'
-					}, {
-						'list': 'check'
-					}],
-					[{
-						'script': 'sub'
-					}, {
-						'script': 'super'
-					}],
-					[{
-						'indent': '-1'
-					}, {
-						'indent': '+1'
-					}],
-					[{
-						'direction': 'rtl'
-					}],
-					[{
-						'size': ['small', false, 'large', 'huge']
-					}],
-					[{
-						'header': [1, 2, 3, 4, 5, 6, false]
-					}],
-					[{
-						'color': []
-					}, {
-						'background': []
-					}],
-					[{
-						'font': []
-					}],
-					[{
-						'align': []
-					}],
-					['clean']
-				];
-				var editor = new Quill('#quill-editor-qualification', {
+			const toolbarOptions = [
+				['bold', 'italic', 'underline', 'strike'],
+				['blockquote', 'code-block'],
+				['link', 'image', 'video', 'formula'],
+				[{ 'header': 1 }, { 'header': 2 }],
+				[{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+				[{ 'script': 'sub' }, { 'script': 'super' }],
+				[{ 'indent': '-1' }, { 'indent': '+1' }],
+				[{ 'direction': 'rtl' }],
+				[{ 'size': ['small', false, 'large', 'huge'] }],
+				[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+				[{ 'color': [] }, { 'background': [] }],
+				[{ 'font': [] }],
+				[{ 'align': [] }],
+				['clean']
+			];
+
+			const $qualificationArea = $('#quill-editor-qualification-area');
+			if ($qualificationArea.length) {
+				const qualEditor = new Quill('#quill-editor-qualification', {
 					theme: 'snow',
-					modules: {
-						toolbar: toolbarOptions
-					}
+					modules: { toolbar: toolbarOptions },
+					placeholder: 'Tuliskan kualifikasi lowongan pekerjaan di sini...'
 				});
-				var quillEditor = document.getElementById('quill-editor-qualification-area');
-				editor.root.innerHTML = quillEditor.value || '';
+				qualEditor.root.innerHTML = $qualificationArea.val() || '';
 
-				editor.on('text-change', function() {
-					quillEditor.value = editor.root.innerHTML;
+				qualEditor.on('text-change', function() {
+					$qualificationArea.val(qualEditor.root.innerHTML);
 				});
-				quillEditor.addEventListener('input', function() {
-					editor.root.innerHTML = quillEditor.value;
+				$qualificationArea.on('input', function() {
+					qualEditor.root.innerHTML = $qualificationArea.val();
 				});
 			}
-		});
 
-		document.addEventListener('DOMContentLoaded', function() {
-			if (document.getElementById('quill-editor-description-area')) {
-				const toolbarOptions = [
-					['bold', 'italic', 'underline', 'strike'],
-					['blockquote', 'code-block'],
-					['link', 'image', 'video', 'formula'],
-					[{
-						'header': 1
-					}, {
-						'header': 2
-					}],
-					[{
-						'list': 'ordered'
-					}, {
-						'list': 'bullet'
-					}, {
-						'list': 'check'
-					}],
-					[{
-						'script': 'sub'
-					}, {
-						'script': 'super'
-					}],
-					[{
-						'indent': '-1'
-					}, {
-						'indent': '+1'
-					}],
-					[{
-						'direction': 'rtl'
-					}],
-					[{
-						'size': ['small', false, 'large', 'huge']
-					}],
-					[{
-						'header': [1, 2, 3, 4, 5, 6, false]
-					}],
-					[{
-						'color': []
-					}, {
-						'background': []
-					}],
-					[{
-						'font': []
-					}],
-					[{
-						'align': []
-					}],
-					['clean']
-				];
-				var editor = new Quill('#quill-editor-description', {
+			const $descriptionArea = $('#quill-editor-description-area');
+			if ($descriptionArea.length) {
+				const descEditor = new Quill('#quill-editor-description', {
 					theme: 'snow',
-					modules: {
-						toolbar: toolbarOptions
-					}
+					modules: { toolbar: toolbarOptions },
+					placeholder: 'Tuliskan deskripsi tugas dan tanggung jawab di sini...'
 				});
-				var quillEditor = document.getElementById('quill-editor-description-area');
-				editor.root.innerHTML = quillEditor.value || '';
+				descEditor.root.innerHTML = $descriptionArea.val() || '';
 
-				editor.on('text-change', function() {
-					quillEditor.value = editor.root.innerHTML;
+				descEditor.on('text-change', function() {
+					$descriptionArea.val(descEditor.root.innerHTML);
 				});
-				quillEditor.addEventListener('input', function() {
-					editor.root.innerHTML = quillEditor.value;
+				$descriptionArea.on('input', function() {
+					descEditor.root.innerHTML = $descriptionArea.val();
 				});
 			}
 
-			const btnGenerateCode = document.getElementById('btn-generate-code');
-			const codeInput = document.getElementById('job_code');
-			if (btnGenerateCode && codeInput) {
-				btnGenerateCode.addEventListener('click', function() {
-					const randomPart = Math.random().toString(16).substring(2, 12).toUpperCase();
-					codeInput.value = '#' + randomPart;
-					codeInput.focus();
-				});
-			}
+			$('#btn-generate-code').on('click', function() {
+				const randomPart = Math.random().toString(16).substring(2, 12).toUpperCase();
+				$('#job_code').val('#' + randomPart).trigger('focus');
+			});
 		});
 	</script>
 @endsection

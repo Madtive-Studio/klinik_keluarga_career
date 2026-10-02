@@ -389,34 +389,34 @@
 					</div>
 				`);
 
-				fetch(url)
-					.then(response => response.text())
-					.then(text => {
-						const lines = text.trim().split('\n');
-						if (lines.length === 0) {
-							$('#csvLoadingState').html('<p class="text-muted">Berkas kosong.</p>');
-							return;
+				$.ajax({
+					url: url,
+					dataType: 'text'
+				}).done(function(text) {
+					const lines = text.trim().split('\n');
+					if (lines.length === 0) {
+						$('#csvLoadingState').html('<p class="text-muted">Berkas kosong.</p>');
+						return;
+					}
+					let theadHtml = '';
+					let tbodyHtml = '';
+
+					lines.forEach((line, index) => {
+						const cells = line.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
+						if (index === 0) {
+							theadHtml += '<tr>' + cells.map(cell => `<th>${cell}</th>`).join('') + '</tr>';
+						} else {
+							tbodyHtml += '<tr>' + cells.map(cell => `<td>${cell}</td>`).join('') + '</tr>';
 						}
-						let theadHtml = '';
-						let tbodyHtml = '';
-
-						lines.forEach((line, index) => {
-							const cells = line.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
-							if (index === 0) {
-								theadHtml += '<tr>' + cells.map(cell => `<th>${cell}</th>`).join('') + '</tr>';
-							} else {
-								tbodyHtml += '<tr>' + cells.map(cell => `<td>${cell}</td>`).join('') + '</tr>';
-							}
-						});
-
-						$('#csvPreviewThead').html(theadHtml);
-						$('#csvPreviewTbody').html(tbodyHtml);
-						$('#csvLoadingState').addClass('d-none');
-						$('#csvPreviewTable').removeClass('d-none');
-					})
-					.catch(() => {
-						$('#csvLoadingState').html('<p class="text-danger small">Gagal memproses pratinjau tabel. Silakan unduh dokumen.</p>');
 					});
+
+					$('#csvPreviewThead').html(theadHtml);
+					$('#csvPreviewTbody').html(tbodyHtml);
+					$('#csvLoadingState').addClass('d-none');
+					$('#csvPreviewTable').removeClass('d-none');
+				}).fail(function() {
+					$('#csvLoadingState').html('<p class="text-danger small">Gagal memproses pratinjau tabel. Silakan unduh dokumen.</p>');
+				});
 			} else if (officeExtensions.includes(ext)) {
 				const isOfficeExcel = ['xls', 'xlsx'].includes(ext);
 				const isOfficeWord = ['doc', 'docx'].includes(ext);

@@ -145,138 +145,53 @@
 @endsection
 @section('js')
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			if (document.getElementById('quill-editor-qualification-area')) {
-				const toolbarOptions = [
-					['bold', 'italic', 'underline', 'strike'],
-					['blockquote', 'code-block'],
-					['link', 'image', 'video', 'formula'],
-					[{
-						'header': 1
-					}, {
-						'header': 2
-					}],
-					[{
-						'list': 'ordered'
-					}, {
-						'list': 'bullet'
-					}, {
-						'list': 'check'
-					}],
-					[{
-						'script': 'sub'
-					}, {
-						'script': 'super'
-					}],
-					[{
-						'indent': '-1'
-					}, {
-						'indent': '+1'
-					}],
-					[{
-						'direction': 'rtl'
-					}],
-					[{
-						'size': ['small', false, 'large', 'huge']
-					}],
-					[{
-						'header': [1, 2, 3, 4, 5, 6, false]
-					}],
-					[{
-						'color': []
-					}, {
-						'background': []
-					}],
-					[{
-						'font': []
-					}],
-					[{
-						'align': []
-					}],
-					['clean']
-				];
-				var editor = new Quill('#quill-editor-qualification', {
-					theme: 'snow',
-					modules: {
-						toolbar: toolbarOptions
-					}
-				});
-				var quillEditor = document.getElementById('quill-editor-qualification-area');
-				editor.root.innerHTML = `{!! !empty($job) ? $job->qualification : '' !!}`;
+		$(function() {
+			const toolbarOptions = [
+				['bold', 'italic', 'underline', 'strike'],
+				['blockquote', 'code-block'],
+				['link', 'image', 'video', 'formula'],
+				[{ 'header': 1 }, { 'header': 2 }],
+				[{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+				[{ 'script': 'sub' }, { 'script': 'super' }],
+				[{ 'indent': '-1' }, { 'indent': '+1' }],
+				[{ 'direction': 'rtl' }],
+				[{ 'size': ['small', false, 'large', 'huge'] }],
+				[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+				[{ 'color': [] }, { 'background': [] }],
+				[{ 'font': [] }],
+				[{ 'align': [] }],
+				['clean']
+			];
 
-				editor.on('text-change', function() {
-					quillEditor.value = editor.root.innerHTML;
+			const $qualificationArea = $('#quill-editor-qualification-area');
+			if ($qualificationArea.length) {
+				const qualEditor = new Quill('#quill-editor-qualification', {
+					theme: 'snow',
+					modules: { toolbar: toolbarOptions }
 				});
-				quillEditor.addEventListener('input', function() {
-					editor.root.innerHTML = quillEditor.value;
+				qualEditor.root.innerHTML = `{!! !empty($job) ? $job->qualification : '' !!}`;
+
+				qualEditor.on('text-change', function() {
+					$qualificationArea.val(qualEditor.root.innerHTML);
+				});
+				$qualificationArea.on('input', function() {
+					qualEditor.root.innerHTML = $qualificationArea.val();
 				});
 			}
-		});
 
-		document.addEventListener('DOMContentLoaded', function() {
-			if (document.getElementById('quill-editor-description-area')) {
-				const toolbarOptions = [
-					['bold', 'italic', 'underline', 'strike'],
-					['blockquote', 'code-block'],
-					['link', 'image', 'video', 'formula'],
-					[{
-						'header': 1
-					}, {
-						'header': 2
-					}],
-					[{
-						'list': 'ordered'
-					}, {
-						'list': 'bullet'
-					}, {
-						'list': 'check'
-					}],
-					[{
-						'script': 'sub'
-					}, {
-						'script': 'super'
-					}],
-					[{
-						'indent': '-1'
-					}, {
-						'indent': '+1'
-					}],
-					[{
-						'direction': 'rtl'
-					}],
-					[{
-						'size': ['small', false, 'large', 'huge']
-					}],
-					[{
-						'header': [1, 2, 3, 4, 5, 6, false]
-					}],
-					[{
-						'color': []
-					}, {
-						'background': []
-					}],
-					[{
-						'font': []
-					}],
-					[{
-						'align': []
-					}],
-					['clean']
-				];
-				var editor = new Quill('#quill-editor-description', {
+			const $descriptionArea = $('#quill-editor-description-area');
+			if ($descriptionArea.length) {
+				const descEditor = new Quill('#quill-editor-description', {
 					theme: 'snow',
-					modules: {
-						toolbar: toolbarOptions
-					}
+					modules: { toolbar: toolbarOptions }
 				});
-				var quillEditor = document.getElementById('quill-editor-description-area');
-				editor.root.innerHTML = `{!! !empty($job) ? $job->description : '' !!}`;
+				descEditor.root.innerHTML = `{!! !empty($job) ? $job->description : '' !!}`;
 
-				editor.on('text-change', function() {
-					quillEditor.value = editor.root.innerHTML;
+				descEditor.on('text-change', function() {
+					$descriptionArea.val(descEditor.root.innerHTML);
 				});
-				quillEditor.addEventListener('input', function() {
-					editor.root.innerHTML = quillEditor.value;
+				$descriptionArea.on('input', function() {
+					descEditor.root.innerHTML = $descriptionArea.val();
 				});
 			}
 		});

@@ -413,16 +413,16 @@
 		const profileI18n = @json($profileI18n);
 		const WILAYAH_API = 'https://www.emsifa.com/api-wilayah-indonesia/api';
 
-		document.addEventListener('DOMContentLoaded', function () {
-			const profileForm = document.getElementById('profile-form');
-			const provinceSelect = document.getElementById('province-select');
-			const citySelect = document.getElementById('city-select');
+		$(function () {
+			const $profileForm = $('#profile-form');
+			const $provinceSelect = $('#province-select');
+			const $citySelect = $('#city-select');
 			const provinceMap = new Map();
-			const progressBar = document.getElementById('profile-completion-bar');
-			const progressPercent = document.getElementById('profile-completion-percent');
-			const checklistEducation = document.getElementById('checklist-education');
-			const checklistExperience = document.getElementById('checklist-experience');
-			const checklistLocation = document.getElementById('checklist-location');
+			const $progressBar = $('#profile-completion-bar');
+			const $progressPercent = $('#profile-completion-percent');
+			const $checklistEducation = $('#checklist-education');
+			const $checklistExperience = $('#checklist-experience');
+			const $checklistLocation = $('#checklist-location');
 			const progressFieldNames = [
 				'education_level',
 				'major',
@@ -450,23 +450,23 @@
 			}
 
 			function syncSalaryHiddenInput() {
-				const displayInput = document.getElementById('expected_salary_display');
-				const hiddenInput = document.getElementById('expected_salary');
-				if (!displayInput || !hiddenInput) {
+				const $displayInput = $('#expected_salary_display');
+				const $hiddenInput = $('#expected_salary');
+				if (!$displayInput.length || !$hiddenInput.length) {
 					return;
 				}
 
-				const digits = parseSalaryDigits(displayInput.value);
-				hiddenInput.value = digits;
+				const digits = parseSalaryDigits($displayInput.val());
+				$hiddenInput.val(digits);
 			}
 
 			function getFieldValue(name) {
 				if (name === 'expected_salary') {
-					return document.getElementById('expected_salary')?.value || '';
+					return $('#expected_salary').val() || '';
 				}
 
-				const field = profileForm.querySelector('[name="' + name + '"]');
-				return field ? String(field.value || '').trim() : '';
+				const $field = $profileForm.find('[name="' + name + '"]');
+				return $field.length ? String($field.val() || '').trim() : '';
 			}
 
 			function isProgressFieldFilled(name) {
@@ -474,15 +474,15 @@
 				return value !== '';
 			}
 
-			function setChecklistState(element, isComplete) {
-				if (!element) {
+			function setChecklistState($element, isComplete) {
+				if (!$element || !$element.length) {
 					return;
 				}
 
-				element.classList.toggle('is-complete', isComplete);
-				const icon = element.querySelector('i');
-				if (icon) {
-					icon.className = 'mdi ' + (isComplete ? 'mdi-check-circle' : 'mdi-circle-outline');
+				$element.toggleClass('is-complete', isComplete);
+				const $icon = $element.find('i');
+				if ($icon.length) {
+					$icon.attr('class', 'mdi ' + (isComplete ? 'mdi-check-circle' : 'mdi-circle-outline'));
 				}
 			}
 
@@ -490,246 +490,181 @@
 				const filledCount = progressFieldNames.filter(isProgressFieldFilled).length;
 				const percent = Math.round((filledCount / progressFieldNames.length) * 100);
 
-				if (progressBar) {
-					progressBar.style.width = percent + '%';
+				if ($progressBar.length) {
+					$progressBar.css('width', percent + '%');
 				}
 
-				if (progressPercent) {
-					progressPercent.textContent = percent + '%';
+				if ($progressPercent.length) {
+					$progressPercent.text(percent + '%');
 				}
 
-				setChecklistState(checklistEducation, isProgressFieldFilled('education_level'));
-				setChecklistState(checklistExperience, isProgressFieldFilled('years_of_experience'));
+				setChecklistState($checklistEducation, isProgressFieldFilled('education_level'));
+				setChecklistState($checklistExperience, isProgressFieldFilled('years_of_experience'));
 				setChecklistState(
-					checklistLocation,
+					$checklistLocation,
 					isProgressFieldFilled('province') && isProgressFieldFilled('city')
 				);
 			}
 
-			const salaryDisplayInput = document.getElementById('expected_salary_display');
-			if (salaryDisplayInput) {
-				salaryDisplayInput.addEventListener('input', function () {
-					const digits = parseSalaryDigits(this.value);
-					this.value = digits ? formatSalaryAmount(digits) : '';
+			const $salaryDisplayInput = $('#expected_salary_display');
+			if ($salaryDisplayInput.length) {
+				$salaryDisplayInput.on('input', function () {
+					const digits = parseSalaryDigits($(this).val());
+					$(this).val(digits ? formatSalaryAmount(digits) : '');
 					syncSalaryHiddenInput();
 					updateLiveProgress();
 				});
 			}
 
-			profileForm.querySelectorAll('.profile-track-field[data-progress-field]').forEach(function (field) {
-				field.addEventListener('input', updateLiveProgress);
-				field.addEventListener('change', updateLiveProgress);
-			});
+			$profileForm.find('.profile-track-field[data-progress-field]').on('input change', updateLiveProgress);
 
-			profileForm.addEventListener('submit', function () {
+			$profileForm.on('submit', function () {
 				syncSalaryHiddenInput();
 			});
 
 			function resetCitySelect(message) {
-				citySelect.innerHTML = '<option value="">' + message + '</option>';
-				citySelect.disabled = true;
+				$citySelect.html('<option value="">' + message + '</option>').prop('disabled', true);
 				updateLiveProgress();
 			}
 
-			async function loadCities(provinceId, selectedCity) {
+			function loadCities(provinceId, selectedCity) {
 				if (!provinceId) {
 					resetCitySelect(profileI18n.select_city);
-					return;
+					return Promise.resolve();
 				}
 
 				resetCitySelect(profileI18n.loading_cities);
 
-				try {
-					const response = await fetch(WILAYAH_API + '/regencies/' + provinceId + '.json');
-					if (!response.ok) {
-						throw new Error('Failed to load cities');
-					}
-
-					const cities = await response.json();
-					citySelect.innerHTML = '<option value="">' + profileI18n.select_city + '</option>';
-
-					cities.forEach(function (city) {
-						const option = document.createElement('option');
-						option.value = city.name;
-						option.textContent = city.name;
-						if (selectedCity && selectedCity === city.name) {
-							option.selected = true;
-						}
-						citySelect.appendChild(option);
+				return $.getJSON(WILAYAH_API + '/regencies/' + provinceId + '.json')
+					.done(function (cities) {
+						let optionsHtml = '<option value="">' + profileI18n.select_city + '</option>';
+						cities.forEach(function (city) {
+							const isSelected = selectedCity && selectedCity === city.name ? ' selected' : '';
+							optionsHtml += '<option value="' + city.name + '"' + isSelected + '>' + city.name + '</option>';
+						});
+						$citySelect.html(optionsHtml).prop('disabled', false);
+					})
+					.fail(function () {
+						resetCitySelect(profileI18n.load_city_failed);
+					})
+					.always(function () {
+						updateLiveProgress();
 					});
-
-					citySelect.disabled = false;
-				} catch (error) {
-					resetCitySelect(profileI18n.load_city_failed);
-				}
-
-				updateLiveProgress();
 			}
 
-			async function loadProvinces() {
-				const selectedProvince = provinceSelect.dataset.selected || '';
+			function loadProvinces() {
+				const selectedProvince = $provinceSelect.data('selected') || '';
 
-				try {
-					const response = await fetch(WILAYAH_API + '/provinces.json');
-					if (!response.ok) {
-						throw new Error('Failed to load provinces');
-					}
+				return $.getJSON(WILAYAH_API + '/provinces.json')
+					.done(function (provinces) {
+						let optionsHtml = '<option value="">' + profileI18n.select_province + '</option>';
+						provinces.forEach(function (province) {
+							provinceMap.set(province.name, province.id);
+							const isSelected = selectedProvince && selectedProvince === province.name ? ' selected' : '';
+							optionsHtml += '<option value="' + province.name + '"' + isSelected + '>' + province.name + '</option>';
+						});
+						$provinceSelect.html(optionsHtml);
 
-					const provinces = await response.json();
-					provinceSelect.innerHTML = '<option value="">' + profileI18n.select_province + '</option>';
-
-					provinces.forEach(function (province) {
-						provinceMap.set(province.name, province.id);
-						const option = document.createElement('option');
-						option.value = province.name;
-						option.textContent = province.name;
-						if (selectedProvince && selectedProvince === province.name) {
-							option.selected = true;
+						if (selectedProvince && provinceMap.has(selectedProvince)) {
+							loadCities(provinceMap.get(selectedProvince), $citySelect.data('selected') || '');
 						}
-						provinceSelect.appendChild(option);
+					})
+					.fail(function () {
+						$provinceSelect.html('<option value="">' + profileI18n.load_province_failed + '</option>');
+					})
+					.always(function () {
+						updateLiveProgress();
 					});
-
-					if (selectedProvince && provinceMap.has(selectedProvince)) {
-						await loadCities(provinceMap.get(selectedProvince), citySelect.dataset.selected || '');
-					}
-				} catch (error) {
-					provinceSelect.innerHTML = '<option value="">' + profileI18n.load_province_failed + '</option>';
-				}
-
-				updateLiveProgress();
 			}
 
-			provinceSelect.addEventListener('change', function () {
-				citySelect.dataset.selected = '';
-				loadCities(provinceMap.get(this.value), '');
+			$provinceSelect.on('change', function () {
+				$citySelect.data('selected', '');
+				loadCities(provinceMap.get($(this).val()), '');
 			});
 
 			// Skills Dynamic Tag List
-			const skillInput = document.getElementById('skill-text-input');
-			const btnAddSkill = document.getElementById('btn-add-skill');
-			const skillsList = document.getElementById('skills-badge-list');
+			const $skillInput = $('#skill-text-input');
+			const $btnAddSkill = $('#btn-add-skill');
+			const $skillsList = $('#skills-badge-list');
 
 			function addSkillFromInput() {
-				if (!skillInput || !skillsList) return;
-				const val = skillInput.value.trim();
+				if (!$skillInput.length || !$skillsList.length) return;
+				const val = $skillInput.val().trim();
 				if (!val) return;
 
-				const existingInputs = Array.from(skillsList.querySelectorAll('input[name="skills[]"]'));
-				const existingNames = existingInputs.map(function(i) { return i.value.toLowerCase(); });
+				const existingNames = $skillsList.find('input[name="skills[]"]').map(function() {
+					return $(this).val().toLowerCase();
+				}).get();
+
 				if (existingNames.includes(val.toLowerCase())) {
-					skillInput.value = '';
+					$skillInput.val('');
 					return;
 				}
 
-				const emptyMsg = skillsList.querySelector('.empty-skill-msg');
-				if (emptyMsg) emptyMsg.remove();
+				$skillsList.find('.empty-skill-msg').remove();
 
-				const badge = document.createElement('div');
-				badge.className = 'skill-tag badge bg-primary text-white d-inline-flex align-items-center gap-2 px-3 py-2';
-				badge.style.fontSize = '13px';
-				badge.style.borderRadius = '6px';
+				const badgeHtml = ''
+					+ '<div class="skill-tag badge bg-primary text-white d-inline-flex align-items-center gap-2 px-3 py-2" style="font-size: 13px; border-radius: 6px;">'
+					+ '<span>' + $('<div>').text(val).html() + '</span>'
+					+ '<input type="hidden" name="skills[]" value="' + $('<div>').text(val).html() + '">'
+					+ '<button type="button" class="btn-close btn-close-white btn-remove-skill" style="font-size: 9px;" aria-label="Remove"></button>'
+					+ '</div>';
 
-				const textSpan = document.createElement('span');
-				textSpan.textContent = val;
-
-				const hiddenInput = document.createElement('input');
-				hiddenInput.type = 'hidden';
-				hiddenInput.name = 'skills[]';
-				hiddenInput.value = val;
-
-				const removeBtn = document.createElement('button');
-				removeBtn.type = 'button';
-				removeBtn.className = 'btn-close btn-close-white btn-remove-skill';
-				removeBtn.style.fontSize = '9px';
-				removeBtn.setAttribute('aria-label', 'Remove');
-
-				badge.appendChild(textSpan);
-				badge.appendChild(hiddenInput);
-				badge.appendChild(removeBtn);
-
-				skillsList.appendChild(badge);
-				skillInput.value = '';
-				skillInput.focus();
+				$skillsList.append(badgeHtml);
+				$skillInput.val('').trigger('focus');
 
 				updateSkillsProgress();
 			}
 
-			if (btnAddSkill && skillInput) {
-				btnAddSkill.addEventListener('click', function(e) {
+			$btnAddSkill.on('click', function(e) {
+				e.preventDefault();
+				addSkillFromInput();
+			});
+
+			$skillInput.on('keydown', function(e) {
+				if (e.key === 'Enter') {
 					e.preventDefault();
 					addSkillFromInput();
-				});
+				}
+			});
 
-				skillInput.addEventListener('keydown', function(e) {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						addSkillFromInput();
-					}
-				});
-			}
-
-			if (skillsList) {
-				skillsList.addEventListener('click', function(e) {
-					if (e.target.classList.contains('btn-remove-skill') || e.target.closest('.btn-remove-skill')) {
-						const tag = e.target.closest('.skill-tag');
-						if (tag) {
-							tag.remove();
-							const remaining = skillsList.querySelectorAll('.skill-tag');
-							if (remaining.length === 0) {
-								skillsList.innerHTML = '<span class="text-muted small italic empty-skill-msg">' + @json(__('candidate.profile.skills_empty_list')) + '</span>';
-							}
-							updateSkillsProgress();
-						}
-					}
-				});
-			}
+			$skillsList.on('click', '.btn-remove-skill', function() {
+				$(this).closest('.skill-tag').remove();
+				if ($skillsList.find('.skill-tag').length === 0) {
+					$skillsList.html('<span class="text-muted small italic empty-skill-msg">' + @json(__('candidate.profile.skills_empty_list')) + '</span>');
+				}
+				updateSkillsProgress();
+			});
 
 			function updateSkillsProgress() {
-				const skillTags = skillsList ? skillsList.querySelectorAll('.skill-tag') : [];
-				const countBadge = document.getElementById('skills-count-badge');
-				if (countBadge) {
-					countBadge.textContent = skillTags.length;
-				}
+				const tagCount = $skillsList.find('.skill-tag').length;
+				$('#skills-count-badge').text(tagCount);
 
-				const checklist = document.getElementById('checklist-skills');
-				if (checklist) {
-					const isComplete = skillTags.length > 0;
-					checklist.classList.toggle('is-complete', isComplete);
-					const icon = checklist.querySelector('i');
-					if (icon) {
-						icon.className = isComplete ? 'mdi mdi-check-circle' : 'mdi mdi-circle-outline';
+				const $checklist = $('#checklist-skills');
+				if ($checklist.length) {
+					const isComplete = tagCount > 0;
+					$checklist.toggleClass('is-complete', isComplete);
+					const $icon = $checklist.find('i');
+					if ($icon.length) {
+						$icon.attr('class', isComplete ? 'mdi mdi-check-circle' : 'mdi mdi-circle-outline');
 					}
 				}
-				if (typeof updateLiveProgress === 'function') {
-					updateLiveProgress();
-				}
+				updateLiveProgress();
 			}
 
 			// Sidebar checklist click to switch tabs
-			document.querySelectorAll('.profile-checklist li').forEach(function(item) {
-				item.style.cursor = 'pointer';
-				item.addEventListener('click', function() {
-					const section = this.dataset.section;
-					if (section === 'skills') {
-						const skillsTabBtn = document.getElementById('tab-skills-btn');
-						if (skillsTabBtn) {
-							if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
-								new bootstrap.Tab(skillsTabBtn).show();
-							} else {
-								skillsTabBtn.click();
-							}
-						}
+			$('.profile-checklist li').css('cursor', 'pointer').on('click', function() {
+				const section = $(this).data('section');
+				const targetTabSelector = section === 'skills' ? '#tab-skills-btn' : '#tab-general-btn';
+				const $targetTab = $(targetTabSelector);
+
+				if ($targetTab.length) {
+					if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+						bootstrap.Tab.getOrCreateInstance($targetTab[0]).show();
 					} else {
-						const generalTabBtn = document.getElementById('tab-general-btn');
-						if (generalTabBtn) {
-							if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
-								new bootstrap.Tab(generalTabBtn).show();
-							} else {
-								generalTabBtn.click();
-							}
-						}
+						$targetTab.trigger('click');
 					}
-				});
+				}
 			});
 
 			loadProvinces();

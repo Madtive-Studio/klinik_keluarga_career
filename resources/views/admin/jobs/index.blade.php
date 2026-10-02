@@ -335,56 +335,56 @@
 			}
 
 			// Horizontal scrolling logic for batch tabs slider
-			const batchSlider = document.getElementById('batch-pills');
-			const btnBatchPrev = document.getElementById('btn-batch-prev');
-			const btnBatchNext = document.getElementById('btn-batch-next');
+			const $batchSlider = $('#batch-pills');
+			const $btnBatchPrev = $('#btn-batch-prev');
+			const $btnBatchNext = $('#btn-batch-next');
 
 			function updateBatchScrollButtons() {
-				if (!batchSlider) return;
-				const hasOverflow = batchSlider.scrollWidth > batchSlider.clientWidth + 2;
+				if (!$batchSlider.length) return;
+				const sliderEl = $batchSlider[0];
+				const hasOverflow = sliderEl.scrollWidth > sliderEl.clientWidth + 2;
 				if (hasOverflow) {
-					if (btnBatchPrev) {
-						btnBatchPrev.style.display = 'inline-flex';
-						const isStart = batchSlider.scrollLeft <= 5;
-						btnBatchPrev.disabled = isStart;
-						btnBatchPrev.style.opacity = isStart ? '0.4' : '1';
+					if ($btnBatchPrev.length) {
+						$btnBatchPrev.css('display', 'inline-flex');
+						const isStart = sliderEl.scrollLeft <= 5;
+						$btnBatchPrev.prop('disabled', isStart).css('opacity', isStart ? '0.4' : '1');
 					}
-					if (btnBatchNext) {
-						btnBatchNext.style.display = 'inline-flex';
-						const maxScroll = batchSlider.scrollWidth - batchSlider.clientWidth;
-						const isEnd = batchSlider.scrollLeft >= maxScroll - 5;
-						btnBatchNext.disabled = isEnd;
-						btnBatchNext.style.opacity = isEnd ? '0.4' : '1';
+					if ($btnBatchNext.length) {
+						$btnBatchNext.css('display', 'inline-flex');
+						const maxScroll = sliderEl.scrollWidth - sliderEl.clientWidth;
+						const isEnd = sliderEl.scrollLeft >= maxScroll - 5;
+						$btnBatchNext.prop('disabled', isEnd).css('opacity', isEnd ? '0.4' : '1');
 					}
 				} else {
-					if (btnBatchPrev) btnBatchPrev.style.display = 'none';
-					if (btnBatchNext) btnBatchNext.style.display = 'none';
+					if ($btnBatchPrev.length) $btnBatchPrev.hide();
+					if ($btnBatchNext.length) $btnBatchNext.hide();
 				}
 			}
 
-			if (batchSlider) {
+			if ($batchSlider.length) {
 				// Mouse wheel horizontal scroll
-				batchSlider.addEventListener('wheel', function(e) {
-					if (e.deltaY !== 0) {
+				$batchSlider.on('wheel', function(e) {
+					const origEvent = e.originalEvent;
+					if (origEvent && origEvent.deltaY !== 0) {
 						e.preventDefault();
-						this.scrollLeft += e.deltaY;
+						this.scrollLeft += origEvent.deltaY;
 						updateBatchScrollButtons();
 					}
-				}, { passive: false });
+				});
 
-				batchSlider.addEventListener('scroll', updateBatchScrollButtons);
-				window.addEventListener('resize', updateBatchScrollButtons);
+				$batchSlider.on('scroll', updateBatchScrollButtons);
+				$(window).on('resize', updateBatchScrollButtons);
 
-				if (btnBatchPrev) {
-					btnBatchPrev.addEventListener('click', function() {
-						batchSlider.scrollBy({ left: -260, behavior: 'smooth' });
+				if ($btnBatchPrev.length) {
+					$btnBatchPrev.on('click', function() {
+						$batchSlider[0].scrollBy({ left: -260, behavior: 'smooth' });
 						setTimeout(updateBatchScrollButtons, 350);
 					});
 				}
 
-				if (btnBatchNext) {
-					btnBatchNext.addEventListener('click', function() {
-						batchSlider.scrollBy({ left: 260, behavior: 'smooth' });
+				if ($btnBatchNext.length) {
+					$btnBatchNext.on('click', function() {
+						$batchSlider[0].scrollBy({ left: 260, behavior: 'smooth' });
 						setTimeout(updateBatchScrollButtons, 350);
 					});
 				}

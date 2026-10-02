@@ -75,26 +75,25 @@
 @endsection
 @section('js')
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			const btnGenerateCode = document.getElementById('btn-generate-code');
-			const codeInput = document.getElementById('batch_code');
-			if (btnGenerateCode && codeInput) {
-				btnGenerateCode.addEventListener('click', function() {
+		$(function() {
+			const $btnGenerateCode = $('#btn-generate-code');
+			const $codeInput = $('#batch_code');
+			if ($btnGenerateCode.length && $codeInput.length) {
+				$btnGenerateCode.on('click', function() {
 					const randomPart = Math.random().toString(16).substring(2, 12).toUpperCase();
-					codeInput.value = '#' + randomPart;
-					codeInput.focus();
+					$codeInput.val('#' + randomPart).trigger('focus');
 				});
 			}
 
-			const quotaInput = document.getElementById('batch_quota');
-			if (quotaInput) {
-				quotaInput.addEventListener('blur', function() {
-					const val = this.value.trim();
+			const $quotaInput = $('#batch_quota');
+			if ($quotaInput.length) {
+				$quotaInput.on('blur', function() {
+					const val = $(this).val().trim();
 					if (/^\d+$/.test(val)) {
 						const maxInt = '2147483647';
 						const cleanVal = val.replace(/^0+/, '') || '0';
 						if (cleanVal.length > maxInt.length || (cleanVal.length === maxInt.length && cleanVal > maxInt)) {
-							this.value = '2147483647';
+							$(this).val('2147483647');
 						}
 					}
 				});

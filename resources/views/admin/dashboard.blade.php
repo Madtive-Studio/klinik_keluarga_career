@@ -169,13 +169,13 @@
 
 @section('js')
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			const chartEl = document.querySelector('#dashboardRecruitmentChart');
-			if (!chartEl || typeof ApexCharts === 'undefined') {
+		$(function () {
+			const $chartEl = $('#dashboardRecruitmentChart');
+			if (!$chartEl.length || typeof ApexCharts === 'undefined') {
 				return;
 			}
 
-			const isDark = document.documentElement.classList.contains('dark-style');
+			const isDark = $('html').hasClass('dark-style');
 			const labelColor = isDark ? '#B2B2C2' : '#677788';
 
 			const options = {
@@ -226,7 +226,7 @@
 				}
 			};
 
-			new ApexCharts(chartEl, options).render();
+			new ApexCharts($chartEl[0], options).render();
 		});
 	</script>
 @endsection

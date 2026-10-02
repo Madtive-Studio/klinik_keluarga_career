@@ -66,7 +66,7 @@
 @if(session('error'))
     <div style="display:none" id="debug-session" data-error="{{ session('error') }}"></div>
     <script>
-        console.log('Session error:', document.getElementById('debug-session').dataset.error);
+        console.log('Session error:', $('#debug-session').data('error'));
     </script>
 @endif
 

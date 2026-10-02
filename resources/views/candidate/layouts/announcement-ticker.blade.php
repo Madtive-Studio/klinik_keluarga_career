@@ -79,17 +79,15 @@
 </style>
 
 <script>
-	document.addEventListener("DOMContentLoaded", function() {
-		const ticker = document.getElementById("topAnnouncementTicker");
-		const dismissBtn = document.getElementById("btnDismissTicker");
+	$(function() {
+		const $ticker = $("#topAnnouncementTicker");
+		const $dismissBtn = $("#btnDismissTicker");
 		if (sessionStorage.getItem("hideAnnouncementTicker") === "true") {
-			if (ticker) ticker.style.display = "none";
+			$ticker.hide();
 		}
-		if (dismissBtn) {
-			dismissBtn.addEventListener("click", function() {
-				if (ticker) ticker.style.display = "none";
-				sessionStorage.setItem("hideAnnouncementTicker", "true");
-			});
-		}
+		$dismissBtn.on("click", function() {
+			$ticker.hide();
+			sessionStorage.setItem("hideAnnouncementTicker", "true");
+		});
 	});
 </script>

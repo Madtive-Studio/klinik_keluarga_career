@@ -102,168 +102,77 @@
 	</div>
 @endsection
 @section('js')
+	<script src="https://cdn.jsdelivr.net/npm/slim-select@2.8.2/dist/slimselect.min.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			if (document.getElementById('quill-editor-qualification-area')) {
-				const toolbarOptions = [
-					['bold', 'italic', 'underline', 'strike'],
-					['blockquote', 'code-block'],
-					['link', 'image', 'video', 'formula'],
-					[{
-						'header': 1
-					}, {
-						'header': 2
-					}],
-					[{
-						'list': 'ordered'
-					}, {
-						'list': 'bullet'
-					}, {
-						'list': 'check'
-					}],
-					[{
-						'script': 'sub'
-					}, {
-						'script': 'super'
-					}],
-					[{
-						'indent': '-1'
-					}, {
-						'indent': '+1'
-					}],
-					[{
-						'direction': 'rtl'
-					}],
-					[{
-						'size': ['small', false, 'large', 'huge']
-					}],
-					[{
-						'header': [1, 2, 3, 4, 5, 6, false]
-					}],
-					[{
-						'color': []
-					}, {
-						'background': []
-					}],
-					[{
-						'font': []
-					}],
-					[{
-						'align': []
-					}],
-					['clean']
-				];
-				var editor = new Quill('#quill-editor-qualification', {
-					theme: 'snow',
-					modules: {
-						toolbar: toolbarOptions
-					}
-				});
-				var quillEditor = document.getElementById('quill-editor-qualification-area');
-				editor.root.innerHTML = `{!! !empty($scheduleInterview) ? $scheduleInterview->qualification : '' !!}`;
-
-				editor.on('text-change', function() {
-					quillEditor.value = editor.root.innerHTML;
-				});
-				quillEditor.addEventListener('input', function() {
-					editor.root.innerHTML = quillEditor.value;
-				});
-			}
-		});
-
-		document.addEventListener('DOMContentLoaded', function() {
-			if (document.getElementById('quill-editor-description-area')) {
-				const toolbarOptions = [
-					['bold', 'italic', 'underline', 'strike'],
-					['blockquote', 'code-block'],
-					['link', 'image', 'video', 'formula'],
-					[{
-						'header': 1
-					}, {
-						'header': 2
-					}],
-					[{
-						'list': 'ordered'
-					}, {
-						'list': 'bullet'
-					}, {
-						'list': 'check'
-					}],
-					[{
-						'script': 'sub'
-					}, {
-						'script': 'super'
-					}],
-					[{
-						'indent': '-1'
-					}, {
-						'indent': '+1'
-					}],
-					[{
-						'direction': 'rtl'
-					}],
-					[{
-						'size': ['small', false, 'large', 'huge']
-					}],
-					[{
-						'header': [1, 2, 3, 4, 5, 6, false]
-					}],
-					[{
-						'color': []
-					}, {
-						'background': []
-					}],
-					[{
-						'font': []
-					}],
-					[{
-						'align': []
-					}],
-					['clean']
-				];
-				var editor = new Quill('#quill-editor-description', {
-					theme: 'snow',
-					modules: {
-						toolbar: toolbarOptions
-					}
-				});
-				var quillEditor = document.getElementById('quill-editor-description-area');
-				editor.root.innerHTML = `{!! !empty($scheduleInterview) ? $scheduleInterview->description : '' !!}`;
-
-				editor.on('text-change', function() {
-					quillEditor.value = editor.root.innerHTML;
-				});
-				quillEditor.addEventListener('input', function() {
-					editor.root.innerHTML = quillEditor.value;
-				});
-			}
-		});
-
 		$(function() {
+			const toolbarOptions = [
+				['bold', 'italic', 'underline', 'strike'],
+				['blockquote', 'code-block'],
+				['link', 'image', 'video', 'formula'],
+				[{ 'header': 1 }, { 'header': 2 }],
+				[{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+				[{ 'script': 'sub' }, { 'script': 'super' }],
+				[{ 'indent': '-1' }, { 'indent': '+1' }],
+				[{ 'direction': 'rtl' }],
+				[{ 'size': ['small', false, 'large', 'huge'] }],
+				[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+				[{ 'color': [] }, { 'background': [] }],
+				[{ 'font': [] }],
+				[{ 'align': [] }],
+				['clean']
+			];
+
+			const $qualificationArea = $('#quill-editor-qualification-area');
+			if ($qualificationArea.length) {
+				const qualEditor = new Quill('#quill-editor-qualification', {
+					theme: 'snow',
+					modules: { toolbar: toolbarOptions }
+				});
+				qualEditor.root.innerHTML = `{!! !empty($scheduleInterview) ? $scheduleInterview->qualification : '' !!}`;
+
+				qualEditor.on('text-change', function() {
+					$qualificationArea.val(qualEditor.root.innerHTML);
+				});
+				$qualificationArea.on('input', function() {
+					qualEditor.root.innerHTML = $qualificationArea.val();
+				});
+			}
+
+			const $descriptionArea = $('#quill-editor-description-area');
+			if ($descriptionArea.length) {
+				const descEditor = new Quill('#quill-editor-description', {
+					theme: 'snow',
+					modules: { toolbar: toolbarOptions }
+				});
+				descEditor.root.innerHTML = `{!! !empty($scheduleInterview) ? $scheduleInterview->description : '' !!}`;
+
+				descEditor.on('text-change', function() {
+					$descriptionArea.val(descEditor.root.innerHTML);
+				});
+				$descriptionArea.on('input', function() {
+					descEditor.root.innerHTML = $descriptionArea.val();
+				});
+			}
+
 			@if (!empty($scheduleInterview))
 				@if ($scheduleInterview->is_online)
-					$('#form_link').show()
+					$('#form_link').show();
 				@else
-					$('#form_link').hide()
+					$('#form_link').hide();
 				@endif
 			@else
-				$('#form_link').hide()
+				$('#form_link').hide();
 			@endif
 
 			$(document).on('change', '#is_online', function() {
-				let value = $(this).is(':checked')
-				if (value) {
-					$('#form_link').show()
+				if ($(this).is(':checked')) {
+					$('#form_link').show();
 				} else {
-					$('#form_link').hide()
+					$('#form_link').hide();
 				}
-			})
-		})
-	</script>
-	<script src="https://cdn.jsdelivr.net/npm/slim-select@2.8.2/dist/slimselect.min.js"></script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			if (document.getElementById('apply_id')) {
+			});
+
+			if ($('#apply_id').length && window.SlimSelect) {
 				new SlimSelect({
 					select: '#apply_id',
 					settings: {
@@ -275,13 +184,13 @@
 				});
 			}
 
-			const form = document.getElementById('form-add-new-record');
-			const startInput = document.getElementById('start_datetime');
-			const endInput = document.getElementById('end_datetime');
-			const startErr = document.getElementById('error-start-datetime');
-			const endErr = document.getElementById('error-end-datetime');
+			const $form = $('#form-add-new-record');
+			const $startInput = $('#start_datetime');
+			const $endInput = $('#end_datetime');
+			const $startErr = $('#error-start-datetime');
+			const $endErr = $('#error-end-datetime');
 
-			if (!form || !startInput || !endInput) return;
+			if (!$form.length || !$startInput.length || !$endInput.length) return;
 
 			function parseDatetimeString(str) {
 				if (!str) return null;
@@ -300,72 +209,66 @@
 				return isNaN(d.getTime()) ? null : d;
 			}
 
-			function getSelectedDate(input) {
-				if (input._flatpickr && input._flatpickr.selectedDates.length > 0) {
-					return input._flatpickr.selectedDates[0];
+			function getSelectedDate($input) {
+				const inputEl = $input[0];
+				if (!inputEl) return null;
+				if (inputEl._flatpickr && inputEl._flatpickr.selectedDates.length > 0) {
+					return inputEl._flatpickr.selectedDates[0];
 				}
-				if (input.value) {
-					if (input._flatpickr) {
-						const parsed = input._flatpickr.parseDate(input.value, 'd-m-Y H:i:S');
+				const val = $input.val();
+				if (val) {
+					if (inputEl._flatpickr) {
+						const parsed = inputEl._flatpickr.parseDate(val, 'd-m-Y H:i:S');
 						if (parsed) return parsed;
 					}
-					return parseDatetimeString(input.value);
+					return parseDatetimeString(val);
 				}
 				return null;
 			}
 
 			function validateInterviewDates() {
 				let isValid = true;
-				if (startErr) startErr.textContent = '';
-				if (endErr) endErr.textContent = '';
-				startInput.classList.remove('is-invalid');
-				endInput.classList.remove('is-invalid');
+				$startErr.text('');
+				$endErr.text('');
+				$startInput.removeClass('is-invalid');
+				$endInput.removeClass('is-invalid');
 
-				const startDate = getSelectedDate(startInput);
-				const endDate = getSelectedDate(endInput);
+				const startDate = getSelectedDate($startInput);
+				const endDate = getSelectedDate($endInput);
 				const minAllowedTime = new Date(Date.now() - 60000);
 
 				@if (empty($scheduleInterview))
 				if (startDate && startDate.getTime() < minAllowedTime.getTime()) {
 					isValid = false;
-					startInput.classList.add('is-invalid');
-					if (startErr) {
-						startErr.textContent = @json(__('admin.schedule_interviews.validation_start_past'));
-					}
+					$startInput.addClass('is-invalid');
+					$startErr.text(@json(__('admin.schedule_interviews.validation_start_past')));
 				}
 				@else
 				const originalStartVal = "{{ formatFlatpickrDatetime($scheduleInterview->start_datetime) }}";
-				if (startInput.value.trim() !== originalStartVal && startDate && startDate.getTime() < minAllowedTime.getTime()) {
+				if ($startInput.val().trim() !== originalStartVal && startDate && startDate.getTime() < minAllowedTime.getTime()) {
 					isValid = false;
-					startInput.classList.add('is-invalid');
-					if (startErr) {
-						startErr.textContent = @json(__('admin.schedule_interviews.validation_start_past'));
-					}
+					$startInput.addClass('is-invalid');
+					$startErr.text(@json(__('admin.schedule_interviews.validation_start_past')));
 				}
 				@endif
 
 				if (startDate && endDate && endDate.getTime() <= startDate.getTime()) {
 					isValid = false;
-					endInput.classList.add('is-invalid');
-					if (endErr) {
-						endErr.textContent = @json(__('admin.schedule_interviews.validation_end_before_start'));
-					}
+					$endInput.addClass('is-invalid');
+					$endErr.text(@json(__('admin.schedule_interviews.validation_end_before_start')));
 				}
 
 				return isValid;
 			}
 
-			startInput.addEventListener('change', validateInterviewDates);
-			endInput.addEventListener('change', validateInterviewDates);
-			startInput.addEventListener('input', validateInterviewDates);
-			endInput.addEventListener('input', validateInterviewDates);
+			$startInput.add($endInput).on('change input', validateInterviewDates);
 
-			form.addEventListener('submit', function(e) {
+			$form.on('submit', function(e) {
 				if (!validateInterviewDates()) {
 					e.preventDefault();
-					const firstInvalid = form.querySelector('.is-invalid');
-					if (firstInvalid) {
-						firstInvalid.focus();
+					const $firstInvalid = $form.find('.is-invalid').first();
+					if ($firstInvalid.length) {
+						$firstInvalid.trigger('focus');
 					}
 				}
 			});

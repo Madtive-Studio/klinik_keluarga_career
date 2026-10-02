@@ -31,7 +31,7 @@
 <script src="{{ asset('assets/admin/assets/js/main.js') }}"></script>
 <script>
 window.adminI18n = @json(__('admin.js'));
-document.addEventListener('DOMContentLoaded', function () {
+$(function () {
   const flatpickrOptions = {
     enableTime: true,
     enableSeconds: true,
@@ -51,9 +51,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   linkedPairs.forEach(function ([startName, endName]) {
-    const startEl = document.querySelector('.flatpickr-datetime[name="' + startName + '"]');
-    const endEl = document.querySelector('.flatpickr-datetime[name="' + endName + '"]');
-    if (!startEl || !endEl) return;
+    const $startEl = $('.flatpickr-datetime[name="' + startName + '"]');
+    const $endEl = $('.flatpickr-datetime[name="' + endName + '"]');
+    if (!$startEl.length || !$endEl.length) return;
+
+    const startEl = $startEl[0];
+    const endEl = $endEl[0];
 
     const getMinDate = function (el) {
       if (el.dataset.minDate === 'today') {
@@ -114,60 +117,61 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  document.querySelectorAll('.flatpickr-datetime').forEach(function (element) {
-    if (linkedNames.has(element.name)) return;
-    initFlatpickr(element);
+  $('.flatpickr-datetime').each(function () {
+    if (linkedNames.has(this.name)) return;
+    initFlatpickr(this);
   });
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const input = document.getElementById('admin-global-search');
-  const resultsBox = document.getElementById('admin-global-search-results');
-  if (!input || !resultsBox) return;
+
+  // Admin global search
+  const $input = $('#admin-global-search');
+  const $resultsBox = $('#admin-global-search-results');
+  if (!$input.length || !$resultsBox.length) return;
 
   let timer = null;
 
   const renderResults = (items) => {
     if (!items.length) {
-      resultsBox.innerHTML = '<div class="dropdown-item text-muted">{{ __('admin.navbar.no_results') }}</div>';
-      resultsBox.style.display = 'block';
+      $resultsBox.html('<div class="dropdown-item text-muted">{{ __('admin.navbar.no_results') }}</div>').show();
       return;
     }
 
-    resultsBox.innerHTML = items.map(item => `
+    const html = items.map(item => `
       <a href="${item.url}" class="dropdown-item">
         <span class="badge bg-label-primary me-2">${item.type}</span>${item.label}
       </a>
     `).join('');
-    resultsBox.style.display = 'block';
+    $resultsBox.html(html).show();
   };
 
-  input.addEventListener('input', function () {
+  $input.on('input', function () {
     clearTimeout(timer);
-    const q = this.value.trim();
+    const q = $(this).val().trim();
     if (q.length < 2) {
-      resultsBox.style.display = 'none';
+      $resultsBox.hide();
       return;
     }
 
-    timer = setTimeout(async () => {
-      const response = await fetch(`{{ route('admin.search') }}?q=${encodeURIComponent(q)}`);
-      const data = await response.json();
-      renderResults(data.results || []);
+    timer = setTimeout(function () {
+      $.ajax({
+        url: '{{ route('admin.search') }}',
+        data: { q: q },
+        dataType: 'json'
+      }).done(function (data) {
+        renderResults(data.results || []);
+      });
     }, 250);
   });
 
-  document.addEventListener('click', function (event) {
-    if (!input.contains(event.target) && !resultsBox.contains(event.target)) {
-      resultsBox.style.display = 'none';
+  $(document).on('click', function (event) {
+    if (!$input.is(event.target) && !$resultsBox.is(event.target) && !$resultsBox.has(event.target).length) {
+      $resultsBox.hide();
     }
   });
 
-  document.addEventListener('keydown', function (event) {
+  $(document).on('keydown', function (event) {
     if ((event.ctrlKey || event.metaKey) && event.key === '/') {
       event.preventDefault();
-      input.focus();
+      $input.trigger('focus');
     }
   });
 });
