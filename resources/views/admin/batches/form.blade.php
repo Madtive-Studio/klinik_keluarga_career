@@ -44,7 +44,7 @@
 							<div class="mb-3">
 								<label class="form-label">{{ __('admin.batches.quota') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" class="form-control dt-full-name @error('quota') is-invalid @enderror" id="batch_quota" name="quota" placeholder="{{ __('admin.batches.quota') }}" value="{{ old('quota', isset($batch) ? $batch->quota : 0) }}" required />
+									<input type="number" min="0" max="2147483647" inputmode="numeric" class="form-control dt-full-name @error('quota') is-invalid @enderror" id="batch_quota" name="quota" placeholder="{{ __('admin.batches.quota') }}" value="{{ old('quota', isset($batch) ? $batch->quota : 0) }}" required />
 								</div>
 								@error('quota') <small class="text-danger d-block" id="error-batch-quota">{{ $message }}</small> @enderror
 							</div>
@@ -87,6 +87,19 @@
 
 			const $quotaInput = $('#batch_quota');
 			if ($quotaInput.length) {
+				$quotaInput.on('keydown', function(e) {
+					if (['-', '+', 'e', 'E', '.'].includes(e.key)) {
+						e.preventDefault();
+					}
+				});
+
+				$quotaInput.on('input', function() {
+					const val = $(this).val();
+					if (val && parseInt(val, 10) < 0) {
+						$(this).val(0);
+					}
+				});
+
 				$quotaInput.on('blur', function() {
 					const val = $(this).val().trim();
 					if (/^\d+$/.test(val)) {
