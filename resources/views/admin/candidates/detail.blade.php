@@ -161,7 +161,7 @@
 					<div class="card-body p-0">
 						@if($candidate->applies->isNotEmpty())
 							<div class="table-responsive">
-								<table class="table table-hover table-striped mb-0">
+								<table class="table table-hover table-striped mb-0" id="table-candidate-applies">
 									<thead class="table-light">
 										<tr>
 											<th>Lowongan Pekerjaan</th>
@@ -190,7 +190,7 @@
 												<td>
 													<span class="badge bg-label-secondary">{{ $apply->batch->name ?? '-' }}</span>
 												</td>
-												<td>
+												<td data-order="{{ $apply->created_at ? $apply->created_at->timestamp : 0 }}">
 													<small>{{ date('d M Y', strtotime($apply->created_at)) }}</small>
 												</td>
 												<td>
@@ -328,6 +328,36 @@
 @endsection
 @section('js')
 	<script>
+		$(function() {
+			const $appliesTable = $('#table-candidate-applies');
+			if ($appliesTable.length && $appliesTable.find('tbody tr').length > 0) {
+				$appliesTable.DataTable({
+					pageLength: 5,
+					lengthMenu: [5, 10, 25],
+					order: [[2, 'desc']],
+					columnDefs: [
+						{ orderable: false, searchable: false, targets: 4 }
+					],
+					dom: '<"row px-3 pt-3"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-end"f>>t<"row px-3 pb-3 pt-2"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6 d-flex justify-content-end"p>>',
+					language: {
+						search: '',
+						searchPlaceholder: 'Cari riwayat lamaran...',
+						lengthMenu: '_MENU_ per halaman',
+						info: 'Menampilkan _START_ - _END_ dari _TOTAL_ lamaran',
+						infoEmpty: 'Tidak ada data',
+						infoFiltered: '(difilter dari _MAX_ total)',
+						zeroRecords: 'Tidak ditemukan riwayat lamaran yang cocok',
+						paginate: {
+							first: '<<',
+							last: '>>',
+							next: '›',
+							previous: '‹'
+						}
+					}
+				});
+			}
+		});
+
 		function setModalSize(isLargePreview) {
 			const $dialog = $('#docPreviewDialog');
 			if (isLargePreview) {
