@@ -16,7 +16,7 @@ class DocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|file|mimes:pdf,doc,docx,png,jpg,jpeg,webp,gif,xls,xlsx|max:20480',
+            'file' => 'required|file|mimes:pdf,doc,docx,png,jpg,jpeg,webp,gif,xls,xlsx|max:10240',
             'type' => ['required', 'string', Rule::enum(DocumentType::class)],
         ];
     }

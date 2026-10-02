@@ -53,8 +53,6 @@ package "Vacancies" {
     -updated_at: timestamp
     __
     +jobs(): HasMany
-    +isAdmin(): bool
-    +isHrd(): bool
   }
 
   class Category {

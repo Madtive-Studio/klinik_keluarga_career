@@ -78,6 +78,49 @@ class CategoryControllerTest extends TestCase
     }
 
     #[Test]
+    public function storeRejectsDuplicateCategoryName(): void
+    {
+        Category::factory()->create(['name' => 'Divisi Keperawatan']);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->from(route('admin.categories.create'))
+            ->post(route('admin.categories.store'), [
+                'name' => '  Divisi Keperawatan  ',
+            ]);
+
+        $response->assertRedirect(route('admin.categories.create'));
+        $response->assertSessionHasErrors(['name']);
+        $this->assertDatabaseCount('categories', 1);
+    }
+
+    #[Test]
+    public function updateRejectsNameUsedByAnotherCategory(): void
+    {
+        Category::factory()->create(['name' => 'Divisi Kebidanan']);
+        $category = Category::factory()->create(['name' => 'Divisi Farmasi']);
+
+        $response = $this->actingAs($this->admin, 'admin')->put(route('admin.categories.update', $category->id), [
+            'name' => 'Divisi Kebidanan',
+        ]);
+
+        $response->assertSessionHasErrors(['name']);
+        $this->assertDatabaseHas('categories', ['id' => $category->id, 'name' => 'Divisi Farmasi']);
+    }
+
+    #[Test]
+    public function updateAllowsKeepingTheSameName(): void
+    {
+        $category = Category::factory()->create(['name' => 'Divisi Farmasi']);
+
+        $response = $this->actingAs($this->admin, 'admin')->put(route('admin.categories.update', $category->id), [
+            'name' => 'Divisi Farmasi',
+        ]);
+
+        $response->assertRedirect(route('admin.categories.index'));
+        $response->assertSessionHasNoErrors();
+    }
+
+    #[Test]
     public function destroyDeletesCategory(): void
     {
         $category = Category::factory()->create();

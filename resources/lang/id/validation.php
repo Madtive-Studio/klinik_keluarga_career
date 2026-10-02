@@ -94,9 +94,9 @@ return [
         'documents.*.file' => [
             'required' => 'File dokumen wajib diupload.',
             'file' => 'Berkas harus berupa file yang valid.',
-            'uploaded' => 'File tidak berhasil diunggah ke server. Pastikan ukuran maksimal 20MB dan coba lagi.',
+            'uploaded' => 'File tidak berhasil diunggah ke server. Pastikan ukuran maksimal 10MB dan coba lagi.',
             'mimes' => 'Format file harus PDF, DOC, atau DOCX.',
-            'max' => 'Ukuran file maksimal 20MB.',
+            'max' => 'Ukuran file maksimal 10MB.',
         ],
         'documents.*.type' => [
             'required' => 'Pilih jenis dokumen.',
@@ -105,7 +105,7 @@ return [
             'required' => 'File wajib diisi.',
             'file' => 'File harus berupa file.',
             'mimes' => 'File harus berupa Gambar, PDF, Word, atau Excel.',
-            'max' => 'Ukuran file harus kurang dari 20MB.',
+            'max' => 'Ukuran file harus kurang dari 10MB.',
         ],
         'image' => [
             'image' => 'Gambar harus berupa file gambar yang valid.',

@@ -17,7 +17,7 @@ class IsCandidate
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::guard('candidate')->check()) {
-            return redirect()->route('client.login')->with('must_login', 'Kamu mesti login dulu yaa.');
+            return redirect()->route('candidate.login.form')->with('must_login', 'Kamu mesti login dulu yaa.');
         }
         return $next($request);
     }

@@ -115,7 +115,7 @@ return [
         'uploading' => 'Uploading document...',
         'upload_failed' => 'Document upload failed',
         'invalid_file_type' => 'Unsupported file format. Use PDF, DOCX, DOC, or images (PNG, JPG, WEBP, GIF).',
-        'file_too_large' => 'File size exceeds the 20 MB limit.',
+        'file_too_large' => 'File size exceeds the 10 MB limit.',
         'empty_title' => 'No documents yet',
         'empty_description' => 'Drag a file onto a document type in the left menu, or select a type and use the upload area above.',
         'empty_filtered_title' => 'No :type documents yet',

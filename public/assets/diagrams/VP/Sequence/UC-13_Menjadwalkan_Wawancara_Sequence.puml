@@ -50,7 +50,7 @@ skinparam entity {
 ' Deklarasi Lifeline
 actor "HRD / Admin" as HRD
 boundary "SchedulePage" as Page
-control "ScheduleController" as Controller
+control "ScheduleInterviewController" as Controller
 entity "ScheduleModel" as Model
 
 ' Group sd View/Read: Akses Daftar Agenda Wawancara

@@ -54,4 +54,15 @@ class EmailVerificationTest extends TestCase
         $response->assertRedirect(route('candidate.login.form'));
         $response->assertSessionHas('error', __('messages.auth.invalid_verification_token'));
     }
+
+    public function test_unverified_candidate_is_redirected_to_login_from_verified_routes()
+    {
+        $candidate = Candidate::factory()->create(['email_verified_at' => null]);
+
+        $response = $this->actingAs($candidate, 'candidate')
+            ->get(route('candidate.my.profile.edit'));
+
+        $response->assertRedirect(route('candidate.login.form'));
+        $response->assertSessionHas('error');
+    }
 }

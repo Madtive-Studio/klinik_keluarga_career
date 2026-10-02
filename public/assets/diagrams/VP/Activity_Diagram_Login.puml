@@ -28,8 +28,8 @@ endheader
 
 |User (Pelamar/HRD)|
 start
-:Akses halaman\nLogin;
-:Mengisi formulir\nlogin;
+:Akses halaman Login\n(Portal Pelamar atau\nPanel HRD);
+:Mengisi Email/Username\n(Pelamar juga dapat No. HP)\ndan Kata Sandi;
 :Klik tombol\n"Masuk";
 
 |Sistem|
@@ -44,25 +44,30 @@ else (Ya)
   |Sistem|
   :Mencocokkan Kredensial\nke Database;
   if (Kredensial\nsesuai?) then (Tidak)
-    :Tampilkan pesan\n"Email/Password Salah";
+    :Tampilkan pesan\n"Email atau password salah!";
     |User (Pelamar/HRD)|
     :Melihat notifikasi\nkesalahan Login;
     stop
   else (Ya)
     |Sistem|
-    if (Email terverifikasi &\nakun aktif?) then (Tidak)
-      :Tampilkan notifikasi\nverifikasi Email;
-      |User (Pelamar/HRD)|
-      :Melihat notifikasi\nverifikasi akun;
-      stop
-    else (Ya)
-      |Sistem|
-      :Buat Sesi Login\n(Session);
-      :Arahkan (Redirect)\nke Dashboard;
-      |User (Pelamar/HRD)|
-      :Menerima tampilan\nhalaman Dashboard;
-      stop
+    if (Jenis akun?) then (Pelamar)
+      if (Email sudah\nterverifikasi?) then (Tidak)
+        :Tampilkan notifikasi\n"Email belum diverifikasi";
+        |User (Pelamar/HRD)|
+        :Melihat notifikasi\nverifikasi akun;
+        stop
+      else (Ya)
+        |Sistem|
+        :Buat Sesi Login\n(guard candidate);
+        :Arahkan (Redirect) ke\nBeranda Portal Karir;
+      endif
+    else (HRD)
+      :Buat Sesi Login\n(guard admin);
+      :Arahkan (Redirect) ke\nDashboard HRD;
     endif
+    |User (Pelamar/HRD)|
+    :Menerima tampilan\nhalaman sesuai peran;
+    stop
   endif
 endif
 

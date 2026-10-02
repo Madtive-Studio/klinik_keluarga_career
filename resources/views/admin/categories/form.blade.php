@@ -16,8 +16,9 @@
 							<div class="mb-3">
 								<label class="form-label">{{ __('admin.categories.name') }}</label>
 								<div class="input-group input-group-merge">
-									<input type="text" class="form-control dt-full-name" name="name" placeholder="{{ __('admin.categories.name') }}" value="{{ isset($category) ? $category->name : '' }}" required />
+									<input type="text" class="form-control dt-full-name @error('name') is-invalid @enderror" name="name" placeholder="{{ __('admin.categories.name') }}" value="{{ old('name', isset($category) ? $category->name : '') }}" required />
 								</div>
+								@error('name') <small class="text-danger d-block">{{ $message }}</small> @enderror
 							</div>
 							<div class="mb-3">
 								<button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">{{ __('admin.form.submit') }}</button>
