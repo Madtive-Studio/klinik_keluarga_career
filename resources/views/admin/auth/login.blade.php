@@ -61,7 +61,7 @@
               @csrf
               <div class="mb-6">
                 <label for="email" class="form-label">Email / Username</label>
-                <input type="text" class="form-control" id="email" name="email" placeholder="..." autofocus />
+                <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="..." autofocus />
               </div>
 
               <div class="mb-6 form-password-toggle">

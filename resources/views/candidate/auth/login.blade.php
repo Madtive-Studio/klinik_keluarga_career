@@ -89,8 +89,13 @@
 										</div>
 										<div class="col-lg-12">
 											<div class="mb-3 position-relative">
-												<label class="form-label text-dark fw-semibold">{{ __('common.password') }} <span class="text-danger">*</span></label>
-												<input type="password" name="password" class="form-control" placeholder="...">
+												<label class="form-label text-dark fw-semibold" for="password">{{ __('common.password') }} <span class="text-danger">*</span></label>
+												<div class="input-group">
+													<input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="..." required>
+													<button class="btn btn-outline-secondary toggle-password" type="button" id="togglePassword" data-target="#password" tabindex="-1" style="border-color: #dee2e6; background-color: #f8f9fa;">
+														<i class="mdi mdi-eye-off-outline text-muted" id="togglePasswordIcon"></i>
+													</button>
+												</div>
 												@error('password')
 													<span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
 												@enderror
@@ -120,6 +125,23 @@
 	<script src="{{ asset('assets/candidate/js/selectize.min.js') }}"></script>
 	<script src="{{ asset('assets/candidate/js/jquery.nice-select.min.js') }}"></script>
 	<script src="{{ asset('assets/candidate/js/app.js') }}"></script>
+	<script>
+		$(function() {
+			$('.toggle-password').on('click', function() {
+				const targetSelector = $(this).data('target') || '#password';
+				const $input = $(targetSelector);
+				const $icon = $(this).find('i');
+
+				if ($input.attr('type') === 'password') {
+					$input.attr('type', 'text');
+					$icon.removeClass('mdi-eye-off-outline text-muted').addClass('mdi-eye-outline text-primary');
+				} else {
+					$input.attr('type', 'password');
+					$icon.removeClass('mdi-eye-outline text-primary').addClass('mdi-eye-off-outline text-muted');
+				}
+			});
+		});
+	</script>
 </body>
 
 </html>

@@ -194,11 +194,39 @@
 			})
 
 			$(document).on('click', '.delete', function() {
-				let value = confirm(window.adminI18n.confirm_delete)
-				if (value) {
-					let route = getAttrValue(this, 'route')
-					window.location.href = route
-				}
+				let route = getAttrValue(this, 'route')
+				Swal.fire({
+					title: window.adminI18n.confirm_delete,
+					text: window.adminI18n.confirm_delete_text,
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: window.adminI18n.confirm_delete_yes,
+					cancelButtonText: window.adminI18n.confirm_delete_cancel,
+					customClass: {
+						confirmButton: 'btn btn-danger me-3 waves-effect waves-light',
+						cancelButton: 'btn btn-label-secondary waves-effect'
+					},
+					buttonsStyling: false
+				}).then(function(result) {
+					if (result.isConfirmed) {
+						const form = $('<form>', {
+							method: 'POST',
+							action: route
+						})
+						form.append($('<input>', {
+							type: 'hidden',
+							name: '_token',
+							value: '{{ csrf_token() }}'
+						}))
+						form.append($('<input>', {
+							type: 'hidden',
+							name: '_method',
+							value: 'DELETE'
+						}))
+						$('body').append(form)
+						form.trigger('submit')
+					}
+				})
 			})
 		});
 	</script>

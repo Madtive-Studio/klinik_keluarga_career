@@ -168,8 +168,13 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="mb-3 position-relative">
-                                                <label class="form-label text-dark fw-semibold">{{ __('common.password') }} <span class="text-danger">*</span></label>
-                                                <input type="password" class="form-control" id="password_input" placeholder="..." name="password">
+                                                <label class="form-label text-dark fw-semibold" for="password_input">{{ __('common.password') }} <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" id="password_input" placeholder="..." name="password">
+                                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#password_input" tabindex="-1" style="border-color: #dee2e6; background-color: #f8f9fa;">
+                                                        <i class="mdi mdi-eye-off-outline text-muted"></i>
+                                                    </button>
+                                                </div>
                                                 @error('password') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
                                                 @enderror
@@ -177,8 +182,13 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="mb-3 position-relative">
-                                                <label class="form-label text-dark fw-semibold">{{ __('candidate.auth.password_confirmation') }} <span class="text-danger">*</span></label>
-                                                <input type="password" class="form-control" id="password_confirmation_input" placeholder="..." name="password_confirmation">
+                                                <label class="form-label text-dark fw-semibold" for="password_confirmation_input">{{ __('candidate.auth.password_confirmation') }} <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" id="password_confirmation_input" placeholder="..." name="password_confirmation">
+                                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#password_confirmation_input" tabindex="-1" style="border-color: #dee2e6; background-color: #f8f9fa;">
+                                                        <i class="mdi mdi-eye-off-outline text-muted"></i>
+                                                    </button>
+                                                </div>
                                                 <div id="password-match-feedback" class="mt-1" style="font-size: 0.85rem; display: none;"></div>
                                                 @error('password_confirmation') 
                                                     <span class="text-danger fw-bold"><strong>{{ $message }}</strong></span>
@@ -282,6 +292,20 @@
             });
 
             $confirmInput.on('input change', validatePasswordMatch);
+
+            $('.toggle-password').on('click', function() {
+                const targetSelector = $(this).data('target');
+                const $input = $(targetSelector);
+                const $icon = $(this).find('i');
+
+                if ($input.attr('type') === 'password') {
+                    $input.attr('type', 'text');
+                    $icon.removeClass('mdi-eye-off-outline text-muted').addClass('mdi-eye-outline text-primary');
+                } else {
+                    $input.attr('type', 'password');
+                    $icon.removeClass('mdi-eye-outline text-primary').addClass('mdi-eye-off-outline text-muted');
+                }
+            });
 
             // 3. Form submit validation guard
             $('.login-form').on('submit', function(e) {

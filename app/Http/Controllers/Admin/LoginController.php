@@ -28,7 +28,7 @@ class LoginController extends Controller
         Auth::guard('admin')->login($user);
         return redirect()->route('admin.dashboard');
     } else {
-        return redirect()->back()->with('error', __('messages.admin.auth.invalid_credentials'));
+        return redirect()->back()->with('error', __('messages.admin.auth.invalid_credentials'))->withInput($request->except('password'));
     }
   }
 

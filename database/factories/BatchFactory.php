@@ -10,14 +10,16 @@ class BatchFactory extends Factory
 {
     protected $model = Batch::class;
 
+    private static int $sequence = 1;
+
     public function definition(): array
     {
-        $batchNum  = $this->faker->numberBetween(1, 2);
+        $batchNum  = self::$sequence++;
         $startDate = now()->subMonths(6)->startOfMonth();
         $endDate   = now()->addMonths(6)->endOfMonth()->endOfDay();
 
         return [
-            'code'       => 'BATCH-' . now()->format('Y') . '-0' . $batchNum,
+            'code'       => sprintf('BATCH-%s-%02d', now()->format('Y'), $batchNum),
             'name'       => 'Rekrutmen Batch ' . $batchNum . ' ' . now()->format('Y'),
             'start_date' => $startDate,
             'end_date'   => $endDate,

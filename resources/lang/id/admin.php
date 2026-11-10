@@ -259,6 +259,9 @@ return [
     ],
     'js' => [
         'confirm_delete' => 'Konfirmasi hapus?',
+        'confirm_delete_text' => 'Data yang dihapus tidak dapat dikembalikan.',
+        'confirm_delete_yes' => 'Ya, Hapus!',
+        'confirm_delete_cancel' => 'Batal',
         'toggle_salary_failed' => 'Gagal mengubah tampilan gaji',
         'weight_current' => 'Total bobot saat ini :total.',
         'weight_add' => 'Tambahkan :points poin agar berjumlah 100.',

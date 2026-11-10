@@ -9,6 +9,18 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        Category::factory()->count(7)->create();
+        $categories = [
+            'Teknologi Informasi',
+            'Desain & Kreatif',
+            'Marketing & Komunikasi',
+            'Keuangan & Akuntansi',
+            'Operasional & Umum',
+            'Sumber Daya Manusia',
+            'Hukum & Kepatuhan',
+        ];
+
+        foreach ($categories as $name) {
+            Category::firstOrCreate(['name' => $name]);
+        }
     }
 }

@@ -27,7 +27,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator);
+            return redirect()->back()->withErrors($validator)->withInput($request->except('password'));
         }
 
         $loginInput = trim($request->input('email', $request->input('login')));
@@ -45,13 +45,13 @@ class AuthController extends Controller
 
         if ($candidate && Hash::check($password, $candidate->password)) {
             if (!$candidate->email_verified_at) {
-                return redirect()->back()->with('error', __('messages.auth.email_not_verified'));
+                return redirect()->back()->with('error', __('messages.auth.email_not_verified'))->withInput($request->except('password'));
             }
 
             Auth::guard('candidate')->login($candidate);
             return redirect()->route('candidate.home');
         } else {
-            return redirect()->back()->with('error', __('messages.auth.invalid_credentials'));
+            return redirect()->back()->with('error', __('messages.auth.invalid_credentials'))->withInput($request->except('password'));
         }
     }
 
@@ -76,7 +76,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput($request->all());
+            return redirect()->back()->withErrors($validator)->withInput($request->except(['password', 'password_confirmation']));
         }
         
         $candidateData = $request->only(['name', 'email', 'username', 'phone', 'birth_date', 'address']);

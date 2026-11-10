@@ -22,24 +22,26 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        Candidate::create([
-            'name' => 'John Doe',
-            'email' => 'usertest@gmail.com',
-            'email_verified_at' => now(),
-            'password' => '12345678',
-            'phone' => '081222534937',
-            'birth_date' => '2002-04-27',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+        Candidate::updateOrCreate(
+            ['email' => 'usertest@gmail.com'],
+            [
+                'name' => 'John Doe',
+                'email_verified_at' => now(),
+                'password' => '12345678',
+                'phone' => '081222534937',
+                'birth_date' => '2002-04-27',
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]
+        );
 
-        Company::create([
-            'name' => 'Madtive Studio',
-            'address' => 'Perumahan Rancabali, No 93. Muka, Kec. Cianjur, Kabupaten Cianjur, Jawa Barat 43216',
-            'location' => 'Cianjur, Jawa Barat',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+        Company::updateOrCreate(
+            ['name' => 'Madtive Studio'],
+            [
+                'address' => 'Perumahan Rancabali, No 93. Muka, Kec. Cianjur, Kabupaten Cianjur, Jawa Barat 43216',
+                'location' => 'Cianjur, Jawa Barat',
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]
+        );
         
         $this->call(BatchSeeder::class);
         $this->call(CategorySeeder::class);

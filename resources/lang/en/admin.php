@@ -259,6 +259,9 @@ return [
     ],
     'js' => [
         'confirm_delete' => 'Confirm delete?',
+        'confirm_delete_text' => 'Deleted data cannot be recovered.',
+        'confirm_delete_yes' => 'Yes, Delete!',
+        'confirm_delete_cancel' => 'Cancel',
         'toggle_salary_failed' => 'Failed to update salary visibility',
         'weight_current' => 'Current total weight is :total.',
         'weight_add' => 'Add :points points to reach 100.',
