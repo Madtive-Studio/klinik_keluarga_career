@@ -12,6 +12,10 @@ class JobSeeder extends Seeder
 {
     public function run(): void
     {
+        if (Job::count() > 0) {
+            return;
+        }
+
         $user        = User::where('email', 'madtive@gmail.com')->first();
         $activeBatch = Batch::where('status', 'ACTIVE')->first();
         $categories  = Category::all();

@@ -70,6 +70,7 @@ class ScheduleInterviewController extends Controller
                 $btn = '<div class="btn-group" role="group" aria-label="Action">';
                 $btn .= '<a class="btn btn-sm btn-success invitation" href="'.route('admin.schedule-interviews.invitation', $row->id).'" title="Kirim Ulang Undangan"><i class="ti ti-mail"></i></a>';
                 $btn .= '<button type="button" class="btn btn-sm btn-warning edit" data-route="'.route('admin.schedule-interviews.edit', $row->id).'" title="Edit Jadwal"><i class="ti ti-pencil"></i></button>';
+                $btn .= '<button type="button" class="btn btn-sm btn-danger delete" data-route="'.route('admin.schedule-interviews.destroy', $row->id).'" title="Hapus Jadwal"><i class="ti ti-trash"></i></button>';
                 $btn .= '</div>';
                 return $btn;
             })

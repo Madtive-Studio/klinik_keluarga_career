@@ -23,6 +23,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/nice-select.css') }}" />
     <!-- Flatpickr -->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/flatpickr.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/sweetalert2.min.css') }}" />
     <!-- Custom  Css -->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/candidate/css/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/cursor-interactions.css') }}" />
@@ -220,6 +221,7 @@
     <script src="{{ asset('assets/candidate/js/jquery.nice-select.min.js') }}"></script>
     <script src="{{ asset('assets/candidate/js/flatpickr.min.js') }}"></script>
     <script src="{{ asset('assets/candidate/js/flatpickr-id.min.js') }}"></script>
+    <script src="{{ asset('assets/candidate/js/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('assets/candidate/js/app.js') }}"></script>
     <script>
         $(document).ready(function() {
@@ -326,7 +328,11 @@
                     today.setHours(23, 59, 59, 999);
                     if (selectedDate > today) {
                         e.preventDefault();
-                        alert(birthDateErrorText);
+                        Swal.fire({
+                            icon: 'warning',
+                            text: birthDateErrorText,
+                            confirmButtonColor: '#2f55d4'
+                        });
                         $('#birth_date_input').focus();
                         return false;
                     }

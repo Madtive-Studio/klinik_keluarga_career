@@ -489,7 +489,14 @@
 					},
 					error: function() {
 						checkbox.prop('checked', !isShowSalary)
-						alert(window.adminI18n.toggle_salary_failed)
+						Swal.fire({
+							icon: 'error',
+							title: window.adminI18n.toggle_salary_failed,
+							customClass: {
+								confirmButton: 'btn btn-primary waves-effect waves-light'
+							},
+							buttonsStyling: false
+						})
 					}
 				})
 			})
